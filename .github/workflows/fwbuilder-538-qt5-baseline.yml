@@ -111,6 +111,15 @@ jobs:
           compiler="$(find src/nft -type f -name fwb_nft -perm /111 -print -quit)"
           test -n "$compiler" || { echo "Missing native fwb_nft executable" >&2; exit 1; }
           "$compiler" -V 2>&1 | tee ci-logs/nft-version.log
+          # The native backend uses libfwbuilder's compiled RES_DIR, not the
+          # repository source tree. Install data only in this disposable CI container.
+          make -C src/res install
+          make -C src/libfwbuilder/etc install
+          resource_dir="$(sed -n 's/^#define RES_DIR "\\([^"]*\\)"$/\\1/p' src/libfwbuilder/src/fwbuilder/libfwbuilder-config.h)"
+          test -n "$resource_dir" || { echo 'Native nft: RES_DIR missing' >&2; exit 1; }
+          test -s "$resource_dir/resources.xml" || { echo "Native nft: missing $resource_dir/resources.xml" >&2; exit 1; }
+          test -s "$resource_dir/fwbuilder.dtd" || { echo "Native nft: missing $resource_dir/fwbuilder.dtd" >&2; exit 1; }
+          test -d "$resource_dir/configlets/nftables" || { echo 'Native nft: nftables configlets missing' >&2; exit 1; }
           mkdir -p ci-logs/nft-output
           "$compiler" -f "$PWD/src/unit_tests/generatedScriptTestsNft/test1.fwb" \
             -d "$PWD/ci-logs/nft-output" nft-test \
