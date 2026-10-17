@@ -21,6 +21,27 @@ The capture is exploratory and is **not** a golden baseline.
 - fwb_junosacl: binary version probe works; no matching firewall object
   was found in checked-in unit-test fixtures.
 
+## Rechecked after commit 480f18b1 (run 39041823343)
+
+Downloaded artifact 12104662917, digest
+sha256:689235d1b8611e001f77df97b79ab1e1e261c781276fd1c8a6f04a77f179a178.
+
+Actual manifest records:
+- fwb_pf: pf1, pf2, pf2a each `exit=1`, `compiler_status=warning`,
+  `eligible_for_golden_review=false`; the three compiler logs contain
+  "Compiled successfully" but **no diagnostic explaining the warning**.
+  The original driver aggregates `all_errors` and sets WARNING if nonempty.
+  Exact causes remain unverified.
+- fwb_pix: `test_fw` from pix7.fwb, asa8.0-names.fwb and asa8.0.fwb
+  each `exit=2`, `compiler_status=nonzero`. All three logs explicitly
+  report missing inside-interface network zones; pix7 additionally warns
+  Ethernet0 with VLAN subinterfaces cannot be used for ACL.
+- fwb_junosacl: no matching policy fixture.
+- fwb_ipt, fwb_ipf, fwb_ipfw, fwb_iosacl: exit 0 with output.
+
+The newly added status classification is therefore verified by the CI
+artifact; no semantic equivalence claim is implied.
+
 ## Follow-up required before approval
 
 1. Establish a valid, explicitly reviewed PIX/ASA policy fixture with
