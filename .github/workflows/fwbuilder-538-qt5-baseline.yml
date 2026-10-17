@@ -1,0 +1,107 @@
+name: FWB 5.3.8 Qt5 baseline - openSUSE Leap 16.0
+
+on:
+  pull_request:
+    branches:
+      - modernization/start
+  push:
+    branches:
+      - modernization/start
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  qt5-baseline:
+    name: Build preserved FWB 5.3.8 with Qt5
+    runs-on: ubuntu-24.04
+    container:
+      image: opensuse/leap:16.0
+    timeout-minutes: 60
+    defaults:
+      run:
+        shell: bash
+    steps:
+      # Install Git before checkout. Otherwise checkout can use a REST archive
+      # fallback without .git, preventing source provenance verification.
+      - name: Install Git and trust the exact GitHub workspace
+        run: |
+          set -euo pipefail
+          mkdir -p ci-logs
+          zypper -n --gpg-auto-import-keys refresh 2>&1 | tee ci-logs/repositories.log
+          zypper -n install --no-recommends git 2>&1 | tee ci-logs/git-install.log
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git --version
+
+      - name: Check out the FWB 5.3.8 development branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Verify exact original 5.3.8 ancestry and build structure
+        run: |
+          set -euo pipefail
+          {
+            cat /etc/os-release
+            git -c safe.directory="$GITHUB_WORKSPACE" rev-parse HEAD
+            git -c safe.directory="$GITHUB_WORKSPACE" merge-base --is-ancestor \
+              46d2f67e9d7929c10791bb6747627066a3ea5c26 HEAD
+            test -f autogen.sh
+            test -f configure.in
+            test -f runqmake.sh
+            test -f fwbuilder3.pro
+            printf 'FWB 5.3.8 source ancestry and legacy Qt5 layout verified.\n'
+          } 2>&1 | tee ci-logs/source.log
+
+      - name: Install Qt5 and legacy build dependencies
+        run: |
+          set -euo pipefail
+          zypper -n install --no-recommends \
+            gcc gcc-c++ make autoconf automake libtool gettext-tools pkg-config \
+            libqt5-qtbase-devel libqt5-qttools-devel libqt5-qtsvg-devel \
+            libxml2-devel libxslt-devel net-snmp-devel \
+            flex bison \
+            2>&1 | tee ci-logs/dependencies.log
+
+      - name: Configure unchanged FWB 5.3.8 Autotools and qmake
+        run: |
+          set -euo pipefail
+          qmake_bin="$(command -v qmake-qt5 || command -v qmake || true)"
+          test -n "$qmake_bin" || { echo 'Qt5 qmake missing' >&2; exit 1; }
+          "$qmake_bin" -v 2>&1 | tee ci-logs/qmake.log
+          grep -Eq 'Qt version 5\.' ci-logs/qmake.log || {
+            echo 'Refusing to compile the Qt5 baseline with a non-Qt5 qmake' >&2
+            exit 1
+          }
+          bash ./autogen.sh --prefix=/usr --with-qmake="$qmake_bin" \
+            2>&1 | tee ci-logs/configure.log
+
+      - name: Compile preserved FWB 5.3.8 baseline
+        run: |
+          set -euo pipefail
+          make -j2 2>&1 | tee ci-logs/build.log
+
+      - name: Inventory compiled firewall policy compilers
+        run: |
+          set -euo pipefail
+          find . -type f \
+            \( -name fwb_ipt -o -name fwb_pf -o -name fwb_ipf \
+            -o -name fwb_ipfw -o -name fwb_pix -o -name fwb_iosacl \
+            -o -name fwb_junosacl \) \
+            -perm /111 -print | sort | tee ci-logs/compiler-binaries.log
+          test -s ci-logs/compiler-binaries.log || {
+            echo 'Build completed without discovering any policy compiler binaries' >&2
+            exit 1
+          }
+          echo 'Compiled backend inventory recorded; no firewall rules deployed.'
+
+      - name: Upload build diagnostics and compiler inventory
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: fwbuilder-538-qt5-leap16-baseline-logs
+          path: ci-logs/
+          if-no-files-found: warn
+          retention-days: 14
