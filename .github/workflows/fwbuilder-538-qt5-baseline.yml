@@ -141,6 +141,20 @@ jobs:
             --output ci-logs/compiler-output-capture \
             2>&1 | tee ci-logs/compiler-output-capture.log
 
+      - name: Repeat compiler capture to measure reproducibility
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: |
+          set -euo pipefail
+          python3 .netaigis/compatibility/capture_compiler_baseline.py \
+            --repo . \
+            --output ci-logs/compiler-output-repeat \
+            2>&1 | tee ci-logs/compiler-output-repeat.log
+          python3 .netaigis/compatibility/compare_compiler_captures.py \
+            ci-logs/compiler-output-capture \
+            ci-logs/compiler-output-repeat \
+            ci-logs/compiler-output-reproducibility.json
+
       - name: Upload build diagnostics and compiler inventory
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
