@@ -11,6 +11,7 @@ import argparse
 import hashlib
 import json
 import os
+import shutil
 from pathlib import Path
 import subprocess
 import sys
@@ -93,13 +94,21 @@ def main() -> int:
     out.mkdir(parents=True, exist_ok=False)
     (out / "versions").mkdir()
     (out / "attempts").mkdir()
+    (out / "inputs").mkdir()
+    version_lines = (repo / "VERSION").read_text(encoding="utf-8").splitlines()
+    xml_versions = [line.partition("=")[2] for line in version_lines
+                    if line.startswith("FWBUILDER_XML_VERSION=")]
+    if len(xml_versions) != 1 or not xml_versions[0].isdigit():
+        raise RuntimeError("Cannot determine FWB XML format version")
+    xml_version = xml_versions[0]
     inputdir = repo / "src" / "unit_tests"
     fixtures = sorted(inputdir.rglob("*.fwb"))
     discovered = {f: find_firewalls(f) for f in fixtures}
 
     records = {"schema": 1, "reference": "FWB 5.3.8 (46d2f67e9)",
                "purpose": "exploratory output capture; NOT golden baseline",
-               "test_fixture_count": len(fixtures), "backends": {}}
+               "test_fixture_count": len(fixtures),
+               "target_xml_version": xml_version, "backends": {}}
     failed_versions = []
     successful_rules = 0
     for binary, (relative, platforms) in BACKENDS.items():
@@ -136,12 +145,56 @@ def main() -> int:
             dest = out / "attempts" / f"{binary}-{index:02d}"
             dest.mkdir()
             logfile = dest / "compiler.log"
-            cmd = [str(executable), "-f", str(fixture), "-d", str(dest), firewall_name]
+            # CI must never upgrade the tracked legacy fixture in place.
+            prepared = out / "inputs" / f"{binary}-{index:02d}.fwb"
+            shutil.copyfile(fixture, prepared)
+            input_version = ET.parse(prepared).getroot().attrib.get("version", "")
+            upgrade_rc = 0
+            if input_version != xml_version:
+                upgrade_log = out / "inputs" / f"{binary}-{index:02d}.upgrade.log"
+                upgrade_env = os.environ.copy()
+                upgrade_env["QT_QPA_PLATFORM"] = "offscreen"
+                with upgrade_log.open("wb") as log_handle:
+                    try:
+                        upgrade = subprocess.run(
+                            [str(repo / "src/fwbedit/fwbedit"), "upgrade",
+                             "-f", str(prepared)],
+                            input=b"Y\n", stdout=log_handle,
+                            stderr=subprocess.STDOUT, cwd=repo,
+                            env=upgrade_env, timeout=60, check=False,
+                        )
+                        upgrade_rc = upgrade.returncode
+                    except subprocess.TimeoutExpired:
+                        upgrade_rc = 124
+                        log_handle.write(b"\nTIMEOUT upgrading copied fixture\n")
+                    except OSError as exc:
+                        upgrade_rc = 127
+                        log_handle.write(
+                            f"\nEXECUTION ERROR: {exc}\n".encode("utf-8", "replace")
+                        )
+            upgraded_version = ET.parse(prepared).getroot().attrib.get("version", "")
+            if upgrade_rc or upgraded_version != xml_version:
+                info["attempts"].append({
+                    "fixture": short_name, "firewall": firewall_name,
+                    "fixture_sha256": checksum(fixture),
+                    "input_xml_version": input_version,
+                    "upgrade_exit": upgrade_rc,
+                    "prepared_xml_version": upgraded_version,
+                    "exit": None, "output": [],
+                    "error": "Fixture upgrade to current XML format failed",
+                })
+                continue
+            cmd = [str(executable), "-f", str(prepared), "-d", str(dest),
+                   firewall_name]
             rc = run_logged(cmd, logfile, repo)
             files = [f for f in sorted(dest.rglob("*")) if f.is_file() and f != logfile]
             produced = [{"path": f.relative_to(dest).as_posix(),
                          "bytes": f.stat().st_size, "sha256": checksum(f)} for f in files]
             attempt = {"fixture": short_name, "fixture_sha256": checksum(fixture),
+                       "input_xml_version": input_version,
+                       "prepared_xml_version": upgraded_version,
+                       "prepared_fixture_sha256": checksum(prepared),
+                       "upgrade_exit": upgrade_rc,
                        "firewall": firewall_name, "exit": rc,
                        "log_sha256": checksum(logfile), "output": produced}
             info["attempts"].append(attempt)
@@ -160,7 +213,9 @@ def main() -> int:
     print(f"Successful fixture compiles: {successful_rules}")
     print(f"Manifest: {result}")
     if not successful_rules:
-        print("NOTE: No working rule-output fixture captured yet; do not approve a golden baseline.")
+        print("ERROR: No working rule-output fixture captured; rejecting empty baseline.",
+              file=sys.stderr)
+        return 1
     if failed_versions:
         print("ERROR: Version probes failed for: " + ", ".join(failed_versions), file=sys.stderr)
         return 1

@@ -113,6 +113,7 @@ jobs:
           {
             make -C src/res install
             make -C src/libfwbuilder/etc install
+            make -C src/libfwbuilder/migration install
             resource_dir="$(sed -n 's/^#define RES_DIR "\(.*\)"$/\1/p' src/libfwbuilder/src/fwbuilder/libfwbuilder-config.h)"
             test -n "$resource_dir" || { echo 'RES_DIR not defined' >&2; exit 1; }
             case "$resource_dir" in
@@ -122,6 +123,8 @@ jobs:
             test -s "$resource_dir/resources.xml"
             test -s "$resource_dir/objects_init.xml"
             test -s "$resource_dir/fwbuilder.dtd"
+            test -s "$resource_dir/migration/FWObjectDatabase_22.xslt"
+            test -s "$resource_dir/migration/FWObjectDatabase_23.xslt"
             test -d "$resource_dir/configlets"
             echo "FWB compiler runtime resources ready: $resource_dir"
           } 2>&1 | tee ci-logs/resource-install.log
@@ -132,6 +135,7 @@ jobs:
           QT_QPA_PLATFORM: offscreen
         run: |
           set -euo pipefail
+          test -x src/fwbedit/fwbedit
           python3 .netaigis/compatibility/capture_compiler_baseline.py \
             --repo . \
             --output ci-logs/compiler-output-capture \

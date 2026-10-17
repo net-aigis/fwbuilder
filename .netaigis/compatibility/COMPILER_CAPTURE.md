@@ -25,3 +25,11 @@ The existing 516-path compatibility-presence guard continues unchanged.
 
 CI remains limited to the openSUSE Leap 16.0 reference environment. Other OSes
 are later compatibility test targets; this does not limit the firewall backends.
+
+The second CI capture confirmed that source fixtures (XML v22) require
+conversion to this build's XML v24 schema. CLI compilers refuse to upgrade
+input files in place. CI installs the original XSLT migration resources,
+copies fixtures to scratch storage, and runs the existing `fwbedit upgrade`
+with explicit confirmation on the **copy only**. Original `.fwb` files remain
+unchanged. Original/prepared SHA256 hashes and schema versions are recorded.
+An empty baseline capture is now a CI failure, not a false success.
