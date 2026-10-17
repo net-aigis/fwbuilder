@@ -1,0 +1,25 @@
+name: FWB 5.3.8 legacy compatibility guard
+
+on:
+  pull_request:
+    branches:
+      - modernization/start
+  push:
+    branches:
+      - modernization/start
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  legacy-paths:
+    name: Preserve FWB 5.3.8 backends and project fixtures
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out full source history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check legacy compiler, platform and project paths
+        run: python3 .netaigis/compatibility/check_legacy_surface.py
