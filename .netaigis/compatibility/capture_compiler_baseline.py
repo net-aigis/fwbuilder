@@ -37,7 +37,7 @@ PREFERRED = {
     "fwb_ipt": ["generatedScriptTestsLinux/test1.fwb", "ImporterTest/test_data/ipt.fwb"],
     "fwb_junosacl": [],
     "fwb_pf": ["generatedScriptTestsPF/test1.fwb"],
-    "fwb_pix": ["PIXImporterTest/test_data/pix7.fwb"],
+    "fwb_pix": ["PIXImporterTest/test_data/asa8.0.fwb", "PIXImporterTest/test_data/pix7.fwb"],
 }
 
 
@@ -185,6 +185,22 @@ def main() -> int:
                     "error": "Fixture upgrade to current XML format failed",
                 })
                 continue
+            if binary == "fwb_pix" and short_name == "PIXImporterTest/test_data/asa8.0.fwb":
+                # Only an isolated scratch copy is modified; zones are derived
+                # from the fixture's actual interface IPv4 addresses and masks.
+                zone_log = out / "inputs" / f"{binary}-{index:02d}.zones.log"
+                zone_rc = run_logged(
+                    [sys.executable, str(repo / ".netaigis/compatibility/prepare_asa8_fixture.py"),
+                     str(prepared)], zone_log, repo)
+                if zone_rc != 0:
+                    info["attempts"].append({
+                        "fixture": short_name, "firewall": firewall_name,
+                        "fixture_sha256": checksum(fixture), "exit": None,
+                        "error": "ASA 8.0 scratch zone preparation failed",
+                        "zone_prepare_exit": zone_rc,
+                        "zone_log_sha256": checksum(zone_log), "output": []
+                    })
+                    continue
             cmd = [str(executable), "-f", str(prepared), "-d", str(dest),
                    firewall_name]
             rc = run_logged(cmd, logfile, repo)
