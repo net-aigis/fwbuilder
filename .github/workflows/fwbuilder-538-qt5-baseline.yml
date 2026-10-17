@@ -82,7 +82,7 @@ jobs:
             echo 'Refusing to compile the Qt5 baseline with a non-Qt5 qmake' >&2
             exit 1
           }
-          bash ./autogen.sh --prefix=/usr --with-qmake="$qmake_bin" \
+          bash ./autogen.sh --prefix=/usr --with-qmake="${qmake_bin##*/}" \
             2>&1 | tee ci-logs/configure.log
 
       - name: Compile preserved FWB 5.3.8 baseline
