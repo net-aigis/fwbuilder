@@ -115,7 +115,7 @@ jobs:
           # repository source tree. Install data only in this disposable CI container.
           make -C src/res install
           make -C src/libfwbuilder/etc install
-          resource_dir="$(sed -n 's/^#define RES_DIR "\\([^"]*\\)"$/\\1/p' src/libfwbuilder/src/fwbuilder/libfwbuilder-config.h)"
+          resource_dir="$(awk '$1 == "#define" && $2 == "RES_DIR" { gsub(/"/, "", $3); print $3; exit }' src/libfwbuilder/src/fwbuilder/libfwbuilder-config.h)"
           test -n "$resource_dir" || { echo 'Native nft: RES_DIR missing' >&2; exit 1; }
           test -s "$resource_dir/resources.xml" || { echo "Native nft: missing $resource_dir/resources.xml" >&2; exit 1; }
           test -s "$resource_dir/fwbuilder.dtd" || { echo "Native nft: missing $resource_dir/fwbuilder.dtd" >&2; exit 1; }
