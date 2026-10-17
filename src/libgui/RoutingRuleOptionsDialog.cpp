@@ -99,6 +99,8 @@ void RoutingRuleOptionsDialog::loadFWObject(FWObject *o)
     if (platform=="iptables")
     {
         data.registerOption(m_dialog->routing_non_critical_rule, ropt,  "no_fail");
+        data.registerOption(m_dialog->routing_use_onlink_option, ropt,
+                            "use_onlink_option");
     }
 
     init = true;
