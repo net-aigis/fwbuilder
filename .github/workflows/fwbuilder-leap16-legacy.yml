@@ -27,6 +27,18 @@ jobs:
       - name: Check out source
         uses: actions/checkout@v4
 
+      - name: Install openSUSE Qt5 and build dependencies
+        run: |
+          set -euo pipefail
+          mkdir -p ci-logs
+          zypper -n --gpg-auto-import-keys refresh 2>&1 | tee ci-logs/repositories.log
+          zypper -n install --no-recommends \
+            gcc gcc-c++ make git \
+            autoconf automake libtool gettext-tools pkg-config \
+            libqt5-qtbase-devel libqt5-qttools-devel libqt5-qtsvg-devel \
+            libxml2-devel libxslt-devel net-snmp-devel \
+            flex bison 2>&1 | tee ci-logs/dependencies.log
+
       - name: Record starting point and verify build layout
         run: |
           set -euo pipefail
@@ -39,17 +51,6 @@ jobs:
             test -f autogen.sh
             test -f configure.in
           } 2>&1 | tee ci-logs/source.log
-
-      - name: Install openSUSE Qt5 and build dependencies
-        run: |
-          set -euo pipefail
-          zypper -n --gpg-auto-import-keys refresh 2>&1 | tee ci-logs/repositories.log
-          zypper -n install --no-recommends \
-            gcc gcc-c++ make git \
-            autoconf automake libtool gettext-tools pkg-config \
-            libqt5-qtbase-devel libqt5-qttools-devel libqt5-qtsvg-devel \
-            libxml2-devel libxslt-devel net-snmp-devel \
-            flex bison 2>&1 | tee ci-logs/dependencies.log
 
       - name: Configure legacy Autotools/qmake build
         run: |
