@@ -15,6 +15,7 @@ import shutil
 from pathlib import Path
 import subprocess
 import sys
+from urllib.parse import quote
 import xml.etree.ElementTree as ET
 
 # These seven binaries were actually found in the successful Leap 16 CI build.
@@ -187,8 +188,24 @@ def main() -> int:
             cmd = [str(executable), "-f", str(prepared), "-d", str(dest),
                    firewall_name]
             rc = run_logged(cmd, logfile, repo)
+            # Encode generated names only after compilation; never change inputs.
+            # Percent escapes are reversible and encode '%' to prevent collisions.
+            original_paths = {}
+            for generated in sorted(dest.rglob("*"), key=lambda p: len(p.parts), reverse=True):
+                if not generated.is_file() or generated == logfile:
+                    continue
+                original = generated.relative_to(dest).as_posix()
+                relative = Path(*[quote(part, safe="-_.~") for part in generated.relative_to(dest).parts])
+                portable = dest / relative
+                if portable != generated:
+                    portable.parent.mkdir(parents=True, exist_ok=True)
+                    if portable.exists():
+                        raise RuntimeError(f"Artifact path collision: {portable}")
+                    generated.rename(portable)
+                original_paths[relative.as_posix()] = original
             files = [f for f in sorted(dest.rglob("*")) if f.is_file() and f != logfile]
             produced = [{"path": f.relative_to(dest).as_posix(),
+                         "original_path": original_paths[f.relative_to(dest).as_posix()],
                          "bytes": f.stat().st_size, "sha256": checksum(f)} for f in files]
             attempt = {"fixture": short_name, "fixture_sha256": checksum(fixture),
                        "input_xml_version": input_version,
