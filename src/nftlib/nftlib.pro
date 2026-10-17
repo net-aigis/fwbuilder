@@ -21,7 +21,8 @@ SOURCES += CompilerDriver_nft_policy.cpp \
     NATCompiler_PrintRuleNftRst.cpp \
     NATCompiler_PrintRuleNftRstEcho.cpp \
     nft_utils.cpp \
-    RoutingCompiler_nft.cpp
+    RoutingCompiler_nft.cpp \
+    RoutingCompiler_nft_writers.cpp
 HEADERS += ../../config.h \
     CompilerDriver_nft.h \
     MangleTableCompiler_nft.h \
