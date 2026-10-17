@@ -104,6 +104,24 @@ jobs:
           }
           echo 'Compiled backend inventory recorded; no firewall rules deployed.'
 
+      - name: Smoke-test native nftables CLI and generated policy
+        if: ${{ github.event_name == 'pull_request' && github.head_ref == 'feature/native-nftables-port' }}
+        run: |
+          set -euo pipefail
+          compiler="$(find src/nft -type f -name fwb_nft -perm /111 -print -quit)"
+          test -n "$compiler" || { echo "Missing native fwb_nft executable" >&2; exit 1; }
+          "$compiler" -V 2>&1 | tee ci-logs/nft-version.log
+          mkdir -p ci-logs/nft-output
+          "$compiler" -f "$PWD/src/unit_tests/generatedScriptTestsNft/test1.fwb" \
+            -d "$PWD/ci-logs/nft-output" nft-test \
+            2>&1 | tee ci-logs/nft-compile.log
+          find ci-logs/nft-output -type f -print | sort | tee ci-logs/nft-generated-files.log
+          test -s ci-logs/nft-generated-files.log || {
+            echo "fwb_nft returned without generating policy output" >&2
+            exit 1
+          }
+          echo 'Native nftables CLI generated files; no generated policy executed or installed.'
+
       - name: Upload build diagnostics and compiler inventory
         if: ${{ always() }}
         uses: actions/upload-artifact@v4

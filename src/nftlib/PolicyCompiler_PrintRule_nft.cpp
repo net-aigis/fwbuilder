@@ -75,6 +75,25 @@ using namespace libfwbuilder;
 using namespace fwcompiler;
 using namespace std;
 
+// The legacy 5.3 branch does not have TCPService::getFlagName().
+ // Keep this nftables-only formatting helper local to the new backend.
+namespace {
+std::string nftTcpFlagName(libfwbuilder::TCPService::TCPFlag flag)
+{
+    using libfwbuilder::TCPService;
+    switch (flag) {
+    case TCPService::URG: return "urg";
+    case TCPService::ACK: return "ack";
+    case TCPService::PSH: return "psh";
+    case TCPService::RST: return "rst";
+    case TCPService::SYN: return "syn";
+    case TCPService::FIN: return "fin";
+    }
+    return "";
+}
+}
+
+
 
 
 /**
@@ -928,7 +947,7 @@ string PolicyCompiler_nft::PrintRule::_printTCPFlags(libfwbuilder::TCPService *s
     for (const auto &flag : masks)
     {
         if (!first) mask_str << ",";
-        mask_str << TCPService::getFlagName(flag);
+        mask_str << nftTcpFlagName(flag);
         first = false;
     }
 
@@ -936,7 +955,7 @@ string PolicyCompiler_nft::PrintRule::_printTCPFlags(libfwbuilder::TCPService *s
     for (const auto &flag : flags)
     {
         if (!first) comp_str << ",";
-        comp_str << TCPService::getFlagName(flag);
+        comp_str << nftTcpFlagName(flag);
         first = false;
     }
 
