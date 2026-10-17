@@ -43,6 +43,8 @@ jobs:
       - name: Verify exact original 5.3.8 ancestry and build structure
         run: |
           set -euo pipefail
+          # Checkout may clean the workspace, including logs from the Git install step.
+          mkdir -p ci-logs
           {
             cat /etc/os-release
             git -c safe.directory="$GITHUB_WORKSPACE" rev-parse HEAD
