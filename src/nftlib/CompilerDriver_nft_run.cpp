@@ -39,7 +39,7 @@
 #include <mutex>
 #include <vector>
 
-#include "version.h"
+#include "../../config.h"
 #include "CompilerDriver_nft.h"
 #include "PolicyCompiler_nft.h"
 #include "NATCompiler_nft.h"
