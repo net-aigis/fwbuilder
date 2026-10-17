@@ -110,8 +110,8 @@ protected:
 
         bool isNftSetOptimizationEnabled();
         bool isNftVerdictMapEnabled();
-        bool canUseNftSetForAddresses(libfwbuilder::RuleElement *rel) const;
-        bool canUseNftSetForServices(libfwbuilder::RuleElementSrv *rel) const;
+        bool canUseNftSetForAddresses(libfwbuilder::RuleElement *rel);
+        bool canUseNftSetForServices(libfwbuilder::RuleElementSrv *rel);
         bool canUseNftSetForIntervals(
             libfwbuilder::RuleElementInterval *rel) const;
         std::string getRejectExpression(libfwbuilder::PolicyRule *rule);

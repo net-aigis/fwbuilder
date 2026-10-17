@@ -287,7 +287,7 @@ string PolicyCompiler_nft::getRejectExpression(PolicyRule *rule)
     return nft_utils::rejectWithExpression("", ipv6);
 }
 
-bool PolicyCompiler_nft::canUseNftSetForAddresses(RuleElement *rel) const
+bool PolicyCompiler_nft::canUseNftSetForAddresses(RuleElement *rel)
 {
     if (!isNftSetOptimizationEnabled()) return false;
     if (rel == nullptr || rel->isAny() || rel->size() <= 1) return false;
@@ -313,7 +313,7 @@ bool PolicyCompiler_nft::canUseNftSetForAddresses(RuleElement *rel) const
     return true;
 }
 
-bool PolicyCompiler_nft::canUseNftSetForServices(RuleElementSrv *rel) const
+bool PolicyCompiler_nft::canUseNftSetForServices(RuleElementSrv *rel)
 {
     if (!isNftSetOptimizationEnabled()) return false;
     if (rel == nullptr || rel->isAny() || rel->size() <= 1) return false;
