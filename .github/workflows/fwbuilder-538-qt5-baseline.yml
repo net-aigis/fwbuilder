@@ -61,7 +61,7 @@ jobs:
         run: |
           set -euo pipefail
           zypper -n install --no-recommends \
-            gcc gcc-c++ make which autoconf automake libtool gettext-tools pkg-config \
+            gcc gcc-c++ make which python3-base autoconf automake libtool gettext-tools pkg-config \
             libqt5-qtbase-devel libqt5-qttools-devel libqt5-qtsvg-devel \
             libxml2-devel libxslt-devel net-snmp-devel \
             flex bison \
@@ -103,6 +103,14 @@ jobs:
             exit 1
           }
           echo 'Compiled backend inventory recorded; no firewall rules deployed.'
+
+      - name: Capture legacy compiler versions and test-fixture outputs
+        run: |
+          set -euo pipefail
+          python3 .netaigis/compatibility/capture_compiler_baseline.py \
+            --repo . \
+            --output ci-logs/compiler-output-capture \
+            2>&1 | tee ci-logs/compiler-output-capture.log
 
       - name: Upload build diagnostics and compiler inventory
         if: ${{ always() }}
