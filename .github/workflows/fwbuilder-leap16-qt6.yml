@@ -1,0 +1,94 @@
+name: FWB Qt6 baseline - openSUSE Leap 16.0
+
+on:
+  push:
+    branches:
+      - modernization/**
+      - ci/**
+  pull_request:
+    branches:
+      - modernization/**
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  qt6-reference:
+    name: Build newer FWB master with Qt6 (reference only)
+    runs-on: ubuntu-24.04
+    container:
+      image: opensuse/leap:16.0
+    timeout-minutes: 60
+    defaults:
+      run:
+        shell: bash
+    steps:
+      # Required BEFORE actions/checkout: otherwise checkout can use the REST
+      # archive fallback and there is no .git repository to inspect.
+      - name: Install Git before checkout
+        run: |
+          set -euo pipefail
+          zypper -n --gpg-auto-import-keys refresh
+          zypper -n install --no-recommends git
+          git --version
+
+      - name: Check out work branch (preserve computersalat base)
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Check out preserved newer master as Qt6 build reference
+        uses: actions/checkout@v4
+        with:
+          ref: master
+          path: modern-source
+          persist-credentials: false
+
+      - name: Verify source identities and build layout
+        run: |
+          set -euo pipefail
+          mkdir -p ci-logs
+          {
+            cat /etc/os-release
+            printf 'Development branch:\n'
+            git rev-parse HEAD
+            printf 'Modern reference branch:\n'
+            git -C modern-source rev-parse HEAD
+            test "$(git -C modern-source rev-parse HEAD)" = "8013c00e1f29350d96926768290e8c7f91cda424"
+            test -f modern-source/CMakeLists.txt
+            grep -q 'option(UseQt6' modern-source/CMakeLists.txt
+            printf 'Custom 5.3.x remains preserved; this job compiles only the master reference.\n'
+          } 2>&1 | tee ci-logs/source.log
+
+      - name: Install openSUSE Qt6 and build dependencies
+        run: |
+          set -euo pipefail
+          zypper -n install --no-recommends \
+            gcc gcc-c++ make cmake pkg-config \
+            qt6-base-devel qt6-svg-devel qt6-tools-devel \
+            libxml2-devel libxslt-devel net-snmp-devel \
+            flex bison 2>&1 | tee ci-logs/dependencies.log
+
+      - name: Configure Qt6 reference build
+        run: |
+          set -euo pipefail
+          cmake -S modern-source -B build-qt6 \
+            -DUseQt6=ON \
+            -DCMAKE_BUILD_TYPE=Release \
+            2>&1 | tee ci-logs/configure.log
+
+      - name: Compile Qt6 reference
+        run: |
+          set -euo pipefail
+          cmake --build build-qt6 --parallel 2 \
+            2>&1 | tee ci-logs/build.log
+
+      - name: Upload diagnostics
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: fwbuilder-leap16-qt6-reference-logs
+          path: ci-logs/
+          if-no-files-found: warn
+          retention-days: 14
