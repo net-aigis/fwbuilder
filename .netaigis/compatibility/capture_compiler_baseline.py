@@ -214,6 +214,17 @@ def main() -> int:
                        "upgrade_exit": upgrade_rc,
                        "firewall": firewall_name, "exit": rc,
                        "log_sha256": checksum(logfile), "output": produced}
+            # PF returns BaseCompiler status (0 success, 1 warning, 2 error).
+            # Generated output is not by itself evidence of clean compilation.
+            if binary == "fwb_pf":
+                attempt["compiler_status"] = {
+                    0: "success", 1: "warning", 2: "error"
+                }.get(rc, "other")
+            elif rc == 0:
+                attempt["compiler_status"] = "success"
+            else:
+                attempt["compiler_status"] = "nonzero"
+            attempt["eligible_for_golden_review"] = rc == 0 and bool(produced)
             info["attempts"].append(attempt)
             if rc == 0 and produced:
                 info["captured_outputs"].extend(produced)
