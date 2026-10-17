@@ -30,7 +30,7 @@
 #include <functional>
 #include <stdexcept>
 
-#include "version.h"
+#include "../../config.h"
 #include "CompilerDriver_nft.h"
 
 #include "fwbuilder/Resources.h"
