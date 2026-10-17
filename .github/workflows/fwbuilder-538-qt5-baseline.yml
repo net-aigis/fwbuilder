@@ -61,7 +61,7 @@ jobs:
         run: |
           set -euo pipefail
           zypper -n install --no-recommends \
-            gcc gcc-c++ make autoconf automake libtool gettext-tools pkg-config \
+            gcc gcc-c++ make which autoconf automake libtool gettext-tools pkg-config \
             libqt5-qtbase-devel libqt5-qttools-devel libqt5-qtsvg-devel \
             libxml2-devel libxslt-devel net-snmp-devel \
             flex bison \
@@ -70,6 +70,11 @@ jobs:
       - name: Configure unchanged FWB 5.3.8 Autotools and qmake
         run: |
           set -euo pipefail
+          # Legacy autogen.sh uses `which` to detect GNU make.
+          command -v which
+          command -v make
+          which make
+          make --version | sed -n '1p'
           qmake_bin="$(command -v qmake-qt5 || command -v qmake || true)"
           test -n "$qmake_bin" || { echo 'Qt5 qmake missing' >&2; exit 1; }
           "$qmake_bin" -v 2>&1 | tee ci-logs/qmake.log
