@@ -19,6 +19,13 @@ jobs:
     container:
       image: opensuse/leap:16.0
     timeout-minutes: 60
+    env:
+      # Reuse compiler results across PR commits; compiler identity and
+      # included headers are validated by ccache before each cache hit.
+      CCACHE_DIR: /tmp/fwb-qt5-ccache
+      CCACHE_BASEDIR: ${{ github.workspace }}
+      CCACHE_COMPILERCHECK: content
+      CCACHE_MAXSIZE: 512M
     defaults:
       run:
         shell: bash
@@ -61,11 +68,44 @@ jobs:
         run: |
           set -euo pipefail
           zypper -n install --no-recommends \
-            gcc gcc-c++ make which autoconf automake libtool gettext-tools pkg-config \
+            gcc gcc-c++ ccache make which autoconf automake libtool gettext-tools pkg-config \
             libqt5-qtbase-devel libqt5-qttools-devel libqt5-qtsvg-devel \
             libxml2-devel libxslt-devel net-snmp-devel \
             flex bison \
             2>&1 | tee ci-logs/dependencies.log
+
+      # A new runner/container has an empty filesystem. Restore only ccache,
+      # never old generated Makefiles or source trees (which can go stale).
+      - name: Restore cached C/C++ compiler results
+        id: ccache_restore
+        uses: actions/cache/restore@v4
+        with:
+          path: /tmp/fwb-qt5-ccache
+          key: fwb-leap16-qt5-ccache-v1-pr${{ github.event.pull_request.number || 0 }}-${{ github.sha }}
+          restore-keys: |
+            fwb-leap16-qt5-ccache-v1-pr${{ github.event.pull_request.number || 0 }}-
+            fwb-leap16-qt5-ccache-v1-
+
+      - name: Enable ccache for legacy qmake/Autotools compiler calls
+        id: ccache_setup
+        run: |
+          set -euo pipefail
+          ccache_bin="$(command -v ccache)"
+          test -x "$ccache_bin"
+          mkdir -p "$CCACHE_DIR"
+          # Both qmake and the original Autotools build call compiler names
+          # directly; put lightweight ccache symlinks before /usr/bin.
+          wrappers=/tmp/fwb-ci-compiler-wrappers
+          mkdir -p "$wrappers"
+          for compiler in gcc g++ cc c++; do
+            ln -sfn "$ccache_bin" "$wrappers/$compiler"
+          done
+          printf '%s\n' "$wrappers" >> "$GITHUB_PATH"
+          export PATH="$wrappers:$PATH"
+          test "$(command -v g++)" = "$wrappers/g++"
+          ccache --zero-stats
+          ccache --version | head -n 1
+          echo 'Compiler cache active for subsequent configure/build steps.'
 
       - name: Configure unchanged FWB 5.3.8 Autotools and qmake
         run: |
@@ -89,6 +129,22 @@ jobs:
         run: |
           set -euo pipefail
           make -j2 2>&1 | tee ci-logs/build.log
+
+      - name: Report C/C++ compiler cache statistics
+        if: ${{ always() && steps.ccache_setup.outcome == 'success' }}
+        run: |
+          set -euo pipefail
+          mkdir -p ci-logs
+          ccache --show-stats 2>&1 | tee ci-logs/ccache.log
+
+      # Save even when compilation failed: previously compiled translation
+      # units remain useful for the next corrected commit.
+      - name: Preserve C/C++ cache for the next commit
+        if: ${{ always() && steps.ccache_setup.outcome == 'success' && steps.ccache_restore.outputs.cache-hit != 'true' }}
+        uses: actions/cache/save@v4
+        with:
+          path: /tmp/fwb-qt5-ccache
+          key: ${{ steps.ccache_restore.outputs.cache-primary-key }}
 
       - name: Inventory compiled firewall policy compilers
         run: |
