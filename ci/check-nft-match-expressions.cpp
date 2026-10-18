@@ -11,6 +11,7 @@ using fwcompiler::nft_utils::fragmentMatchExpression;
 using fwcompiler::nft_utils::macSourceMatchExpression;
 using fwcompiler::nft_utils::timeMatchExpression;
 using fwcompiler::nft_utils::icmpMatchExpression;
+using fwcompiler::nft_utils::connmarkActionExpression;
 
 static void rejected(const std::string &input)
 {
@@ -50,6 +51,10 @@ int main(int argc, char **argv)
                   << "add table ip fwb_nft_mark_test\n"
                   << "add chain ip fwb_nft_mark_test PREROUTING { type filter hook prerouting priority -150; }\n"
                   << "add chain ip fwb_nft_mark_test OUTPUT { type filter hook output priority -150; }\n"
+                  << "add rule ip fwb_nft_mark_test PREROUTING "
+                  << connmarkActionExpression("--save-mark") << "\n"
+                  << "add rule ip fwb_nft_mark_test PREROUTING "
+                  << connmarkActionExpression("--restore-mark") << "\n"
                   << "add rule ip fwb_nft_mark_test PREROUTING meta mark set ct mark\n"
                   << "add rule ip fwb_nft_mark_test OUTPUT meta mark set ct mark\n"
                   << "add table ip6 fwb_nft_match_test\n"
@@ -64,6 +69,16 @@ int main(int argc, char **argv)
 
     // Prefix must be present for both type and code. A lone "code" token
     // caused nft 1.0.9 to reject the real IPv6/ICMPv6 XML fixture.
+    assert(connmarkActionExpression("--save-mark") == "ct mark set meta mark");
+    assert(connmarkActionExpression("--restore-mark") == "meta mark set ct mark");
+    for (const auto &arg : {"", "--set-mark", "--save-mark --mask 255",
+                            "--restore-mark; drop", "--save-mark --nfmask 0xff"})
+    {
+        bool threw = false;
+        try { (void)connmarkActionExpression(arg); }
+        catch (const std::invalid_argument &) { threw = true; }
+        assert(threw);
+    }
     assert(icmpMatchExpression(128, 0, true) == "icmpv6 type 128 icmpv6 code 0");
     assert(icmpMatchExpression(1, 4, true) == "icmpv6 type 1 icmpv6 code 4");
     assert(icmpMatchExpression(8, 0, false) == "icmp type 8 icmp code 0");

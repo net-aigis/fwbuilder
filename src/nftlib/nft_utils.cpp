@@ -149,6 +149,13 @@ std::string markSetExpression(const std::string &mark)
     return "meta mark set " + mark;
 }
 
+std::string connmarkActionExpression(const std::string &action)
+{
+    if (action == "--save-mark") return "ct mark set meta mark";
+    if (action == "--restore-mark") return "meta mark set ct mark";
+    throw std::invalid_argument("unsupported CONNMARK action");
+}
+
 std::string setMatchExpression(const std::string &family,
                                const std::string &direction,
                                const std::string &set_name,

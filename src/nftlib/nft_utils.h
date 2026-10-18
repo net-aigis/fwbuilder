@@ -35,6 +35,8 @@ std::string baseChainDefinition(const std::string &table,
                                 const std::string &policy);
 std::string markMatchExpression(const std::string &mark, bool negated);
 std::string markSetExpression(const std::string &mark);
+// Save or restore a packet mark to/from conntrack; reject unsupported xt actions.
+std::string connmarkActionExpression(const std::string &action);
 std::string setMatchExpression(const std::string &family,
                                const std::string &direction,
                                const std::string &set_name,

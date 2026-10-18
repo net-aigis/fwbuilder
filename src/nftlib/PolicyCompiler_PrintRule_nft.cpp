@@ -559,20 +559,23 @@ string PolicyCompiler_nft::PrintRule::_printTarget(PolicyRule *rule)
     if (target == "QUEUE") return " queue";
     if (target == "RETURN") return " return";
 
-    ostr << " jump " << target;
-
-    if (target=="REJECT")
-      ostr << _printActionOnReject(rule);
-
-    if (target=="LOG" || target=="ULOG" || target=="NFLOG")
-        ostr << _printLogParameters(rule);
-
-    if (target=="CONNMARK")
+    // splitIfTagAndConnmark generates --save-mark in a separate
+    // policy rule. Never turn this iptables target into a nft jump.
+    if (target == "CONNMARK")
     {
-        ostr << " ct mark set " << ruleopt->getStr("CONNMARK_arg");
+        try
+        {
+            return " " + nft_utils::connmarkActionExpression(
+                ruleopt->getStr("CONNMARK_arg"));
+        }
+        catch (const std::invalid_argument &e)
+        {
+            compiler->abort(rule, string("Invalid native nftables CONNMARK action: ") + e.what());
+            return "";
+        }
     }
 
-    return ostr.str();
+    return " jump " + target;
 }
 
 string PolicyCompiler_nft::PrintRule::_printMultiport(PolicyRule *rule)

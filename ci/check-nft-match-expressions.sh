@@ -23,7 +23,13 @@ if ! grep -Fq 'nft_utils::fragmentMatchExpression' src/nftlib/NATCompiler_PrintR
     echo 'ERROR: native NAT IP match expressions are not used' >&2
     exit 1
 fi
-echo 'PASS: native NAT IP and mangle conntrack restore generator guards'
+# The policy printer must route the generated CONNMARK target through
+# the checked native formatter; an iptables jump here is invalid.
+if ! grep -Fq 'nft_utils::connmarkActionExpression(' src/nftlib/PolicyCompiler_PrintRule_nft.cpp; then
+    echo 'ERROR: native policy compiler bypasses CONNMARK formatter' >&2
+    exit 1
+fi
+echo 'PASS: native NAT IP and policy/mangle CONNMARK generator guards'
 "$bin" --grammar > "$fixture"
 if command -v nft >/dev/null 2>&1; then
     nft --check --file "$fixture"
