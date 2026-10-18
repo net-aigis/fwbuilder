@@ -195,6 +195,12 @@ QString CompilerDriver_nft::run(const std::string &cluster_id,
         {
             options->setBool("use_nftables_atomic", true);
         }
+        // Standalone $NFT commands do not yet initialize native base chains
+        // or load IPv4 and IPv6 together.  Refuse that mode instead of
+        // generating a script that may start without its firewall policy.
+        if (!useNftablesAtomic(options))
+            abort("Native nftables requires atomic mode; non-atomic shell "
+                  "mode is not supported");
         string s;
 
         // Note that fwobjectname may be different from the name of the
@@ -842,7 +848,9 @@ QString CompilerDriver_nft::run(const std::string &cluster_id,
         // separate flush ruleset operations would erase the first family.
         if (useNftablesAtomic(fw->getOptionsObject()) && !generated_script.empty())
         {
-            script << "$NFT -f - <<'FWB_NFT_RULESET'\n";
+            // Fail closed: a rejected nft transaction must not fall through
+            // into ip_forward/epilog and report a successful activation.
+            script << "$NFT -f - <<'FWB_NFT_RULESET' || exit 1\n";
             script << "flush ruleset\n";
             script << QString::fromUtf8(generated_script.c_str());
             script << "\nFWB_NFT_RULESET\n";

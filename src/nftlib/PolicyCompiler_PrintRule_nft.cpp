@@ -594,7 +594,15 @@ string PolicyCompiler_nft::PrintRule::_printDirectionAndInterface(PolicyRule *ru
     {
         rule_iface_obj = FWObjectReference::getObject(itfrel->front());
         iface_name = rule_iface_obj->getName().c_str();
-        if (iface_name.endsWith("*")) iface_name.replace("*", "+");
+        // Native nftables uses '*' for prefix matching, not iptables '+'.
+        // A bare '*' is not a valid nftables iifname/oifname expression.
+        // Positive 'any interface' matches need no interface expression.
+        if (iface_name == "*")
+        {
+            if (itfrel->getNeg() || itfrel->getBool("single_object_negation"))
+                compiler->abort(rule, "Negated any-interface match is not supported by native nftables");
+            return "";
+        }
  
         string iface_literal = "\"" + iface_name.toStdString() + "\"";
         if (rule->getDirection()==PolicyRule::Inbound)

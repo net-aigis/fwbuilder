@@ -136,7 +136,11 @@ jobs:
             echo 'Native nftables output contains legacy syntax' >&2
             exit 1
           fi
-          echo 'Native nftables CLI generated files; no generated policy executed or installed.'
+          # Validate nftables structure, not merely CLI exit status or output size.
+          # Static check only: no policy is loaded into the kernel.
+          sh ci/check-nft-output.sh ci-logs/nft-output/*.fw \
+            2>&1 | tee ci-logs/nft-structure.log
+          echo 'Native nftables CLI and structural checks passed; no policy installed.'
 
       - name: Upload build diagnostics and compiler inventory
         if: ${{ always() }}

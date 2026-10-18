@@ -202,7 +202,8 @@ QString NATCompiler_nft::PrintRule::getInterfaceName(RuleElement *itf_re)
     if (itf_re->isAny()) return "";
     FWObject *iface = FWObjectReference::getObject(itf_re->front());
     QString iface_name = iface->getName().c_str();
-    if (iface_name.endsWith("*")) iface_name.replace("*", "+");
+    // Preserve trailing '*' for nftables prefix matching.  A bare '*'
+    // is handled by the caller; nftables does not accept it as a match.
     return iface_name;
 }
 
@@ -224,14 +225,21 @@ string NATCompiler_nft::PrintRule::_printChainDirectionAndInterface(NATRule *rul
 
     res << rule->getStr("ipt_chain").c_str();
 
-    if ( ! iface_in_name.isEmpty())
+    if (iface_in_name == "*" &&
+        (itf_in_re->getNeg() || itf_in_re->getBool("single_object_negation")))
+        compiler->abort(rule, "Negated any-interface match is not supported by native nftables");
+    if (iface_out_name == "*" &&
+        (itf_out_re->getNeg() || itf_out_re->getBool("single_object_negation")))
+        compiler->abort(rule, "Negated any-interface match is not supported by native nftables");
+
+    if ( ! iface_in_name.isEmpty() && iface_in_name != "*")
     {
         string iface_literal = "\"" + iface_in_name.toStdString() + "\"";
         res << _printSingleOptionWithNegation(
             "iifname", itf_in_re, iface_literal).c_str();
     }
 
-    if ( ! iface_out_name.isEmpty())
+    if ( ! iface_out_name.isEmpty() && iface_out_name != "*")
     {
         string iface_literal = "\"" + iface_out_name.toStdString() + "\"";
         res << _printSingleOptionWithNegation(
