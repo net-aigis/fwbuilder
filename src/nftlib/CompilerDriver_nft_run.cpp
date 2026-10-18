@@ -201,6 +201,9 @@ QString CompilerDriver_nft::run(const std::string &cluster_id,
         if (!useNftablesAtomic(options))
             abort("Native nftables requires atomic mode; non-atomic shell "
                   "mode is not supported");
+        if (options->getBool("use_nft_sets"))
+            abort("Native nftables runtime address sets require transaction-"
+                  "safe initialization; use_nft_sets is not yet supported");
         string s;
 
         // Note that fwobjectname may be different from the name of the
@@ -844,16 +847,17 @@ QString CompilerDriver_nft::run(const std::string &cluster_id,
         // script << routing_compiler->getCompiledScript().c_str();
 
         script << QString::fromUtf8(oscnf->getCompiledScript().c_str());
-        // Both IPv4 and IPv6 rules must be loaded in ONE transaction;
-        // separate flush ruleset operations would erase the first family.
+        // IPv4 and IPv6 FWB tables are replaced in ONE atomic transaction.
+        // Third-party nftables tables are never flushed or deleted.
         if (useNftablesAtomic(fw->getOptionsObject()) && !generated_script.empty())
         {
             // Fail closed: a rejected nft transaction must not fall through
             // into ip_forward/epilog and report a successful activation.
-            script << "$NFT -f - <<'FWB_NFT_RULESET' || exit 1\n";
-            script << "flush ruleset\n";
+            script << "fwb_nft_begin_transaction || exit 1\n";
+            script << "cat >> \"$FWB_NFT_TXN\" <<'FWB_NFT_RULESET'\n";
             script << QString::fromUtf8(generated_script.c_str());
             script << "\nFWB_NFT_RULESET\n";
+            script << "fwb_nft_commit_transaction || exit 1\n";
         } else
         {
             script << QString::fromUtf8(generated_script.c_str());

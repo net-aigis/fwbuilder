@@ -330,7 +330,7 @@ string PolicyCompiler_nft::PrintRule::_createChain(const string &chain)
         } else
         {
             res = prefix + "add chain " + nft_utils::familyName(ipt_comp->ipv6) +
-                " " + ipt_comp->my_table + " " + chain + "\n";
+                " " + nft_utils::managedTableName(ipt_comp->my_table) + " " + chain + "\n";
         }
 	(*(ipt_comp->minus_n_commands))[chain] = true;
     }
@@ -343,7 +343,7 @@ string PolicyCompiler_nft::PrintRule::_startRuleLine()
     bool atomic = useNftablesAtomic(compiler->getCachedFwOpt());
     string prefix = nft_utils::commandPrefix(atomic);
     return prefix + "add rule " + nft_utils::familyName(ipt_comp->ipv6) + " " +
-        ipt_comp->my_table + " ";
+        nft_utils::managedTableName(ipt_comp->my_table) + " ";
 }
 
 string PolicyCompiler_nft::PrintRule::_endRuleLine()

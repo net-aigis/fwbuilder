@@ -12,5 +12,6 @@
 ## {{if var}} is conditional operator.
 ##
 reset_nftables() {
-  $NFT flush ruleset
+  fwb_nft_begin_transaction || return 1
+  fwb_nft_commit_transaction
 }

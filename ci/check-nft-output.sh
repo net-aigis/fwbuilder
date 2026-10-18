@@ -16,14 +16,19 @@ for fw in "$@"; do
         if (!active) fail("unmatched native ruleset end")
         active=0; next
     }
+    # No FWB operation may erase unrelated nftables rules or tables.
+    /^[[:space:]]*(\$NFT[[:space:]]+)?flush[[:space:]]+ruleset([[:space:]]|$)/ {
+        fail("global nftables flush forbidden: " $0); next
+    }
     !active { next }
     /^[[:space:]]*$/ || /^[[:space:]]*#/ { next }
     {
         n=split($0, part, /[[:space:]]+/)
-        if ($1=="flush" && $2=="ruleset") { flushed++; next }
+        if ($1=="flush" && $2=="ruleset") { fail("global ruleset flush forbidden"); next }
         if ($1!="add") { fail("non-native command inside nft heredoc: " $0); next }
         if ($2=="table" && n>=4) {
             family=part[3]; tab=part[4]
+            if (tab !~ /^fwb_(filter|nat|mangle)$/) fail("unowned nft table: " tab)
             table[family " " tab]=1
             next
         }
@@ -33,13 +38,14 @@ for fw in "$@"; do
             if (!table[family " " tab]) fail("chain before table: " key)
             if (chains[key]) fail("duplicate chain: " key)
             chains[key]=1
-            if (tab=="nat" && $0 !~ /type nat hook/) fail("NAT base chain missing nat hook: " key)
-            if (tab=="mangle" && $0 !~ /type (filter|route) hook/) fail("mangle base chain missing hook: " key)
+            if (tab=="fwb_nat" && $0 !~ /type nat hook/) fail("NAT base chain missing nat hook: " key)
+            if (tab=="fwb_mangle" && $0 !~ /type (filter|route) hook/) fail("mangle base chain missing hook: " key)
             next
         }
         if ($2=="rule" && n>=6) {
             family=part[3]; tab=part[4]; chain=part[5]
             key=family " " tab " " chain
+            if (tab !~ /^fwb_(filter|nat|mangle)$/) fail("unowned nft table referenced: " tab)
             if (!chains[key]) fail("rule references undefined chain: " key)
             if ($0 ~ /[io]ifname[[:space:]]+"[^"]*\+"/) fail("iptables-style interface wildcard: " $0)
             if ($0 ~ /[io]ifname[[:space:]]+"\*"/) fail("bare interface wildcard: " $0)
@@ -53,7 +59,6 @@ for fw in "$@"; do
     }
     END {
         if (opened!=1 || active) fail("expected exactly one complete FWB_NFT_RULESET")
-        if (flushed!=1) fail("expected exactly one flush in native ruleset")
         if (rules<1) fail("native ruleset contains no rules")
         if (!bad) print "Native nftables structure OK: " FILENAME " (" rules " rules)"
         exit bad ? 1 : 0

@@ -124,7 +124,7 @@ string NATCompiler_nft::PrintRule::_createChain(const string &chain)
         } else
         {
             res << prefix << "add chain " << nft_utils::familyName(ipt_comp->ipv6)
-                << " nat " << chain << endl;
+                << " " << nft_utils::managedTableName("nat") << " " << chain << endl;
         }
 	(*(ipt_comp->minus_n_commands))[chain] = true;
     }
@@ -136,7 +136,7 @@ string NATCompiler_nft::PrintRule::_startRuleLine()
     NATCompiler_nft *ipt_comp = dynamic_cast<NATCompiler_nft*>(compiler);
     bool atomic = useNftablesAtomic(compiler->getCachedFwOpt());
     string prefix = nft_utils::commandPrefix(atomic);
-    return prefix + "add rule " + nft_utils::familyName(ipt_comp->ipv6) + " nat ";
+    return prefix + "add rule " + nft_utils::familyName(ipt_comp->ipv6) + " " + nft_utils::managedTableName("nat") + " ";
 }
 
 string NATCompiler_nft::PrintRule::_endRuleLine()

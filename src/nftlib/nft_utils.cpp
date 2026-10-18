@@ -69,6 +69,14 @@ std::string familyName(bool ipv6)
     return ipv6 ? "ip6" : "ip";
 }
 
+std::string managedTableName(const std::string &logical_table)
+{
+    if (logical_table == "filter" || logical_table == "nat" ||
+        logical_table == "mangle")
+        return "fwb_" + logical_table;
+    return logical_table;
+}
+
 std::string baseChainDefinition(const std::string &table,
                                 const std::string &chain,
                                 bool ipv6,
@@ -99,7 +107,7 @@ std::string baseChainDefinition(const std::string &table,
     if (chain_it == table_it->second.end()) return "";
 
     std::ostringstream output;
-    output << "add chain " << familyName(ipv6) << " " << table << " " << chain
+    output << "add chain " << familyName(ipv6) << " " << managedTableName(table) << " " << chain
            << " { " << chain_it->second;
     if (!policy.empty()) output << "; policy " << policy;
     output << "; }";

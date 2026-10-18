@@ -12,24 +12,14 @@
 ## {{if var}} is conditional operator.
 ##
 ## This configlet defines commands executed when nftables script is ran
-## with command line argument "stop". By default it resets nftables
-## ruleset using function reset_all and sets base chain policy to ACCEPT.
+## with command line argument "stop". It deletes only Firewall Builder
+## owned tables, without changing third-party tables.
 
 stop_action() {
-    # Replace existing policy with ACCEPT chains in one transaction.
-    $NFT -f - <<'FWB_NFT_STOP'
-flush ruleset
-{{if have_ipv4}}
-add table ip filter
-add chain ip filter INPUT { type filter hook input priority 0; policy accept; }
-add chain ip filter OUTPUT { type filter hook output priority 0; policy accept; }
-add chain ip filter FORWARD { type filter hook forward priority 0; policy accept; }
-{{endif}}
-{{if have_ipv6}}
-add table ip6 filter
-add chain ip6 filter INPUT { type filter hook input priority 0; policy accept; }
-add chain ip6 filter OUTPUT { type filter hook output priority 0; policy accept; }
-add chain ip6 filter FORWARD { type filter hook forward priority 0; policy accept; }
-{{endif}}
+    # Removing only FWB-owned tables leaves all foreign rules intact.
+    fwb_nft_begin_transaction || return 1
+    cat >> "$FWB_NFT_TXN" <<'FWB_NFT_STOP'
+# All existing Firewall Builder tables are deleted in this one transaction.
 FWB_NFT_STOP
+    fwb_nft_commit_transaction
 }

@@ -109,3 +109,35 @@ diff_intf() {
         }
     done
 }
+
+# Stage deletion of only FWB-owned tables in the SAME nft transaction as
+# replacement rules. A temporary file avoids an unsafe expand-and-eval heredoc.
+fwb_nft_existing_tables() (
+    for fwb_family in ip ip6; do
+        for fwb_table in fwb_filter fwb_mangle fwb_nat; do
+            if "$NFT" list table "$fwb_family" "$fwb_table" >/dev/null 2>&1; then
+                printf 'delete table %s %s\n' "$fwb_family" "$fwb_table"
+            fi
+        done
+    done
+)
+
+fwb_nft_begin_transaction() {
+    FWB_NFT_TXN=$(mktemp "${TMPDIR:-/tmp}/fwb-nft.XXXXXXXX") || return 1
+    fwb_nft_existing_tables > "$FWB_NFT_TXN" || {
+        rm -f "$FWB_NFT_TXN"
+        FWB_NFT_TXN=
+        return 1
+    }
+    # Interrupts and unexpected exits must never leave staged rules behind.
+    trap 'test -z "${FWB_NFT_TXN:-}" || rm -f "$FWB_NFT_TXN"' EXIT
+    trap 'exit 1' HUP INT TERM
+}
+
+fwb_nft_commit_transaction() {
+    "$NFT" -f "$FWB_NFT_TXN"
+    fwb_nft_result=$?
+    rm -f "$FWB_NFT_TXN"
+    FWB_NFT_TXN=
+    return "$fwb_nft_result"
+}

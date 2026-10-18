@@ -27,6 +27,8 @@ namespace nft_utils {
 
 std::string commandPrefix(bool atomic_mode);
 std::string familyName(bool ipv6);
+// Only native nftables backend tables are managed by Firewall Builder.
+std::string managedTableName(const std::string &logical_table);
 std::string baseChainDefinition(const std::string &table,
                                 const std::string &chain,
                                 bool ipv6,

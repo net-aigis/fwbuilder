@@ -20,21 +20,21 @@
 ## exist by checking if the ruleset is non-empty.
 
 check_nftables() {
-    ruleset=$($NFT list ruleset 2>/dev/null)
-    [ $? -ne 0 ] && return 151
-    [ -z "$ruleset" ] && return 152
-    return 0
+    # A foreign ruleset does not mean Firewall Builder is running.
+    for fwb_family in ip ip6; do
+        for fwb_table in fwb_filter fwb_mangle fwb_nat; do
+            if "$NFT" list table "$fwb_family" "$fwb_table" >/dev/null 2>&1; then
+                return 0
+            fi
+        done
+    done
+    return 152
 }
 
 status_action() {
-    check_nftables
-    ret_ruleset=$?
-    [ $ret_ruleset -eq 0 ] && return 0
-    [ $ret_ruleset -eq 151 ] && {
-        echo "nftables is not available"
-    }
-    [ $ret_ruleset -eq 152 ] && {
-        echo "Firewall is not configured"
-    }
-    exit 3
+    if check_nftables; then
+        return 0
+    fi
+    echo "Firewall Builder nftables tables are not configured"
+    return 3
 }
