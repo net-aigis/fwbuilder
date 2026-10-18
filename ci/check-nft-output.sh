@@ -8,6 +8,16 @@ for fw in "$@"; do
     sh -n "$fw" || { echo "Invalid shell wrapper: $fw" >&2; exit 1; }
     awk '
     function fail(msg) { print FILENAME ":" NR ": " msg > "/dev/stderr"; bad=1 }
+    # Reload must enter the atomic start path directly. Stopping first
+    # removes active FWB protection before the replacement is ready.
+    /^[[:space:]]*reload\)[[:space:]]*$/ { in_reload=1; reload_count++; next }
+    in_reload && /^[[:space:]]*;;[[:space:]]*$/ { in_reload=0; next }
+    in_reload && /^[[:space:]]*#/ { next }
+    in_reload && /(stop_action|\$0[[:space:]]+stop|"\$0"[[:space:]]+stop)/ {
+        fail("reload removes active firewall policy before replacement")
+        next
+    }
+    in_reload && /"\$0"[[:space:]]+start/ { reload_starts++; next }
     /<<\047FWB_NFT_RULESET\047/ {
         if (active) fail("nested native nftables ruleset")
         active=1; opened++; next
@@ -58,6 +68,8 @@ for fw in "$@"; do
         fail("unrecognized nft command: " $0)
     }
     END {
+        if (reload_count!=1 || reload_starts!=1 || in_reload)
+            fail("reload must invoke atomic start exactly once without stop")
         if (opened!=1 || active) fail("expected exactly one complete FWB_NFT_RULESET")
         if (rules<1) fail("native ruleset contains no rules")
         if (!bad) print "Native nftables structure OK: " FILENAME " (" rules " rules)"

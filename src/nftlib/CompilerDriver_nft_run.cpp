@@ -685,7 +685,9 @@ QString CompilerDriver_nft::run(const std::string &cluster_id,
          * assemble the script and then perhaps post-process it if it
          * should run on Linksys device with sveasoft firmware
          */
-        Configlet script_skeleton(fw, "linux24", "script_skeleton");
+        // Native nftables reload must not run the Linux24 stop/start cycle.
+        // Use an independent skeleton so legacy compiler behavior is unchanged.
+        Configlet script_skeleton(fw, "nftables", "nft_script_skeleton");
         script_skeleton.removeComments();
 
         QString script_buffer;
