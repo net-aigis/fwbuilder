@@ -22,6 +22,7 @@
 #include <algorithm>
 #include <cctype>
 #include <map>
+#include <stdexcept>
 #include <sstream>
 #include <vector>
 
@@ -210,6 +211,68 @@ std::string tcpFlagsExpression(const std::string &mask, const std::string &comp)
     output << "tcp flags & (" << mask_stream.str() << ") == "
            << comp_stream.str();
     return output.str();
+}
+
+std::string dscpMatchExpression(const std::string &code, bool ipv6)
+{
+    std::string value = toLower(code);
+    // The iptables DSCP module accepts BE; nftables names this CS0.
+    if (value == "be") value = "cs0";
+    bool recognized = value == "ef" ||
+        (value.size() == 3 && value.substr(0, 2) == "cs" &&
+         value[2] >= '0' && value[2] <= '7') ||
+        (value.size() == 4 && value.substr(0, 2) == "af" &&
+         value[2] >= '1' && value[2] <= '4' &&
+         value[3] >= '1' && value[3] <= '3');
+    if (!recognized && !value.empty())
+    {
+        // Numeric DSCP must be exactly 0..63; reject whitespace, signs,
+        // punctuation and strings that would alter the nftables grammar.
+        size_t i = 0;
+        int base = 10;
+        if (value.size() > 2 && value.substr(0, 2) == "0x")
+        {
+            i = 2;
+            base = 16;
+        }
+        if (i == value.size()) throw std::invalid_argument("empty DSCP value");
+        unsigned int number = 0;
+        for (; i < value.size(); ++i)
+        {
+            char ch = value[i];
+            int digit = (ch >= '0' && ch <= '9') ? ch - '0' :
+                        (base == 16 && ch >= 'a' && ch <= 'f') ? ch - 'a' + 10 : -1;
+            if (digit < 0 || digit >= base) throw std::invalid_argument("invalid DSCP value");
+            number = number * base + static_cast<unsigned int>(digit);
+            if (number > 63) throw std::invalid_argument("DSCP value outside 0..63");
+        }
+        recognized = true;
+    }
+    if (!recognized) throw std::invalid_argument("empty DSCP value");
+    return std::string(ipv6 ? "ip6 dscp " : "ip dscp ") + value;
+}
+
+std::string fragmentMatchExpression(bool ipv6)
+{
+    // iptables -f means a noninitial IPv4 fragment. The IPv6 legacy
+    // --fragmore option tests the IPv6 fragment-header M flag.
+    return ipv6 ? "frag more-fragments 1" : "ip frag-off & 0x1fff != 0";
+}
+
+std::string macSourceMatchExpression(const std::string &mac, bool negated)
+{
+    if (mac.size() != 17) throw std::invalid_argument("invalid MAC address length");
+    for (size_t i = 0; i < mac.size(); ++i)
+    {
+        if (i % 3 == 2)
+        {
+            if (mac[i] != ':') throw std::invalid_argument("invalid MAC separator");
+        } else if (!std::isxdigit(static_cast<unsigned char>(mac[i])))
+        {
+            throw std::invalid_argument("invalid MAC octet");
+        }
+    }
+    return std::string("ether saddr") + (negated ? " != " : " ") + mac;
 }
 
 std::string timeMatchExpression(const std::string &start_time,

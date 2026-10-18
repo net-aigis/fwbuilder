@@ -186,6 +186,9 @@ jobs:
           # nft --check parses and validates without applying any kernel rules.
           sudo sh ci/check-nft-syntax.sh "${policies[@]}" \
             2>&1 | tee ci-logs/nft-native-syntax.log
+      - name: Test native nftables match expressions and grammar
+        shell: bash
+        run: sudo env FWB_REQUIRE_NFT=1 sh ci/check-nft-match-expressions.sh
       - name: Exercise nftables transactions in isolated network namespace
         shell: bash
         run: |

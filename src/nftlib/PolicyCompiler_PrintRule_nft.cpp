@@ -66,6 +66,7 @@
 #include <iomanip>
 #include <fstream>
 #include <sstream>
+#include <stdexcept>
 #include <cstring>
 #include <algorithm>
 
@@ -882,71 +883,40 @@ string PolicyCompiler_nft::PrintRule::_printICMP(ICMPService *srv)
 
 string PolicyCompiler_nft::PrintRule::_printIP(IPService *srv, PolicyRule *rule)
 {
-    PolicyCompiler_nft *ipt_comp=dynamic_cast<PolicyCompiler_nft*>(compiler);
-    std::ostringstream  str;
+    PolicyCompiler_nft *ipt_comp = dynamic_cast<PolicyCompiler_nft*>(compiler);
+    std::ostringstream str;
+
     if (srv->getBool("fragm") || srv->getBool("short_fragm"))
-    {
-        if (ipt_comp->ipv6) str << " -m frag --fragmore";
-        else str << " -f ";
-    }
+        str << " " << nft_utils::fragmentMatchExpression(ipt_comp->ipv6);
 
-    string tos = srv->getTOSCode();
-    string dscp = srv->getDSCPCode();
+    const string tos = srv->getTOSCode();
+    const string dscp = srv->getDSCPCode();
     if (!tos.empty())
-        str << " -m tos --tos " << tos;
-    else
-        if (!dscp.empty())
-        {
-            if (dscp.find("BE")==0 || 
-                dscp.find("EF")==0 || 
-                dscp.find("AF")==0 || 
-                dscp.find("CS")==0)
-                str << " -m dscp --dscp-class " << dscp;
-            else
-                str << " -m dscp --dscp " << dscp;
-        }
-        
-    if  (srv->hasIpOptions())
     {
-        if (!ipt_comp->ipv6)
+        // IPv4 TOS covers ECN as well as DSCP. Matching only ip dscp
+        // would silently widen the rule, so do not approximate it.
+        compiler->abort(rule, "Native nftables TOS matching is not yet supported");
+    }
+    if (!dscp.empty())
+    {
+        try
         {
-            str << " -m ipv4options ";
-
-            if (version.empty() || XMLTools::version_compare(version, "1.4.3")<0)
-            {
-                // "old" ipv4options module
-                if  (srv->getBool("any_opt")) str << " --any-opt";
-                else
-                {
-                    if  (srv->getBool("lsrr")) str << " --lsrr";
-                    if  (srv->getBool("ssrr")) str << " --ssrr";
-                    if  (srv->getBool("rr")) str << " --rr";
-                    if  (srv->getBool("ts")) str << " --ts";
-                    if  (srv->getBool("rtralt")) str << " --ra";
-                }
-            } else
-            {
-                // "new" ipv4options module
-                if  (srv->getBool("any_opt")) str << " --any";
-                else
-                {
-                    QStringList options;
-                    if  (srv->getBool("lsrr")) options << "lsrr";
-                    if  (srv->getBool("ssrr")) options << "ssrr";
-                    if  (srv->getBool("rr")) options << "record-route";
-                    if  (srv->getBool("ts")) options << "timestamp";
-                    if  (srv->getBool("rtralt")) options << "router-alert";
-                    if (options.size() > 0)
-                        str << " --flags " << options.join(",").toStdString();
-                }
-            }
-        } else
+            str << " " << nft_utils::dscpMatchExpression(dscp, ipt_comp->ipv6);
+        }
+        catch (const std::invalid_argument &e)
         {
-            compiler->abort(
-                    rule, 
-                    "IP options match is not supported for IPv6.");
+            compiler->abort(rule, string("Invalid native nftables DSCP match: ") + e.what());
         }
     }
+    if (srv->hasIpOptions())
+    {
+        // The ipv4options xtables extension does not have a one-to-one
+        // translation for every supported flag. Never emit its -m syntax.
+        compiler->abort(rule, "Native nftables IP option matching is not yet supported");
+    }
+    if (!str.str().empty() && rule->getSrv()->getBool("single_object_negation"))
+        compiler->abort(rule, "Negated native nftables IP service match is not yet supported");
+
     return str.str();
 }
 
@@ -1487,10 +1457,15 @@ string PolicyCompiler_nft::PrintRule::PolicyRuleToString(PolicyRule *rule)
  */
             if (!physaddress.empty())
             {
-                command_line << " -m mac";
-                command_line << _printSingleOptionWithNegation(" --mac-source",
-                                                               srcrel,
-                                                               physaddress);
+                try
+                {
+                    command_line << " " << nft_utils::macSourceMatchExpression(
+                        physaddress, srcrel->getBool("single_object_negation")) << " ";
+                }
+                catch (const std::invalid_argument &e)
+                {
+                    compiler->abort(rule, string("Invalid source MAC match: ") + e.what());
+                }
             }
 
 /*
