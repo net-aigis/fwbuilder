@@ -66,7 +66,7 @@ jobs:
         run: |
           set -euo pipefail
           zypper -n install --no-recommends \
-            gcc gcc-c++ ccache make which autoconf automake libtool gettext-tools pkg-config \
+            gcc gcc-c++ ccache python3 make which autoconf automake libtool gettext-tools pkg-config \
             libqt5-qtbase-devel libqt5-qttools-devel libqt5-qtsvg-devel \
             libxml2-devel libxslt-devel net-snmp-devel \
             flex bison \
@@ -246,6 +246,18 @@ jobs:
           sh ci/check-nft-output.sh ci-logs/nft-output/*.fw \
             2>&1 | tee ci-logs/nft-structure.log
           echo 'Native nftables CLI and structural checks passed; no policy installed.'
+
+      # Compile several independent real FWB XML projects with the already
+      # built fwb_nft binary. Only positive scenarios enter nft-output;
+      # the existing second job validates all outputs against nft and kernel.
+      - name: Compile expanded native FWB XML test matrix
+        if: ${{ github.event_name == 'pull_request' && github.head_ref == 'feature/native-nftables-port' }}
+        run: |
+          set -euo pipefail
+          bash ci/check-nft-project-fixtures.sh \
+            "$PWD/src/nft/fwb_nft" \
+            "$PWD/src/unit_tests/generatedScriptTestsNft/test1.fwb" \
+            ci-logs/nft-output 2>&1 | tee ci-logs/nft-fixture-results.log
 
       - name: Upload build diagnostics and compiler inventory
         if: ${{ always() }}
