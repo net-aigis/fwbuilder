@@ -76,25 +76,49 @@ for fw in "$@"; do
 
     echo "Kernel transaction test: $fw"
 
+    # The generated start transaction may contain only IPv4, only IPv6,
+    # or both. Check exactly those FWB filter tables, not a hard-coded
+    # IPv4 table. The emergency block action still covers BOTH families.
+    active_families=''
+    first_family=''
+    for family in ip ip6; do
+        if grep -Eq "^[[:space:]]*add table ${family} fwb_filter[[:space:]]*$" "$dir/start.nft"; then
+            active_families="$active_families $family"
+            [ -n "$first_family" ] || first_family=$family
+        fi
+    done
+    [ -n "$active_families" ] || {
+        echo "ERROR: no FWB filter table in start transaction: $fw" >&2
+        exit 1
+    }
+
+    check_active_filters() {
+        for family in $active_families; do
+            nft list table "$family" fwb_filter >/dev/null || return 1
+        done
+    }
+
     # Start, including real kernel validation of chains, hooks and NAT.
     { stage_owned_deletions; cat "$dir/start.nft"; } > "$dir/install.nft"
     nft -f "$dir/install.nft"
-    nft list table ip fwb_filter >/dev/null
+    check_active_filters
     check_foreign
 
     # An apply-time failure AFTER staged deletions must roll the complete
     # transaction back; otherwise an invalid reload could remove the firewall.
-    nft -a list table ip fwb_filter > "$dir/before-failed-reload.txt"
+    # Snapshot ALL tables, including NAT/mangle and both IP families. A
+    # rejected atomic reload must preserve the complete kernel ruleset.
+    nft -a list ruleset > "$dir/before-failed-reload.txt"
     {
         stage_owned_deletions
         cat "$dir/start.nft"
-        echo 'add rule ip fwb_filter FWB_CI_MISSING_CHAIN counter'
+        printf 'add rule %s fwb_filter FWB_CI_MISSING_CHAIN counter\n' "$first_family"
     } > "$dir/broken-reload.nft"
     if nft -f "$dir/broken-reload.nft" >"$dir/rejected.log" 2>&1; then
         echo 'ERROR: deliberately invalid reload succeeded' >&2
         exit 1
     fi
-    nft -a list table ip fwb_filter > "$dir/after-failed-reload.txt"
+    nft -a list ruleset > "$dir/after-failed-reload.txt"
     cmp "$dir/before-failed-reload.txt" "$dir/after-failed-reload.txt" || {
         echo 'ERROR: rejected reload changed active FWB policy' >&2
         exit 1
@@ -104,7 +128,7 @@ for fw in "$@"; do
     # Valid reload must retain third-party tables.
     { stage_owned_deletions; cat "$dir/start.nft"; } > "$dir/reload.nft"
     nft -f "$dir/reload.nft"
-    nft list table ip fwb_filter >/dev/null
+    check_active_filters
     check_foreign
 
     # Emergency block: replace FWB tables and install DROP chains.
