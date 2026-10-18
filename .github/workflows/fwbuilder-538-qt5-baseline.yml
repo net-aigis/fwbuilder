@@ -186,11 +186,25 @@ jobs:
           # nft --check parses and validates without applying any kernel rules.
           sudo sh ci/check-nft-syntax.sh "${policies[@]}" \
             2>&1 | tee ci-logs/nft-native-syntax.log
+      - name: Exercise nftables transactions in isolated network namespace
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          policies=(ci-artifact/nft-output/*.fw)
+          test "${#policies[@]}" -gt 0
+          # Fail closed if network namespace creation is prohibited. Never
+          # execute this runtime test in the host network namespace.
+          sudo unshare --net -- sh ci/check-nft-runtime.sh "${policies[@]}" \
+            2>&1 | tee ci-logs/nft-native-runtime.log
+
       - name: Upload syntax-check diagnostics
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
           name: fwbuilder-nft-syntax-logs
-          path: ci-logs/nft-native-syntax.log
+          path: |
+            ci-logs/nft-native-syntax.log
+            ci-logs/nft-native-runtime.log
           if-no-files-found: warn
           retention-days: 14
