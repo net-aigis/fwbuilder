@@ -22,8 +22,6 @@ jobs:
     env:
       # Reuse compiler results across PR commits; compiler identity and
       # included headers are validated by ccache before each cache hit.
-      CCACHE_DIR: /tmp/fwb-qt5-ccache
-      CCACHE_BASEDIR: ${{ github.workspace }}
       CCACHE_COMPILERCHECK: content
       CCACHE_MAXSIZE: 512M
     defaults:
@@ -80,7 +78,7 @@ jobs:
         id: ccache_restore
         uses: actions/cache/restore@v4
         with:
-          path: /tmp/fwb-qt5-ccache
+          path: .ci-ccache
           key: fwb-leap16-qt5-ccache-v1-pr${{ github.event.pull_request.number || 0 }}-${{ github.sha }}
           restore-keys: |
             fwb-leap16-qt5-ccache-v1-pr${{ github.event.pull_request.number || 0 }}-
@@ -92,7 +90,13 @@ jobs:
           set -euo pipefail
           ccache_bin="$(command -v ccache)"
           test -x "$ccache_bin"
+          # A repository-relative cache path is shared by the job container
+          # and the cache action. Do not cache the generated Makefiles.
+          export CCACHE_DIR="$GITHUB_WORKSPACE/.ci-ccache"
+          export CCACHE_BASEDIR="$GITHUB_WORKSPACE"
           mkdir -p "$CCACHE_DIR"
+          printf 'CCACHE_DIR=%s\nCCACHE_BASEDIR=%s\n' \
+            "$CCACHE_DIR" "$CCACHE_BASEDIR" >> "$GITHUB_ENV"
           # Both qmake and the original Autotools build call compiler names
           # directly; put lightweight ccache symlinks before /usr/bin.
           wrappers=/tmp/fwb-ci-compiler-wrappers
@@ -100,9 +104,10 @@ jobs:
           for compiler in gcc g++ cc c++; do
             ln -sfn "$ccache_bin" "$wrappers/$compiler"
           done
-          printf '%s\n' "$wrappers" >> "$GITHUB_PATH"
-          export PATH="$wrappers:$PATH"
-          test "$(command -v g++)" = "$wrappers/g++"
+          # Never write to GITHUB_PATH in a container job. The runner would
+          # reuse its host PATH inside the container and lose bash / tar.
+          PATH="$wrappers:$PATH" command -v ccache >/dev/null
+          test -x "$wrappers/g++"
           ccache --zero-stats
           ccache --version | head -n 1
           echo 'Compiler cache active for subsequent configure/build steps.'
@@ -110,6 +115,8 @@ jobs:
       - name: Configure unchanged FWB 5.3.8 Autotools and qmake
         run: |
           set -euo pipefail
+          export PATH="/tmp/fwb-ci-compiler-wrappers:$PATH"
+          test "$(command -v g++)" = /tmp/fwb-ci-compiler-wrappers/g++
           # Legacy autogen.sh uses `which` to detect GNU make.
           command -v which
           command -v make
@@ -128,6 +135,8 @@ jobs:
       - name: Compile preserved FWB 5.3.8 baseline
         run: |
           set -euo pipefail
+          export PATH="/tmp/fwb-ci-compiler-wrappers:$PATH"
+          test "$(command -v g++)" = /tmp/fwb-ci-compiler-wrappers/g++
           make -j2 2>&1 | tee ci-logs/build.log
 
       - name: Report C/C++ compiler cache statistics
@@ -143,7 +152,7 @@ jobs:
         if: ${{ always() && steps.ccache_setup.outcome == 'success' && steps.ccache_restore.outputs.cache-hit != 'true' }}
         uses: actions/cache/save@v4
         with:
-          path: /tmp/fwb-qt5-ccache
+          path: .ci-ccache
           key: ${{ steps.ccache_restore.outputs.cache-primary-key }}
 
       - name: Inventory compiled firewall policy compilers
