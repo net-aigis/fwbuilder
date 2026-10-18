@@ -50,6 +50,7 @@
 #include "nftables_options.h"
 
 #include <assert.h>
+#include <stdexcept>
 
 #include <QString>
 #include <QStringList>
@@ -341,24 +342,42 @@ string NATCompiler_nft::PrintRule::_printICMP(ICMPService *srv)
     return ostr.str();
 }
 
-string NATCompiler_nft::PrintRule::_printIP(IPService *srv)
+string NATCompiler_nft::PrintRule::_printIP(IPService *srv, NATRule *rule)
 {
-    std::ostringstream  ostr;
-    if (IPService::isA(srv) ) {
-	if (srv->getBool("fragm") || srv->getBool("short_fragm"))
-	    ostr << "-f ";
+    NATCompiler_nft *nft_comp = dynamic_cast<NATCompiler_nft*>(compiler);
+    std::ostringstream result;
 
-        if  (srv->getBool("lsrr") ||
-             srv->getBool("ssrr") ||
-             srv->getBool("rr") ||
-             srv->getBool("ts") ) ostr << " -m ipv4options ";
+    // An IPService on a NAT rule must never fall through to legacy xtables
+    // flags. Reuse the exact native expressions used by policy compilation.
+    if (srv->getBool("fragm") || srv->getBool("short_fragm"))
+        result << nft_utils::fragmentMatchExpression(nft_comp->ipv6) << " ";
 
-        if  (srv->getBool("lsrr")) ostr << " --lsrr";
-        if  (srv->getBool("ssrr")) ostr << " --ssrr";
-        if  (srv->getBool("rr"))   ostr << " --rr";
-        if  (srv->getBool("ts"))   ostr << " --ts";
+    const string tos = srv->getTOSCode();
+    if (!tos.empty())
+        compiler->abort(rule, "Native nftables NAT TOS matching is not supported");
+
+    const string dscp = srv->getDSCPCode();
+    if (!dscp.empty())
+    {
+        try
+        {
+            result << nft_utils::dscpMatchExpression(dscp, nft_comp->ipv6) << " ";
+        }
+        catch (const std::invalid_argument &e)
+        {
+            compiler->abort(rule, string("Invalid native nftables NAT DSCP: ") + e.what());
+        }
     }
-    return ostr.str();
+
+    if (srv->hasIpOptions())
+        compiler->abort(rule, "Native nftables NAT IP option matching is not supported");
+
+    // Inverting a conjunction would require De Morgan's transformation.
+    // Silently ignoring service negation could widen the NAT translation.
+    if (!result.str().empty() && rule->getOSrv()->getBool("single_object_negation"))
+        compiler->abort(rule, "Negated native nftables NAT IP service match is not supported");
+
+    return result.str();
 }
 
 string NATCompiler_nft::PrintRule::_printSrcPorts(Service *srv)
@@ -482,7 +501,7 @@ string NATCompiler_nft::PrintRule::_printDstService(RuleElementOSrv  *rel)
         }
         if (IPService::isA(srv))
         {
-            string str=_printIP( IPService::cast(srv) );
+            string str=_printIP(IPService::cast(srv), NATRule::cast(rel->getParent()));
             if (! str.empty() ) ostr << str << " ";
         }
         if (CustomService::isA(srv))

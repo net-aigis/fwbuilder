@@ -41,6 +41,13 @@ int main(int argc, char **argv)
                   << "add rule ip fwb_nft_match_test INPUT " << macSourceMatchExpression("00:11:22:33:44:55", true) << " counter drop\n"
                   << "add rule ip fwb_nft_match_test INPUT " << timeMatchExpression("08:00", "18:30", "1,2,3,4,5", false) << " counter accept\n"
                   << "add rule ip fwb_nft_match_test INPUT " << timeMatchExpression("00:00", "23:59", "0,6", false) << " counter accept\n"
+                  // The mangle compiler's automatic connmark restore uses
+                  // this expression, not the legacy CONNMARK target.
+                  << "add table ip fwb_nft_mark_test\n"
+                  << "add chain ip fwb_nft_mark_test PREROUTING { type filter hook prerouting priority -150; }\n"
+                  << "add chain ip fwb_nft_mark_test OUTPUT { type filter hook output priority -150; }\n"
+                  << "add rule ip fwb_nft_mark_test PREROUTING meta mark set ct mark\n"
+                  << "add rule ip fwb_nft_mark_test OUTPUT meta mark set ct mark\n"
                   << "add table ip6 fwb_nft_match_test\n"
                   << "add chain ip6 fwb_nft_match_test INPUT { type filter hook input priority 0; policy accept; }\n"
                   << "add rule ip6 fwb_nft_match_test INPUT " << dscpMatchExpression("AF23", true) << " counter accept\n"

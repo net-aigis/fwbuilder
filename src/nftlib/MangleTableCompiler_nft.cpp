@@ -164,13 +164,13 @@ string MangleTableCompiler_nft::printAutomaticRulesForMangleTable(
     if (have_connmark)
     {
         res << prp->_startRuleLine()
-            << "PREROUTING -j CONNMARK --restore-mark"
+            << "PREROUTING meta mark set ct mark"
             << prp->_endRuleLine();
     }
     if (have_connmark_in_output)
     {
         res << prp->_startRuleLine()
-            << "OUTPUT -j CONNMARK --restore-mark"
+            << "OUTPUT meta mark set ct mark"
             << prp->_endRuleLine();
         res << endl;
     }
