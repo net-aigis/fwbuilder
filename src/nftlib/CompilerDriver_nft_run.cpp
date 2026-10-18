@@ -876,7 +876,7 @@ QString CompilerDriver_nft::run(const std::string &cluster_id,
 
         script_buffer = "";
 
-        Configlet block_action(fw, "nftables", "block_action");
+        Configlet block_action(fw, "nftables", "nft_block_action");
         block_action.collapseEmptyStrings(true);
         block_action.setVariable("have_ipv4", have_ipv4);
         block_action.setVariable("have_ipv6", have_ipv6);
@@ -906,7 +906,7 @@ QString CompilerDriver_nft::run(const std::string &cluster_id,
         script_skeleton.setVariable("block_action", block_action.expand());
 
 
-        Configlet stop_action(fw, "nftables", "stop_action");
+        Configlet stop_action(fw, "nftables", "nft_stop_action");
         stop_action.collapseEmptyStrings(true);
         stop_action.setVariable("have_ipv4", have_ipv4);
         stop_action.setVariable("have_ipv6", have_ipv6);
@@ -915,7 +915,7 @@ QString CompilerDriver_nft::run(const std::string &cluster_id,
 
 
 
-        Configlet status_action(fw, "nftables", "status_action");
+        Configlet status_action(fw, "nftables", "nft_status_action");
         status_action.collapseEmptyStrings(true);
         script_skeleton.setVariable("status_action", status_action.expand());
 

@@ -1597,7 +1597,7 @@ string PolicyCompiler_nft::PrintRule::_printOptionalGlobalRules()
     bool ipforw = ((!ipt_comp->ipv6 && ipforward) ||
                    (ipt_comp->ipv6 && ip6forward));
 
-    Configlet configlet(compiler->fw, "nftables", "automatic_rules");
+    Configlet configlet(compiler->fw, "nftables", "nft_automatic_rules");
     configlet.removeComments();
     configlet.collapseEmptyStrings(true);
 

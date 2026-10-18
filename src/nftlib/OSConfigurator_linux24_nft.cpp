@@ -102,10 +102,10 @@ string OSConfigurator_linux24_nft::printShellFunctions(bool have_ipv6)
     QStringList output;
     FWOptions* options = fw->getOptionsObject();
 
-    Configlet shell_functions(fw, "nftables", "shell_functions");
+    Configlet shell_functions(fw, "nftables", "nft_shell_functions");
     output.push_back(shell_functions.expand());
 
-    Configlet configlet(fw, "nftables", "check_utilities");
+    Configlet configlet(fw, "nftables", "nft_check_utilities");
     configlet.removeComments();
     configlet.collapseEmptyStrings(true);
 
@@ -163,7 +163,7 @@ string OSConfigurator_linux24_nft::printShellFunctions(bool have_ipv6)
 
 string OSConfigurator_linux24_nft::printRunTimeAddressTablesCode()
 {
-    Configlet conf(fw, "nftables", "run_time_address_tables");
+    Configlet conf(fw, "nftables", "nft_run_time_address_tables");
     conf.setVariable("using_ipset", usesIpSet());
 
     ostringstream check_ostr;
