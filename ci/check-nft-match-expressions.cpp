@@ -4,11 +4,13 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <utility>
 
 using fwcompiler::nft_utils::dscpMatchExpression;
 using fwcompiler::nft_utils::fragmentMatchExpression;
 using fwcompiler::nft_utils::macSourceMatchExpression;
 using fwcompiler::nft_utils::timeMatchExpression;
+using fwcompiler::nft_utils::icmpMatchExpression;
 
 static void rejected(const std::string &input)
 {
@@ -34,6 +36,8 @@ int main(int argc, char **argv)
         // exercised by the C++ unit tests; never install these rules.
         std::cout << "add table ip fwb_nft_match_test\n"
                   << "add chain ip fwb_nft_match_test INPUT { type filter hook input priority 0; policy accept; }\n"
+                  << "add rule ip fwb_nft_match_test INPUT " << icmpMatchExpression(8, 0, false) << " counter accept\n"
+                  << "add rule ip fwb_nft_match_test INPUT " << icmpMatchExpression(3, 4, false) << " counter accept\n"
                   << "add rule ip fwb_nft_match_test INPUT " << dscpMatchExpression("EF", false) << " counter accept\n"
                   << "add rule ip fwb_nft_match_test INPUT " << dscpMatchExpression("46", false) << " counter accept\n"
                   << "add rule ip fwb_nft_match_test INPUT " << fragmentMatchExpression(false) << " counter drop\n"
@@ -50,12 +54,34 @@ int main(int argc, char **argv)
                   << "add rule ip fwb_nft_mark_test OUTPUT meta mark set ct mark\n"
                   << "add table ip6 fwb_nft_match_test\n"
                   << "add chain ip6 fwb_nft_match_test INPUT { type filter hook input priority 0; policy accept; }\n"
+                  << "add rule ip6 fwb_nft_match_test INPUT " << icmpMatchExpression(128, 0, true) << " counter accept\n"
+                  << "add rule ip6 fwb_nft_match_test INPUT " << icmpMatchExpression(1, 4, true) << " counter accept\n"
                   << "add rule ip6 fwb_nft_match_test INPUT " << dscpMatchExpression("AF23", true) << " counter accept\n"
                   << "add rule ip6 fwb_nft_match_test INPUT " << fragmentMatchExpression(true) << " counter drop\n";
         return 0;
     }
     assert(argc == 1);
 
+    // Prefix must be present for both type and code. A lone "code" token
+    // caused nft 1.0.9 to reject the real IPv6/ICMPv6 XML fixture.
+    assert(icmpMatchExpression(128, 0, true) == "icmpv6 type 128 icmpv6 code 0");
+    assert(icmpMatchExpression(1, 4, true) == "icmpv6 type 1 icmpv6 code 4");
+    assert(icmpMatchExpression(8, 0, false) == "icmp type 8 icmp code 0");
+    assert(icmpMatchExpression(3, 4, false) == "icmp type 3 icmp code 4");
+    assert(icmpMatchExpression(129, -1, true) == "icmpv6 type 129");
+    assert(icmpMatchExpression(0, -1, false) == "icmp type 0");
+    assert(icmpMatchExpression(-1, -1, true).empty());
+    for (const auto &entry : {std::pair<int,int>{-1, 0}, {-2, -1}, {256, 0},
+                              {128, -2}, {8, 256}, {10000, 0}})
+    {
+        for (bool ipv6 : {false, true})
+        {
+            bool threw = false;
+            try { (void)icmpMatchExpression(entry.first, entry.second, ipv6); }
+            catch (const std::invalid_argument &) { threw = true; }
+            assert(threw);
+        }
+    }
     assert(dscpMatchExpression("EF", false) == "ip dscp ef");
     assert(dscpMatchExpression("AF23", true) == "ip6 dscp af23");
     assert(dscpMatchExpression("BE", false) == "ip dscp cs0");

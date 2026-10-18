@@ -30,6 +30,7 @@
 #include "fwbuilder/RuleElement.h"
 #include "fwbuilder/IPService.h"
 #include "fwbuilder/ICMPService.h"
+#include "fwbuilder/ICMP6Service.h"
 #include "fwbuilder/TCPService.h"
 #include "fwbuilder/UDPService.h"
 #include "fwbuilder/UserService.h"
@@ -332,14 +333,9 @@ string NATCompiler_nft::PrintRule::_printTPorts(int rs,int re)
 
 string NATCompiler_nft::PrintRule::_printICMP(ICMPService *srv)
 {
-    std::ostringstream  ostr;
-    if (ICMPService::isA(srv) && srv->getInt("type")!=-1) {
-	ostr << "icmp type " << srv->getStr("type");
-	if (srv->getInt("code")!=-1)
-	    ostr << " code " << srv->getStr("code");
-        ostr << " ";
-    }
-    return ostr.str();
+    return nft_utils::icmpMatchExpression(srv->getInt("type"),
+                                          srv->getInt("code"),
+                                          ICMP6Service::isA(srv));
 }
 
 string NATCompiler_nft::PrintRule::_printIP(IPService *srv, NATRule *rule)
@@ -494,7 +490,7 @@ string NATCompiler_nft::PrintRule::_printDstService(RuleElementOSrv  *rel)
                 ostr << proto << " dport " << str << " ";
             }
         }
-        if (ICMPService::isA(srv))
+        if (ICMPService::isA(srv) || ICMP6Service::isA(srv))
         {
             string str=_printICMP( ICMPService::cast(srv) );
             if (! str.empty() ) ostr << str << " ";

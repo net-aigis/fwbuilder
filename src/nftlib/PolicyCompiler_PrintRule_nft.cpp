@@ -870,15 +870,9 @@ string PolicyCompiler_nft::PrintRule::_printDstPorts(Service *srv)
 
 string PolicyCompiler_nft::PrintRule::_printICMP(ICMPService *srv)
 {
-    std::ostringstream  str;
-    if (ICMPService::cast(srv) && srv->getInt("type")!=-1)
-    {
-        str << "icmp type " << srv->getStr("type");
-        if (srv->getInt("code")!=-1)
-            str << " code " << srv->getStr("code");
-        str << " ";
-    }
-    return str.str();
+    return nft_utils::icmpMatchExpression(srv->getInt("type"),
+                                          srv->getInt("code"),
+                                          ICMP6Service::isA(srv));
 }
 
 string PolicyCompiler_nft::PrintRule::_printIP(IPService *srv, PolicyRule *rule)
@@ -984,7 +978,7 @@ string PolicyCompiler_nft::PrintRule::_printSrcService(RuleElementSrv  *rel)
             if (!str.empty())
                 ostr << str << " ";
         }
-        if (ICMPService::isA(srv))
+        if (ICMPService::isA(srv) || ICMP6Service::isA(srv))
         {
             string str = _printICMP( ICMPService::cast(srv) );
             if (!str.empty())
@@ -1055,11 +1049,7 @@ string PolicyCompiler_nft::PrintRule::_printDstService(RuleElementSrv  *rel)
         {
             string str = _printICMP( ICMPService::cast(srv) );
             if (!str.empty())
-            {
-                if (ipt_comp->ipv6 && str.rfind("icmp", 0) == 0)
-                    str.replace(0, 4, "icmpv6");
                 ostr << _printSingleObjectNegation(rel) << str << " ";
-            }
         }
         if (IPService::isA(srv))
         {

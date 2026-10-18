@@ -48,6 +48,9 @@ std::string tcpFlagsExpression(const std::string &mask,
 std::string dscpMatchExpression(const std::string &code, bool ipv6);
 std::string fragmentMatchExpression(bool ipv6);
 std::string macSourceMatchExpression(const std::string &mac, bool negated);
+// ICMP type/code are separate nftables payload expressions; each field
+// requires its protocol prefix (icmp or icmpv6).
+std::string icmpMatchExpression(int type, int code, bool ipv6);
 std::string timeMatchExpression(const std::string &start_time,
                                 const std::string &stop_time,
                                 const std::string &days_of_week,

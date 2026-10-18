@@ -60,6 +60,20 @@ std::vector<std::string> split(const std::string &value, char sep)
 }
 }
 
+std::string icmpMatchExpression(int type, int code, bool ipv6)
+{
+    if (type == -1 && code == -1) return "";
+    if (type < 0 || type > 255 || code < -1 || code > 255)
+        throw std::invalid_argument("ICMP type/code must be in 0..255; code requires a type");
+
+    const char *protocol = ipv6 ? "icmpv6" : "icmp";
+    std::ostringstream result;
+    result << protocol << " type " << type;
+    if (code >= 0)
+        result << " " << protocol << " code " << code;
+    return result.str();
+}
+
 std::string commandPrefix(bool atomic_mode)
 {
     return atomic_mode ? std::string() : std::string("$NFT ");
