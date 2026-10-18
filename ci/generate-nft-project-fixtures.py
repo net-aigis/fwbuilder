@@ -58,6 +58,20 @@ def case_ipv6(tree):
         raise ValueError('unexpected baseline policy address family')
     policy.set('ipv4_rule_set', 'False')
     policy.set('ipv6_rule_set', 'True')
+    # The preserved Policy begins with an unconditional deny rule. For the
+    # IPv6 fixture, place the specific ICMPv6 allow BEFORE that fallback deny;
+    # otherwise the FWB shadowing check correctly rejects the allow rule.
+    fallback = only(policy, "./%s[@id='id2830X30989']" % tag('PolicyRule'))
+    if (list(policy)[:2] != [fallback, pr]
+            or fallback.get('position') != '0'
+            or fallback.get('action') != 'Deny'
+            or pr.get('position') != '1'
+            or pr.get('action') != 'Accept'):
+        raise ValueError('unexpected baseline policy order: cannot reorder IPv6 fixture')
+    policy.remove(pr)
+    policy.insert(0, pr)
+    pr.set('position', '0')
+    fallback.set('position', '1')
     replace_ref(pr, 'Src', 'id2088X75851')  # RFC 3849 documentation IPv6 /32
     only(pr, './' + tag('Src')).set('neg', 'False')
     replace_ref(pr, 'Dst', 'sysid0')
@@ -139,6 +153,12 @@ def main():
             policy = only(fw, './' + tag('Policy'))
             if (policy.get('ipv4_rule_set'), policy.get('ipv6_rule_set')) != ('False', 'True'):
                 raise ValueError('IPv6 fixture is not an IPv6 rule set')
+            rules = policy.findall('./' + tag('PolicyRule'))
+            expected = [('id9001X30989', '0', 'Accept'),
+                        ('id2830X30989', '1', 'Deny')]
+            actual = [(r.get('id'), r.get('position'), r.get('action')) for r in rules]
+            if actual != expected:
+                raise ValueError('IPv6 fixture has an unexpected policy rule order: ' + repr(actual))
         id_values = [elem.attrib['id'] for elem in root.iter() if 'id' in elem.attrib]
         if len(id_values) != len(set(id_values)):
             raise ValueError('duplicated FWB ids in ' + name)
