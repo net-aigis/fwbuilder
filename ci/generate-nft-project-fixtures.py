@@ -51,6 +51,13 @@ def prepare(tree):
 
 def case_ipv6(tree):
     root, fw, pr, _ = prepare(tree)
+    # -6 selects the compiler pass, but RuleSet::matchingAddressFamily()
+    # also requires an IPv6-enabled Policy. The preserved project is IPv4.
+    policy = only(fw, './' + tag('Policy'))
+    if (policy.get('ipv4_rule_set'), policy.get('ipv6_rule_set')) != ('False', 'False'):
+        raise ValueError('unexpected baseline policy address family')
+    policy.set('ipv4_rule_set', 'False')
+    policy.set('ipv6_rule_set', 'True')
     replace_ref(pr, 'Src', 'id2088X75851')  # RFC 3849 documentation IPv6 /32
     only(pr, './' + tag('Src')).set('neg', 'False')
     replace_ref(pr, 'Dst', 'sysid0')
@@ -127,6 +134,11 @@ def main():
         if root.tag != tag('FWObjectDatabase'):
             raise ValueError('not an FWB object database')
         mutate(tree)
+        if name == 'ipv6-icmp':
+            fw = only(root, ".//%s[@name='nft-test']" % tag('Firewall'))
+            policy = only(fw, './' + tag('Policy'))
+            if (policy.get('ipv4_rule_set'), policy.get('ipv6_rule_set')) != ('False', 'True'):
+                raise ValueError('IPv6 fixture is not an IPv6 rule set')
         id_values = [elem.attrib['id'] for elem in root.iter() if 'id' in elem.attrib]
         if len(id_values) != len(set(id_values)):
             raise ValueError('duplicated FWB ids in ' + name)
