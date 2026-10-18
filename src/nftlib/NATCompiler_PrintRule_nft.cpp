@@ -161,7 +161,10 @@ string NATCompiler_nft::PrintRule::_printRuleLabel(NATRule *rule)
             res << "# Rule " << rl << endl;
             res << "# " << endl;
         }
-        res << "echo " << _quote(string("Rule ")+rl) << endl;
+        if (useNftablesAtomic(compiler->getCachedFwOpt()))
+            res << "# Rule " << rl << endl;
+        else
+            res << "echo " << _quote(string("Rule ")+rl) << endl;
         res << "# " << endl;
 
 /* do not put comment in the script if it is intended for linksys */
@@ -667,8 +670,7 @@ bool NATCompiler_nft::PrintRule::processNext()
 
         if ( ! physaddress.empty())
         {
-	    cmdout << " -m mac --mac-source "
-                             << physaddress;
+	    cmdout << " ether saddr " << physaddress;
         }
 
         const InetAddr *osrc_addr = osrc->getAddressPtr();
@@ -683,7 +685,7 @@ bool NATCompiler_nft::PrintRule::processNext()
             {
                 string osrc_out = _printAddr(osrc);
                 if (!osrc_out.empty())
-                    cmdout << _printSingleOptionWithNegation(" -s", osrcrel, osrc_out);
+                    cmdout << _printSingleOptionWithNegation(ipt_comp->ipv6 ? "ip6 saddr" : "ip saddr", osrcrel, osrc_out);
             }
         }
 
@@ -705,24 +707,53 @@ bool NATCompiler_nft::PrintRule::processNext()
         {
             cmdout << _printIpSetMatch(odst, odstrel);
         } else
-            cmdout << _printSingleOptionWithNegation(" -d", odstrel, _printAddr(odst));
+            cmdout << _printSingleOptionWithNegation(ipt_comp->ipv6 ? "ip6 daddr" : "ip daddr", odstrel, _printAddr(odst));
     }
 
     cmdout << " ";
     cmdout << _printDstService(osrvrel);
 
-    cmdout << "-j " << rule->getStr("ipt_target") << " ";
+    // nftables verdict/translation syntax is not iptables -j syntax.
+    // Unsupported translation modes must fail rather than generate
+    // a deployable firewall policy with changed semantics.
+    switch (rule->getRuleType())
+    {
+    case NATRule::Masq:
+        cmdout << "masquerade ";
+        break;
+    case NATRule::SNAT:
+        if (rule->getStr("ipt_target") != "SNAT")
+            compiler->abort(rule, "Unsupported native nftables SNAT target");
+        cmdout << "snat to ";
+        break;
+    case NATRule::DNAT:
+        if (rule->getStr("ipt_target") != "DNAT")
+            compiler->abort(rule, "Unsupported native nftables DNAT target");
+        cmdout << "dnat to ";
+        break;
+    case NATRule::Redirect:
+        cmdout << "redirect ";
+        break;
+    case NATRule::NATBranch:
+        cmdout << "jump " << rule->getStr("ipt_target") << " ";
+        break;
+    default:
+        compiler->abort(rule, "Unsupported native nftables NAT rule type");
+        break;
+    }
+
 
     switch (rule->getRuleType())
     {
     case NATRule::Masq:
-        if (ropt->getBool("ipt_nat_random")) cmdout << " --random";
+        if (ropt->getBool("ipt_nat_random"))
+            compiler->abort(rule, "Native nftables masquerade random option is not supported");
         break;
 
     case NATRule::SNAT:
 	if (rule->getStr("ipt_target")=="SNAT")
         {
-	    cmdout << "--to-source ";
+	    /* native "snat to" prefix already emitted */
             // if TSrc is "any" and this is SNAT rule, then this rule only
             // translates source port. Skip address part.
             // Note for #1693: _printAddr() returns string that ends with a space,
@@ -741,9 +772,9 @@ bool NATCompiler_nft::PrintRule::processNext()
             } else
                 cmdout << addr_part.toStdString();
 
-            if (ropt->getBool("ipt_nat_random")) cmdout << " --random";
-            if (XMLTools::version_compare(version, "1.4.3")>=0)
-                if (ropt->getBool("ipt_nat_persistent")) cmdout << " --persistent";
+            if (ropt->getBool("ipt_nat_random") ||
+                ropt->getBool("ipt_nat_persistent"))
+                compiler->abort(rule, "Unsupported native nftables SNAT options");
 	}
 	break;
 /*
@@ -755,7 +786,7 @@ bool NATCompiler_nft::PrintRule::processNext()
     case NATRule::DNAT:
 	if (rule->getStr("ipt_target")=="DNAT")
         {
-	    cmdout << "--to-destination ";
+	    /* native "dnat to" prefix already emitted */
             // if TDst is "any" and this is DNAT rule, then this rule only
             // translates source port. Skip address part.
             QString addr_part;
@@ -776,33 +807,18 @@ bool NATCompiler_nft::PrintRule::processNext()
                 cmdout << addr_part.toStdString();
             }
 
-            if (ropt->getBool("ipt_nat_random")) cmdout << " --random";
-            if (XMLTools::version_compare(version, "1.4.3")>=0)
-                if (ropt->getBool("ipt_nat_persistent")) cmdout << " --persistent";
+            if (ropt->getBool("ipt_nat_random") ||
+                ropt->getBool("ipt_nat_persistent"))
+                compiler->abort(rule, "Unsupported native nftables DNAT options");
 	}
 	break;
 
-    case NATRule::SNetnat:
-	if (rule->getStr("ipt_target")=="NETMAP")
-        {
-            cmdout << "--to ";
-            cmdout << _printAddr(tsrc,true,false);
-	}
-        break;
-
-    case NATRule::DNetnat:
-	if (rule->getStr("ipt_target")=="NETMAP")
-        {
-            cmdout << "--to ";
-            cmdout << _printAddr(tdst,true,false);
-	}
-        break;
 
     case NATRule::Redirect:
 	if (rule->getStr("ipt_target")=="REDIRECT")
         {
 	    string ports=_printDNATPorts(tsrv);
-	    if (!ports.empty()) cmdout << "--to-ports " << ports;
+	    if (!ports.empty()) cmdout << "to :" << ports;
 	}
 	break;
 

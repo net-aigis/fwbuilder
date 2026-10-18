@@ -838,12 +838,23 @@ QString CompilerDriver_nft::run(const std::string &cluster_id,
         // script << routing_compiler->getCompiledScript().c_str();
 
         script << QString::fromUtf8(oscnf->getCompiledScript().c_str());
-        script << QString::fromUtf8(generated_script.c_str());
+        // Both IPv4 and IPv6 rules must be loaded in ONE transaction;
+        // separate flush ruleset operations would erase the first family.
+        if (useNftablesAtomic(fw->getOptionsObject()) && !generated_script.empty())
+        {
+            script << "$NFT -f - <<'FWB_NFT_RULESET'\n";
+            script << "flush ruleset\n";
+            script << QString::fromUtf8(generated_script.c_str());
+            script << "\nFWB_NFT_RULESET\n";
+        } else
+        {
+            script << QString::fromUtf8(generated_script.c_str());
+        }
         script << QString::fromUtf8(routing_compiler->getCompiledScript().c_str());
 
         script << '\n';
 
-        script_skeleton.setVariable("script_body", indent(4, script_buffer));
+        script_skeleton.setVariable("script_body", script_buffer);
 
         script_skeleton.setVariable("timestamp", timestr);
         script_skeleton.setVariable("tz", tzname[stm->tm_isdst]);
@@ -869,19 +880,27 @@ QString CompilerDriver_nft::run(const std::string &cluster_id,
         block_action.collapseEmptyStrings(true);
         block_action.setVariable("have_ipv4", have_ipv4);
         block_action.setVariable("have_ipv6", have_ipv6);
+        block_action.setVariable("mgmt_access", 0);
+        block_action.setVariable("mgmt_access_ipv4", 0);
+        block_action.setVariable("mgmt_access_ipv6", 0);
 
         // the name of the option is historical (including the typo)
         if (fw->getOptionsObject()->getBool("add_mgmt_ssh_rule_when_stoped"))
         {
+            // The management option holds one address. Select its actual
+            // address family before asking the existing validator to emit it.
+            const std::string mgmt_addr =
+                fw->getOptionsObject()->getStr("mgmt_addr");
+            const bool mgmt_ipv6 = mgmt_addr.find(':') != std::string::npos;
+            // 'block' replaces the entire ruleset and protects both families,
+            // even if only one was compiled by the normal policy generator.
             std::unique_ptr<PolicyCompiler_nft> policy_compiler =
-                createPolicyCompiler(fw, false, nullptr,  nullptr);
+                createPolicyCompiler(fw, mgmt_ipv6, nullptr, nullptr);
             PolicyCompiler_nft::PrintRule* print_rule =
                 policy_compiler->createPrintRuleProcessor();
             print_rule->setContext(policy_compiler.get());
             print_rule->_printBackupSSHAccessRules(&block_action);
-        } else
-        {
-            block_action.setVariable("mgmt_access", 0);
+            delete print_rule;
         }
 
         script_skeleton.setVariable("block_action", block_action.expand());
@@ -952,11 +971,30 @@ QString CompilerDriver_nft::run(const std::string &cluster_id,
 
         info("Output file name: " + file_names[FW_FILE].toStdString());
 
+        // Reject legacy commands before writing a deployable firewall script.
+        // In particular, a successful CLI exit and a non-empty .fw file must
+        // never turn an iptables/nftables hybrid into a successful compilation.
+        const QString native_script = script_skeleton.expand();
+        const char *legacy_markers[] = {
+            "$IPTABLES", "$IP6TABLES", "echo '*filter'",
+            "echo '*nat'", "echo '*mangle'", "echo COMMIT",
+            " -m state", " --state ", " -j ", " -s ", " -d ",
+            "--to-source", "--to-destination", "{{opt_wait}}",
+            // Quoted nft heredocs intentionally prevent shell expansion.
+            // Refuse dynamic addresses until native substitution is supported.
+            "$i_", "$at_", "{{"
+        };
+        for (const char *marker : legacy_markers)
+        {
+            if (native_script.contains(QString::fromLatin1(marker)))
+                abort(std::string("Native nftables script contains legacy command: ") + marker);
+        }
+
         QFile fw_file(file_names[FW_FILE]);
         if (fw_file.open(QIODevice::WriteOnly))
         {
             QTextStream fw_str(&fw_file);
-            fw_str << script_skeleton.expand();
+            fw_str << native_script;
             fw_file.close();
             fw_file.setPermissions(QFile::ReadOwner | QFile::WriteOwner |
                                    QFile::ReadGroup | QFile::ReadOther |

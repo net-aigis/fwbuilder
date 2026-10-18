@@ -371,7 +371,10 @@ string PolicyCompiler_nft::PrintRule::_printRuleLabel(PolicyRule *rule)
                 res << "# Rule " << rl << endl;
                 res << "# " << endl;
             }
-            res << "echo " << _quote(string("Rule ")+rl) << endl;
+            if (useNftablesAtomic(compiler->getCachedFwOpt()))
+                res << "# Rule " << rl << endl;
+            else
+                res << "echo " << _quote(string("Rule ")+rl) << endl;
             res << "# " << endl;
         }
 
@@ -1572,7 +1575,7 @@ string PolicyCompiler_nft::PrintRule::_clampTcpToMssRule()
         if (ipforw)
         {
             res << _startRuleLine()
-                << "FORWARD -p tcp -m tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu"
+                << "FORWARD tcp flags syn tcp option maxseg size set rt mtu"
                 << _endRuleLine();
             res << endl;
         }
@@ -1594,11 +1597,12 @@ string PolicyCompiler_nft::PrintRule::_printOptionalGlobalRules()
     bool ipforw = ((!ipt_comp->ipv6 && ipforward) ||
                    (ipt_comp->ipv6 && ip6forward));
 
-    Configlet configlet(compiler->fw, "linux24", "automatic_rules");
+    Configlet configlet(compiler->fw, "nftables", "automatic_rules");
     configlet.removeComments();
     configlet.collapseEmptyStrings(true);
 
     configlet.setVariable("begin_rule", _startRuleLine().c_str());
+    configlet.setVariable("addr_family", isIPv6 ? "ip6" : "ip");
     configlet.setVariable("end_rule", _endRuleLine().c_str());
 
     configlet.setVariable("ipforw", ipforw);
@@ -1660,7 +1664,9 @@ string PolicyCompiler_nft::PrintRule::_printOptionalGlobalRules()
         configlet.setVariable("use_ulog", 1);
 
         string s = compiler->getCachedFwOpt()->getStr("ulog_nlgroup");
-        configlet.setVariable("use_nlgroup", !s.empty());
+        const bool custom_nlgroup = !s.empty();
+        if (s.empty()) s = "0";
+        configlet.setVariable("use_nlgroup", custom_nlgroup);
         configlet.setVariable("nlgroup", s.c_str());
 
         int r = compiler->getCachedFwOpt()->getInt("ulog_cprange");
@@ -1670,6 +1676,13 @@ string PolicyCompiler_nft::PrintRule::_printOptionalGlobalRules()
         r = compiler->getCachedFwOpt()->getInt("ulog_qthreshold");
         configlet.setVariable("use_qthreshold", r!=0);
         configlet.setVariable("qthreshold", r);
+
+        std::ostringstream nflog_options;
+        const int snaplen = compiler->getCachedFwOpt()->getInt("ulog_cprange");
+        const int threshold = compiler->getCachedFwOpt()->getInt("ulog_qthreshold");
+        if (snaplen > 0) nflog_options << " snaplen " << snaplen;
+        if (threshold > 0) nflog_options << " queue-threshold " << threshold;
+        configlet.setVariable("nflog_options", nflog_options.str().c_str());
     } else
         configlet.setVariable("not_use_ulog", 1);
 
@@ -1730,6 +1743,12 @@ void PolicyCompiler_nft::PrintRule::_printBackupSSHAccessRules(Configlet *conf)
             conf->setVariable("end_rule", _endRuleLine().c_str());
             conf->setVariable("mgmt_access", 1);
             conf->setVariable("ssh_management_address",
+                              inet_addr->toString().c_str());
+            // The block action covers both families. Do not reuse an IPv4
+            // management address in an IPv6 rule (or vice versa).
+            conf->setVariable(isIPv6 ? "mgmt_access_ipv6" : "mgmt_access_ipv4", 1);
+            conf->setVariable(isIPv6 ? "ssh_management_address_ipv6" :
+                           "ssh_management_address_ipv4",
                               inet_addr->toString().c_str());
         }
     }

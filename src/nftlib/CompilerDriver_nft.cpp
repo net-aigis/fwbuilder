@@ -167,9 +167,9 @@ string CompilerDriver_nft::dumpScript(Firewall *fw,
     {
         if (useNftablesAtomic(fw->getOptionsObject()))
         {
-            conf = new Configlet(fw, "linux24", "script_body_iptables_restore");
+            conf = new Configlet(fw, "nftables", "script_body_nftables_atomic");
         } else
-            conf = new Configlet(fw, "linux24", "script_body_iptables_shell");
+            conf = new Configlet(fw, "nftables", "script_body_nftables_shell");
     }
 
     conf->setVariable("auto", have_auto);

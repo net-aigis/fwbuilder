@@ -16,25 +16,20 @@
 ## ruleset using function reset_all and sets base chain policy to ACCEPT.
 
 stop_action() {
-    reset_all
-
+    # Replace existing policy with ACCEPT chains in one transaction.
+    $NFT -f - <<'FWB_NFT_STOP'
+flush ruleset
 {{if have_ipv4}}
-    $NFT list table ip filter >/dev/null 2>&1 || $NFT add table ip filter
-    $NFT list chain ip filter INPUT >/dev/null 2>&1 || \
-        $NFT add chain ip filter INPUT { type filter hook input priority 0; policy accept; }
-    $NFT list chain ip filter OUTPUT >/dev/null 2>&1 || \
-        $NFT add chain ip filter OUTPUT { type filter hook output priority 0; policy accept; }
-    $NFT list chain ip filter FORWARD >/dev/null 2>&1 || \
-        $NFT add chain ip filter FORWARD { type filter hook forward priority 0; policy accept; }
+add table ip filter
+add chain ip filter INPUT { type filter hook input priority 0; policy accept; }
+add chain ip filter OUTPUT { type filter hook output priority 0; policy accept; }
+add chain ip filter FORWARD { type filter hook forward priority 0; policy accept; }
 {{endif}}
-
 {{if have_ipv6}}
-    $NFT list table ip6 filter >/dev/null 2>&1 || $NFT add table ip6 filter
-    $NFT list chain ip6 filter INPUT >/dev/null 2>&1 || \
-        $NFT add chain ip6 filter INPUT { type filter hook input priority 0; policy accept; }
-    $NFT list chain ip6 filter OUTPUT >/dev/null 2>&1 || \
-        $NFT add chain ip6 filter OUTPUT { type filter hook output priority 0; policy accept; }
-    $NFT list chain ip6 filter FORWARD >/dev/null 2>&1 || \
-        $NFT add chain ip6 filter FORWARD { type filter hook forward priority 0; policy accept; }
+add table ip6 filter
+add chain ip6 filter INPUT { type filter hook input priority 0; policy accept; }
+add chain ip6 filter OUTPUT { type filter hook output priority 0; policy accept; }
+add chain ip6 filter FORWARD { type filter hook forward priority 0; policy accept; }
 {{endif}}
+FWB_NFT_STOP
 }

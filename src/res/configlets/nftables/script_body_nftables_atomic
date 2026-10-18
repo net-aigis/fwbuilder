@@ -1,0 +1,21 @@
+## -*- mode: shell-script; -*-
+## Atomic nftables ruleset loading; do not use iptables-restore syntax.
+{{if have_script}}
+{{if filter_or_auto}}
+add table {{if ipv4}}ip{{endif}}{{if ipv6}}ip6{{endif}} filter
+add chain {{if ipv4}}ip{{endif}}{{if ipv6}}ip6{{endif}} filter INPUT { type filter hook input priority 0; policy drop; }
+add chain {{if ipv4}}ip{{endif}}{{if ipv6}}ip6{{endif}} filter OUTPUT { type filter hook output priority 0; policy drop; }
+add chain {{if ipv4}}ip{{endif}}{{if ipv6}}ip6{{endif}} filter FORWARD { type filter hook forward priority 0; policy drop; }
+{{$filter_auto_script}}
+{{$filter_script}}
+{{endif}}
+{{if mangle_or_auto}}
+add table {{if ipv4}}ip{{endif}}{{if ipv6}}ip6{{endif}} mangle
+{{$mangle_auto_script}}
+{{$mangle_script}}
+{{endif}}
+{{if nat}}
+add table {{if ipv4}}ip{{endif}}{{if ipv6}}ip6{{endif}} nat
+{{$nat_script}}
+{{endif}}
+{{endif}}
