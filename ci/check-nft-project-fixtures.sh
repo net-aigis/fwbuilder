@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# Run additional real FWB projects through the native compiler (no second build).
-# Positive cases are copied into the existing output artifact; the next CI job
-# applies nft --check and isolated network namespace tests to every one of them.
+# Check independent native FWB XML fixtures without triggering another build.
+# Every scenario is executed even when an earlier one fails; only fully
+# verified positive outputs are published for nft --check/kernel testing.
 set -euo pipefail
 
 if (( $# != 3 )); then
@@ -20,41 +20,69 @@ work="$(dirname "$output")/nft-project-fixtures"
 mkdir -p "$work"
 python3 ci/generate-nft-project-fixtures.py "$baseline" "$work/xml"
 
-# Both the expected native expression AND the existence of a nonempty generated
-# policy are mandatory; successful exit with silently omitted rules fails.
+# An explicit -4/-6 is essential.  The default fwb_nft invocation in the
+# previous CI run produced only an IPv4 block, silently omitting the IPv6 rule.
+# Checking the compiled ruleset (not the XML) prevents a false positive.
 check_positive() {
-    local name=$1 expected=$2 generated
+    local name=$1 family=$2 generated expected
+    shift 2
+    local -a args=()
+    case "$family" in
+        4) args=(-4) ;;
+        6) args=(-6) ;;
+        *) echo "Internal error: unsupported test family: $family" >&2; return 1 ;;
+    esac
     mkdir -p "$work/$name"
-    "$compiler" -f "$work/xml/$name.fwb" -d "$work/$name" nft-test \
-        > "$work/$name.compile.log" 2>&1 || {
+    if ! "$compiler" "${args[@]}" -f "$work/xml/$name.fwb" -d "$work/$name" nft-test \
+        > "$work/$name.compile.log" 2>&1; then
         cat "$work/$name.compile.log" >&2
-        echo "FAIL: native FWB compiler rejected $name" >&2
+        echo "FAIL: native FWB compiler rejected $name (IPv$family)" >&2
         return 1
-    }
+    fi
+
+    local -a files=()
     shopt -s nullglob
-    local files=("$work/$name"/*.fw)
+    files=("$work/$name"/*.fw)
+    shopt -u nullglob
     if (( ${#files[@]} != 1 )) || [[ ! -s "${files[0]}" ]]; then
-        echo "FAIL: expected exactly one native generated script for $name" >&2
+        echo "FAIL: expected exactly one generated script for $name" >&2
         return 1
     fi
     generated="${files[0]}"
-    sh ci/check-nft-output.sh "$generated" || return 1
-    # Search inside the native ruleset heredoc, not in explanatory shell text.
-    if ! awk '/<<\047FWB_NFT_RULESET\047/ { on=1; next } /^FWB_NFT_RULESET$/ { on=0 } on { print }' \
-        "$generated" | grep -Eq "$expected"; then
-        echo "FAIL: $name has no expected nftables expression ($expected)" >&2
+    if ! sh ci/check-nft-output.sh "$generated"; then
+        echo "FAIL: invalid native script structure for $name" >&2
         return 1
     fi
+
+    # Store the extracted ruleset for reproducible diagnostics.  Testing the
+    # script preamble could accidentally accept unrelated IPv6 addresses.
+    if ! awk '/<<\047FWB_NFT_RULESET\047/ { on=1; next } /^FWB_NFT_RULESET$/ { on=0 } on { print }' \
+        "$generated" > "$work/$name.ruleset.nft"; then
+        echo "FAIL: could not extract native ruleset for $name" >&2
+        return 1
+    fi
+    local table_family=ip
+    [[ "$family" == 6 ]] && table_family=ip6
+    if ! grep -Eq "^add table $table_family fwb_filter[[:space:]]*\$" "$work/$name.ruleset.nft"; then
+        # For IPv4 the family is "ip" and for IPv6 it is "ip6".
+        echo "FAIL: $name has no IPv$family filter table" >&2
+        return 1
+    fi
+    for expected in "$@"; do
+        if ! grep -Eq "^add rule $table_family fwb_(filter|nat|mangle) .*${expected}" "$work/$name.ruleset.nft"; then
+            echo "FAIL: $name has no expected nftables expression ($expected)" >&2
+            return 1
+        fi
+    done
     cp -- "$generated" "$output/nft-ci-$name.fw"
-    echo "PASS: $name generated real native nftables policy"
+    echo "PASS: $name (IPv$family) generated and verified native rules"
 }
 
-# Reject checks require BOTH nonzero exit and the relevant compiler diagnostic.
-# An unrelated XML/configuration failure must never count as a negative pass.
+# Unsupported options must fail with the *specific* fail-closed diagnostic.
 check_negative() {
     local name=$1 expected=$2
     mkdir -p "$work/$name"
-    if "$compiler" -f "$work/xml/$name.fwb" -d "$work/$name" nft-test \
+    if "$compiler" -4 -f "$work/xml/$name.fwb" -d "$work/$name" nft-test \
         > "$work/$name.compile.log" 2>&1; then
         echo "FAIL: unsupported $name compiled successfully" >&2
         return 1
@@ -67,22 +95,32 @@ check_negative() {
     echo "PASS: $name rejected by the specific native compiler guard"
 }
 
-check_positive ipv6-icmp 'ip6 saddr'
-if ! grep -Eq 'icmpv6 type' "$output/nft-ci-ipv6-icmp.fw"; then
-    echo 'FAIL: IPv6 fixture lost its ICMPv6 service condition' >&2
+# Do not let the first failing fixture hide the other six outcomes.
+failures=0
+cases=0
+run_case() {
+    local name=$1
+    shift
+    cases=$((cases+1))
+    if "$@"; then
+        printf 'RESULT: PASS %s\n' "$name"
+    else
+        failures=$((failures+1))
+        printf 'RESULT: FAIL %s\n' "$name" >&2
+    fi
+}
+
+run_case ipv6-icmp check_positive ipv6-icmp 6 'ip6 saddr' 'icmpv6 type'
+run_case udp-workhours check_positive udp-workhours 4 'meta hour' 'meta day'
+run_case policy-fragments check_positive policy-fragments 4 'ip frag-off'
+run_case nat-fragments check_positive nat-fragments 4 'ip frag-off'
+run_case reject-policy-options check_negative reject-policy-options 'Native nftables IP option matching is not yet supported'
+run_case reject-nat-options check_negative reject-nat-options 'Native nftables NAT IP option matching is not supported'
+run_case reject-timezone check_negative reject-timezone 'xt_time kernel timezone mode is not supported by native nftables'
+
+printf 'FWB XML fixture matrix: %d cases; %d passed; %d failed\n' \
+    "$cases" "$((cases - failures))" "$failures"
+if (( failures )); then
     exit 1
 fi
-check_positive udp-workhours 'meta hour'
-# Verify the weekday condition independently, not just that a time is emitted.
-if ! grep -Eq 'meta day' "$output/nft-ci-udp-workhours.fw"; then
-    echo 'FAIL: time fixture lost its weekday constraint' >&2
-    exit 1
-fi
-check_positive policy-fragments 'ip frag-off'
-check_positive nat-fragments 'ip frag-off'
-
-check_negative reject-policy-options 'Native nftables IP option matching is not yet supported'
-check_negative reject-nat-options 'Native nftables NAT IP option matching is not supported'
-check_negative reject-timezone 'xt_time kernel timezone mode is not supported by native nftables'
-
 echo 'PASS: all seven real FWB XML fixture scenarios (4 supported, 3 rejected)'
