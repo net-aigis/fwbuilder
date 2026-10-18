@@ -77,6 +77,15 @@ def case_ipv6(tree):
     replace_ref(pr, 'Dst', 'sysid0')
     replace_ref(pr, 'Srv', 'ipv6-icmp-ping_request')
     pr.set('direction', 'Both')
+    # Stateful ICMPv6 is automatically converted to stateless by the policy
+    # compiler. That emits a warning and a non-zero FWCOMPILER_WARNING status
+    # even after writing a complete script. Declare the intended semantics
+    # explicitly instead of treating compiler warnings as successful builds.
+    rule_options = only(pr, './' + tag('PolicyRuleOptions'))
+    stateless = only(rule_options, "./%s[@name='stateless']" % tag('Option'))
+    if (stateless.text or '').strip() != 'False':
+        raise ValueError('unexpected baseline IPv6 policy statefulness')
+    stateless.text = 'True'
     # Add documentation-only IPv6 addresses to the existing FWB interfaces.
     for name, address in [('eth0', '2001:db8:1::1'), ('eth1', '2001:db8:2::1')]:
         iface = only(fw, "./%s[@name='%s']" % (tag('Interface'), name))
@@ -159,6 +168,10 @@ def main():
             actual = [(r.get('id'), r.get('position'), r.get('action')) for r in rules]
             if actual != expected:
                 raise ValueError('IPv6 fixture has an unexpected policy rule order: ' + repr(actual))
+            allow = rules[0]
+            opts = only(allow, './' + tag('PolicyRuleOptions'))
+            if (only(opts, "./%s[@name='stateless']" % tag('Option')).text != 'True'):
+                raise ValueError('ICMPv6 allow must be explicitly stateless')
         id_values = [elem.attrib['id'] for elem in root.iter() if 'id' in elem.attrib]
         if len(id_values) != len(set(id_values)):
             raise ValueError('duplicated FWB ids in ' + name)
