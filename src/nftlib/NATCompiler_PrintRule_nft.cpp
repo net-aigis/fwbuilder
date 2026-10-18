@@ -202,8 +202,14 @@ QString NATCompiler_nft::PrintRule::getInterfaceName(RuleElement *itf_re)
     if (itf_re->isAny()) return "";
     FWObject *iface = FWObjectReference::getObject(itf_re->front());
     QString iface_name = iface->getName().c_str();
-    // Preserve trailing '*' for nftables prefix matching.  A bare '*'
-    // is handled by the caller; nftables does not accept it as a match.
+    // FWB projects may store iptables-style prefix matches such as eth+.
+    // nftables uses eth* instead.  A bare '+' becomes '*' and is omitted
+    // (unless negated, which is explicitly rejected by the caller).
+    if (iface_name.endsWith("+"))
+    {
+        iface_name.chop(1);
+        iface_name += "*";
+    }
     return iface_name;
 }
 

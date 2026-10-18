@@ -594,9 +594,15 @@ string PolicyCompiler_nft::PrintRule::_printDirectionAndInterface(PolicyRule *ru
     {
         rule_iface_obj = FWObjectReference::getObject(itfrel->front());
         iface_name = rule_iface_obj->getName().c_str();
-        // Native nftables uses '*' for prefix matching, not iptables '+'.
-        // A bare '*' is not a valid nftables iifname/oifname expression.
-        // Positive 'any interface' matches need no interface expression.
+        // Existing FWB objects can carry iptables-style prefix wildcards
+        // (eth+ or bare +). Translate to nftables syntax before checking
+        // whether this denotes 'any interface'.
+        if (iface_name.endsWith("+"))
+        {
+            iface_name.chop(1);
+            iface_name += "*";
+        }
+        // A bare '*' must not be emitted as an interface match.
         if (iface_name == "*")
         {
             if (itfrel->getNeg() || itfrel->getBool("single_object_negation"))

@@ -131,7 +131,7 @@ jobs:
           }
           # A non-empty output file alone is not a native nftables test.
           # Reject known legacy commands, placeholders and restore markers.
-          if grep -nE '\$IP(TABLES|6TABLES)|(^|[[:space:]])echo [*]?(COMMIT|\x27\*filter\x27)|--to-(source|destination)|-j (SNAT|DNAT)|\{\{opt_wait\}\}' \
+          if grep -nE '\$IP(TABLES|6TABLES)|(^|[[:space:]])echo[[:space:]]+.*(COMMIT|\*(filter|nat|mangle|raw))|--to-(source|destination)|-j (SNAT|DNAT)|\{\{opt_wait\}\}' \
               ci-logs/nft-output/*.fw; then
             echo 'Native nftables output contains legacy syntax' >&2
             exit 1
