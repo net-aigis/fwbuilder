@@ -1267,17 +1267,6 @@ string PolicyCompiler_nft::PrintRule::_printTimeInterval(PolicyRule *r)
     RuleElementInterval* ri=r->getWhen();
     if (ri==nullptr || ri->isAny()) return "";
 
-    std::map<int,std::string>  daysofweek;
-
-    daysofweek[0]="Sun";
-    daysofweek[1]="Mon";
-    daysofweek[2]="Tue";
-    daysofweek[3]="Wed";
-    daysofweek[4]="Thu";
-    daysofweek[5]="Fri";
-    daysofweek[6]="Sat";
-    daysofweek[7]="Sun";
-
     int smin, shour, sday, smonth, syear, sdayofweek;
     int emin, ehour, eday, emonth, eyear, edayofweek;
     string days_of_week;
@@ -1301,28 +1290,21 @@ string PolicyCompiler_nft::PrintRule::_printTimeInterval(PolicyRule *r)
     start << setw(2) << setfill('0') << shour << ":" << setw(2) << setfill('0') << smin;
     stop << setw(2) << setfill('0') << ehour << ":" << setw(2) << setfill('0') << emin;
 
-    std::string days;
-    if (!days_of_week.empty() && days_of_week != "0,1,2,3,4,5,6")
+    // Normalize the all-week selection to no weekday condition. Other
+    // values are numeric 0..7 as stored in the FWB interval object.
+    const string days = (days_of_week == "0,1,2,3,4,5,6")
+        ? string() : days_of_week;
+    try
     {
-        istringstream istr(days_of_week);
-        bool first = true;
-        while (!istr.eof())
-        {
-            int d;
-            istr >> d;
-            if (!first) days += ",";
-            first = false;
-            days += daysofweek[d];
-            char sep;
-            istr >> sep;
-        }
+        return nft_utils::timeMatchExpression(
+            start.str(), stop.str(), days,
+            compiler->getCachedFwOpt()->getBool("use_kerneltz"));
     }
-
-    return nft_utils::timeMatchExpression(
-        start.str(),
-        stop.str(),
-        days,
-        compiler->getCachedFwOpt()->getBool("use_kerneltz"));
+    catch (const std::invalid_argument &e)
+    {
+        compiler->abort(r, string("Invalid native nftables time interval: ") + e.what());
+        return "";
+    }
 }
 
 PolicyCompiler_nft::PrintRule::PrintRule(const std::string &name) :

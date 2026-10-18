@@ -8,6 +8,7 @@
 using fwcompiler::nft_utils::dscpMatchExpression;
 using fwcompiler::nft_utils::fragmentMatchExpression;
 using fwcompiler::nft_utils::macSourceMatchExpression;
+using fwcompiler::nft_utils::timeMatchExpression;
 
 static void rejected(const std::string &input)
 {
@@ -38,6 +39,8 @@ int main(int argc, char **argv)
                   << "add rule ip fwb_nft_match_test INPUT " << fragmentMatchExpression(false) << " counter drop\n"
                   << "add rule ip fwb_nft_match_test INPUT " << macSourceMatchExpression("00:11:22:33:44:55", false) << " counter accept\n"
                   << "add rule ip fwb_nft_match_test INPUT " << macSourceMatchExpression("00:11:22:33:44:55", true) << " counter drop\n"
+                  << "add rule ip fwb_nft_match_test INPUT " << timeMatchExpression("08:00", "18:30", "1,2,3,4,5", false) << " counter accept\n"
+                  << "add rule ip fwb_nft_match_test INPUT " << timeMatchExpression("00:00", "23:59", "0,6", false) << " counter accept\n"
                   << "add table ip6 fwb_nft_match_test\n"
                   << "add chain ip6 fwb_nft_match_test INPUT { type filter hook input priority 0; policy accept; }\n"
                   << "add rule ip6 fwb_nft_match_test INPUT " << dscpMatchExpression("AF23", true) << " counter accept\n"
@@ -60,4 +63,31 @@ int main(int argc, char **argv)
     assert(macSourceMatchExpression("00:11:aa:BB:cc:FF", false) == "ether saddr 00:11:aa:BB:cc:FF");
     assert(macSourceMatchExpression("00:11:aa:BB:cc:FF", true) == "ether saddr != 00:11:aa:BB:cc:FF");
     for (const auto &v : {"", "00:11:22:33:44", "00-11-22-33-44-55", "gg:11:22:33:44:55", "00:11:22:33:44:5x", "00:11:22:33:44:55 drop"}) rejectedMac(v);
+    assert(timeMatchExpression("09:00", "17:30", "1,2,3,4,5", false) ==
+           "meta hour \"09:00\"-\"17:30\" meta day { 1, 2, 3, 4, 5 }");
+    assert(timeMatchExpression("00:00", "23:59", "0,6,7", false) ==
+           "meta hour \"00:00\"-\"23:59\" meta day { 0, 6, 0 }");
+    assert(timeMatchExpression("", "", "", false).empty());
+    assert(timeMatchExpression("", "", "3", false) == "meta day { 3 }");
+    const auto invalidTime = [](const std::string &from, const std::string &to,
+                                const std::string &days, bool kernel_tz) {
+        bool threw = false;
+        try { (void)timeMatchExpression(from, to, days, kernel_tz); }
+        catch (const std::invalid_argument &) { threw = true; }
+        assert(threw);
+    };
+    invalidTime("09:00", "17:00", "", true);
+    invalidTime("23:00", "01:00", "", false);
+    invalidTime("24:00", "23:59", "", false);
+    invalidTime("08:60", "09:00", "", false);
+    invalidTime("8:00", "09:00", "", false);
+    invalidTime("08:00;drop", "09:00", "", false);
+    invalidTime("08:00", "", "", false);
+    invalidTime("", "09:00", "", false);
+    invalidTime("08:00", "09:00", "Monday", false);
+    invalidTime("08:00", "09:00", "0;drop", false);
+    invalidTime("08:00", "09:00", "8", false);
+    invalidTime("08:00", "09:00", "1,,3", false);
+    invalidTime("08:00", "09:00", "1,", false);
+    invalidTime("08:00", "09:00", ",1", false);
 }

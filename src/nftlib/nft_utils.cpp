@@ -280,31 +280,54 @@ std::string timeMatchExpression(const std::string &start_time,
                                 const std::string &days_of_week,
                                 bool use_kernel_tz)
 {
-    std::vector<std::string> parts;
-    if (!start_time.empty() && !stop_time.empty())
+    // nftables meta hour is not the xt_time --kerneltz option. Never
+    // quietly change the caller's requested timezone semantics.
+    if (use_kernel_tz)
+        throw std::invalid_argument("xt_time kernel timezone mode is not supported by native nftables");
+
+    if (start_time.empty() != stop_time.empty())
+        throw std::invalid_argument("incomplete time interval");
+
+    auto minutesOfDay = [](const std::string &value) -> int {
+        if (value.size() != 5 || value[2] != ':' ||
+            !std::isdigit(static_cast<unsigned char>(value[0])) ||
+            !std::isdigit(static_cast<unsigned char>(value[1])) ||
+            !std::isdigit(static_cast<unsigned char>(value[3])) ||
+            !std::isdigit(static_cast<unsigned char>(value[4])))
+            throw std::invalid_argument("invalid HH:MM time");
+        int hour = (value[0] - '0') * 10 + (value[1] - '0');
+        int minute = (value[3] - '0') * 10 + (value[4] - '0');
+        if (hour > 23 || minute > 59)
+            throw std::invalid_argument("time outside 00:00..23:59");
+        return hour * 60 + minute;
+    };
+
+    std::ostringstream output;
+    if (!start_time.empty())
     {
-        std::ostringstream range;
-        range << "time { " << start_time << "-" << stop_time << " }";
-        parts.push_back(range.str());
+        if (minutesOfDay(start_time) > minutesOfDay(stop_time))
+            throw std::invalid_argument("overnight time interval requires explicit splitting");
+        output << "meta hour \"" << start_time << "\"-\"" << stop_time << "\"";
     }
 
     if (!days_of_week.empty())
     {
-        std::ostringstream days;
-        days << "time day { " << toLower(days_of_week) << " }";
-        parts.push_back(days.str());
-    }
-
-    if (use_kernel_tz)
-        parts.push_back("time zone kernel");
-
-    if (parts.empty()) return "";
-
-    std::ostringstream output;
-    for (size_t i = 0; i < parts.size(); ++i)
-    {
-        if (i > 0) output << " ";
-        output << parts[i];
+        // FWB Interval stores Sunday as 0 (or 7). nftables meta day uses
+        // 0..6 with 0 = Sunday. Parse numeric tokens, never inject raw text.
+        const std::vector<std::string> days = split(days_of_week, ',');
+        if (days.empty() || days_of_week.front() == ',' ||
+            days_of_week.back() == ',' || days_of_week.find(",,") != std::string::npos)
+            throw std::invalid_argument("empty weekday in interval");
+        if (!output.str().empty()) output << ' ';
+        output << "meta day { ";
+        for (size_t i = 0; i < days.size(); ++i)
+        {
+            if (days[i].size() != 1 || days[i][0] < '0' || days[i][0] > '7')
+                throw std::invalid_argument("invalid numeric weekday");
+            if (i) output << ", ";
+            output << (days[i] == "7" ? "0" : days[i]);
+        }
+        output << " }";
     }
     return output.str();
 }
