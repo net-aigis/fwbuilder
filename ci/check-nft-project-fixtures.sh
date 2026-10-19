@@ -117,10 +117,16 @@ run_case nat-fragments check_positive nat-fragments 4 'ip frag-off'
 run_case reject-policy-options check_negative reject-policy-options 'Native nftables IP option matching is not yet supported'
 run_case reject-nat-options check_negative reject-nat-options 'Native nftables NAT IP option matching is not supported'
 run_case reject-timezone check_negative reject-timezone 'xt_time kernel timezone mode is not supported by native nftables'
+# Real traffic fixtures are compiled from FWB XML, never handwritten nft.
+# Their emitted policies are exercised against real packets in ci/check-nft-packets.py.
+run_case packet-tcp-input check_positive packet-tcp-input 4 'tcp dport 80'
+run_case packet-udp-forward check_positive packet-udp-forward 4 'udp dport 53'
+run_case packet-snat check_positive packet-snat 4 'udp dport 53' 'snat to 192\.0\.2\.100'
+
 
 printf 'FWB XML fixture matrix: %d cases; %d passed; %d failed\n' \
     "$cases" "$((cases - failures))" "$failures"
 if (( failures )); then
     exit 1
 fi
-echo 'PASS: all seven real FWB XML fixture scenarios (4 supported, 3 rejected)'
+echo 'PASS: all real FWB XML fixture scenarios (7 supported, 3 rejected)'

@@ -313,9 +313,17 @@ jobs:
           shopt -s nullglob
           policies=(ci-artifact/nft-output/*.fw)
           test "${#policies[@]}" -gt 0
+          # Packet tests require veth, namespace entry and ICMPv6 echo.
+          # Install tools on the disposable runner only, not in the Qt5 build.
+          if ! command -v ip >/dev/null 2>&1 || \
+             ! command -v ping >/dev/null 2>&1 || \
+             ! command -v nsenter >/dev/null 2>&1; then
+            sudo apt-get update -qq
+            sudo apt-get install -y --no-install-recommends iproute2 iputils-ping util-linux
+          fi
           # Fail closed if network namespace creation is prohibited. Never
           # execute this runtime test in the host network namespace.
-          sudo unshare --net -- sh ci/check-nft-runtime.sh "${policies[@]}" \
+          sudo unshare --net -- env FWB_REQUIRE_PACKET_MATRIX=1 sh ci/check-nft-runtime.sh "${policies[@]}" \
             2>&1 | tee ci-logs/nft-native-runtime.log
 
       - name: Upload syntax-check diagnostics

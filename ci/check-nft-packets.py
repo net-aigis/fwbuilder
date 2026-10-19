@@ -1,0 +1,263 @@
+#!/usr/bin/env python3
+"""End-to-end nft packet decisions from REAL fwb_nft XML-generated rules.
+
+Called only by check-nft-runtime.sh *inside* an isolated network namespace.
+Peers get separate anonymous network namespaces (no host netns names/mounts).
+The installed nftables policy is NEVER replaced or manufactured by this test.
+"""
+import json
+import os
+from pathlib import Path
+import re
+import socket
+import subprocess
+import sys
+import tempfile
+import time
+
+
+CASES = {
+    'nft-ci-packet-tcp-input.fw': (
+        'tcp-input', r'^add rule ip fwb_filter INPUT .*tcp dport 80 .*accept\s*$'),
+    'nft-ci-packet-udp-forward.fw': (
+        'udp-forward', r'^add rule ip fwb_filter FORWARD .*udp dport 53 .*accept\s*$'),
+    'nft-ci-packet-snat.fw': (
+        'snat', r'^add rule ip fwb_nat POSTROUTING .*snat to 192\.0\.2\.100\s*$'),
+    'nft-ci-ipv6-icmp.fw': (
+        'icmpv6', r'^add rule ip6 fwb_filter INPUT .*ip6 saddr 2001:db8::/32 .*icmpv6 type 128 .*accept\s*$'),
+}
+
+
+def call(*args, capture=False):
+    result = subprocess.run(args, text=True, capture_output=True, check=False)
+    if result.returncode:
+        raise RuntimeError('command failed (%d): %s\n%s%s' % (
+            result.returncode, ' '.join(map(str, args)), result.stdout, result.stderr))
+    return result.stdout.strip() if capture else None
+
+
+def peer(pid, *args, capture=False):
+    return call('nsenter', '-t', str(pid), '-n', '--', *args, capture=capture)
+
+
+def worker():
+    role = sys.argv[2]
+    address = sys.argv[3]
+    port = int(sys.argv[4])
+    result = Path(sys.argv[5])
+    if role == 'udp-server':
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.settimeout(1.6)
+        s.bind((address, port))
+        result.with_suffix('.ready').touch()
+        try:
+            data, (source, _) = s.recvfrom(1024)
+            result.write_text(json.dumps({'payload': data.decode('ascii'), 'source': source}))
+        except socket.timeout:
+            result.write_text(json.dumps({'timeout': True}))
+    elif role == 'tcp-server':
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        s.bind((address, port))
+        s.listen(1)
+        s.settimeout(1.6)
+        result.with_suffix('.ready').touch()
+        try:
+            connection, _ = s.accept()
+            connection.settimeout(0.7)
+            data = connection.recv(1024)
+            result.write_text(json.dumps({'payload': data.decode('ascii')}))
+            connection.close()
+        except socket.timeout:
+            result.write_text(json.dumps({'timeout': True}))
+    elif role == 'udp-client':
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
+            s.sendto(b'FWB-PACKET-PROBE', (address, port))
+    elif role == 'tcp-client':
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.settimeout(0.8)
+            try:
+                s.connect((address, port))
+            except (OSError, socket.timeout):
+                result.write_text('connection-failed')
+                return
+            s.sendall(b'FWB-PACKET-PROBE')
+            result.write_text('connected')
+    else:
+        raise ValueError('Unknown worker: ' + role)
+
+
+def wait_ready(path, proc):
+    ready = path.with_suffix('.ready')
+    for _ in range(120):
+        if ready.exists():
+            return
+        if proc.poll() is not None:
+            raise RuntimeError('listener exited before ready, status=' + str(proc.returncode))
+        time.sleep(0.02)
+    raise RuntimeError('listener not ready: ' + str(path))
+
+
+def probe_udp(namespace_server, namespace_client, bind, destination, port, expect, source=None):
+    with tempfile.TemporaryDirectory(prefix='fwb-nft-udp-') as directory:
+        result = Path(directory) / 'receiver.json'
+        prefix = ('nsenter', '-t', str(namespace_server), '-n', '--') if namespace_server else ()
+        server = subprocess.Popen((*prefix, sys.executable, __file__, '--worker',
+                                   'udp-server', bind, str(port), str(result)),
+                                  stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=True)
+        try:
+            wait_ready(result, server)
+            peer(namespace_client, sys.executable, __file__, '--worker',
+                 'udp-client', destination, str(port), str(result))
+            _, err = server.communicate(timeout=4)
+            if server.returncode:
+                raise RuntimeError('UDP listener failed: ' + err)
+            received = json.loads(result.read_text())
+            if expect:
+                assert received.get('payload') == 'FWB-PACKET-PROBE', (
+                    'allowed UDP/%s never arrived: %s' % (port, received))
+                if source is not None:
+                    assert received.get('source') == source, (
+                        'SNAT source mismatch: expected %s, got %s' % (source, received))
+            else:
+                assert received.get('timeout') is True, (
+                    'denied UDP/%s reached destination: %s' % (port, received))
+        finally:
+            if server.poll() is None:
+                server.kill()
+                server.wait()
+
+
+def probe_tcp(namespace_client, destination, port, expect):
+    with tempfile.TemporaryDirectory(prefix='fwb-nft-tcp-') as directory:
+        result = Path(directory) / 'listener.json'
+        attempt = Path(directory) / 'connect.out'
+        server = subprocess.Popen((sys.executable, __file__, '--worker',
+                                   'tcp-server', destination, str(port), str(result)),
+                                  stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=True)
+        try:
+            wait_ready(result, server)
+            peer(namespace_client, sys.executable, __file__, '--worker',
+                 'tcp-client', destination, str(port), str(attempt))
+            _, err = server.communicate(timeout=4)
+            if server.returncode:
+                raise RuntimeError('TCP listener failed: ' + err)
+            received = json.loads(result.read_text())
+            connected = attempt.read_text()
+            if expect:
+                assert connected == 'connected' and received.get('payload') == 'FWB-PACKET-PROBE', (
+                    'allowed TCP/%s not delivered: %s, %s' % (port, connected, received))
+            else:
+                assert connected == 'connection-failed' and received.get('timeout') is True, (
+                    'denied TCP/%s was delivered: %s, %s' % (port, connected, received))
+        finally:
+            if server.poll() is None:
+                server.kill()
+                server.wait()
+
+
+def setup_network(wan, lan):
+    # Outer namespace is the disposable firewall. Anonymous peer namespaces
+    # live only for this process; no /run/netns host mountpoints are used.
+    call('ip', 'link', 'set', 'lo', 'up')
+    call('ip', 'link', 'add', 'eth0', 'type', 'veth', 'peer', 'name', 'fwbwan')
+    call('ip', 'link', 'set', 'fwbwan', 'netns', str(wan))
+    call('ip', 'link', 'add', 'eth1', 'type', 'veth', 'peer', 'name', 'fwblan')
+    call('ip', 'link', 'set', 'fwblan', 'netns', str(lan))
+    peer(wan, 'ip', 'link', 'set', 'fwbwan', 'name', 'eth0')
+    peer(lan, 'ip', 'link', 'set', 'fwblan', 'name', 'eth1')
+    for iface in ('eth0', 'eth1'):
+        call('ip', 'link', 'set', iface, 'up')
+    for pid, iface in ((wan, 'eth0'), (lan, 'eth1')):
+        peer(pid, 'ip', 'link', 'set', 'lo', 'up')
+        peer(pid, 'ip', 'link', 'set', iface, 'up')
+
+    call('ip', '-4', 'addr', 'add', '192.0.2.1/24', 'dev', 'eth0')
+    call('ip', '-4', 'addr', 'add', '192.0.2.100/32', 'dev', 'eth0')
+    call('ip', '-4', 'addr', 'add', '192.168.1.1/24', 'dev', 'eth1')
+    peer(wan, 'ip', '-4', 'addr', 'add', '192.0.2.2/24', 'dev', 'eth0')
+    peer(lan, 'ip', '-4', 'addr', 'add', '192.168.1.2/24', 'dev', 'eth1')
+    peer(wan, 'ip', '-4', 'route', 'add', 'default', 'via', '192.0.2.1')
+    peer(lan, 'ip', '-4', 'route', 'add', 'default', 'via', '192.168.1.1')
+    Path('/proc/sys/net/ipv4/ip_forward').write_text('1\n')
+
+    call('ip', '-6', 'addr', 'add', '2001:db8:1::1/64', 'dev', 'eth0', 'nodad')
+    peer(wan, 'ip', '-6', 'addr', 'add', '2001:db8:1::2/64', 'dev', 'eth0', 'nodad')
+    # NDP must not determine the outcome of ICMPv6 echo policy tests. Install
+    # permanent L2 neighbors on the private veth link, without firewall changes.
+    root_mac = Path('/sys/class/net/eth0/address').read_text().strip()
+    wan_mac = peer(wan, 'cat', '/sys/class/net/eth0/address', capture=True)
+    call('ip', '-6', 'neigh', 'replace', '2001:db8:1::2', 'lladdr', wan_mac,
+         'dev', 'eth0', 'nud', 'permanent')
+    peer(wan, 'ip', '-6', 'neigh', 'replace', '2001:db8:1::1', 'lladdr', root_mac,
+         'dev', 'eth0', 'nud', 'permanent')
+
+
+def main():
+    if len(sys.argv) >= 2 and sys.argv[1] == '--worker':
+        worker()
+        return
+    if len(sys.argv) != 3 or sys.argv[1] not in CASES:
+        raise SystemExit('Usage: check-nft-packets.py nft-ci-CASE.fw START.nft')
+    if os.geteuid() != 0 or os.stat('/proc/self/ns/net').st_ino == os.stat('/proc/1/ns/net').st_ino:
+        raise SystemExit('REFUSING packet tests outside isolated root network namespace')
+    fw_name, start_path = sys.argv[1:]
+    case, pattern = CASES[fw_name]
+    rules = Path(start_path).read_text()
+    if not re.search(pattern, rules, re.MULTILINE):
+        raise RuntimeError('Generated FWB rules lack expected %s expression' % case)
+    if case == 'snat' and not re.search(
+            r'^add rule ip fwb_filter FORWARD .*udp dport 53 .*accept\s*$',
+            rules, re.MULTILINE):
+        raise RuntimeError('SNAT fixture has no forwarding UDP allow rule')
+    if case == 'icmpv6' and 'add table ip6 fwb_filter' not in rules:
+        raise RuntimeError('IPv6 fixture has no IPv6 filter table')
+
+    keepers = []
+    try:
+        for _ in range(2):
+            p = subprocess.Popen(('unshare', '--net', '--', 'sleep', '90'),
+                                 stderr=subprocess.PIPE, text=True)
+            keepers.append(p)
+            for attempt in range(100):
+                if p.poll() is not None:
+                    raise RuntimeError('peer unshare failed: ' + p.stderr.read())
+                try:
+                    if os.stat('/proc/%s/ns/net' % p.pid).st_ino != os.stat('/proc/self/ns/net').st_ino:
+                        break
+                except FileNotFoundError:
+                    pass
+                time.sleep(0.02)
+            else:
+                raise RuntimeError('peer network namespace did not start')
+        wan, lan = [p.pid for p in keepers]
+        setup_network(wan, lan)
+        if case == 'tcp-input':
+            probe_tcp(wan, '192.0.2.1', 80, True)
+            probe_tcp(wan, '192.0.2.1', 81, False)
+        elif case == 'udp-forward':
+            probe_udp(wan, lan, '192.0.2.2', '192.0.2.2', 53, True)
+            probe_udp(wan, lan, '192.0.2.2', '192.0.2.2', 54, False)
+        elif case == 'snat':
+            probe_udp(wan, lan, '192.0.2.2', '192.0.2.2', 53, True,
+                      source='192.0.2.100')
+        elif case == 'icmpv6':
+            peer(wan, 'ping', '-6', '-n', '-c', '1', '-W', '2', '2001:db8:1::1')
+        print('PASS: real %s packets obey FWB-generated nftables policy' % case, flush=True)
+    finally:
+        for p in keepers:
+            if p.poll() is None:
+                p.terminate()
+            try:
+                p.communicate(timeout=2)
+            except subprocess.TimeoutExpired:
+                p.kill()
+                p.communicate()
+
+
+if __name__ == '__main__':
+    try:
+        main()
+    except (OSError, RuntimeError, AssertionError, ValueError) as exc:
+        print('FAIL: nftables packet test: %s' % exc, file=sys.stderr)
+        sys.exit(1)

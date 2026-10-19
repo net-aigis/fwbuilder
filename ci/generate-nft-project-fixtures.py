@@ -134,6 +134,56 @@ def case_reject_timezone(tree):
     opt.text = 'True'
 
 
+def prepare_packet_policy(tree, service):
+    """Build an ordered allow-service / deny-all Policy from preserved objects."""
+    _, fw, allow, _ = prepare(tree)
+    policy = only(fw, './' + tag('Policy'))
+    deny = only(policy, "./%s[@id='id2830X30989']" % tag('PolicyRule'))
+    if list(policy)[:2] != [deny, allow] or (deny.get('action'), allow.get('action')) != ('Deny', 'Accept'):
+        raise ValueError('unexpected baseline Policy ordering')
+    policy.remove(allow)
+    policy.insert(0, allow)
+    allow.set('position', '0')
+    deny.set('position', '1')
+    allow.set('direction', 'Both')
+    replace_ref(allow, 'Src', 'sysid0')
+    replace_ref(allow, 'Dst', 'sysid0')
+    replace_ref(allow, 'Srv', service)
+    for elem in ('Src', 'Dst', 'Srv'):
+        only(allow, './' + tag(elem)).set('neg', 'False')
+    # Logging is not part of this packet decision test.
+    deny.set('log', 'False')
+    return fw
+
+
+def case_packet_tcp_input(tree):
+    prepare_packet_policy(tree, 'tcp-HTTP')
+
+
+def case_packet_udp_forward(tree):
+    prepare_packet_policy(tree, 'udp-DNS')
+
+
+def case_packet_snat(tree):
+    fw = prepare_packet_policy(tree, 'udp-DNS')
+    nat = only(fw, './' + tag('NAT'))
+    snat = only(nat, "./%s[@id='id2842X30989']" % tag('NATRule'))
+    if snat.get('action') != 'Translate':
+        raise ValueError('baseline source NAT rule changed')
+    # 192.168.1.0/24 -> 192.0.2.100; preserved project contains both
+    # address objects. Disabled unrelated DNAT/SNAT rules cannot interfere.
+    replace_ref(snat, 'OSrc', 'id3DC75CE7-1')
+    replace_ref(snat, 'ODst', 'sysid0')
+    replace_ref(snat, 'OSrv', 'sysid1')
+    replace_ref(snat, 'TSrc', 'id2864X30989')
+    replace_ref(snat, 'TDst', 'sysid0')
+    replace_ref(snat, 'TSrv', 'sysid1')
+    only(snat, './' + tag('OSrc')).set('neg', 'False')
+    for rule in nat.findall('./' + tag('NATRule')):
+        if rule is not snat:
+            rule.set('disabled', 'True')
+
+
 CASES = {
     'ipv6-icmp': case_ipv6,
     'udp-workhours': case_udp_workhours,
@@ -142,6 +192,9 @@ CASES = {
     'reject-policy-options': case_reject_policy_options,
     'reject-nat-options': case_reject_nat_options,
     'reject-timezone': case_reject_timezone,
+    'packet-tcp-input': case_packet_tcp_input,
+    'packet-udp-forward': case_packet_udp_forward,
+    'packet-snat': case_packet_snat,
 }
 
 
