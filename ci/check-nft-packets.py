@@ -156,6 +156,26 @@ def probe_tcp(namespace_client, destination, port, expect):
                 server.wait()
 
 
+def interface_mac(pid=None):
+    """Get the eth0 L2 address *inside* the selected network namespace.
+
+    Rtnetlink (ip -j link) respects nsenter -n; reading /sys/class/net
+    can instead return the original mount namespace's MAC for both peers.
+    """
+    args = ('ip', '-j', 'link', 'show', 'dev', 'eth0')
+    raw = peer(pid, *args, capture=True) if pid is not None else call(*args, capture=True)
+    try:
+        links = json.loads(raw)
+    except (TypeError, ValueError) as exc:
+        raise RuntimeError('invalid rtnetlink interface response for eth0') from exc
+    if not isinstance(links, list) or len(links) != 1 or links[0].get('ifname') != 'eth0':
+        raise RuntimeError('expected exactly one eth0 interface in network namespace')
+    mac = links[0].get('address', '').lower()
+    if not re.fullmatch(r'(?:[0-9a-f]{2}:){5}[0-9a-f]{2}', mac) or (int(mac[:2], 16) & 1):
+        raise RuntimeError('invalid unicast Ethernet MAC for eth0: %r' % mac)
+    return mac
+
+
 def setup_network(wan, lan):
     # Outer namespace is the disposable firewall. Anonymous peer namespaces
     # live only for this process; no /run/netns host mountpoints are used.
@@ -183,10 +203,17 @@ def setup_network(wan, lan):
 
     call('ip', '-6', 'addr', 'add', '2001:db8:1::1/64', 'dev', 'eth0', 'nodad')
     peer(wan, 'ip', '-6', 'addr', 'add', '2001:db8:1::2/64', 'dev', 'eth0', 'nodad')
-    # NDP must not determine the outcome of ICMPv6 echo policy tests. Install
-    # permanent L2 neighbors on the private veth link, without firewall changes.
-    root_mac = Path('/sys/class/net/eth0/address').read_text().strip()
-    wan_mac = peer(wan, 'cat', '/sys/class/net/eth0/address', capture=True)
+    # A network-namespace-only nsenter does NOT guarantee /sys/class/net
+    # shows the peer's interfaces: sysfs is tied to the mount namespace.
+    # Query the active network namespace via rtnetlink instead.
+    root_mac = interface_mac()
+    wan_mac = interface_mac(wan)
+    if root_mac == wan_mac:
+        raise RuntimeError('IPv6 veth endpoints have identical MACs; refusing invalid static neighbors')
+    print('IPv6 peer link: firewall eth0=%s; peer eth0=%s' % (root_mac, wan_mac),
+          flush=True)
+    # Keep neighbor discovery out of this echo-policy test: configure each
+    # *actual* veth endpoint's MAC, without changing the FWB ruleset.
     call('ip', '-6', 'neigh', 'replace', '2001:db8:1::2', 'lladdr', wan_mac,
          'dev', 'eth0', 'nud', 'permanent')
     peer(wan, 'ip', '-6', 'neigh', 'replace', '2001:db8:1::1', 'lladdr', root_mac,
