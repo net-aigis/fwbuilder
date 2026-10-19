@@ -193,6 +193,80 @@ def setup_network(wan, lan):
          'dev', 'eth0', 'nud', 'permanent')
 
 
+
+def diagnose_ipv6_echo(wan):
+    """Trace actual ICMPv6 verdicts; never add a rule to an FWB-owned table.
+
+    A separate trace-only table sets nftrace, without changing ACCEPT/DROP.
+    The policy under test remains precisely the fwb_nft-generated policy.
+    """
+    spec = """add table ip6 fwb_ci_packet_trace
+add chain ip6 fwb_ci_packet_trace pre { type filter hook prerouting priority -301; policy accept; }
+add rule ip6 fwb_ci_packet_trace pre ip6 nexthdr icmpv6 meta nftrace set 1
+add chain ip6 fwb_ci_packet_trace out { type filter hook output priority -301; policy accept; }
+add rule ip6 fwb_ci_packet_trace out ip6 nexthdr icmpv6 meta nftrace set 1
+"""
+    with tempfile.TemporaryDirectory(prefix='fwb-nft-ipv6-trace-') as directory:
+        txn = Path(directory) / 'trace.nft'
+        trace_log = Path(directory) / 'events.log'
+        txn.write_text(spec)
+        call('nft', '-f', str(txn))
+        failure = None
+        try:
+            with trace_log.open('w+') as trace_stream:
+                monitor = subprocess.Popen(('nft', 'monitor', 'trace'),
+                                           stdout=trace_stream, stderr=subprocess.STDOUT,
+                                           text=True)
+                try:
+                    time.sleep(0.15)
+                    if monitor.poll() is not None:
+                        raise RuntimeError('nft monitor trace exited before the ping')
+                    peer(wan, 'ping', '-6', '-n', '-c', '1', '-W', '2', '2001:db8:1::1')
+                except RuntimeError as exc:
+                    failure = exc
+                finally:
+                    if monitor.poll() is None:
+                        monitor.terminate()
+                    try:
+                        monitor.communicate(timeout=3)
+                    except subprocess.TimeoutExpired:
+                        monitor.kill()
+                        monitor.communicate()
+                    if failure is not None:
+                        trace_stream.seek(0)
+                        print('=== IPv6 nft packet trace (real FWB policy) ===',
+                              file=sys.stderr, flush=True)
+                        print(trace_stream.read() or '[no traced ICMPv6 packets]',
+                              file=sys.stderr, flush=True)
+            if failure is not None:
+                checks = (
+                    ('Firewall IPv6 routes', ('ip', '-6', 'route', 'show')),
+                    ('Peer IPv6 routes', ('nsenter', '-t', str(wan), '-n', '--',
+                                          'ip', '-6', 'route', 'show')),
+                    ('Firewall IPv6 addresses', ('ip', '-6', 'addr', 'show', 'dev', 'eth0')),
+                    ('Peer IPv6 addresses', ('nsenter', '-t', str(wan), '-n', '--',
+                                             'ip', '-6', 'addr', 'show', 'dev', 'eth0')),
+                    ('Firewall IPv6 neighbors', ('ip', '-6', 'neigh', 'show', 'dev', 'eth0')),
+                    ('Peer IPv6 neighbors', ('nsenter', '-t', str(wan), '-n', '--',
+                                             'ip', '-6', 'neigh', 'show', 'dev', 'eth0')),
+                    ('FWB IPv6 filter', ('nft', '-a', 'list', 'table', 'ip6', 'fwb_filter')),
+                )
+                for title, args in checks:
+                    result = subprocess.run(args, text=True, capture_output=True, check=False)
+                    print('=== %s (exit=%s) ===\n%s%s' %
+                          (title, result.returncode, result.stdout, result.stderr),
+                          file=sys.stderr, flush=True)
+        finally:
+            removed = subprocess.run(('nft', 'delete', 'table', 'ip6',
+                                      'fwb_ci_packet_trace'), text=True,
+                                     capture_output=True, check=False)
+            if removed.returncode:
+                raise RuntimeError('could not remove isolated nft trace table: ' +
+                                   removed.stderr)
+        if failure is not None:
+            raise failure
+
+
 def main():
     if len(sys.argv) >= 2 and sys.argv[1] == '--worker':
         worker()
@@ -242,7 +316,7 @@ def main():
             probe_udp(wan, lan, '192.0.2.2', '192.0.2.2', 53, True,
                       source='192.0.2.100')
         elif case == 'icmpv6':
-            peer(wan, 'ping', '-6', '-n', '-c', '1', '-W', '2', '2001:db8:1::1')
+            diagnose_ipv6_echo(wan)
         print('PASS: real %s packets obey FWB-generated nftables policy' % case, flush=True)
     finally:
         for p in keepers:
