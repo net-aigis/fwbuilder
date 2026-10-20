@@ -23,6 +23,8 @@ CASES = {
         'udp-forward', r'^add rule ip fwb_filter FORWARD .*udp dport 53 .*accept\s*$'),
     'nft-ci-packet-snat.fw': (
         'snat', r'^add rule ip fwb_nat POSTROUTING .*snat to 192\.0\.2\.100\s*$'),
+    'nft-ci-packet-dnat.fw': (
+        'dnat', r'^add rule ip fwb_nat PREROUTING .*dnat to 192\.168\.1\.100\s*$'),
     'nft-ci-ipv6-icmp.fw': (
         'icmpv6', r'^add rule ip6 fwb_filter INPUT .*ip6 saddr 2001:db8::/32 .*icmpv6 type 128 .*accept\s*$'),
     'nft-ci-ipv6-ndp.fw': (
@@ -64,6 +66,7 @@ def worker():
             except socket.timeout:
                 result.write_text(json.dumps({'timeout': True}))
     elif role == 'tcp-server':
+        reply = len(sys.argv) > 6 and sys.argv[6] == '--reply'
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         s.bind((address, port))
@@ -74,7 +77,13 @@ def worker():
             connection, _ = s.accept()
             connection.settimeout(0.7)
             data = connection.recv(1024)
-            result.write_text(json.dumps({'payload': data.decode('ascii')}))
+            result.write_text(json.dumps({
+                'payload': data.decode('ascii'),
+                'local': connection.getsockname()[0],
+                'remote': connection.getpeername()[0],
+            }))
+            if reply:
+                connection.sendall(b'FWB-PACKET-REPLY')
             connection.close()
         except socket.timeout:
             result.write_text(json.dumps({'timeout': True}))
@@ -93,6 +102,7 @@ def worker():
                     result.write_text(json.dumps({
                         'payload': packet.decode('ascii'), 'source': sender[0]}))
     elif role == 'tcp-client':
+        reply = len(sys.argv) > 6 and sys.argv[6] == '--reply'
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.settimeout(0.8)
             try:
@@ -101,7 +111,14 @@ def worker():
                 result.write_text('connection-failed')
                 return
             s.sendall(b'FWB-PACKET-PROBE')
-            result.write_text('connected')
+            if reply:
+                received = s.recv(1024)
+                result.write_text(json.dumps({
+                    'reply': received.decode('ascii'),
+                    'peer': s.getpeername()[0],
+                }))
+            else:
+                result.write_text('connected')
     else:
         raise ValueError('Unknown worker: ' + role)
 
@@ -157,25 +174,43 @@ def probe_udp(namespace_server, namespace_client, bind, destination, port, expec
                 server.wait()
 
 
-def probe_tcp(namespace_client, destination, port, expect):
+def probe_tcp(namespace_client, destination, port, expect, *,
+              namespace_server=None, bind=None, reply=False, client_source=None):
+    if reply and (not expect or bind is None or client_source is None):
+        raise ValueError('TCP DNAT round-trip requires an allowed peer listener')
     with tempfile.TemporaryDirectory(prefix='fwb-nft-tcp-') as directory:
         result = Path(directory) / 'listener.json'
         attempt = Path(directory) / 'connect.out'
-        server = subprocess.Popen((sys.executable, __file__, '--worker',
-                                   'tcp-server', destination, str(port), str(result)),
+        server_bind = bind if bind is not None else destination
+        server_prefix = (('nsenter', '-t', str(namespace_server), '-n', '--')
+                         if namespace_server is not None else ())
+        flag = ('--reply',) if reply else ()
+        server = subprocess.Popen((*server_prefix, sys.executable, __file__, '--worker',
+                                   'tcp-server', server_bind, str(port), str(result), *flag),
                                   stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=True)
         try:
             wait_ready(result, server)
             peer(namespace_client, sys.executable, __file__, '--worker',
-                 'tcp-client', destination, str(port), str(attempt))
+                 'tcp-client', destination, str(port), str(attempt), *flag)
             _, err = server.communicate(timeout=4)
             if server.returncode:
                 raise RuntimeError('TCP listener failed: ' + err)
             received = json.loads(result.read_text())
             connected = attempt.read_text()
             if expect:
-                assert connected == 'connected' and received.get('payload') == 'FWB-PACKET-PROBE', (
-                    'allowed TCP/%s not delivered: %s, %s' % (port, connected, received))
+                if reply:
+                    response = json.loads(connected)
+                    assert received.get('payload') == 'FWB-PACKET-PROBE', (
+                        'DNAT request missing at backend: ' + repr(received))
+                    assert received.get('local') == server_bind, (
+                        'DNAT backend address incorrect: ' + repr(received))
+                    assert received.get('remote') == client_source, (
+                        'DNAT backend sees unexpected client: ' + repr(received))
+                    assert response == {'reply': 'FWB-PACKET-REPLY', 'peer': destination}, (
+                        'DNAT conntrack return packet incorrect: ' + repr(response))
+                else:
+                    assert connected == 'connected' and received.get('payload') == 'FWB-PACKET-PROBE', (
+                        'allowed TCP/%s not delivered: %s, %s' % (port, connected, received))
             else:
                 assert connected == 'connection-failed' and received.get('timeout') is True, (
                     'denied TCP/%s was delivered: %s, %s' % (port, connected, received))
@@ -358,6 +393,14 @@ def main():
     rules = Path(start_path).read_text()
     if not re.search(pattern, rules, re.MULTILINE):
         raise RuntimeError('Generated FWB rules lack expected %s expression' % case)
+    if case == 'dnat' and not re.search(
+            r'^add rule ip fwb_filter FORWARD .*tcp dport 80 .*accept\s*$',
+            rules, re.MULTILINE):
+        raise RuntimeError('DNAT fixture has no forwarding TCP/80 allow rule')
+    if case == 'dnat' and not re.search(
+            r'^add rule ip fwb_nat PREROUTING .*ip daddr 192\.0\.2\.101 .*tcp dport 80 .*dnat to 192\.168\.1\.100\s*$',
+            rules, re.MULTILINE):
+        raise RuntimeError('DNAT fixture lacks public destination and port match')
     if case == 'snat' and not re.search(
             r'^add rule ip fwb_filter FORWARD .*udp dport 53 .*accept\s*$',
             rules, re.MULTILINE):
@@ -400,6 +443,18 @@ def main():
             probe_udp(wan, lan, '192.0.2.2', '192.0.2.2', 53, True,
                       source='192.0.2.100', reply=True)
             print('PASS: SNAT forward translation and conntrack return traffic',
+                  flush=True)
+        elif case == 'dnat':
+            # The WAN must resolve the public DNAT endpoint; the LAN backend
+            # listens ONLY on the translated private address.
+            call('ip', '-4', 'addr', 'add', '192.0.2.101/32', 'dev', 'eth0')
+            peer(lan, 'ip', '-4', 'addr', 'add', '192.168.1.100/32', 'dev', 'eth1')
+            probe_tcp(wan, '192.0.2.101', 80, True,
+                      namespace_server=lan, bind='192.168.1.100', reply=True,
+                      client_source='192.0.2.2')
+            probe_tcp(wan, '192.0.2.101', 81, False,
+                      namespace_server=lan, bind='192.168.1.100')
+            print('PASS: DNAT public TCP/80 to private server and conntrack return traffic; TCP/81 denied',
                   flush=True)
         elif case == 'icmpv6':
             diagnose_ipv6_echo(wan)

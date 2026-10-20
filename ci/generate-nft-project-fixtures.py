@@ -212,6 +212,28 @@ def case_packet_snat(tree):
             rule.set('disabled', 'True')
 
 
+def case_packet_dnat(tree):
+    """WAN TCP/80 to public .101 must reach internal .100 via FWB DNAT."""
+    fw = prepare_packet_policy(tree, 'tcp-HTTP')
+    nat = only(fw, './' + tag('NAT'))
+    dnat = only(nat, "./%s[@id='id11861X30989']" % tag('NATRule'))
+    if dnat.get('action') != 'Translate':
+        raise ValueError('baseline destination NAT rule changed')
+    # Use the real original FWB destination-NAT rule and existing address
+    # objects; restrict translation to TCP/80 so the default deny is testable.
+    if (only(dnat, './' + tag('ODst'))[0].get('ref') != 'id11875X30989'
+            or only(dnat, './' + tag('TDst'))[0].get('ref') != 'id11890X30989'):
+        raise ValueError('baseline DNAT address objects changed')
+    replace_ref(dnat, 'OSrc', 'sysid0')
+    replace_ref(dnat, 'OSrv', 'tcp-HTTP')
+    replace_ref(dnat, 'TSrc', 'sysid0')
+    replace_ref(dnat, 'TSrv', 'sysid1')
+    for elem in ('OSrc', 'ODst', 'OSrv'):
+        only(dnat, './' + tag(elem)).set('neg', 'False')
+    for rule in nat.findall('./' + tag('NATRule')):
+        rule.set('disabled', 'False' if rule is dnat else 'True')
+
+
 CASES = {
     'ipv6-icmp': case_ipv6,
     'ipv6-ndp': case_ipv6_ndp,
@@ -224,6 +246,7 @@ CASES = {
     'packet-tcp-input': case_packet_tcp_input,
     'packet-udp-forward': case_packet_udp_forward,
     'packet-snat': case_packet_snat,
+    'packet-dnat': case_packet_dnat,
 }
 
 

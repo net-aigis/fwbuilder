@@ -123,6 +123,7 @@ run_case reject-timezone check_negative reject-timezone 'xt_time kernel timezone
 run_case packet-tcp-input check_positive packet-tcp-input 4 'tcp dport 80'
 run_case packet-udp-forward check_positive packet-udp-forward 4 'udp dport 53'
 run_case packet-snat check_positive packet-snat 4 'udp dport 53' 'snat to 192\.0\.2\.100'
+run_case packet-dnat check_positive packet-dnat 4 'tcp dport 80' 'ip daddr 192\.0\.2\.101' 'dnat to 192\.168\.1\.100'
 
 
 printf 'FWB XML fixture matrix: %d cases; %d passed; %d failed\n' \
