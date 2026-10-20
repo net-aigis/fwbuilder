@@ -137,7 +137,7 @@ for fw in "$@"; do
     # This runs inside the same disposable network namespace as the existing
     # transaction test.  It must not install handcrafted nftables policies.
     case "${fw##*/}" in
-        nft-ci-ipv6-icmp.fw|nft-ci-packet-tcp-input.fw|nft-ci-packet-udp-forward.fw|nft-ci-packet-snat.fw)
+        nft-ci-ipv6-icmp.fw|nft-ci-ipv6-ndp.fw|nft-ci-packet-tcp-input.fw|nft-ci-packet-udp-forward.fw|nft-ci-packet-snat.fw)
             packet_cases=$((packet_cases + 1))
             if python3 ci/check-nft-packets.py "${fw##*/}" "$dir/start.nft"; then
                 echo "RESULT: PASS packet-${fw##*/}"
@@ -171,8 +171,8 @@ for fw in "$@"; do
     echo 'PASS: start / rollback / reload / block / stop; foreign tables preserved'
 done
 
-if [ "${FWB_REQUIRE_PACKET_MATRIX:-0}" = 1 ] && [ "$packet_cases" -ne 4 ]; then
-    echo "ERROR: expected four FWB packet test policies, got $packet_cases" >&2
+if [ "${FWB_REQUIRE_PACKET_MATRIX:-0}" = 1 ] && [ "$packet_cases" -ne 5 ]; then
+    echo "ERROR: expected five FWB packet test policies, got $packet_cases" >&2
     exit 1
 fi
 printf 'FWB packet matrix: %s cases; %s passed; %s failed\n' \

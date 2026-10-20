@@ -111,6 +111,7 @@ run_case() {
 }
 
 run_case ipv6-icmp check_positive ipv6-icmp 6 'ip6 saddr' 'icmpv6 type'
+run_case ipv6-ndp check_positive ipv6-ndp 6 'icmpv6 type 128' 'icmpv6 type 135' 'icmpv6 type 136'
 run_case udp-workhours check_positive udp-workhours 4 'meta hour' 'meta day'
 run_case policy-fragments check_positive policy-fragments 4 'ip frag-off'
 run_case nat-fragments check_positive nat-fragments 4 'ip frag-off'
@@ -129,4 +130,4 @@ printf 'FWB XML fixture matrix: %d cases; %d passed; %d failed\n' \
 if (( failures )); then
     exit 1
 fi
-echo 'PASS: all real FWB XML fixture scenarios (7 supported, 3 rejected)'
+echo 'PASS: all real FWB XML fixture scenarios (8 supported, 3 rejected)'

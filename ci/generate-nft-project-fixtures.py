@@ -6,6 +6,7 @@ project and references real service, address and interval objects in that file.
 Generated XML belongs only to disposable CI artifacts, not the repository.
 """
 import argparse
+from copy import deepcopy
 from pathlib import Path
 import xml.etree.ElementTree as ET
 
@@ -97,6 +98,33 @@ def case_ipv6(tree):
         iface.insert(len(iface) - 1, v6)  # immediately before InterfaceOptions
 
 
+def case_ipv6_ndp(tree):
+    """IPv6 echo via dynamic neighbor discovery, with explicit FWB NS/NA permits."""
+    case_ipv6(tree)
+    root = tree.getroot()
+    fw = only(root, ".//%s[@name='nft-test']" % tag('Firewall'))
+    policy = only(fw, './' + tag('Policy'))
+    echo = only(policy, "./%s[@id='id9001X30989']" % tag('PolicyRule'))
+    deny = only(policy, "./%s[@id='id2830X30989']" % tag('PolicyRule'))
+    if list(policy)[:2] != [echo, deny]:
+        raise ValueError('unexpected IPv6 allow/fallback order for NDP fixture')
+    # Keep the echo allow restricted to the documentation source prefix.
+    # Neighbor discovery can legitimately originate from :: or fe80::/10,
+    # so its two *separate* rules need wildcard source/destination matches.
+    for pos, suffix, service in (
+            (1, 'ns', 'ipv6-icmp-neighbrsol'),
+            (2, 'na', 'ipv6-icmp-neighbradv')):
+        rule = deepcopy(echo)
+        rule.set('id', 'fwb-ci-ndp-' + suffix)
+        rule.set('position', str(pos))
+        rule.set('comment', 'CI: allow ICMPv6 neighbor ' + suffix.upper())
+        replace_ref(rule, 'Src', 'sysid0')
+        replace_ref(rule, 'Dst', 'sysid0')
+        replace_ref(rule, 'Srv', service)
+        policy.insert(pos, rule)
+    deny.set('position', '3')
+
+
 def case_udp_workhours(tree):
     _, _, pr, _ = prepare(tree)
     replace_ref(pr, 'Srv', 'udp-DNS')
@@ -186,6 +214,7 @@ def case_packet_snat(tree):
 
 CASES = {
     'ipv6-icmp': case_ipv6,
+    'ipv6-ndp': case_ipv6_ndp,
     'udp-workhours': case_udp_workhours,
     'policy-fragments': case_policy_fragments,
     'nat-fragments': case_nat_fragments,
@@ -210,7 +239,7 @@ def main():
         if root.tag != tag('FWObjectDatabase'):
             raise ValueError('not an FWB object database')
         mutate(tree)
-        if name == 'ipv6-icmp':
+        if name in ('ipv6-icmp', 'ipv6-ndp'):
             fw = only(root, ".//%s[@name='nft-test']" % tag('Firewall'))
             policy = only(fw, './' + tag('Policy'))
             if (policy.get('ipv4_rule_set'), policy.get('ipv6_rule_set')) != ('False', 'True'):
@@ -218,6 +247,17 @@ def main():
             rules = policy.findall('./' + tag('PolicyRule'))
             expected = [('id9001X30989', '0', 'Accept'),
                         ('id2830X30989', '1', 'Deny')]
+            if name == 'ipv6-ndp':
+                expected = [('id9001X30989', '0', 'Accept'),
+                            ('fwb-ci-ndp-ns', '1', 'Accept'),
+                            ('fwb-ci-ndp-na', '2', 'Accept'),
+                            ('id2830X30989', '3', 'Deny')]
+                for rule, service in zip(rules[1:3],
+                                         ('ipv6-icmp-neighbrsol', 'ipv6-icmp-neighbradv')):
+                    if (only(rule, './' + tag('Src'))[0].get('ref') != 'sysid0'
+                            or only(rule, './' + tag('Dst'))[0].get('ref') != 'sysid0'
+                            or only(rule, './' + tag('Srv'))[0].get('ref') != service):
+                        raise ValueError('invalid NDP rule references')
             actual = [(r.get('id'), r.get('position'), r.get('action')) for r in rules]
             if actual != expected:
                 raise ValueError('IPv6 fixture has an unexpected policy rule order: ' + repr(actual))

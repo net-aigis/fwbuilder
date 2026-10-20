@@ -25,6 +25,8 @@ CASES = {
         'snat', r'^add rule ip fwb_nat POSTROUTING .*snat to 192\.0\.2\.100\s*$'),
     'nft-ci-ipv6-icmp.fw': (
         'icmpv6', r'^add rule ip6 fwb_filter INPUT .*ip6 saddr 2001:db8::/32 .*icmpv6 type 128 .*accept\s*$'),
+    'nft-ci-ipv6-ndp.fw': (
+        'icmpv6-ndp', r'^add rule ip6 fwb_filter INPUT .*ip6 saddr 2001:db8::/32 .*icmpv6 type 128 .*accept\s*$'),
 }
 
 
@@ -176,7 +178,7 @@ def interface_mac(pid=None):
     return mac
 
 
-def setup_network(wan, lan):
+def setup_network(wan, lan, static_ipv6_neighbors=True):
     # Outer namespace is the disposable firewall. Anonymous peer namespaces
     # live only for this process; no /run/netns host mountpoints are used.
     call('ip', 'link', 'set', 'lo', 'up')
@@ -203,6 +205,10 @@ def setup_network(wan, lan):
 
     call('ip', '-6', 'addr', 'add', '2001:db8:1::1/64', 'dev', 'eth0', 'nodad')
     peer(wan, 'ip', '-6', 'addr', 'add', '2001:db8:1::2/64', 'dev', 'eth0', 'nodad')
+    if not static_ipv6_neighbors:
+        # NDP case intentionally has no preloaded L2 cache. Firewall-generated
+        # NS/NA permissions must allow the kernel to discover both peers.
+        return
     # A network-namespace-only nsenter does NOT guarantee /sys/class/net
     # shows the peer's interfaces: sysfs is tied to the mount namespace.
     # Query the active network namespace via rtnetlink instead.
@@ -294,6 +300,24 @@ add rule ip6 fwb_ci_packet_trace out ip6 nexthdr icmpv6 meta nftrace set 1
             raise failure
 
 
+def check_dynamic_ipv6_neighbor(pid, destination, expected_mac):
+    """Verify genuine nonpermanent NDP cache entries, not a synthetic route."""
+    cmd = ('ip', '-6', '-j', 'neigh', 'show', 'to', destination, 'dev', 'eth0')
+    raw = peer(pid, *cmd, capture=True) if pid else call(*cmd, capture=True)
+    records = json.loads(raw)
+    if len(records) != 1 or records[0].get('dst') != destination:
+        raise RuntimeError('IPv6 neighbor missing after echo: ' + destination)
+    record = records[0]
+    if record.get('lladdr', '').lower() != expected_mac:
+        raise RuntimeError('NDP learned wrong MAC: ' + repr(record))
+    states = record.get('state', [])
+    if isinstance(states, str):
+        states = [states]
+    if 'PERMANENT' in states or any(state in ('FAILED', 'INCOMPLETE') for state in states):
+        raise RuntimeError('NDP entry not dynamically resolved: ' + repr(record))
+
+
+
 def main():
     if len(sys.argv) >= 2 and sys.argv[1] == '--worker':
         worker()
@@ -311,8 +335,14 @@ def main():
             r'^add rule ip fwb_filter FORWARD .*udp dport 53 .*accept\s*$',
             rules, re.MULTILINE):
         raise RuntimeError('SNAT fixture has no forwarding UDP allow rule')
-    if case == 'icmpv6' and 'add table ip6 fwb_filter' not in rules:
+    if case in ('icmpv6', 'icmpv6-ndp') and 'add table ip6 fwb_filter' not in rules:
         raise RuntimeError('IPv6 fixture has no IPv6 filter table')
+
+    if case == 'icmpv6-ndp':
+        for icmp_type in (135, 136):
+            if not re.search(r'^add rule ip6 fwb_filter (INPUT|OUTPUT) .*icmpv6 type %s .*accept\s*$' % icmp_type,
+                             rules, re.MULTILINE):
+                raise RuntimeError('FWB IPv6 policy lacks explicit NDP type %s allow' % icmp_type)
 
     keepers = []
     try:
@@ -332,7 +362,7 @@ def main():
             else:
                 raise RuntimeError('peer network namespace did not start')
         wan, lan = [p.pid for p in keepers]
-        setup_network(wan, lan)
+        setup_network(wan, lan, static_ipv6_neighbors=(case != 'icmpv6-ndp'))
         if case == 'tcp-input':
             probe_tcp(wan, '192.0.2.1', 80, True)
             probe_tcp(wan, '192.0.2.1', 81, False)
@@ -344,6 +374,11 @@ def main():
                       source='192.0.2.100')
         elif case == 'icmpv6':
             diagnose_ipv6_echo(wan)
+        elif case == 'icmpv6-ndp':
+            peer(wan, 'ping', '-6', '-n', '-c', '1', '-W', '3', '2001:db8:1::1')
+            check_dynamic_ipv6_neighbor(None, '2001:db8:1::2', interface_mac(wan))
+            check_dynamic_ipv6_neighbor(wan, '2001:db8:1::1', interface_mac())
+            print('PASS: IPv6 echo with dynamically discovered NDP neighbors', flush=True)
         print('PASS: real %s packets obey FWB-generated nftables policy' % case, flush=True)
     finally:
         for p in keepers:
