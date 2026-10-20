@@ -62,6 +62,31 @@ check_foreign() {
     nft list table ip fwb_ci_foreign >/dev/null
     nft list table ip6 fwb_ci_foreign >/dev/null
 }
+# Reuse this invariant after both the direct-transaction and generated-shell
+# STOP paths. FWB must not leave stale filter, NAT or mangle tables behind.
+check_no_owned_tables() {
+    for family in ip ip6; do
+        for table in fwb_filter fwb_mangle fwb_nat; do
+            if nft list table "$family" "$table" >/dev/null 2>&1; then
+                echo "ERROR: $family $table survived stop" >&2
+                return 1
+            fi
+        done
+    done
+}
+# The generated script returns 3 when FWB is inactive, 0 when active.
+# The distinction matters when third-party nftables tables still exist.
+check_shell_status() {
+    expected_status=$1
+    status_log=$2
+    actual_status=0
+    sh "$fw" status >"$status_log" 2>&1 || actual_status=$?
+    if [ "$actual_status" -ne "$expected_status" ]; then
+        echo "ERROR: generated FWB status returned $actual_status; expected $expected_status" >&2
+        cat "$status_log" >&2
+        return 1
+    fi
+}
 check_foreign
 
 index=0
@@ -71,6 +96,7 @@ block_cases=0
 block_failures=0
 recovery_cases=0
 recovery_failures=0
+shell_lifecycle_cases=0
 for fw in "$@"; do
     [ -s "$fw" ] || { echo "Missing policy: $fw" >&2; exit 1; }
     index=$((index + 1))
@@ -197,15 +223,42 @@ for fw in "$@"; do
     # a comment; the staged deletions constitute its runtime operation.
     { stage_owned_deletions; cat "$dir/stop.nft"; } > "$dir/stop-transaction.nft"
     nft -f "$dir/stop-transaction.nft"
-    for family in ip ip6; do
-        for table in fwb_filter fwb_mangle fwb_nat; do
-            if nft list table "$family" "$table" >/dev/null 2>&1; then
-                echo "ERROR: $family $table survived stop" >&2
-                exit 1
-            fi
-        done
-    done
+    check_no_owned_tables
     check_foreign
+
+    # Exercise the generated *.fw ENTRYPOINTS, not only the nft heredocs.
+    # These three actions perform no module loading, routing changes, or
+    # interface configuration. Never run generated `start` here: unlike
+    # block/status/stop it may modify kernel modules and network topology.
+    case "${fw##*/}" in
+        nft-ci-ipv6-ndp.fw)
+            shell_lifecycle_cases=$((shell_lifecycle_cases + 1))
+            check_shell_status 3 "$dir/generated-status-inactive.log"
+            sh "$fw" block >"$dir/generated-block.log" 2>&1 || {
+                cat "$dir/generated-block.log" >&2
+                echo 'ERROR: generated .fw block action failed' >&2
+                exit 1
+            }
+            for family in ip ip6; do
+                nft list chain "$family" fwb_filter INPUT | grep -Eq 'policy drop' || {
+                    echo "ERROR: generated shell block lacks $family INPUT drop" >&2
+                    exit 1
+                }
+            done
+            check_foreign
+            check_shell_status 0 "$dir/generated-status-active.log"
+            sh "$fw" stop >"$dir/generated-stop.log" 2>&1 || {
+                cat "$dir/generated-stop.log" >&2
+                echo 'ERROR: generated .fw stop action failed' >&2
+                exit 1
+            }
+            check_no_owned_tables
+            check_foreign
+            check_shell_status 3 "$dir/generated-status-stopped.log"
+            echo 'RESULT: PASS generated-shell-block-status-stop'
+            ;;
+    esac
+
     echo 'PASS: start / rollback / reload / block / stop; foreign tables preserved'
 done
 
@@ -227,5 +280,11 @@ if [ "${FWB_REQUIRE_PACKET_MATRIX:-0}" = 1 ] && [ "$recovery_cases" -ne 3 ]; the
 fi
 printf 'FWB emergency recovery matrix: %s cases; %s passed; %s failed\n' \
     "$recovery_cases" "$((recovery_cases - recovery_failures))" "$recovery_failures"
+if [ "${FWB_REQUIRE_PACKET_MATRIX:-0}" = 1 ] && [ "$shell_lifecycle_cases" -ne 1 ]; then
+    echo "ERROR: expected one generated shell lifecycle test, got $shell_lifecycle_cases" >&2
+    exit 1
+fi
+printf 'FWB generated shell lifecycle matrix: %s cases; %s passed; 0 failed\n' \
+    "$shell_lifecycle_cases" "$shell_lifecycle_cases"
 [ "$packet_failures" -eq 0 ] && [ "$block_failures" -eq 0 ] && [ "$recovery_failures" -eq 0 ] || exit 1
 echo 'Native nftables kernel transaction and coexistence tests passed in isolated network namespace.'
