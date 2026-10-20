@@ -48,15 +48,21 @@ def worker():
     port = int(sys.argv[4])
     result = Path(sys.argv[5])
     if role == 'udp-server':
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.settimeout(1.6)
-        s.bind((address, port))
-        result.with_suffix('.ready').touch()
-        try:
-            data, (source, _) = s.recvfrom(1024)
-            result.write_text(json.dumps({'payload': data.decode('ascii'), 'source': source}))
-        except socket.timeout:
-            result.write_text(json.dumps({'timeout': True}))
+        # Only the SNAT fixture sends an application reply. This checks that
+        # conntrack translates the return packet back to the real LAN client.
+        reply = len(sys.argv) > 6 and sys.argv[6] == '--reply'
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
+            s.settimeout(1.6)
+            s.bind((address, port))
+            result.with_suffix('.ready').touch()
+            try:
+                data, sender = s.recvfrom(1024)
+                result.write_text(json.dumps({
+                    'payload': data.decode('ascii'), 'source': sender[0]}))
+                if reply:
+                    s.sendto(b'FWB-PACKET-REPLY', sender)
+            except socket.timeout:
+                result.write_text(json.dumps({'timeout': True}))
     elif role == 'tcp-server':
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -73,8 +79,19 @@ def worker():
         except socket.timeout:
             result.write_text(json.dumps({'timeout': True}))
     elif role == 'udp-client':
+        reply = len(sys.argv) > 6 and sys.argv[6] == '--reply'
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
+            if reply:
+                s.settimeout(2.0)
             s.sendto(b'FWB-PACKET-PROBE', (address, port))
+            if reply:
+                try:
+                    packet, sender = s.recvfrom(1024)
+                except socket.timeout:
+                    result.write_text(json.dumps({'timeout': True}))
+                else:
+                    result.write_text(json.dumps({
+                        'payload': packet.decode('ascii'), 'source': sender[0]}))
     elif role == 'tcp-client':
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.settimeout(0.8)
@@ -100,17 +117,21 @@ def wait_ready(path, proc):
     raise RuntimeError('listener not ready: ' + str(path))
 
 
-def probe_udp(namespace_server, namespace_client, bind, destination, port, expect, source=None):
+def probe_udp(namespace_server, namespace_client, bind, destination, port, expect, source=None, reply=False):
     with tempfile.TemporaryDirectory(prefix='fwb-nft-udp-') as directory:
         result = Path(directory) / 'receiver.json'
+        returned = Path(directory) / 'client.json'
+        if reply and (not expect or source is None):
+            raise ValueError('UDP round-trip requires an allowed SNAT probe')
+        flag = ('--reply',) if reply else ()
         prefix = ('nsenter', '-t', str(namespace_server), '-n', '--') if namespace_server else ()
         server = subprocess.Popen((*prefix, sys.executable, __file__, '--worker',
-                                   'udp-server', bind, str(port), str(result)),
+                                   'udp-server', bind, str(port), str(result), *flag),
                                   stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=True)
         try:
             wait_ready(result, server)
             peer(namespace_client, sys.executable, __file__, '--worker',
-                 'udp-client', destination, str(port), str(result))
+                 'udp-client', destination, str(port), str(returned), *flag)
             _, err = server.communicate(timeout=4)
             if server.returncode:
                 raise RuntimeError('UDP listener failed: ' + err)
@@ -121,6 +142,12 @@ def probe_udp(namespace_server, namespace_client, bind, destination, port, expec
                 if source is not None:
                     assert received.get('source') == source, (
                         'SNAT source mismatch: expected %s, got %s' % (source, received))
+                if reply:
+                    returned_packet = json.loads(returned.read_text())
+                    assert returned_packet.get('payload') == 'FWB-PACKET-REPLY', (
+                        'SNAT return traffic missing: %s' % returned_packet)
+                    assert returned_packet.get('source') == destination, (
+                        'SNAT return traffic from unexpected IP: %s' % returned_packet)
             else:
                 assert received.get('timeout') is True, (
                     'denied UDP/%s reached destination: %s' % (port, received))
@@ -371,7 +398,9 @@ def main():
             probe_udp(wan, lan, '192.0.2.2', '192.0.2.2', 54, False)
         elif case == 'snat':
             probe_udp(wan, lan, '192.0.2.2', '192.0.2.2', 53, True,
-                      source='192.0.2.100')
+                      source='192.0.2.100', reply=True)
+            print('PASS: SNAT forward translation and conntrack return traffic',
+                  flush=True)
         elif case == 'icmpv6':
             diagnose_ipv6_echo(wan)
         elif case == 'icmpv6-ndp':
