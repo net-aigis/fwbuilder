@@ -69,6 +69,8 @@ packet_cases=0
 packet_failures=0
 block_cases=0
 block_failures=0
+recovery_cases=0
+recovery_failures=0
 for fw in "$@"; do
     [ -s "$fw" ] || { echo "Missing policy: $fw" >&2; exit 1; }
     index=$((index + 1))
@@ -172,6 +174,25 @@ for fw in "$@"; do
             ;;
     esac
 
+    # Emergency recovery: apply the ORIGINAL FWB-generated start transaction
+    # again, not a handmade allow rule. Prove that traffic blocked above is
+    # permitted again and that unrelated tables survive the transition.
+    case "${fw##*/}" in
+        nft-ci-packet-tcp-input.fw|nft-ci-packet-udp-forward.fw|nft-ci-ipv6-icmp.fw)
+            recovery_cases=$((recovery_cases + 1))
+            { stage_owned_deletions; cat "$dir/start.nft"; } > "$dir/recover-transaction.nft"
+            if nft -f "$dir/recover-transaction.nft" \
+                && check_active_filters \
+                && check_foreign \
+                && python3 ci/check-nft-packets.py "${fw##*/}" "$dir/start.nft"; then
+                echo "RESULT: PASS emergency-recovery-${fw##*/}"
+            else
+                recovery_failures=$((recovery_failures + 1))
+                echo "RESULT: FAIL emergency-recovery-${fw##*/}" >&2
+            fi
+            ;;
+    esac
+
     # Stop: remove FWB-owned tables only. Actual stop heredoc is generally
     # a comment; the staged deletions constitute its runtime operation.
     { stage_owned_deletions; cat "$dir/stop.nft"; } > "$dir/stop-transaction.nft"
@@ -200,5 +221,11 @@ if [ "${FWB_REQUIRE_PACKET_MATRIX:-0}" = 1 ] && [ "$block_cases" -ne 3 ]; then
 fi
 printf 'FWB emergency block matrix: %s cases; %s passed; %s failed\n' \
     "$block_cases" "$((block_cases - block_failures))" "$block_failures"
-[ "$packet_failures" -eq 0 ] && [ "$block_failures" -eq 0 ] || exit 1
+if [ "${FWB_REQUIRE_PACKET_MATRIX:-0}" = 1 ] && [ "$recovery_cases" -ne 3 ]; then
+    echo "ERROR: expected three emergency recovery packet probes, got $recovery_cases" >&2
+    exit 1
+fi
+printf 'FWB emergency recovery matrix: %s cases; %s passed; %s failed\n' \
+    "$recovery_cases" "$((recovery_cases - recovery_failures))" "$recovery_failures"
+[ "$packet_failures" -eq 0 ] && [ "$block_failures" -eq 0 ] && [ "$recovery_failures" -eq 0 ] || exit 1
 echo 'Native nftables kernel transaction and coexistence tests passed in isolated network namespace.'
