@@ -384,11 +384,18 @@ def main():
     if len(sys.argv) >= 2 and sys.argv[1] == '--worker':
         worker()
         return
-    if len(sys.argv) != 3 or sys.argv[1] not in CASES:
-        raise SystemExit('Usage: check-nft-packets.py nft-ci-CASE.fw START.nft')
+    if (len(sys.argv) not in (3, 4) or sys.argv[1] not in CASES
+            or (len(sys.argv) == 4 and sys.argv[3] != '--expect-block')):
+        raise SystemExit('Usage: check-nft-packets.py nft-ci-CASE.fw START.nft [--expect-block]')
     if os.geteuid() != 0 or os.stat('/proc/self/ns/net').st_ino == os.stat('/proc/1/ns/net').st_ino:
         raise SystemExit('REFUSING packet tests outside isolated root network namespace')
-    fw_name, start_path = sys.argv[1:]
+    fw_name, start_path = sys.argv[1:3]
+    expect_block = len(sys.argv) == 4
+    if expect_block and fw_name not in (
+            'nft-ci-packet-tcp-input.fw',
+            'nft-ci-packet-udp-forward.fw',
+            'nft-ci-ipv6-icmp.fw'):
+        raise RuntimeError('no independently verified emergency block probe for ' + fw_name)
     case, pattern = CASES[fw_name]
     rules = Path(start_path).read_text()
     if not re.search(pattern, rules, re.MULTILINE):
@@ -432,7 +439,27 @@ def main():
             else:
                 raise RuntimeError('peer network namespace did not start')
         wan, lan = [p.pid for p in keepers]
-        setup_network(wan, lan, static_ipv6_neighbors=(case != 'icmpv6-ndp'))
+        setup_network(wan, lan, static_ipv6_neighbors=(expect_block or case != 'icmpv6-ndp'))
+        if expect_block:
+            # The same FWB fixture must have allowed this exact packet before
+            # emergency block (checked in the normal runtime test above).
+            # Exercise the kernel again AFTER the FWB-generated BLOCK transaction.
+            if case == 'tcp-input':
+                probe_tcp(wan, '192.0.2.1', 80, False)
+            elif case == 'udp-forward':
+                probe_udp(wan, lan, '192.0.2.2', '192.0.2.2', 53, False)
+            elif case == 'icmpv6':
+                result = subprocess.run(
+                    ('nsenter', '-t', str(wan), '-n', '--',
+                     'ping', '-6', '-n', '-c', '1', '-W', '2', '2001:db8:1::1'),
+                    text=True, capture_output=True, check=False)
+                output = result.stdout + result.stderr
+                if (result.returncode != 1 or not re.search(
+                        r'1 packets transmitted, 0 received', output)):
+                    raise RuntimeError('IPv6 echo not demonstrably blocked: ' + output)
+            print('PASS: emergency block denies previously allowed %s traffic' % case,
+                  flush=True)
+            return
         if case == 'tcp-input':
             probe_tcp(wan, '192.0.2.1', 80, True)
             probe_tcp(wan, '192.0.2.1', 81, False)
