@@ -326,6 +326,17 @@ jobs:
           sudo unshare --net -- env FWB_REQUIRE_PACKET_MATRIX=1 sh ci/check-nft-runtime.sh "${policies[@]}" \
             2>&1 | tee ci-logs/nft-native-runtime.log
 
+      - name: Exercise native dynamic address sets in isolated kernel
+        shell: bash
+        run: |
+          set -euo pipefail
+          policy="ci-artifact/nft-sets-output/nft-ci-dynamic-address-sets.fw"
+          test -s "$policy"
+          # The helper adds a second namespace and drops globally dangerous
+          # capabilities before entering the generated shell start path.
+          sudo unshare --net -- sh ci/check-nft-dynamic-sets.sh "$policy" \
+            2>&1 | tee ci-logs/nft-dynamic-sets.log
+
       - name: Upload syntax-check diagnostics
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
@@ -334,5 +345,6 @@ jobs:
           path: |
             ci-logs/nft-native-syntax.log
             ci-logs/nft-native-runtime.log
+            ci-logs/nft-dynamic-sets.log
           if-no-files-found: warn
           retention-days: 14

@@ -95,6 +95,31 @@ check_negative() {
     echo "PASS: $name rejected by the specific native compiler guard"
 }
 
+# The set fixture is a full generated shell script. Its nft transactions are
+# assembled at runtime from an external file, not from a static heredoc.
+# Keep it out of the direct-transaction checks, and test it via real start.
+check_dynamic_sets() {
+    local name=dynamic-address-sets
+    mkdir -p "$work/$name" "$output/../nft-sets-output"
+    if ! "$compiler" -4 -f "$work/xml/$name.fwb" -d "$work/$name" nft-test \
+         > "$work/$name.compile.log" 2>&1; then
+        cat "$work/$name.compile.log" >&2
+        return 1
+    fi
+    local -a generated=("$work/$name"/*.fw)
+    [[ ${#generated[@]} == 1 && -s ${generated[0]} ]] || return 1
+    sh -n "${generated[0]}" || return 1
+    grep -Fq 'fwb_nft_stage_address_tables || exit 1' "${generated[0]}" || return 1
+    grep -Eq 'add rule ip fwb_filter .*ip saddr @bad_guys' "${generated[0]}" || return 1
+    grep -Fq "fwb_nft_stage_one_address_table 'bad_guys' '/tmp/fwb-pr6-ci-address-set.data'" "${generated[0]}" || return 1
+    if grep -Eq '^add table ip fwb_filter[[:space:]]*$' "${generated[0]}"; then
+        echo 'Unexpected duplicate add-table declaration in set mode' >&2
+        return 1
+    fi
+    cp -- "${generated[0]}" "$output/../nft-sets-output/nft-ci-dynamic-address-sets.fw"
+    echo 'PASS: dynamic-address-sets generated from real FWB AddressTable'
+}
+
 # Do not let the first failing fixture hide the other six outcomes.
 failures=0
 cases=0
@@ -124,6 +149,7 @@ run_case packet-tcp-input check_positive packet-tcp-input 4 'tcp dport 80'
 run_case packet-udp-forward check_positive packet-udp-forward 4 'udp dport 53'
 run_case packet-snat check_positive packet-snat 4 'udp dport 53' 'snat to 192\.0\.2\.100'
 run_case packet-dnat check_positive packet-dnat 4 'tcp dport 80' 'ip daddr 192\.0\.2\.101' 'dnat to 192\.168\.1\.100'
+run_case dynamic-address-sets check_dynamic_sets
 
 
 printf 'FWB XML fixture matrix: %d cases; %d passed; %d failed\n' \
@@ -131,4 +157,4 @@ printf 'FWB XML fixture matrix: %d cases; %d passed; %d failed\n' \
 if (( failures )); then
     exit 1
 fi
-echo 'PASS: all real FWB XML fixture scenarios (8 supported, 3 rejected)'
+echo 'PASS: real FWB XML fixture matrix including dynamic address tables'

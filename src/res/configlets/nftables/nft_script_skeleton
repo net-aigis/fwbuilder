@@ -99,9 +99,6 @@ case "$cmd" in
         {{if prolog_after_flush}} prolog_commands {{endif}}
         script_body
         ip_forward
-        {{if using_ipset}}
-        load_run_time_address_table_files
-        {{endif}}
         epilog_commands
         RETVAL=$?
         ;;
@@ -142,22 +139,26 @@ case "$cmd" in
 {{if using_ipset}}
 ## Usage:  script.fw reload_address_table <address_table_name> <file_name>
     reload_address_table)
-        reload_address_table $2 $3
+        reload_address_table "$2" "$3"
+        RETVAL=$?
         ;;
 
 ## Usage:  script.fw add_to_address_table <address_table_name> <file_name> <address>
     add_to_address_table)
-        add_to_address_table $2 $3 $4
+        add_to_address_table "$2" "$3" "$4"
+        RETVAL=$?
         ;;
 
 ## Usage:  script.fw remove_from_address_table <address_table_name> <file_name> <address>
     remove_from_address_table)
-        remove_from_address_table $2 $3 $4
+        remove_from_address_table "$2" "$3" "$4"
+        RETVAL=$?
         ;;
 
 ## Usage:  script.fw test_address_table <address_table_name> <address>
     test_address_table)
-        test_address_table $2 $3
+        test_address_table "$2" "$3"
+        RETVAL=$?
         ;;
 {{endif}}
 

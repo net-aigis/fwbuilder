@@ -42,10 +42,11 @@ root = ET.parse('src/res/platform/nftables.xml').getroot()
 node = root.find('./Target/options/default/use_nft_sets')
 assert node is not None and node.text.strip().lower() == 'false', 'unsafe default nft set mode'
 driver = Path('src/nftlib/CompilerDriver_nft_run.cpp').read_text()
-assert 'if (options->getBool("use_nft_sets"))' in driver, 'set mode guard removed without tests'
-print('PASS: default nft firewall does not enable incomplete dynamic address sets')
+assert 'fwb_nft_stage_address_tables || exit 1' in driver, 'atomic initial set staging missing'
+print('PASS: default sets disabled; explicit sets staged in same atomic transaction')
 PY_NFT_DEFAULTS
 echo 'PASS: native NAT IP, policy IPv4 TOS and CONNMARK generator guards'
+sh ci/check-nft-address-table-transaction.sh
 "$bin" --grammar > "$fixture"
 if command -v nft >/dev/null 2>&1; then
     nft --check --file "$fixture"

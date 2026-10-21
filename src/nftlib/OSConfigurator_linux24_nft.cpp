@@ -161,6 +161,19 @@ string OSConfigurator_linux24_nft::printShellFunctions(bool have_ipv6)
     return output.join("\n").toStdString();
 }
 
+namespace {
+std::string fwbNftShellQuote(const std::string &value)
+{
+    std::string result("'");
+    for (char ch : value)
+    {
+        if (ch == '\'') result += "'\"'\"'";
+        else result += ch;
+    }
+    return result + "'";
+}
+}
+
 string OSConfigurator_linux24_nft::printRunTimeAddressTablesCode()
 {
     Configlet conf(fw, "nftables", "nft_run_time_address_tables");
@@ -172,14 +185,15 @@ string OSConfigurator_linux24_nft::printRunTimeAddressTablesCode()
     map<string, string>::const_iterator i;
     for (i=address_tables.begin(); i!=address_tables.end(); ++i)
     {
-        string at_name = i->first;
-        string at_file = i->second;
+        const string at_name = normalizeSetName(i->first);
+        const string &at_file = i->second;
         if (!at_file.empty())
         {
-            check_ostr << "check_file \"" + at_name +
-                "\" \"" + at_file + "\"" << endl;
-            load_ostr << "reload_address_table \"" + at_name +
-                "\" \"" + at_file + "\"" << endl;
+            check_ostr << "check_file " << fwbNftShellQuote(at_name)
+                       << " " << fwbNftShellQuote(at_file) << endl;
+            load_ostr << "fwb_nft_stage_one_address_table "
+                      << fwbNftShellQuote(at_name) << " "
+                      << fwbNftShellQuote(at_file) << " || return 1" << endl;
         }
     }
 

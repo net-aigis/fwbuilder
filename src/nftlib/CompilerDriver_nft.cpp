@@ -196,6 +196,8 @@ string CompilerDriver_nft::dumpScript(Firewall *fw,
                         !nat_script.empty());
 
     conf->setVariable("have_script", have_script);
+    conf->setVariable("not_using_ipset",
+                      !fw->getOptionsObject()->getBool("use_nft_sets"));
     conf->setVariable("ipv4", !ipv6_policy);
     conf->setVariable("ipv6",  ipv6_policy);
 

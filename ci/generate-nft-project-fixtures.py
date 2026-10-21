@@ -234,6 +234,24 @@ def case_packet_dnat(tree):
         rule.set('disabled', 'False' if rule is dnat else 'True')
 
 
+def case_dynamic_address_sets(tree):
+    """Real FWB AddressTable: an IPv4 allowlist with atomic runtime sets."""
+    fw = prepare_packet_policy(tree, 'tcp-HTTP')
+    policy = only(fw, './' + tag('Policy'))
+    allow = only(policy, "./%s[@id='id9001X30989']" % tag('PolicyRule'))
+    replace_ref(allow, 'Src', 'id3002X5927')
+    table = only(tree.getroot(), ".//%s[@id='id3002X5927']" % tag('AddressTable'))
+    if table.get('run_time') != 'True' or table.get('name') != 'bad_guys':
+        raise ValueError('unexpected baseline run-time address table')
+    table.set('filename', '/tmp/fwb-pr6-ci-address-set.data')
+    opts = only(fw, './' + tag('FirewallOptions'))
+    matches = opts.findall("./%s[@name='use_nft_sets']" % tag('Option'))
+    if len(matches) > 1:
+        raise ValueError('duplicate use_nft_sets options')
+    option = matches[0] if matches else ET.SubElement(opts, tag('Option'), {'name': 'use_nft_sets'})
+    option.text = 'True'
+
+
 CASES = {
     'ipv6-icmp': case_ipv6,
     'ipv6-ndp': case_ipv6_ndp,
@@ -247,6 +265,7 @@ CASES = {
     'packet-udp-forward': case_packet_udp_forward,
     'packet-snat': case_packet_snat,
     'packet-dnat': case_packet_dnat,
+    'dynamic-address-sets': case_dynamic_address_sets,
 }
 
 

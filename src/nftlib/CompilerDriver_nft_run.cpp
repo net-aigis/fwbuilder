@@ -201,9 +201,6 @@ QString CompilerDriver_nft::run(const std::string &cluster_id,
         if (!useNftablesAtomic(options))
             abort("Native nftables requires atomic mode; non-atomic shell "
                   "mode is not supported");
-        if (options->getBool("use_nft_sets"))
-            abort("Native nftables runtime address sets require transaction-"
-                  "safe initialization; use_nft_sets is not yet supported");
         string s;
 
         // Note that fwobjectname may be different from the name of the
@@ -856,6 +853,8 @@ QString CompilerDriver_nft::run(const std::string &cluster_id,
             // Fail closed: a rejected nft transaction must not fall through
             // into ip_forward/epilog and report a successful activation.
             script << "fwb_nft_begin_transaction || exit 1\n";
+            if (options->getBool("use_nft_sets"))
+                script << "fwb_nft_stage_address_tables || exit 1\n";
             script << "cat >> \"$FWB_NFT_TXN\" <<'FWB_NFT_RULESET'\n";
             script << QString::fromUtf8(generated_script.c_str());
             script << "\nFWB_NFT_RULESET\n";
