@@ -97,6 +97,7 @@ block_failures=0
 recovery_cases=0
 recovery_failures=0
 shell_lifecycle_cases=0
+shell_start_reload_cases=0
 for fw in "$@"; do
     [ -s "$fw" ] || { echo "Missing policy: $fw" >&2; exit 1; }
     index=$((index + 1))
@@ -256,6 +257,29 @@ for fw in "$@"; do
             check_foreign
             check_shell_status 3 "$dir/generated-status-stopped.log"
             echo 'RESULT: PASS generated-shell-block-status-stop'
+            # Unlike block/status/stop, generated start/reload configure
+            # interfaces and routes. Run them in a SECOND fresh netns; never
+            # attempt host-global module loading (CAP_SYS_MODULE is dropped).
+            for required in unshare setpriv python3 ip; do
+                command -v "$required" >/dev/null 2>&1 || {
+                    echo "ERROR: required isolated start/reload tool missing: $required" >&2
+                    exit 2
+                }
+            done
+            FWB_START_PARENT_NETNS=$(readlink /proc/self/ns/net)
+            export FWB_START_PARENT_NETNS
+            unshare --net -- setpriv --no-new-privs --bounding-set=-sys_module,-sys_rawio,-sys_admin -- \
+                sh ci/check-nft-start-reload.sh "$fw" > "$dir/start-reload.log" 2>&1 || {
+                    cat "$dir/start-reload.log" >&2
+                    echo 'ERROR: isolated generated start/reload failed' >&2
+                    exit 1
+                }
+            cat "$dir/start-reload.log"
+            grep -Fq 'RESULT: PASS generated-shell-start-reload' "$dir/start-reload.log" || {
+                echo 'ERROR: start/reload success marker absent' >&2
+                exit 1
+            }
+            shell_start_reload_cases=$((shell_start_reload_cases + 1))
             ;;
     esac
 
@@ -286,5 +310,11 @@ if [ "${FWB_REQUIRE_PACKET_MATRIX:-0}" = 1 ] && [ "$shell_lifecycle_cases" -ne 1
 fi
 printf 'FWB generated shell lifecycle matrix: %s cases; %s passed; 0 failed\n' \
     "$shell_lifecycle_cases" "$shell_lifecycle_cases"
+if [ "${FWB_REQUIRE_PACKET_MATRIX:-0}" = 1 ] && [ "$shell_start_reload_cases" -ne 1 ]; then
+    echo "ERROR: expected one isolated generated start/reload test, got $shell_start_reload_cases" >&2
+    exit 1
+fi
+printf 'FWB generated shell start/reload matrix: %s cases; %s passed; 0 failed\n' \
+    "$shell_start_reload_cases" "$shell_start_reload_cases"
 [ "$packet_failures" -eq 0 ] && [ "$block_failures" -eq 0 ] && [ "$recovery_failures" -eq 0 ] || exit 1
 echo 'Native nftables kernel transaction and coexistence tests passed in isolated network namespace.'
