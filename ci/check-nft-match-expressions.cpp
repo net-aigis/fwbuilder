@@ -100,11 +100,11 @@ int main(int argc, char **argv)
             assert(threw);
         }
     }
-    assert(tosMatchExpression("0x10", false) == "ip tos 0x10");
-    assert(tosMatchExpression("16", false) == "ip tos 0x10");
-    assert(tosMatchExpression("0Xff", false) == "ip tos 0xff");
-    assert(tosMatchExpression("255", false) == "ip tos 0xff");
-    assert(tosMatchExpression("0", false) == "ip tos 0x00");
+    assert(tosMatchExpression("0x10", false) == "@nh,8,8 0x10");
+    assert(tosMatchExpression("16", false) == "@nh,8,8 0x10");
+    assert(tosMatchExpression("0Xff", false) == "@nh,8,8 0xff");
+    assert(tosMatchExpression("255", false) == "@nh,8,8 0xff");
+    assert(tosMatchExpression("0", false) == "@nh,8,8 0x00");
     for (const auto &bad : {"", "0x", "256", "0x100", "-1", "0xGG", "0x1;drop",
                             "16 2", "18446744073709551616", "0X123", "8/0xff"})
     {

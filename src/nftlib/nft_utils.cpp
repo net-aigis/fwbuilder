@@ -238,7 +238,10 @@ std::string tcpFlagsExpression(const std::string &mask, const std::string &comp)
 std::string tosMatchExpression(const std::string &code, bool ipv6)
 {
     // IPv4 TOS is the full 8-bit octet: DSCP (6 bits) plus ECN (2 bits).
-    // Do not silently replace it with ip6 dscp or omit the ECN comparison.
+    // nft has no "ip tos" token. IPv4 byte 1 is at @nh bit offset 8;
+    // raw payload matching preserves DSCP and ECN in one 8-bit equality.
+    // The caller is an IPv4-only nftables rule; raw payloads do not
+    // automatically constrain network family.
     if (ipv6) throw std::invalid_argument("IPv4 TOS match on IPv6 policy");
     if (code.empty()) throw std::invalid_argument("empty IPv4 TOS value");
 
@@ -266,7 +269,7 @@ std::string tosMatchExpression(const std::string &code, bool ipv6)
     }
 
     std::ostringstream output;
-    output << "ip tos 0x" << std::hex << std::setw(2) << std::setfill('0')
+    output << "@nh,8,8 0x" << std::hex << std::setw(2) << std::setfill('0')
            << value;
     return output.str();
 }
