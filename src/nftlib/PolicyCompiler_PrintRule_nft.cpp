@@ -890,9 +890,16 @@ string PolicyCompiler_nft::PrintRule::_printIP(IPService *srv, PolicyRule *rule)
     const string dscp = srv->getDSCPCode();
     if (!tos.empty())
     {
-        // IPv4 TOS covers ECN as well as DSCP. Matching only ip dscp
-        // would silently widen the rule, so do not approximate it.
-        compiler->abort(rule, "Native nftables TOS matching is not yet supported");
+        // The complete IPv4 TOS octet includes ECN. DSCP-only matching
+        // is NOT equivalent. Refuse unsupported IPv6 instead of widening.
+        try
+        {
+            str << " " << nft_utils::tosMatchExpression(tos, ipt_comp->ipv6);
+        }
+        catch (const std::invalid_argument &e)
+        {
+            compiler->abort(rule, string("Invalid native nftables TOS match: ") + e.what());
+        }
     }
     if (!dscp.empty())
     {

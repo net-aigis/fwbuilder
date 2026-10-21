@@ -7,6 +7,7 @@
 #include <utility>
 
 using fwcompiler::nft_utils::dscpMatchExpression;
+using fwcompiler::nft_utils::tosMatchExpression;
 using fwcompiler::nft_utils::fragmentMatchExpression;
 using fwcompiler::nft_utils::macSourceMatchExpression;
 using fwcompiler::nft_utils::timeMatchExpression;
@@ -40,6 +41,8 @@ int main(int argc, char **argv)
                   << "add rule ip fwb_nft_match_test INPUT " << icmpMatchExpression(8, 0, false) << " counter accept\n"
                   << "add rule ip fwb_nft_match_test INPUT " << icmpMatchExpression(3, 4, false) << " counter accept\n"
                   << "add rule ip fwb_nft_match_test INPUT " << dscpMatchExpression("EF", false) << " counter accept\n"
+                  << "add rule ip fwb_nft_match_test INPUT " << tosMatchExpression("0x10", false) << " counter accept\n"
+                  << "add rule ip fwb_nft_match_test INPUT " << tosMatchExpression("0xff", false) << " counter drop\n"
                   << "add rule ip fwb_nft_match_test INPUT " << dscpMatchExpression("46", false) << " counter accept\n"
                   << "add rule ip fwb_nft_match_test INPUT " << fragmentMatchExpression(false) << " counter drop\n"
                   << "add rule ip fwb_nft_match_test INPUT " << macSourceMatchExpression("00:11:22:33:44:55", false) << " counter accept\n"
@@ -96,6 +99,26 @@ int main(int argc, char **argv)
             catch (const std::invalid_argument &) { threw = true; }
             assert(threw);
         }
+    }
+    assert(tosMatchExpression("0x10", false) == "ip tos 0x10");
+    assert(tosMatchExpression("16", false) == "ip tos 0x10");
+    assert(tosMatchExpression("0Xff", false) == "ip tos 0xff");
+    assert(tosMatchExpression("255", false) == "ip tos 0xff");
+    assert(tosMatchExpression("0", false) == "ip tos 0x00");
+    for (const auto &bad : {"", "0x", "256", "0x100", "-1", "0xGG", "0x1;drop",
+                            "16 2", "18446744073709551616", "0X123", "8/0xff"})
+    {
+        bool threw = false;
+        try { (void)tosMatchExpression(bad, false); }
+        catch (const std::invalid_argument &) { threw = true; }
+        assert(threw);
+    }
+    for (const auto &bad : {"0x10", "16"})
+    {
+        bool threw = false;
+        try { (void)tosMatchExpression(bad, true); }
+        catch (const std::invalid_argument &) { threw = true; }
+        assert(threw);
     }
     assert(dscpMatchExpression("EF", false) == "ip dscp ef");
     assert(dscpMatchExpression("AF23", true) == "ip6 dscp af23");

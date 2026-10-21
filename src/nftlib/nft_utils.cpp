@@ -21,6 +21,7 @@
 
 #include <algorithm>
 #include <cctype>
+#include <iomanip>
 #include <map>
 #include <stdexcept>
 #include <sstream>
@@ -231,6 +232,42 @@ std::string tcpFlagsExpression(const std::string &mask, const std::string &comp)
     std::ostringstream output;
     output << "tcp flags & (" << mask_stream.str() << ") == "
            << comp_stream.str();
+    return output.str();
+}
+
+std::string tosMatchExpression(const std::string &code, bool ipv6)
+{
+    // IPv4 TOS is the full 8-bit octet: DSCP (6 bits) plus ECN (2 bits).
+    // Do not silently replace it with ip6 dscp or omit the ECN comparison.
+    if (ipv6) throw std::invalid_argument("IPv4 TOS match on IPv6 policy");
+    if (code.empty()) throw std::invalid_argument("empty IPv4 TOS value");
+
+    size_t pos = 0;
+    unsigned int base = 10;
+    if (code.size() > 2 && code[0] == '0' &&
+        (code[1] == 'x' || code[1] == 'X'))
+    {
+        pos = 2;
+        base = 16;
+    }
+    if (pos == code.size()) throw std::invalid_argument("empty IPv4 TOS hex value");
+
+    unsigned int value = 0;
+    for (; pos < code.size(); ++pos)
+    {
+        const char ch = code[pos];
+        const int digit = ch >= '0' && ch <= '9' ? ch - '0' :
+            base == 16 && ch >= 'a' && ch <= 'f' ? ch - 'a' + 10 :
+            base == 16 && ch >= 'A' && ch <= 'F' ? ch - 'A' + 10 : -1;
+        if (digit < 0 || static_cast<unsigned int>(digit) >= base)
+            throw std::invalid_argument("invalid IPv4 TOS value");
+        value = value * base + static_cast<unsigned int>(digit);
+        if (value > 255) throw std::invalid_argument("IPv4 TOS outside 0..255");
+    }
+
+    std::ostringstream output;
+    output << "ip tos 0x" << std::hex << std::setw(2) << std::setfill('0')
+           << value;
     return output.str();
 }
 

@@ -47,6 +47,8 @@ std::string tcpFlagsExpression(const std::string &mask,
                                const std::string &comp);
 // Native nftables expressions for formerly iptables-specific match options.
 // Invalid values fail closed; callers report the error on the originating rule.
+// Match the complete IPv4 TOS octet (including ECN bits), not only DSCP.
+std::string tosMatchExpression(const std::string &code, bool ipv6);
 std::string dscpMatchExpression(const std::string &code, bool ipv6);
 std::string fragmentMatchExpression(bool ipv6);
 std::string macSourceMatchExpression(const std::string &mac, bool negated);

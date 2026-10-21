@@ -29,7 +29,23 @@ if ! grep -Fq 'nft_utils::connmarkActionExpression(' src/nftlib/PolicyCompiler_P
     echo 'ERROR: native policy compiler bypasses CONNMARK formatter' >&2
     exit 1
 fi
-echo 'PASS: native NAT IP and policy/mangle CONNMARK generator guards'
+if ! grep -Fq 'nft_utils::tosMatchExpression(tos, ipt_comp->ipv6)' src/nftlib/PolicyCompiler_PrintRule_nft.cpp; then
+    echo 'ERROR: native policy IPService TOS does not use full-octet formatter' >&2
+    exit 1
+fi
+# A newly created nftables firewall must not default to a mode which
+# CompilerDriver_nft_run deliberately rejects pending atomic set support.
+python3 - <<'PY_NFT_DEFAULTS'
+from pathlib import Path
+import xml.etree.ElementTree as ET
+root = ET.parse('src/res/platform/nftables.xml').getroot()
+node = root.find('./Target/options/default/use_nft_sets')
+assert node is not None and node.text.strip().lower() == 'false', 'unsafe default nft set mode'
+driver = Path('src/nftlib/CompilerDriver_nft_run.cpp').read_text()
+assert 'if (options->getBool("use_nft_sets"))' in driver, 'set mode guard removed without tests'
+print('PASS: default nft firewall does not enable incomplete dynamic address sets')
+PY_NFT_DEFAULTS
+echo 'PASS: native NAT IP, policy IPv4 TOS and CONNMARK generator guards'
 "$bin" --grammar > "$fixture"
 if command -v nft >/dev/null 2>&1; then
     nft --check --file "$fixture"
