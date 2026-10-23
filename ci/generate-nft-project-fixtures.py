@@ -304,6 +304,11 @@ def _case_native_user_service(tree, negated):
     policy = only(fw, './' + tag('Policy'))
     rule = only(policy, "./%s[@id='id9001X30989']" % tag('PolicyRule'))
     replace_ref(rule, 'Srv', uid)
+    # Owner matches are valid only in OUTPUT.  'Outbound' alone can still
+    # select FORWARD if the rule's source is Any; bind it to the firewall.
+    if not fw.get('id'):
+        raise ValueError('fixture firewall has no FWB object id')
+    replace_ref(rule, 'Src', fw.get('id'))
     rule.set('direction', 'Outbound')
     only(rule, './' + tag('Srv')).set('neg', 'True' if negated else 'False')
 
