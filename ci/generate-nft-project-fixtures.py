@@ -141,6 +141,45 @@ def case_nat_fragments(tree):
     replace_ref(nr, 'OSrv', 'ip-IP_Fragments')
 
 
+def _case_native_ipv4_options(tree, enabled):
+    _, _, pr, _ = prepare(tree)
+    service = only(tree.getroot(), ".//" + tag('IPService') + "[@id='ip-RR']")
+    if service.get('rr') != 'True' or service.get('ts') != 'False':
+        raise ValueError('unexpected baseline IPv4 RR service')
+    flags = ('any_opt', 'lsrr', 'ssrr', 'rr', 'ts', 'rtralt')
+    if not set(enabled).issubset(set(flags) - {'ts'}):
+        raise ValueError('unsupported native IPv4 fixture flag')
+    for flag in flags:
+        if service.get(flag) not in (None, 'True', 'False'):
+            raise ValueError('unexpected IPv4 option attribute')
+        service.set(flag, 'True' if flag in enabled else 'False')
+    replace_ref(pr, 'Srv', 'ip-RR')
+
+
+def case_ipv4_option_rr(tree):
+    _case_native_ipv4_options(tree, ('rr',))
+
+
+def case_ipv4_option_lsrr(tree):
+    _case_native_ipv4_options(tree, ('lsrr',))
+
+
+def case_ipv4_option_ssrr(tree):
+    _case_native_ipv4_options(tree, ('ssrr',))
+
+
+def case_ipv4_option_ra(tree):
+    _case_native_ipv4_options(tree, ('rtralt',))
+
+
+def case_ipv4_option_any(tree):
+    _case_native_ipv4_options(tree, ('any_opt',))
+
+
+def case_ipv4_option_combined(tree):
+    _case_native_ipv4_options(tree, ('lsrr', 'rr'))
+
+
 def case_reject_policy_options(tree):
     _, _, pr, _ = prepare(tree)
     # This isolated fixture must exercise an unsupported IPv4 option.
@@ -263,6 +302,12 @@ def case_dynamic_address_sets(tree):
 
 
 CASES = {
+    'ipv4-option-rr': case_ipv4_option_rr,
+    'ipv4-option-lsrr': case_ipv4_option_lsrr,
+    'ipv4-option-ssrr': case_ipv4_option_ssrr,
+    'ipv4-option-ra': case_ipv4_option_ra,
+    'ipv4-option-any': case_ipv4_option_any,
+    'ipv4-option-combined': case_ipv4_option_combined,
     'ipv6-icmp': case_ipv6,
     'ipv6-ndp': case_ipv6_ndp,
     'udp-workhours': case_udp_workhours,
