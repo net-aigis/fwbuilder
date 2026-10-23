@@ -377,6 +377,18 @@ def case_nat_lb_sparse(tree):
     _case_nat_load_balancing(tree, 'hosts', '192.168.1.103')
 
 
+def case_packet_nat_lb_sparse(tree):
+    # Reuse the identical sparse DNAT rule while enabling the real FWB TCP/80
+    # allow BEFORE the fallback deny; packet tests must exercise forwarding.
+    case_nat_lb_sparse(tree)
+    prepare_packet_policy(tree, 'tcp-HTTP')
+
+
+def case_packet_nat_lb_contiguous(tree):
+    case_nat_lb_contiguous(tree)
+    prepare_packet_policy(tree, 'tcp-HTTP')
+
+
 def case_reject_nat_lb_network(tree):
     _case_nat_load_balancing(tree, 'network')
 
@@ -437,6 +449,8 @@ CASES = {
     'packet-snat': case_packet_snat,
     'packet-dnat': case_packet_dnat,
     'nat-lb-contiguous': case_nat_lb_contiguous,
+    'packet-nat-lb-sparse': case_packet_nat_lb_sparse,
+    'packet-nat-lb-contiguous': case_packet_nat_lb_contiguous,
     'nat-lb-sparse': case_nat_lb_sparse,
     'reject-nat-lb-network': case_reject_nat_lb_network,
     'reject-nat-lb-duplicate': case_reject_nat_lb_duplicate,

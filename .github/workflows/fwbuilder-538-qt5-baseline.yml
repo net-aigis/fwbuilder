@@ -337,6 +337,15 @@ jobs:
           sudo unshare --net -- sh ci/check-nft-dynamic-sets.sh "$policy" \
             2>&1 | tee ci-logs/nft-dynamic-sets.log
 
+      - name: Exercise real NAT load balancing with conntrack
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p ci-logs
+          sudo python3 ci/check-nft-nat-lb-kernel.py \
+            ci-artifact/nft-output/nft-ci-packet-nat-lb-sparse.fw \
+            ci-artifact/nft-output/nft-ci-packet-nat-lb-contiguous.fw \
+            2>&1 | tee ci-logs/nft-nat-lb-kernel.log
       - name: Upload syntax-check diagnostics
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
