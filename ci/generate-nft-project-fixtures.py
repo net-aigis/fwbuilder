@@ -143,7 +143,17 @@ def case_nat_fragments(tree):
 
 def case_reject_policy_options(tree):
     _, _, pr, _ = prepare(tree)
-    replace_ref(pr, 'Srv', 'ip-RR')  # IPv4 record-route option, unsupported
+    # This isolated fixture must exercise an unsupported IPv4 option.
+    service = only(
+        tree.getroot(),
+        ".//" + tag('IPService') + "[@id='ip-RR']"
+    )
+    if service.get('rr') != 'True' or service.get('ts') != 'False':
+        raise ValueError('unexpected baseline IPv4 RR service')
+    service.set('rr', 'False')
+    service.set('ts', 'True')
+    service.set('name', 'unsupported-ipv4-timestamp')
+    replace_ref(pr, 'Srv', 'ip-RR')
 
 
 def case_reject_nat_options(tree):

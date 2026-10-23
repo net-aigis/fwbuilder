@@ -147,7 +147,7 @@ run_case ipv6-ndp check_positive ipv6-ndp 6 'icmpv6 type 128' 'icmpv6 type 135' 
 run_case udp-workhours check_positive udp-workhours 4 'meta hour' 'meta day'
 run_case policy-fragments check_positive policy-fragments 4 'ip frag-off'
 run_case nat-fragments check_positive nat-fragments 4 'ip frag-off'
-run_case reject-policy-options check_negative reject-policy-options 'Native nftables IP option matching is not yet supported'
+run_case reject-policy-options check_negative reject-policy-options 'Native nftables IPv4 timestamp option matching is not supported'
 run_case reject-nat-options check_negative reject-nat-options 'Native nftables NAT IP option matching is not supported'
 run_case reject-timezone check_negative reject-timezone 'xt_time kernel timezone mode is not supported by native nftables'
 # Real traffic fixtures are compiled from FWB XML, never handwritten nft.
