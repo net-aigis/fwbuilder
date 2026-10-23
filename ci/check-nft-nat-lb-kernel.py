@@ -45,10 +45,22 @@ def read_fwb_nft_transaction(path, mode):
     except ValueError as e:
         raise RuntimeError('Native transaction terminator missing') from e
     rules = '\n'.join(lines[start:stop]) + '\n'
-    if (not re.search(r'^flush ruleset\s*$', rules, re.MULTILINE)
-            or not re.search(r'^add table ip fwb_nat\s*$', rules, re.MULTILINE)
-            or not re.search(r'^add rule ip fwb_filter FORWARD .*tcp dport 80 .*accept\s*$', rules, re.MULTILINE)):
-        raise RuntimeError('Missing genuine FWB NAT or TCP/80 forwarding policy')
+    # Native FWB replaces only managed tables. The script-body template
+    # indents its first line; accept shell indentation but require the
+    # unmodified begin -> heredoc -> commit sequence.
+    begin = re.search(r'^[ \t]*fwb_nft_begin_transaction[ \t]+\|\|[ \t]+exit[ \t]+1[ \t]*$',
+                      text, re.MULTILINE)
+    commit = re.search(r'^[ \t]*fwb_nft_commit_transaction[ \t]+\|\|[ \t]+exit[ \t]+1[ \t]*$',
+                       text, re.MULTILINE)
+    if not begin or not commit or not (begin.start() < text.find(opening) < commit.start()):
+        raise RuntimeError('Missing genuine FWB atomic begin/heredoc/commit sequence')
+    if re.search(r'^flush ruleset\s*$', rules, re.MULTILINE):
+        raise RuntimeError('Unsafe global flush in native FWB atomic transaction')
+    if not re.search(r'^add table ip fwb_nat\s*$', rules, re.MULTILINE):
+        raise RuntimeError('Missing genuine FWB IPv4 NAT table')
+    if not re.search(r'^add rule ip fwb_filter FORWARD .*tcp dport 80 .*accept\s*$',
+                     rules, re.MULTILINE):
+        raise RuntimeError('Missing genuine FWB TCP/80 forwarding allow')
     if mode == 'sparse':
         destination = r'numgen random mod 2 map \{ 0 : 192\.168\.1\.100, 1 : 192\.168\.1\.103 \}'
     else:
