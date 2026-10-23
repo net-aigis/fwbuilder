@@ -121,6 +121,35 @@ print('PASS: negated IP service uses jump / positive match return / accept')
 PY_NEGATED_IP_SERVICE
 }
 
+# End-to-end output from actual FWB UserService objects, including the
+# SingleSrvNegation lowering.  Reject syntactically invalid "meta skuid not".
+check_user_service() {
+    local name=$1 expected=$2
+    if ! check_positive "$name" 4 'meta skuid'; then
+        return 1
+    fi
+    python3 - "$work/$name.ruleset.nft" "$expected" <<'PY_USER_SERVICE'
+from pathlib import Path
+import re
+import sys
+
+rules = Path(sys.argv[1]).read_text().splitlines()
+expected = sys.argv[2]
+owner_rules = [line for line in rules
+               if re.match(r'^add rule ip fwb_filter OUTPUT ', line)
+               and 'meta skuid' in line]
+if not owner_rules:
+    sys.exit('FAIL: expected UserService in native OUTPUT chain')
+for line in owner_rules:
+    matches = re.findall(r'\bmeta\s+skuid\s+(?:!=\s+)?1000\b', line)
+    if not matches or any(m != expected for m in matches):
+        sys.exit('FAIL: incorrect UserService match: ' + line)
+    if re.search(r'\bmeta\s+skuid\s+not\b', line):
+        sys.exit('FAIL: invalid nftables owner negation: ' + line)
+print('PASS: native UserService expression:', expected)
+PY_USER_SERVICE
+}
+
 # Unsupported options must fail with the *specific* fail-closed diagnostic.
 check_negative() {
     local name=$1 expected=$2 family=${3:-4}
@@ -190,6 +219,8 @@ run_case() {
 run_case ipv6-icmp check_positive ipv6-icmp 6 'ip6 saddr' 'icmpv6 type'
 run_case ipv6-ndp check_positive ipv6-ndp 6 'icmpv6 type 128' 'icmpv6 type 135' 'icmpv6 type 136'
 run_case udp-workhours check_positive udp-workhours 4 'meta hour' 'meta day'
+run_case user-service-outbound check_user_service user-service-outbound 'meta skuid 1000'
+run_case negated-user-service-outbound check_user_service negated-user-service-outbound 'meta skuid != 1000'
 run_case policy-fragments check_positive policy-fragments 4 'ip frag-off'
 run_case nat-fragments check_positive nat-fragments 4 'ip frag-off'
 run_case ipv4-option-rr check_positive ipv4-option-rr 4 'ip option rr exists'

@@ -287,6 +287,35 @@ def prepare_packet_policy(tree, service):
     return fw
 
 
+def _case_native_user_service(tree, negated):
+    # Add a genuine UserService to the UserServices library in the cloned
+    # project.  The class serializes its user identity as the XML 'userid'
+    # attribute, not 'user_id' or 'uid'.  The original project is untouched.
+    fw = prepare_packet_policy(tree, 'tcp-HTTP')
+    root = tree.getroot()
+    group = only(root, ".//%s[@id='stdid20']" % tag('ServiceGroup'))
+    if group.get('name') != 'UserServices' or len(group):
+        raise ValueError('unexpected UserServices library contents')
+    uid = 'fwb-ci-user-service-1000'
+    ET.SubElement(group, tag('UserService'), {
+        'id': uid, 'name': 'ci-user-1000', 'comment': 'CI owner match',
+        'ro': 'False', 'userid': '1000',
+    })
+    policy = only(fw, './' + tag('Policy'))
+    rule = only(policy, "./%s[@id='id9001X30989']" % tag('PolicyRule'))
+    replace_ref(rule, 'Srv', uid)
+    rule.set('direction', 'Outbound')
+    only(rule, './' + tag('Srv')).set('neg', 'True' if negated else 'False')
+
+
+def case_user_service_outbound(tree):
+    _case_native_user_service(tree, False)
+
+
+def case_negated_user_service_outbound(tree):
+    _case_native_user_service(tree, True)
+
+
 def case_packet_tcp_input(tree):
     prepare_packet_policy(tree, 'tcp-HTTP')
 
@@ -508,6 +537,8 @@ def case_dynamic_address_sets(tree):
 
 
 CASES = {
+    'user-service-outbound': case_user_service_outbound,
+    'negated-user-service-outbound': case_negated_user_service_outbound,
     'negated-ipv4-option-rr': case_negated_ipv4_option_rr,
     'negated-ipv4-option-ra': case_negated_ipv4_option_ra,
     'negated-ipv4-option-any': case_negated_ipv4_option_any,

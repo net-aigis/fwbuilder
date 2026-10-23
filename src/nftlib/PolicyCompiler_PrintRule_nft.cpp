@@ -1040,8 +1040,9 @@ string PolicyCompiler_nft::PrintRule::_printSrcService(RuleElementSrv  *rel)
         }
         if (UserService::isA(srv))
         {
+            // nftables negates a UID equality with !=, not an infix "not".
             ostr << "meta skuid "
-                 << _printSingleObjectNegation(rel)
+                 << (rel->getBool("single_object_negation") ? "!= " : "")
                  << UserService::cast(srv)->getUserId() << " ";
         }
     } else
@@ -1107,8 +1108,9 @@ string PolicyCompiler_nft::PrintRule::_printDstService(RuleElementSrv  *rel)
         }
         if (UserService::isA(srv))
         {
+            // nftables negates a UID equality with !=, not an infix "not".
             ostr << "meta skuid "
-                 << _printSingleObjectNegation(rel)
+                 << (rel->getBool("single_object_negation") ? "!= " : "")
                  << UserService::cast(srv)->getUserId() << " ";
         }
     } else
