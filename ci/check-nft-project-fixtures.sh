@@ -150,6 +150,59 @@ print('PASS: native UserService expression:', expected)
 PY_USER_SERVICE
 }
 
+# Both IPv6 filter and NAT transport selectors must skip IPv6 extension
+# headers. ip6 nexthdr only reads the fixed IPv6 header's next-header field.
+check_ipv6_lb_transport() {
+    local name=$1 expected=$2 rules
+    if ! check_positive "$name" 6 "$expected"; then
+        return 1
+    fi
+    rules="$work/$name.ruleset.nft"
+    for table in filter nat; do
+        if ! grep -Eq "^add rule ip6 fwb_${table} .*meta l4proto tcp " "$rules"; then
+            echo "FAIL: $name has no extension-header-safe TCP selector in $table" >&2
+            return 1
+        fi
+    done
+    if grep -Eq '^add rule ip6 fwb_(filter|nat) .*ip6 nexthdr tcp ' "$rules"; then
+        echo "FAIL: $name still uses immediate IPv6 next-header matching" >&2
+        return 1
+    fi
+    echo "PASS: $name uses extension-header-safe IPv6 TCP matching in filter and NAT"
+}
+
+# The native runtime initializes dynamic-interface IPv6 network variables
+# from IPv6 kernel routes, not accidentally from IPv4 routes. The mock
+# refuses commands without the family and the exact interface selector.
+check_dynamic_ipv6_routes() {
+    local fake_ip="$work/mock-ip-route"
+    cat > "$fake_ip" <<'MOCK_IP_ROUTE'
+#!/bin/sh
+case "$*" in
+    '-4 route list proto kernel dev eth0')
+        printf '192.0.2.0/24 dev eth0 proto kernel scope link\n' ;;
+    '-6 route list proto kernel dev eth0')
+        printf '2001:db8:1::/64 dev eth0 proto kernel metric 256\n' ;;
+    '-6 route list proto kernel dev eth1')
+        printf '2001:db8:2::/64 dev eth1 proto kernel metric 256\n' ;;
+    *) printf 'Unexpected ip route arguments: %s\n' "$*" >&2; exit 71 ;;
+esac
+MOCK_IP_ROUTE
+    chmod +x "$fake_ip"
+    (
+        IP="$fake_ip"
+        # Only source the native configlet, not the similar legacy copy.
+        source src/res/configlets/nftables/nft_shell_functions
+        getnet eth0 CHECK_V4
+        getnet6 eth0 CHECK_V6
+        getnet6 eth1 CHECK_V6_OTHER
+        [[ "${CHECK_V4_list:-}" == '192.0.2.0/24' ]] || exit 1
+        [[ "${CHECK_V6_list:-}" == '2001:db8:1::/64' ]] || exit 1
+        [[ "${CHECK_V6_OTHER_list:-}" == '2001:db8:2::/64' ]] || exit 1
+    ) || { echo 'FAIL: native dynamic IPv6 routes use wrong family/interface' >&2; return 1; }
+    echo 'PASS: dynamic IPv4/IPv6 network lookup selects correct family and interface'
+}
+
 # Unsupported options must fail with the *specific* fail-closed diagnostic.
 check_negative() {
     local name=$1 expected=$2 family=${3:-4}
@@ -241,8 +294,8 @@ run_case reject-nat-options check_negative reject-nat-options 'Native nftables N
 # reject unsafe target objects or unsupported address+port translations.
 # IPv6 uses the exact same per-connection distribution instead of a DNAT
 # address range. Real packet fixtures are exercised by the NAT LB kernel job.
-run_case ipv6-nat-lb-contiguous check_positive ipv6-nat-lb-contiguous 6 'dnat to numgen random mod 2 map \{ 0 : 2001:db8:2::100, 1 : 2001:db8:2::101 \}'
-run_case ipv6-nat-lb-sparse check_positive ipv6-nat-lb-sparse 6 'dnat to numgen random mod 2 map \{ 0 : 2001:db8:2::100, 1 : 2001:db8:2::103 \}'
+run_case ipv6-nat-lb-contiguous check_ipv6_lb_transport ipv6-nat-lb-contiguous 'dnat to numgen random mod 2 map \{ 0 : 2001:db8:2::100, 1 : 2001:db8:2::101 \}'
+run_case ipv6-nat-lb-sparse check_ipv6_lb_transport ipv6-nat-lb-sparse 'dnat to numgen random mod 2 map \{ 0 : 2001:db8:2::100, 1 : 2001:db8:2::103 \}'
 run_case packet-ipv6-nat-lb-contiguous check_positive packet-ipv6-nat-lb-contiguous 6 'tcp dport 80' 'dnat to numgen random mod 2 map \{ 0 : 2001:db8:2::100, 1 : 2001:db8:2::101 \}'
 run_case packet-ipv6-nat-lb-sparse check_positive packet-ipv6-nat-lb-sparse 6 'tcp dport 80' 'dnat to numgen random mod 2 map \{ 0 : 2001:db8:2::100, 1 : 2001:db8:2::103 \}'
 run_case reject-ipv6-nat-lb-network check_negative reject-ipv6-nat-lb-network 'Native nftables load-balancing destinations must be host addresses of the selected IP family' 6
@@ -265,6 +318,10 @@ run_case packet-udp-forward check_positive packet-udp-forward 4 'udp dport 53'
 run_case packet-snat check_positive packet-snat 4 'udp dport 53' 'snat to 192\.0\.2\.100'
 run_case packet-dnat check_positive packet-dnat 4 'tcp dport 80' 'ip daddr 192\.0\.2\.101' 'dnat to 192\.168\.1\.100'
 run_case dynamic-address-sets check_dynamic_sets
+# Ancillary native runtime guard; not an additional FWB XML fixture.
+if ! check_dynamic_ipv6_routes; then
+    failures=$((failures+1))
+fi
 
 
 printf 'FWB XML fixture matrix: %d cases; %d passed; %d failed\n' \

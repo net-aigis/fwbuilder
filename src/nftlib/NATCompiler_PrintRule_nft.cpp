@@ -283,9 +283,18 @@ string NATCompiler_nft::PrintRule::_printProtocol(Service *srv)
         string pn = srv->getProtocolName();
         if (pn=="ip" || pn=="any") return "";
         if (ipt_comp->ipv6)
-            ostr << "ip6 nexthdr " << pn << " ";
+        {
+            if (ICMPService::isA(srv) && !ICMP6Service::isA(srv))
+                compiler->abort("Can not use ICMPService in ipv6 NAT rule; use ICMP6Service instead");
+            ostr << "meta l4proto "
+                 << (ICMP6Service::isA(srv) ? "icmpv6" : pn) << " ";
+        }
         else
+        {
+            if (ICMP6Service::isA(srv))
+                compiler->abort("Can not use ICMP6Service in ipv4 NAT rule; use ICMPService instead");
             ostr << "ip protocol " << pn << " ";
+        }
     }
     return ostr.str();
 }

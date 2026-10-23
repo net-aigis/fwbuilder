@@ -41,7 +41,7 @@ getnet_internal() {
     dev=$1
     name=$2
     af=$3
-    L=$($IP route list proto kernel | grep $dev | grep -v default |  sed 's! .*$!!')
+    L=$("$IP" "$af" route list proto kernel dev "$dev" | sed -n '/^default[[:space:]]/!s! .*$!!p')
     test -z "$L" && {
         eval "$name=''"
         return

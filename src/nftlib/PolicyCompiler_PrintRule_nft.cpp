@@ -806,10 +806,10 @@ string PolicyCompiler_nft::PrintRule::_printProtocol(Service *srv)
 
             if (ICMP6Service::isA(srv))
             {
-                s = "ip6 nexthdr icmpv6 ";
+                s = "meta l4proto icmpv6 ";
             } else
             {
-                s = "ip6 nexthdr " + pn + " ";
+                s = "meta l4proto " + pn + " ";
             }
         } else
         {
