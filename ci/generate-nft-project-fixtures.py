@@ -337,6 +337,62 @@ def case_packet_dnat(tree):
         rule.set('disabled', 'False' if rule is dnat else 'True')
 
 
+def _case_nat_load_balancing(tree, destination, extra_address='192.168.1.101'):
+    """Real FWB NAT LB using the existing DNAT rule and real host objects."""
+    _, fw, _, _ = prepare(tree)
+    nat = only(fw, './' + tag('NAT'))
+    rule = only(nat, "./%s[@id='id11861X30989']" % tag('NATRule'))
+    target = only(rule, './' + tag('TDst'))
+    if len(target) != 1 or target[0].get('ref') != 'id11890X30989':
+        raise ValueError('unexpected original translated destination')
+    original = only(tree.getroot(), ".//%s[@id='id11890X30989']" % tag('IPv4'))
+    if original.get('address') != '192.168.1.100':
+        raise ValueError('unexpected original IPv4 destination')
+    if destination == 'network':
+        new_id = 'id3DC75CE7-1'  # Real FWB 192.168.1.0/24 network
+    else:
+        new_id = 'fwb-ci-nat-lb-' + extra_address.replace('.', '-')
+        clone = deepcopy(original)
+        clone.set('id', new_id)
+        clone.set('name', 'CI LB backend ' + extra_address)
+        clone.set('address', extra_address)
+        address_group = only(tree.getroot(), ".//%s[@id='id1550X1251']" % tag('ObjectGroup'))
+        address_group.append(clone)
+    ET.SubElement(target, tag('ObjectRef'), {'ref': new_id})
+    replace_ref(rule, 'OSrc', 'sysid0')
+    replace_ref(rule, 'OSrv', 'tcp-HTTP')
+    replace_ref(rule, 'TSrc', 'sysid0')
+    replace_ref(rule, 'TSrv', 'sysid1')
+    for element in ('OSrc', 'ODst', 'OSrv'):
+        only(rule, './' + tag(element)).set('neg', 'False')
+    for other in nat.findall('./' + tag('NATRule')):
+        other.set('disabled', 'False' if other is rule else 'True')
+
+
+def case_nat_lb_contiguous(tree):
+    _case_nat_load_balancing(tree, 'hosts')
+
+
+def case_nat_lb_sparse(tree):
+    _case_nat_load_balancing(tree, 'hosts', '192.168.1.103')
+
+
+def case_reject_nat_lb_network(tree):
+    _case_nat_load_balancing(tree, 'network')
+
+
+def case_reject_nat_lb_duplicate(tree):
+    _case_nat_load_balancing(tree, 'hosts', '192.168.1.100')
+
+
+def case_reject_nat_lb_port_translation(tree):
+    _case_nat_load_balancing(tree, 'hosts', '192.168.1.103')
+    fw = only(tree.getroot(), ".//%s[@name='nft-test']" % tag('Firewall'))
+    rule = only(only(fw, './' + tag('NAT')),
+                "./%s[@id='id11861X30989']" % tag('NATRule'))
+    replace_ref(rule, 'TSrv', 'id3B4FED69')  # Existing TCP HTTPS, 443
+
+
 def case_dynamic_address_sets(tree):
     """Real FWB AddressTable: an IPv4 allowlist with atomic runtime sets."""
     fw = prepare_packet_policy(tree, 'tcp-HTTP')
@@ -380,6 +436,11 @@ CASES = {
     'packet-udp-forward': case_packet_udp_forward,
     'packet-snat': case_packet_snat,
     'packet-dnat': case_packet_dnat,
+    'nat-lb-contiguous': case_nat_lb_contiguous,
+    'nat-lb-sparse': case_nat_lb_sparse,
+    'reject-nat-lb-network': case_reject_nat_lb_network,
+    'reject-nat-lb-duplicate': case_reject_nat_lb_duplicate,
+    'reject-nat-lb-port-translation': case_reject_nat_lb_port_translation,
     'dynamic-address-sets': case_dynamic_address_sets,
 }
 

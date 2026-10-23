@@ -259,51 +259,91 @@ bool NATCompiler_nft::ConvertLoadBalancingRules::processNext()
     {
         RuleElementTDst  *tdst=rule->getTDst();  assert(tdst);
 
+        // Preserve legacy contiguous DNAT ranges. Native nftables can also
+        // distribute new connections over non-contiguous IPv4 destinations.
+        // Never collapse a sparse set to a range: that would forward traffic
+        // to IP addresses which were not selected in the FWB rule.
+        NATCompiler_nft *nft_comp = dynamic_cast<NATCompiler_nft*>(compiler);
         list<const InetAddr*> al;
-        for(list<FWObject*>::iterator i=tdst->begin(); i!=tdst->end(); i++) 
+        FWObject *first_destination = nullptr;
+        for (auto item = tdst->begin(); item != tdst->end(); ++item)
         {
-            FWObject *o= *i;
-            FWObject *obj = nullptr;
-            if (FWReference::cast(o)!=nullptr)
-                obj=FWReference::cast(o)->getPointer();
-            //const InetAddrMask *a = Address::cast(obj)->getAddressObjectInetAddrMask();
-            const InetAddr *ip_addr = Address::cast(obj)->getAddressPtr();
-            al.push_back( ip_addr );
+            FWObject *obj = FWReference::getObject(*item);
+            Address *destination = Address::cast(obj);
+            if (destination == nullptr || destination->dimension() != 1 ||
+                destination->getAddressPtr() == nullptr ||
+                destination->getAddressPtr()->isAny() ||
+                destination->getAddressPtr()->isV6() != nft_comp->ipv6)
+            {
+                compiler->abort(rule,
+                    "Native nftables load-balancing destinations must be host addresses of the selected IP family");
+                return true;
+            }
+            if (first_destination == nullptr) first_destination = obj;
+            al.push_back(destination->getAddressPtr());
         }
-
+        if (al.size() < 2)
+        {
+            compiler->abort(rule, "Native nftables load balancing needs at least two destinations");
+            return true;
+        }
         al.sort(compare_addresses_ptr);
 
-        const InetAddr* a1 = al.front();
-        list<const InetAddr*>::iterator j=al.begin();
-        j++;
-
-        for ( ; j!=al.end(); j++)
+        bool contiguous = true;
+        const InetAddr *previous = al.front();
+        auto current = al.begin();
+        ++current;
+        for ( ; current != al.end(); ++current)
         {
-/* I use temporary AddressRange object here because it takes care of
- * big endian/little endian conversion for me 
- */
-            AddressRange tar;
-            tar.setRangeStart( *a1 );
-            tar.setRangeEnd( *(*j) );
-            if ( tar.dimension() != 2 )
+            // Duplicate backends must not silently change the balancing
+            // weights or the contiguous-range behavior.
+            if (!(*previous < **current) && !(**current < *previous))
             {
-                compiler->abort(
-                    rule,
-                    "Non-contiguous address range in "
-                    "Translated Destination in load balancing NAT rule");
+                compiler->abort(rule, "Duplicate native nftables load-balancing destination");
+                return true;
             }
-            a1 = *j;
+            AddressRange adjacent;
+            adjacent.setRangeStart(*previous);
+            adjacent.setRangeEnd(**current);
+            if (adjacent.dimension() != 2) contiguous = false;
+            previous = *current;
         }
 
-        AddressRange *ar = compiler->dbcopy->createAddressRange();
-        ar->setRangeStart( *(al.front()) );
-        ar->setRangeEnd( *(al.back()) );
-        ar->setName(string("%")+al.front()->toString()
-                    +"-"+al.back()->toString()+"%" );
-        compiler->persistent_objects->add(ar,false);
-        tdst->clearChildren();
-        tdst->addRef(ar);
-
+        if (contiguous)
+        {
+            AddressRange *range = compiler->dbcopy->createAddressRange();
+            range->setRangeStart(*al.front());
+            range->setRangeEnd(*al.back());
+            range->setName(string("%") + al.front()->toString() +
+                           "-" + al.back()->toString() + "%");
+            compiler->persistent_objects->add(range, false);
+            tdst->clearChildren();
+            tdst->addRef(range);
+        }
+        else
+        {
+            if (nft_comp->ipv6)
+            {
+                compiler->abort(rule, "Non-contiguous native nftables IPv6 load balancing is not supported");
+                return true;
+            }
+            // numgen random is evaluated only for the first packet of a
+            // conntracked NAT flow; later packets retain their DNAT binding.
+            ostringstream distribution;
+            distribution << "numgen random mod " << al.size() << " map { ";
+            unsigned int index = 0;
+            for (const InetAddr *destination : al)
+            {
+                if (index != 0) distribution << ", ";
+                distribution << index++ << " : " << destination->toString();
+            }
+            distribution << " }";
+            rule->setStr("nft_lb_addr_map", distribution.str());
+            // The downstream DNAT processors require one translated address.
+            // PrintRule consumes the stored map instead of this placeholder.
+            tdst->clearChildren();
+            tdst->addRef(first_destination);
+        }
         rule->setRuleType(NATRule::DNAT);
     }
 

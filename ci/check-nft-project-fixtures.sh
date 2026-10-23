@@ -204,6 +204,13 @@ run_case negated-ipv4-fragment check_negated_ip_service negated-ipv4-fragment 'i
 run_case reject-negated-ipv4-timestamp check_negative reject-negated-ipv4-timestamp 'Native nftables IPv4 timestamp option matching is not supported'
 run_case reject-policy-options check_negative reject-policy-options 'Native nftables IPv4 timestamp option matching is not supported'
 run_case reject-nat-options check_negative reject-nat-options 'Native nftables NAT IP option matching is not supported'
+# Preserve legacy contiguous LB pools, add native sparse distribution and
+# reject unsafe target objects or unsupported address+port translations.
+run_case nat-lb-contiguous check_positive nat-lb-contiguous 4 'dnat to 192\.168\.1\.100-192\.168\.1\.101'
+run_case nat-lb-sparse check_positive nat-lb-sparse 4 'dnat to numgen random mod 2 map \{ 0 : 192\.168\.1\.100, 1 : 192\.168\.1\.103 \}'
+run_case reject-nat-lb-network check_negative reject-nat-lb-network 'Native nftables load-balancing destinations must be host addresses of the selected IP family'
+run_case reject-nat-lb-duplicate check_negative reject-nat-lb-duplicate 'Duplicate native nftables load-balancing destination'
+run_case reject-nat-lb-port-translation check_negative reject-nat-lb-port-translation 'Native nftables load-balancing address maps cannot translate ports'
 run_case reject-timezone check_negative reject-timezone 'xt_time kernel timezone mode is not supported by native nftables'
 # Real traffic fixtures are compiled from FWB XML, never handwritten nft.
 # Their emitted policies are exercised against real packets in ci/check-nft-packets.py.

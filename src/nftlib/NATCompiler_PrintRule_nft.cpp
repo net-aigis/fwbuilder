@@ -819,7 +819,17 @@ bool NATCompiler_nft::PrintRule::processNext()
             // if TDst is "any" and this is DNAT rule, then this rule only
             // translates source port. Skip address part.
             QString addr_part;
-            if (!tdst->isAny())
+            const string lb_map = rule->getStr("nft_lb_addr_map");
+            if (!lb_map.empty())
+            {
+                // A port-translation suffix cannot safely be appended to
+                // the generated address map. Fail closed, never drop ports.
+                if (!_printDNATPorts(tsrv).empty())
+                    compiler->abort(rule,
+                        "Native nftables load-balancing address maps cannot translate ports");
+                addr_part = lb_map.c_str();
+            }
+            else if (!tdst->isAny())
                 addr_part = _printAddr(tdst, false, true).c_str();
 
 	    string ports = _printDNATPorts(tsrv);
