@@ -259,10 +259,10 @@ bool NATCompiler_nft::ConvertLoadBalancingRules::processNext()
     {
         RuleElementTDst  *tdst=rule->getTDst();  assert(tdst);
 
-        // Load-balancing needs an explicit per-connection backend selector:
-        // a plain DNAT address range is not equivalent to random distribution.
-        // Keep the pre-existing contiguous IPv6 range path; IPv4 uses numgen
-        // for BOTH adjacent and sparse destinations, never unselected hosts.
+        // A DNAT address range is not a load-balancing selector (on IPv4
+        // it sent all connections to one host). Explicitly map each selected
+        // backend for both IPv4 and IPv6; conntrack keeps established flows
+        // on the backend selected by their first packet.
         NATCompiler_nft *nft_comp = dynamic_cast<NATCompiler_nft*>(compiler);
         list<const InetAddr*> al;
         FWObject *first_destination = nullptr;
@@ -289,65 +289,32 @@ bool NATCompiler_nft::ConvertLoadBalancingRules::processNext()
         }
         al.sort(compare_addresses_ptr);
 
-        bool contiguous = true;
-        const InetAddr *previous = al.front();
-        auto current = al.begin();
-        ++current;
-        for ( ; current != al.end(); ++current)
+        const InetAddr *previous = nullptr;
+        for (const InetAddr *destination : al)
         {
-            // Duplicate backends must not silently change balancing weights.
-            if (!(*previous < **current) && !(**current < *previous))
+            if (previous != nullptr && !(*previous < *destination) &&
+                !(*destination < *previous))
             {
                 compiler->abort(rule, "Duplicate native nftables load-balancing destination");
                 return true;
             }
-            AddressRange adjacent;
-            adjacent.setRangeStart(*previous);
-            adjacent.setRangeEnd(**current);
-            if (adjacent.dimension() != 2) contiguous = false;
-            previous = *current;
+            previous = destination;
         }
 
-        if (nft_comp->ipv6)
+        ostringstream distribution;
+        distribution << "numgen random mod " << al.size() << " map { ";
+        unsigned int index = 0;
+        for (const InetAddr *destination : al)
         {
-            // Retain the established IPv6 path, which currently only
-            // accepts contiguous destination pools.
-            if (!contiguous)
-            {
-                compiler->abort(rule, "Non-contiguous native nftables IPv6 load balancing is not supported");
-                return true;
-            }
-            AddressRange *range = compiler->dbcopy->createAddressRange();
-            range->setRangeStart(*al.front());
-            range->setRangeEnd(*al.back());
-            range->setName(string("%") + al.front()->toString() +
-                           "-" + al.back()->toString() + "%");
-            compiler->persistent_objects->add(range, false);
-            tdst->clearChildren();
-            tdst->addRef(range);
+            if (index != 0) distribution << ", ";
+            distribution << index++ << " : " << destination->toString();
         }
-        else
-        {
-            // The DNAT range path repeatedly selected one backend in the
-            // real contiguous-pool packet test (0/96 vs 96/96). An explicit
-            // map selects uniformly over the listed hosts for each new flow.
-            // numgen random is evaluated only for the first packet of a
-            // conntracked NAT flow; later packets retain their DNAT binding.
-            ostringstream distribution;
-            distribution << "numgen random mod " << al.size() << " map { ";
-            unsigned int index = 0;
-            for (const InetAddr *destination : al)
-            {
-                if (index != 0) distribution << ", ";
-                distribution << index++ << " : " << destination->toString();
-            }
-            distribution << " }";
-            rule->setStr("nft_lb_addr_map", distribution.str());
-            // The downstream DNAT processors require one translated address.
-            // PrintRule consumes the stored map instead of this placeholder.
-            tdst->clearChildren();
-            tdst->addRef(first_destination);
-        }
+        distribution << " }";
+        rule->setStr("nft_lb_addr_map", distribution.str());
+        // Downstream processors require a concrete translated address.
+        // The native PrintRule consumes the complete map instead.
+        tdst->clearChildren();
+        tdst->addRef(first_destination);
         rule->setRuleType(NATRule::DNAT);
     }
 

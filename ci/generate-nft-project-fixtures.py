@@ -405,6 +405,90 @@ def case_reject_nat_lb_port_translation(tree):
     replace_ref(rule, 'TSrv', 'id3B4FED69')  # Existing TCP HTTPS, 443
 
 
+def _case_ipv6_nat_lb(tree, second='2001:db8:2::101', packet=False,
+                      invalid=None):
+    """IPv6 DNAT LB from real FWB policy/NAT objects, without schema guesses."""
+    case_ipv6(tree)  # Real IPv6 Policy and two FWB IPv6 interfaces.
+    root = tree.getroot()
+    fw = only(root, ".//%s[@name='nft-test']" % tag('Firewall'))
+    policy = only(fw, './' + tag('Policy'))
+    allow = only(policy, "./%s[@id='id9001X30989']" % tag('PolicyRule'))
+    # Reuse the proven IPv6 rule ordering with a real TCP/80 forward permit.
+    replace_ref(allow, 'Src', 'sysid0')
+    replace_ref(allow, 'Dst', 'sysid0')
+    replace_ref(allow, 'Srv', 'tcp-HTTP')
+    allow.set('direction', 'Both')
+    nat = only(fw, './' + tag('NAT'))
+    if (nat.get('ipv4_rule_set'), nat.get('ipv6_rule_set')) != ('False', 'False'):
+        raise ValueError('unexpected baseline NAT address family')
+    nat.set('ipv4_rule_set', 'False')
+    nat.set('ipv6_rule_set', 'True')
+    rule = only(nat, "./%s[@id='id11861X30989']" % tag('NATRule'))
+    target = only(rule, './' + tag('TDst'))
+    if len(target) != 1 or target[0].get('ref') != 'id11890X30989':
+        raise ValueError('unexpected original translated destination')
+    template = only(root, ".//%s[@id='id11890X30989']" % tag('IPv4'))
+    if template.get('address') != '192.168.1.100':
+        raise ValueError('unexpected original IPv4 backend')
+    group = only(root, ".//%s[@id='id1550X1251']" % tag('ObjectGroup'))
+
+    def make_host(suffix, address):
+        host = deepcopy(template)
+        host.tag = tag('IPv6')
+        host.set('id', 'fwb-ci-ipv6-lb-' + suffix)
+        host.set('name', 'CI IPv6 LB ' + suffix)
+        host.set('address', address)
+        host.set('netmask', '128')
+        group.append(host)
+        return host.get('id')
+
+    public = make_host('public', '2001:db8:1::101')
+    first = make_host('first', '2001:db8:2::100')
+    if invalid == 'network':
+        last = 'id2088X75851'  # Preserved IPv6 documentation network /32.
+    else:
+        last = make_host('second', '2001:db8:2::100' if invalid == 'duplicate' else second)
+    replace_ref(rule, 'ODst', public)
+    replace_ref(rule, 'TDst', first)
+    ET.SubElement(target, tag('ObjectRef'), {'ref': last})
+    replace_ref(rule, 'OSrc', 'sysid0')
+    replace_ref(rule, 'OSrv', 'tcp-HTTP')
+    replace_ref(rule, 'TSrc', 'sysid0')
+    replace_ref(rule, 'TSrv', 'sysid1' if invalid != 'port' else 'id3B4FED69')
+    for element in ('OSrc', 'ODst', 'OSrv'):
+        only(rule, './' + tag(element)).set('neg', 'False')
+    for other in nat.findall('./' + tag('NATRule')):
+        other.set('disabled', 'False' if other is rule else 'True')
+
+
+def case_ipv6_nat_lb_contiguous(tree):
+    _case_ipv6_nat_lb(tree)
+
+
+def case_ipv6_nat_lb_sparse(tree):
+    _case_ipv6_nat_lb(tree, second='2001:db8:2::103')
+
+
+def case_packet_ipv6_nat_lb_contiguous(tree):
+    _case_ipv6_nat_lb(tree, packet=True)
+
+
+def case_packet_ipv6_nat_lb_sparse(tree):
+    _case_ipv6_nat_lb(tree, second='2001:db8:2::103', packet=True)
+
+
+def case_reject_ipv6_nat_lb_network(tree):
+    _case_ipv6_nat_lb(tree, invalid='network')
+
+
+def case_reject_ipv6_nat_lb_duplicate(tree):
+    _case_ipv6_nat_lb(tree, invalid='duplicate')
+
+
+def case_reject_ipv6_nat_lb_port_translation(tree):
+    _case_ipv6_nat_lb(tree, invalid='port')
+
+
 def case_dynamic_address_sets(tree):
     """Real FWB AddressTable: an IPv4 allowlist with atomic runtime sets."""
     fw = prepare_packet_policy(tree, 'tcp-HTTP')
@@ -448,6 +532,13 @@ CASES = {
     'packet-udp-forward': case_packet_udp_forward,
     'packet-snat': case_packet_snat,
     'packet-dnat': case_packet_dnat,
+    'ipv6-nat-lb-contiguous': case_ipv6_nat_lb_contiguous,
+    'ipv6-nat-lb-sparse': case_ipv6_nat_lb_sparse,
+    'packet-ipv6-nat-lb-contiguous': case_packet_ipv6_nat_lb_contiguous,
+    'packet-ipv6-nat-lb-sparse': case_packet_ipv6_nat_lb_sparse,
+    'reject-ipv6-nat-lb-network': case_reject_ipv6_nat_lb_network,
+    'reject-ipv6-nat-lb-duplicate': case_reject_ipv6_nat_lb_duplicate,
+    'reject-ipv6-nat-lb-port-translation': case_reject_ipv6_nat_lb_port_translation,
     'nat-lb-contiguous': case_nat_lb_contiguous,
     'packet-nat-lb-sparse': case_packet_nat_lb_sparse,
     'packet-nat-lb-contiguous': case_packet_nat_lb_contiguous,

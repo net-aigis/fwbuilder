@@ -18,10 +18,13 @@ import time
 
 PASSES = 96
 PUBLIC = '192.0.2.101'
+PUBLIC6 = '2001:db8:1::101'
 PORT = 80
 BACKENDS = {
     'contiguous': ('192.168.1.100', '192.168.1.101'),
     'sparse': ('192.168.1.100', '192.168.1.103'),
+    'ipv6-contiguous': ('2001:db8:2::100', '2001:db8:2::101'),
+    'ipv6-sparse': ('2001:db8:2::100', '2001:db8:2::103'),
 }
 
 
@@ -56,25 +59,30 @@ def read_fwb_nft_transaction(path, mode):
         raise RuntimeError('Missing genuine FWB atomic begin/heredoc/commit sequence')
     if re.search(r'^flush ruleset\s*$', rules, re.MULTILINE):
         raise RuntimeError('Unsafe global flush in native FWB atomic transaction')
-    if not re.search(r'^add table ip fwb_nat\s*$', rules, re.MULTILINE):
-        raise RuntimeError('Missing genuine FWB IPv4 NAT table')
-    if not re.search(r'^add rule ip fwb_filter FORWARD .*tcp dport 80 .*accept\s*$',
+    ipv6 = mode.startswith('ipv6-')
+    family = 'ip6' if ipv6 else 'ip'
+    if not re.search(r'^add table %s fwb_nat\s*$' % family, rules, re.MULTILINE):
+        raise RuntimeError('Missing genuine FWB %s NAT table' % family)
+    if not re.search(r'^add rule %s fwb_filter FORWARD .*tcp dport 80 .*accept\s*$' % family,
                      rules, re.MULTILINE):
         raise RuntimeError('Missing genuine FWB TCP/80 forwarding allow')
-    if mode == 'sparse':
-        destination = r'numgen random mod 2 map \{ 0 : 192\.168\.1\.100, 1 : 192\.168\.1\.103 \}'
-    else:
-        destination = r'numgen random mod 2 map \{ 0 : 192\.168\.1\.100, 1 : 192\.168\.1\.101 \}'
+    destinations = BACKENDS[mode]
+    destination = (r'numgen random mod 2 map \{ 0 : %s, 1 : %s \}' %
+                   tuple(re.escape(addr) for addr in destinations))
+    public = re.escape(PUBLIC6 if ipv6 else PUBLIC)
+    address_proto = 'ip6' if ipv6 else 'ip'
     if not re.search(
-            r'^add rule ip fwb_nat PREROUTING .*ip daddr 192\.0\.2\.101 .*tcp dport 80 .*dnat to '
-            + destination + r'\s*$', rules, re.MULTILINE):
+            r'^add rule %s fwb_nat PREROUTING .*%s daddr %s .*tcp dport 80 .*dnat to '
+            % (family, address_proto, public) + destination + r'\s*$',
+            rules, re.MULTILINE):
         raise RuntimeError('FWB DNAT expression does not match expected ' + mode + ' pool')
     return rules
 
 
 def server_worker(ip, output):
     out = Path(output)
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as listener:
+    family = socket.AF_INET6 if ':' in ip else socket.AF_INET
+    with socket.socket(family, socket.SOCK_STREAM) as listener:
         listener.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         listener.bind((ip, PORT))
         listener.listen(32)
@@ -91,7 +99,7 @@ def server_worker(ip, output):
                     payload = conn.recv(1)
                     if payload != expected:
                         raise RuntimeError('Backend TCP stream unexpectedly changed')
-                    conn.sendall(b'A' if ip.endswith('.100') else b'B')
+                    conn.sendall(b'A' if ip.endswith(('.100', '::100')) else b'B')
 
 
 def client_worker(public, output, attempts):
@@ -107,6 +115,19 @@ def client_worker(public, output, attempts):
                 raise RuntimeError('Connection changed backend while established: ' + repr(replies))
             counts[replies[0].decode('ascii')] += 1
     Path(output).write_text(json.dumps(counts))
+
+
+def link_mac(helper, namespace, interface):
+    args = ('ip', '-j', 'link', 'show', 'dev', interface)
+    raw = (helper.peer(namespace, *args, capture=True) if namespace is not None
+           else helper.call(*args, capture=True))
+    addresses = json.loads(raw)
+    if len(addresses) != 1:
+        raise RuntimeError('Expected one interface for ' + interface)
+    mac = addresses[0]['address'].lower()
+    if not re.fullmatch(r'(?:[0-9a-f]{2}:){5}[0-9a-f]{2}', mac):
+        raise RuntimeError('Invalid Ethernet MAC for ' + interface)
+    return mac
 
 
 def run_one_case(mode, script_path):
@@ -135,11 +156,37 @@ def run_one_case(mode, script_path):
             else:
                 raise RuntimeError('peer network namespace unavailable')
         wan, lan = [p.pid for p in peers]
-        helper.setup_network(wan, lan, static_ipv6_neighbors=False)
+        ipv6 = mode.startswith('ipv6-')
+        helper.setup_network(wan, lan, static_ipv6_neighbors=ipv6)
+        if ipv6:
+            # Same veth topology as the IPv4 test, but native IPv6 routing.
+            helper.call('ip', '-6', 'addr', 'add', PUBLIC6 + '/128', 'dev', 'eth0', 'nodad')
+            helper.call('ip', '-6', 'addr', 'add', '2001:db8:2::1/64', 'dev', 'eth1', 'nodad')
+            helper.peer(lan, 'ip', '-6', 'addr', 'add',
+                        '2001:db8:2::2/64', 'dev', 'eth1', 'nodad')
+            helper.peer(wan, 'ip', '-6', 'route', 'add', 'default', 'via', '2001:db8:1::1')
+            helper.peer(lan, 'ip', '-6', 'route', 'add', 'default', 'via', '2001:db8:2::1')
+            Path('/proc/sys/net/ipv6/conf/all/forwarding').write_text('1\n')
+            # Avoid testing unrelated NDP rules. The FWB policy remains
+            # unmodified; neighbor entries use real veth MAC addresses.
+            helper.peer(wan, 'ip', '-6', 'neigh', 'replace', PUBLIC6,
+                        'lladdr', link_mac(helper, None, 'eth0'),
+                        'dev', 'eth0', 'nud', 'permanent')
+            helper.peer(lan, 'ip', '-6', 'neigh', 'replace', '2001:db8:2::1',
+                        'lladdr', link_mac(helper, None, 'eth1'),
+                        'dev', 'eth1', 'nud', 'permanent')
+
         helper.call('ip', '-4', 'addr', 'add', PUBLIC + '/32', 'dev', 'eth0')
         with tempfile.TemporaryDirectory(prefix='fwb-pr6-lb-kernel-') as tmp:
             for number, ip in enumerate(BACKENDS[mode]):
-                helper.peer(lan, 'ip', '-4', 'addr', 'add', ip + '/32', 'dev', 'eth1')
+                if ipv6:
+                    helper.peer(lan, 'ip', '-6', 'addr', 'add', ip + '/128',
+                                'dev', 'eth1', 'nodad')
+                    helper.call('ip', '-6', 'neigh', 'replace', ip,
+                                'lladdr', link_mac(helper, lan, 'eth1'),
+                                'dev', 'eth1', 'nud', 'permanent')
+                else:
+                    helper.peer(lan, 'ip', '-4', 'addr', 'add', ip + '/32', 'dev', 'eth1')
                 status = Path(tmp) / ('server-%d.json' % number)
                 server = subprocess.Popen(('nsenter', '-t', str(lan), '-n', '--',
                                            sys.executable, __file__, '--server', ip, str(status)),
@@ -151,7 +198,8 @@ def run_one_case(mode, script_path):
             helper.call('nft', '--check', '-f', str(txn))
             helper.call('nft', '-f', str(txn))
             output = Path(tmp) / 'clients.json'
-            helper.peer(wan, sys.executable, __file__, '--client', PUBLIC, str(output), str(PASSES))
+            helper.peer(wan, sys.executable, __file__, '--client',
+                        PUBLIC6 if ipv6 else PUBLIC, str(output), str(PASSES))
             counts = json.loads(output.read_text())
             if set(counts) != {'A', 'B'} or min(counts.values()) < 1 or sum(counts.values()) != PASSES:
                 raise RuntimeError('Both backends not demonstrably reached: ' + repr(counts))
@@ -192,12 +240,21 @@ def main():
     if os.geteuid() != 0:
         raise SystemExit('REFUSING: NAT kernel regression requires root')
     # The outer invocation never changes its own network namespace.
-    for mode, path in (('sparse', sys.argv[1]), ('contiguous', sys.argv[2])):
+    # The existing CI job already passes both IPv4 files. Require both IPv6
+    # files from the SAME FWB compiler artifact; missing files are a failure.
+    directory = Path(sys.argv[1]).resolve(strict=True).parent
+    cases = (
+        ('sparse', sys.argv[1]),
+        ('contiguous', sys.argv[2]),
+        ('ipv6-sparse', str(directory / 'nft-ci-packet-ipv6-nat-lb-sparse.fw')),
+        ('ipv6-contiguous', str(directory / 'nft-ci-packet-ipv6-nat-lb-contiguous.fw')),
+    )
+    for mode, path in cases:
         absolute = str(Path(path).resolve(strict=True))
         read_fwb_nft_transaction(absolute, mode)
         subprocess.run(('unshare', '--net', '--mount-proc', '--', sys.executable,
                         __file__, '--case', mode, absolute), check=True)
-    print('PASS: both FWB DNAT load-balancing modes passed real kernel packet testing')
+    print('PASS: IPv4/IPv6 sparse/contiguous FWB DNAT LB: both backends, stable TCP conntrack')
 
 
 if __name__ == '__main__':

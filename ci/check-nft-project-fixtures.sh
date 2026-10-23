@@ -123,9 +123,11 @@ PY_NEGATED_IP_SERVICE
 
 # Unsupported options must fail with the *specific* fail-closed diagnostic.
 check_negative() {
-    local name=$1 expected=$2
+    local name=$1 expected=$2 family=${3:-4}
+    local family_flag=-4
+    [[ "$family" == 6 ]] && family_flag=-6
     mkdir -p "$work/$name"
-    if "$compiler" -4 -f "$work/xml/$name.fwb" -d "$work/$name" nft-test \
+    if "$compiler" "$family_flag" -f "$work/xml/$name.fwb" -d "$work/$name" nft-test \
         > "$work/$name.compile.log" 2>&1; then
         echo "FAIL: unsupported $name compiled successfully" >&2
         return 1
@@ -206,6 +208,15 @@ run_case reject-policy-options check_negative reject-policy-options 'Native nfta
 run_case reject-nat-options check_negative reject-nat-options 'Native nftables NAT IP option matching is not supported'
 # Use the same explicit native map for contiguous and sparse IPv4 LB;
 # reject unsafe target objects or unsupported address+port translations.
+# IPv6 uses the exact same per-connection distribution instead of a DNAT
+# address range. Real packet fixtures are exercised by the NAT LB kernel job.
+run_case ipv6-nat-lb-contiguous check_positive ipv6-nat-lb-contiguous 6 'dnat to numgen random mod 2 map \{ 0 : 2001:db8:2::100, 1 : 2001:db8:2::101 \}'
+run_case ipv6-nat-lb-sparse check_positive ipv6-nat-lb-sparse 6 'dnat to numgen random mod 2 map \{ 0 : 2001:db8:2::100, 1 : 2001:db8:2::103 \}'
+run_case packet-ipv6-nat-lb-contiguous check_positive packet-ipv6-nat-lb-contiguous 6 'tcp dport 80' 'dnat to numgen random mod 2 map \{ 0 : 2001:db8:2::100, 1 : 2001:db8:2::101 \}'
+run_case packet-ipv6-nat-lb-sparse check_positive packet-ipv6-nat-lb-sparse 6 'tcp dport 80' 'dnat to numgen random mod 2 map \{ 0 : 2001:db8:2::100, 1 : 2001:db8:2::103 \}'
+run_case reject-ipv6-nat-lb-network check_negative reject-ipv6-nat-lb-network 'Native nftables load-balancing destinations must be host addresses of the selected IP family' 6
+run_case reject-ipv6-nat-lb-duplicate check_negative reject-ipv6-nat-lb-duplicate 'Duplicate native nftables load-balancing destination' 6
+run_case reject-ipv6-nat-lb-port-translation check_negative reject-ipv6-nat-lb-port-translation 'Native nftables load-balancing address maps cannot translate ports' 6
 run_case nat-lb-contiguous check_positive nat-lb-contiguous 4 'dnat to numgen random mod 2 map \{ 0 : 192\.168\.1\.100, 1 : 192\.168\.1\.101 \}'
 run_case nat-lb-sparse check_positive nat-lb-sparse 4 'dnat to numgen random mod 2 map \{ 0 : 192\.168\.1\.100, 1 : 192\.168\.1\.103 \}'
 # Dedicated packet fixtures use the same FWB-generated DNAT but explicitly
