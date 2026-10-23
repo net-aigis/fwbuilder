@@ -128,6 +128,15 @@ check_inactive() {
 }
 
 check_status 3
+# Unknown actions must not claim successful firewall activation.
+invalid_rc=0
+sh "$scratch/firewall.fw" no-such-action > "$scratch/invalid.log" 2>&1 || invalid_rc=$?
+[ "$invalid_rc" -eq 2 ] || {
+    echo "ERROR: unknown firewall action returned $invalid_rc (expected 2)" >&2
+    cat "$scratch/invalid.log" >&2
+    exit 1
+}
+check_inactive
 sh "$scratch/firewall.fw" start > "$scratch/start.log" 2>&1 || {
     cat "$scratch/start.log" >&2
     echo 'ERROR: generated shell start failed' >&2

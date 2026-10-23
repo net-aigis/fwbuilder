@@ -805,7 +805,12 @@ bool NATCompiler_nft::PrintRule::processNext()
 	    string ports = _printSNATPorts(tsrv);
 	    if (!ports.empty())
             {
-                cmdout << addr_part.trimmed().toStdString()
+                // Without [] the port is parsed as the final IPv6 hextet.
+                const bool ipv6 = !tsrc->isAny() && tsrc->hasInetAddress() &&
+                                  tsrc->getAddressPtr()->isV6();
+                cmdout << (ipv6 ? "[" : "")
+                       << addr_part.trimmed().toStdString()
+                       << (ipv6 ? "]" : "")
                        << ":" << ports;
             } else
                 cmdout << addr_part.toStdString();

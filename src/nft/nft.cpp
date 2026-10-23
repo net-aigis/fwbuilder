@@ -111,6 +111,12 @@ int main(int argc, char **argv)
         }
         if (arg == "-f")
         {
+            if (idx + 1 >= args.size())
+            {
+                cerr << "Missing filename after -f" << endl;
+                usage(argv[0]);
+                return 1;
+            }
             idx++;
             filename = string(args.at(idx).toLatin1().constData());
             continue;

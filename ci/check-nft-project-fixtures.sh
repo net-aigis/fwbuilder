@@ -19,6 +19,17 @@ output="$(cd "$output" && pwd -P)"
 work="$(dirname "$output")/nft-project-fixtures"
 mkdir -p "$work"
 python3 ci/generate-nft-project-fixtures.py "$baseline" "$work/xml"
+# The compiler CLI must return an ordinary error, never abort on a missing
+# -f argument (QStringList::at() is not defined for an out-of-range index).
+if "$compiler" -f > "$work/missing-file-argument.log" 2>&1; then
+    echo 'FAIL: fwb_nft accepted -f without a filename' >&2
+    exit 1
+fi
+if ! grep -Fq 'Missing filename after -f' "$work/missing-file-argument.log"; then
+    cat "$work/missing-file-argument.log" >&2
+    echo 'FAIL: fwb_nft did not diagnose the missing -f argument' >&2
+    exit 1
+fi
 
 # An explicit -4/-6 is essential.  The default fwb_nft invocation in the
 # previous CI run produced only an IPv4 block, silently omitting the IPv6 rule.

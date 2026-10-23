@@ -61,8 +61,23 @@ add rule ip fwb_pr6_options INPUT ip option ra exists counter accept
 add rule ip fwb_pr6_options INPUT ip option lsrr exists ip option rr exists counter accept
 FWB_PR6_IPV4_OPTIONS
     nft --check --file "$fixture"
-    echo 'PASS: native IPv4 options grammar'
-    echo 'PASS: native DSCP, fragment, MAC and time expressions accepted by nft --check'
+    # Regression for the actual native SNAT address+port printer.  IPv6
+    # address brackets are required when appending a translated port.
+    cat > "$fixture" <<'FWB_PR6_NAT_CONNCOUNT'
+add table ip6 fwb_pr6_snat_check
+add chain ip6 fwb_pr6_snat_check POSTROUTING { type nat hook postrouting priority srcnat; policy accept; }
+add rule ip6 fwb_pr6_snat_check POSTROUTING meta l4proto tcp tcp dport 443 snat to [2001:db8:3::1]:55000
+add table ip fwb_pr6_conncount_check
+add chain ip fwb_pr6_conncount_check INPUT { type filter hook input priority 0; policy accept; }
+add rule ip fwb_pr6_conncount_check INPUT tcp dport 443 ct count over 5 drop
+add rule ip fwb_pr6_conncount_check INPUT tcp dport 80 ct count 5 accept
+FWB_PR6_NAT_CONNCOUNT
+    nft --check --file "$fixture"
+    # Make sure the native printers actually use the syntax just checked.
+    grep -Fq 'tsrc->getAddressPtr()->isV6()' src/nftlib/NATCompiler_PrintRule_nft.cpp
+    grep -Fq 'ostr << " ct count over " << lim' src/nftlib/PolicyCompiler_PrintRule_nft.cpp
+    echo 'PASS: IPv6 SNAT port and connlimit grammar'
+    echo 'PASS: native IPv4 options grammar'     echo 'PASS: native DSCP, fragment, MAC and time expressions accepted by nft --check'
 elif [ "${FWB_REQUIRE_NFT:-0}" = 1 ]; then
     echo 'ERROR: nft command required for grammar check' >&2
     exit 1

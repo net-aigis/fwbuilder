@@ -163,7 +163,8 @@ case "$cmd" in
 {{endif}}
 
     *)
-        echo "Usage $0 [start|stop|status|block|reload|interfaces|test_interfaces{{if using_ipset}}|reload_address_table|add_to_address_table|remove_from_address_table|test_address_table{{endif}}]"
+        echo "Usage $0 [start|stop|status|block|reload|interfaces|test_interfaces{{if using_ipset}}|reload_address_table|add_to_address_table|remove_from_address_table|test_address_table{{endif}}]" >&2
+        RETVAL=2
         ;;
 
 esac

@@ -481,9 +481,9 @@ string PolicyCompiler_nft::PrintRule::_printModules(PolicyRule *rule)
     if (ruleopt!=nullptr && (lim=ruleopt->getInt("connlimit_value"))>0)
     {
         if (ruleopt->getBool("connlimit_above_not"))
-            ostr << " ct count <= " << lim;
+            ostr << " ct count " << lim;
         else
-            ostr << " ct count > " << lim;
+            ostr << " ct count over " << lim;
     }
 
     if (ruleopt!=nullptr && (lim=ruleopt->getInt("hashlimit_value"))>0)
