@@ -64,7 +64,7 @@ def read_fwb_nft_transaction(path, mode):
     if mode == 'sparse':
         destination = r'numgen random mod 2 map \{ 0 : 192\.168\.1\.100, 1 : 192\.168\.1\.103 \}'
     else:
-        destination = r'192\.168\.1\.100-192\.168\.1\.101'
+        destination = r'numgen random mod 2 map \{ 0 : 192\.168\.1\.100, 1 : 192\.168\.1\.101 \}'
     if not re.search(
             r'^add rule ip fwb_nat PREROUTING .*ip daddr 192\.0\.2\.101 .*tcp dport 80 .*dnat to '
             + destination + r'\s*$', rules, re.MULTILINE):

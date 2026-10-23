@@ -259,10 +259,10 @@ bool NATCompiler_nft::ConvertLoadBalancingRules::processNext()
     {
         RuleElementTDst  *tdst=rule->getTDst();  assert(tdst);
 
-        // Preserve legacy contiguous DNAT ranges. Native nftables can also
-        // distribute new connections over non-contiguous IPv4 destinations.
-        // Never collapse a sparse set to a range: that would forward traffic
-        // to IP addresses which were not selected in the FWB rule.
+        // Load-balancing needs an explicit per-connection backend selector:
+        // a plain DNAT address range is not equivalent to random distribution.
+        // Keep the pre-existing contiguous IPv6 range path; IPv4 uses numgen
+        // for BOTH adjacent and sparse destinations, never unselected hosts.
         NATCompiler_nft *nft_comp = dynamic_cast<NATCompiler_nft*>(compiler);
         list<const InetAddr*> al;
         FWObject *first_destination = nullptr;
@@ -295,8 +295,7 @@ bool NATCompiler_nft::ConvertLoadBalancingRules::processNext()
         ++current;
         for ( ; current != al.end(); ++current)
         {
-            // Duplicate backends must not silently change the balancing
-            // weights or the contiguous-range behavior.
+            // Duplicate backends must not silently change balancing weights.
             if (!(*previous < **current) && !(**current < *previous))
             {
                 compiler->abort(rule, "Duplicate native nftables load-balancing destination");
@@ -309,8 +308,15 @@ bool NATCompiler_nft::ConvertLoadBalancingRules::processNext()
             previous = *current;
         }
 
-        if (contiguous)
+        if (nft_comp->ipv6)
         {
+            // Retain the established IPv6 path, which currently only
+            // accepts contiguous destination pools.
+            if (!contiguous)
+            {
+                compiler->abort(rule, "Non-contiguous native nftables IPv6 load balancing is not supported");
+                return true;
+            }
             AddressRange *range = compiler->dbcopy->createAddressRange();
             range->setRangeStart(*al.front());
             range->setRangeEnd(*al.back());
@@ -322,11 +328,9 @@ bool NATCompiler_nft::ConvertLoadBalancingRules::processNext()
         }
         else
         {
-            if (nft_comp->ipv6)
-            {
-                compiler->abort(rule, "Non-contiguous native nftables IPv6 load balancing is not supported");
-                return true;
-            }
+            // The DNAT range path repeatedly selected one backend in the
+            // real contiguous-pool packet test (0/96 vs 96/96). An explicit
+            // map selects uniformly over the listed hosts for each new flow.
             // numgen random is evaluated only for the first packet of a
             // conntracked NAT flow; later packets retain their DNAT binding.
             ostringstream distribution;
