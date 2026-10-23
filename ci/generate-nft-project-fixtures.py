@@ -180,6 +180,60 @@ def case_ipv4_option_combined(tree):
     _case_native_ipv4_options(tree, ('lsrr', 'rr'))
 
 
+def _negate_fixture_policy_service(tree, service_id):
+    # Exercise the actual FWB Srv neg=True compiler path. Reorder the
+    # preserved deny-first policy to make the negated accept reachable.
+    root = tree.getroot()
+    fw = only(root, ".//%s[@name='nft-test']" % tag('Firewall'))
+    policy = only(fw, './' + tag('Policy'))
+    pr = only(policy, "./%s[@id='id9001X30989']" % tag('PolicyRule'))
+    fallback = only(policy, "./%s[@id='id2830X30989']" % tag('PolicyRule'))
+    srvrel = only(pr, './' + tag('Srv'))
+    if srvrel.get('neg') != 'False' or srvrel[0].get('ref') != service_id:
+        raise ValueError('unexpected baseline service element for negation')
+    if list(policy)[:2] != [fallback, pr]:
+        raise ValueError('unexpected baseline rule order for negation')
+    srvrel.set('neg', 'True')
+    policy.remove(pr)
+    policy.insert(0, pr)
+    pr.set('position', '0')
+    fallback.set('position', '1')
+
+
+def _case_negated_ipv4_service(tree, enabled):
+    _case_native_ipv4_options(tree, enabled)
+    _negate_fixture_policy_service(tree, 'ip-RR')
+
+
+def case_negated_ipv4_option_rr(tree):
+    _case_negated_ipv4_service(tree, ('rr',))
+
+
+def case_negated_ipv4_option_ra(tree):
+    _case_negated_ipv4_service(tree, ('rtralt',))
+
+
+def case_negated_ipv4_option_any(tree):
+    _case_negated_ipv4_service(tree, ('any_opt',))
+
+
+def case_negated_ipv4_option_combined(tree):
+    _case_negated_ipv4_service(tree, ('lsrr', 'rr'))
+
+
+def case_negated_ipv4_fragment(tree):
+    _, _, pr, _ = prepare(tree)
+    replace_ref(pr, 'Srv', 'ip-IP_Fragments')
+    _negate_fixture_policy_service(tree, 'ip-IP_Fragments')
+
+
+def case_reject_negated_ipv4_timestamp(tree):
+    _case_negated_ipv4_service(tree, ('rr',))
+    service = only(tree.getroot(), ".//" + tag('IPService') + "[@id='ip-RR']")
+    service.set('rr', 'False')
+    service.set('ts', 'True')
+
+
 def case_reject_policy_options(tree):
     _, _, pr, _ = prepare(tree)
     # This isolated fixture must exercise an unsupported IPv4 option.
@@ -302,6 +356,12 @@ def case_dynamic_address_sets(tree):
 
 
 CASES = {
+    'negated-ipv4-option-rr': case_negated_ipv4_option_rr,
+    'negated-ipv4-option-ra': case_negated_ipv4_option_ra,
+    'negated-ipv4-option-any': case_negated_ipv4_option_any,
+    'negated-ipv4-option-combined': case_negated_ipv4_option_combined,
+    'negated-ipv4-fragment': case_negated_ipv4_fragment,
+    'reject-negated-ipv4-timestamp': case_reject_negated_ipv4_timestamp,
     'ipv4-option-rr': case_ipv4_option_rr,
     'ipv4-option-lsrr': case_ipv4_option_lsrr,
     'ipv4-option-ssrr': case_ipv4_option_ssrr,

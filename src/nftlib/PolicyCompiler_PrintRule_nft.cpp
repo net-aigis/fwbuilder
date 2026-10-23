@@ -940,7 +940,12 @@ string PolicyCompiler_nft::PrintRule::_printIP(IPService *srv, PolicyRule *rule)
                 compiler->abort(rule, "Unsupported native nftables IPv4 options match");
         }
     }
-    if (!str.str().empty() && rule->getSrv()->getBool("single_object_negation"))
+    // Ordinary FWB service negation (Srv neg=True) is lowered earlier by
+    // SrvNegation into a jump, a positive service match with return, and
+    // a terminal action.  A per-object `not` prefix cannot express the
+    // complement of compound matches and must never reach this printer.
+    // Reject even an otherwise empty match, which would silently widen it.
+    if (rule->getSrv()->getBool("single_object_negation"))
         compiler->abort(rule, "Negated native nftables IP service match is not yet supported");
 
     return str.str();

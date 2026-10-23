@@ -78,6 +78,49 @@ check_positive() {
     echo "PASS: $name (IPv$family) generated and verified native rules"
 }
 
+# Validate the *actual* three-rule negation lowering for ordinary FWB
+# Srv neg=True. A sequence of nft matches is AND, so prefixing "not" or
+# negating just the first expression would change policy semantics.
+check_negated_ip_service() {
+    local name=$1 match=$2
+    if ! check_positive "$name" 4 "$match"; then
+        return 1
+    fi
+    python3 - "$work/$name.ruleset.nft" "$match" <<'PY_NEGATED_IP_SERVICE'
+import re
+import sys
+from pathlib import Path
+
+lines = Path(sys.argv[1]).read_text().splitlines()
+expected = re.compile(sys.argv[2])
+rules = []
+for index, line in enumerate(lines):
+    match = re.fullmatch(r'add rule ip fwb_filter (\S+) (.+)', line)
+    if match:
+        rules.append((index, match.group(1), match.group(2)))
+
+matched = [(idx, chain, body) for idx, chain, body in rules
+           if expected.search(body) and body.endswith(' return')]
+if not matched:
+    sys.exit('FAIL: negated IP service has no positive-match return rule')
+for idx, chain, body in matched:
+    if re.search(r'\bnot\s', body):
+        sys.exit('FAIL: native negation emitted an invalid not prefix')
+    jumps = [(i, c, b) for i, c, b in rules
+             if i < idx and c != chain and re.search(
+                 r'\bjump\s+' + re.escape(chain) + r'\s*$', b)]
+    tails = [(i, b) for i, c, b in rules
+             if i > idx and c == chain and (b == 'accept' or b.endswith(' accept'))]
+    if not jumps or not tails:
+        sys.exit('FAIL: negated IP service is missing jump/return/accept ordering')
+    # The fallback action is reached only when the positive service did not
+    # match.  A service match *alone* must not trigger the accept action.
+    if any(expected.search(b) for _, b in tails):
+        sys.exit('FAIL: negated service is present in terminal accept rule')
+print('PASS: negated IP service uses jump / positive match return / accept')
+PY_NEGATED_IP_SERVICE
+}
+
 # Unsupported options must fail with the *specific* fail-closed diagnostic.
 check_negative() {
     local name=$1 expected=$2
@@ -153,6 +196,12 @@ run_case ipv4-option-ssrr check_positive ipv4-option-ssrr 4 'ip option ssrr exis
 run_case ipv4-option-ra check_positive ipv4-option-ra 4 'ip option ra exists'
 run_case ipv4-option-any check_positive ipv4-option-any 4 'ip hdrlength > 5'
 run_case ipv4-option-combined check_positive ipv4-option-combined 4 'ip option lsrr exists ip option rr exists'
+run_case negated-ipv4-option-rr check_negated_ip_service negated-ipv4-option-rr 'ip option rr exists'
+run_case negated-ipv4-option-ra check_negated_ip_service negated-ipv4-option-ra 'ip option ra exists'
+run_case negated-ipv4-option-any check_negated_ip_service negated-ipv4-option-any 'ip hdrlength > 5'
+run_case negated-ipv4-option-combined check_negated_ip_service negated-ipv4-option-combined 'ip option lsrr exists ip option rr exists'
+run_case negated-ipv4-fragment check_negated_ip_service negated-ipv4-fragment 'ip frag-off'
+run_case reject-negated-ipv4-timestamp check_negative reject-negated-ipv4-timestamp 'Native nftables IPv4 timestamp option matching is not supported'
 run_case reject-policy-options check_negative reject-policy-options 'Native nftables IPv4 timestamp option matching is not supported'
 run_case reject-nat-options check_negative reject-nat-options 'Native nftables NAT IP option matching is not supported'
 run_case reject-timezone check_negative reject-timezone 'xt_time kernel timezone mode is not supported by native nftables'
