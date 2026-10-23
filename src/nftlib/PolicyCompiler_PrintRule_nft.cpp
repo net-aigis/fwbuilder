@@ -914,9 +914,31 @@ string PolicyCompiler_nft::PrintRule::_printIP(IPService *srv, PolicyRule *rule)
     }
     if (srv->hasIpOptions())
     {
-        // The ipv4options xtables extension does not have a one-to-one
-        // translation for every supported flag. Never emit its -m syntax.
-        compiler->abort(rule, "Native nftables IP option matching is not yet supported");
+        if (ipt_comp->ipv6)
+            compiler->abort(rule, "IPv4 IP options are not supported for IPv6");
+
+        // The legacy 'any_opt' flag matches any non-minimal IPv4 header.
+        // IHL is counted in 32-bit words; 5 denotes an option-free header.
+        if (srv->getBool("any_opt"))
+            str << " ip hdrlength > 5";
+        else
+        {
+            // These flags are combined with AND, as with ipv4options
+            // --flags without --any. nft has no named timestamp option.
+            if (srv->getBool("ts"))
+                compiler->abort(rule, "Native nftables IPv4 timestamp option matching is not supported");
+            bool emitted = false;
+            if (srv->getBool("lsrr"))
+            { str << " ip option lsrr exists"; emitted = true; }
+            if (srv->getBool("ssrr"))
+            { str << " ip option ssrr exists"; emitted = true; }
+            if (srv->getBool("rr"))
+            { str << " ip option rr exists"; emitted = true; }
+            if (srv->getBool("rtralt"))
+            { str << " ip option ra exists"; emitted = true; }
+            if (!emitted)
+                compiler->abort(rule, "Unsupported native nftables IPv4 options match");
+        }
     }
     if (!str.str().empty() && rule->getSrv()->getBool("single_object_negation"))
         compiler->abort(rule, "Negated native nftables IP service match is not yet supported");

@@ -50,6 +50,18 @@ sh ci/check-nft-address-table-transaction.sh
 "$bin" --grammar > "$fixture"
 if command -v nft >/dev/null 2>&1; then
     nft --check --file "$fixture"
+    cat > "$fixture" <<'FWB_PR6_IPV4_OPTIONS'
+add table ip fwb_pr6_options
+add chain ip fwb_pr6_options INPUT { type filter hook input priority 0; policy accept; }
+add rule ip fwb_pr6_options INPUT ip hdrlength > 5 counter accept
+add rule ip fwb_pr6_options INPUT ip option lsrr exists counter accept
+add rule ip fwb_pr6_options INPUT ip option ssrr exists counter accept
+add rule ip fwb_pr6_options INPUT ip option rr exists counter accept
+add rule ip fwb_pr6_options INPUT ip option ra exists counter accept
+add rule ip fwb_pr6_options INPUT ip option lsrr exists ip option rr exists counter accept
+FWB_PR6_IPV4_OPTIONS
+    nft --check --file "$fixture"
+    echo 'PASS: native IPv4 options grammar'
     echo 'PASS: native DSCP, fragment, MAC and time expressions accepted by nft --check'
 elif [ "${FWB_REQUIRE_NFT:-0}" = 1 ]; then
     echo 'ERROR: nft command required for grammar check' >&2
