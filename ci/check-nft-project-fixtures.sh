@@ -112,7 +112,14 @@ check_dynamic_sets() {
     grep -Fq 'fwb_nft_stage_address_tables || exit 1' "${generated[0]}" || return 1
     grep -Eq 'add rule ip fwb_filter .*ip saddr @bad_guys' "${generated[0]}" || return 1
     grep -Fq "fwb_nft_stage_one_address_table 'bad_guys' '/tmp/fwb-pr6-ci-address-set.data'" "${generated[0]}" || return 1
-    if grep -Eq '^add table ip fwb_filter[[:space:]]*$' "${generated[0]}"; then
+    # block_action() has a separate emergency-policy transaction, so its
+    # add-table declarations are not duplicates in the start transaction.
+    if awk '
+        /^block_action\(\) \{/ { in_block = 1; next }
+        in_block && /^}/ { in_block = 0; next }
+        !in_block && /^add table ip fwb_filter[[:space:]]*$/ { duplicate = 1 }
+        END { exit !duplicate }
+    ' "${generated[0]}"; then
         echo 'Unexpected duplicate add-table declaration in set mode' >&2
         return 1
     fi
