@@ -52,6 +52,20 @@ for fw in "$@"; do
             if (tab=="fwb_mangle" && $0 !~ /type (filter|route) hook/) fail("mangle base chain missing hook: " key)
             next
         }
+        # Named dynamic hashlimit sets are nftables objects, not rules.
+        # They must belong to an existing FWB table and be declared once.
+        if ($2=="set" && n>=6) {
+            family=part[3]; tab=part[4]; setname=part[5]
+            key=family " " tab " " setname
+            if (tab !~ /^fwb_(filter|mangle)$/) fail("unowned nft set table: " tab)
+            if (!table[family " " tab]) fail("set before table: " key)
+            if (setname !~ /^fwb_[[:alnum:]_]+$/) fail("invalid FWB set name: " setname)
+            if (sets[key]++) fail("duplicate set declaration: " key)
+            if ($0 !~ /[[:space:]]\{[[:space:]]*type[[:space:]]+/ ||
+                $0 !~ /;[[:space:]]*\}[[:space:]]*$/)
+                fail("malformed named set declaration: " key)
+            next
+        }
         if ($2=="rule" && n>=6) {
             family=part[3]; tab=part[4]; chain=part[5]
             key=family " " tab " " chain
