@@ -76,19 +76,30 @@ FWB_PR6_NAT_CONNCOUNT
     # Make sure the native printers actually use the syntax just checked.
     grep -Fq 'tsrc->getAddressPtr()->isV6()' src/nftlib/NATCompiler_PrintRule_nft.cpp
     grep -Fq 'ostr << " ct count over " << lim' src/nftlib/PolicyCompiler_PrintRule_nft.cpp
+    # A single explicit dynamic set must be reusable by multiple policy
+    # chains. Implicit `meter` declarations generated EOPNOTSUPP/EBUSY in CI.
     cat > "$fixture" <<'FWB_PR6_HASHLIMIT'
 add table ip fwb_pr6_hashlimit_check
 add chain ip fwb_pr6_hashlimit_check INPUT { type filter hook input priority 0; policy accept; }
-add rule ip fwb_pr6_hashlimit_check INPUT tcp dport 80 meter fwb_ci_srcip { ip saddr timeout 3000ms limit rate 8/second burst 4 packets } accept
-add rule ip fwb_pr6_hashlimit_check INPUT tcp dport 80 meter fwb_ci_srcip_dstport { ip saddr . tcp dport timeout 3000ms limit rate 8/second burst 4 packets } accept
-add rule ip fwb_pr6_hashlimit_check INPUT udp dport 53 meter fwb_ci_udp_port { ip saddr . udp dport timeout 3000ms limit rate 8/second burst 4 packets } accept
+add chain ip fwb_pr6_hashlimit_check FORWARD { type filter hook forward priority 0; policy accept; }
+add set ip fwb_pr6_hashlimit_check fwb_ci_srcip { type ipv4_addr; size 65535; flags dynamic,timeout; timeout 3000ms; }
+add set ip fwb_pr6_hashlimit_check fwb_ci_srcip_dstport { type ipv4_addr . inet_service; size 65535; flags dynamic,timeout; timeout 3000ms; }
+add rule ip fwb_pr6_hashlimit_check INPUT tcp dport 80 update @fwb_ci_srcip { ip saddr limit rate 8/second burst 4 packets } accept
+add rule ip fwb_pr6_hashlimit_check INPUT tcp dport 80 update @fwb_ci_srcip_dstport { ip saddr . tcp dport limit rate 8/second burst 4 packets } accept
+add rule ip fwb_pr6_hashlimit_check FORWARD tcp dport 80 update @fwb_ci_srcip_dstport { ip saddr . tcp dport limit rate 8/second burst 4 packets } accept
+add table ip fwb_pr6_hashlimit_udp
+add chain ip fwb_pr6_hashlimit_udp INPUT { type filter hook input priority 0; policy accept; }
+add set ip fwb_pr6_hashlimit_udp fwb_ci_udp_port { type ipv4_addr . inet_service; size 65535; flags dynamic,timeout; timeout 3000ms; }
+add rule ip fwb_pr6_hashlimit_udp INPUT udp dport 53 update @fwb_ci_udp_port { ip saddr . udp dport limit rate 8/second burst 4 packets } accept
 add table ip6 fwb_pr6_hashlimit6_check
 add chain ip6 fwb_pr6_hashlimit6_check INPUT { type filter hook input priority 0; policy accept; }
-add rule ip6 fwb_pr6_hashlimit6_check INPUT tcp dport 80 meter fwb_ci_srcip { ip6 saddr timeout 3000ms limit rate 8/second burst 4 packets } accept
-add rule ip6 fwb_pr6_hashlimit6_check INPUT tcp dport 80 meter fwb_ci_ip6_port { ip6 saddr . tcp dport timeout 3000ms limit rate 8/second burst 4 packets } accept
+add set ip6 fwb_pr6_hashlimit6_check fwb_ci_srcip { type ipv6_addr; size 65535; flags dynamic,timeout; timeout 3000ms; }
+add set ip6 fwb_pr6_hashlimit6_check fwb_ci_ip6_port { type ipv6_addr . inet_service; size 65535; flags dynamic,timeout; timeout 3000ms; }
+add rule ip6 fwb_pr6_hashlimit6_check INPUT tcp dport 80 update @fwb_ci_srcip { ip6 saddr limit rate 8/second burst 4 packets } accept
+add rule ip6 fwb_pr6_hashlimit6_check INPUT tcp dport 80 update @fwb_ci_ip6_port { ip6 saddr . tcp dport limit rate 8/second burst 4 packets } accept
 FWB_PR6_HASHLIMIT
     nft --check --file "$fixture"
-    echo 'PASS: native IPv4/IPv6 per-key hashlimit meter grammar'
+    echo 'PASS: native IPv4/IPv6 per-key hashlimit named dynamic-set grammar'
     echo 'PASS: IPv6 SNAT port and connlimit grammar'
     echo 'PASS: native IPv4 options grammar'     echo 'PASS: native DSCP, fragment, MAC and time expressions accepted by nft --check'
 elif [ "${FWB_REQUIRE_NFT:-0}" = 1 ]; then

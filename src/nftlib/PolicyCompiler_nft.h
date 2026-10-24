@@ -1131,6 +1131,7 @@ public:
             bool omit_src_port_for_concat;
             bool omit_dst_port_for_concat;
             std::string current_rule_label;
+            std::string pending_hashlimit_set_declaration;
             std::string version;
 
             void initializeMinusNTracker();

@@ -527,6 +527,7 @@ string PolicyCompiler_nft::PrintRule::_printModules(PolicyRule *rule)
             PolicyCompiler_nft *nft_comp =
                 dynamic_cast<PolicyCompiler_nft*>(compiler);
             string selectors;
+            string key_types;
             std::set<string> seen;
             std::istringstream parts(mode);
             string part;
@@ -534,10 +535,17 @@ string PolicyCompiler_nft::PrintRule::_printModules(PolicyRule *rule)
             while (std::getline(parts, part, ','))
             {
                 string expr;
+                string type;
                 if (part == "srcip")
+                {
                     expr = nft_comp->ipv6 ? "ip6 saddr" : "ip saddr";
+                    type = nft_comp->ipv6 ? "ipv6_addr" : "ipv4_addr";
+                }
                 else if (part == "dstip")
+                {
                     expr = nft_comp->ipv6 ? "ip6 daddr" : "ip daddr";
+                    type = nft_comp->ipv6 ? "ipv6_addr" : "ipv4_addr";
+                }
                 else if (part == "srcport" || part == "dstport")
                 {
                     // Raw 'th sport/dport' is not a suitable typed key for
@@ -552,12 +560,18 @@ string PolicyCompiler_nft::PrintRule::_printModules(PolicyRule *rule)
                         transport = TCPService::isA(srv) ? "tcp" : "udp";
                     }
                     expr = transport + (part == "srcport" ? " sport" : " dport");
+                    type = "inet_service";
                 }
                 else compiler->abort(rule, "Unsupported native nftables hashlimit mode: " + part);
                 if (!seen.insert(part).second)
                     compiler->abort(rule, "Duplicate native nftables hashlimit mode: " + part);
-                if (!selectors.empty()) selectors += " . ";
+                if (!selectors.empty())
+                {
+                    selectors += " . ";
+                    key_types += " . ";
+                }
                 selectors += expr;
+                key_types += type;
             }
             if (selectors.empty() || (!mode.empty() && mode.back() == ','))
                 compiler->abort(rule, "Invalid native nftables hashlimit mode");
@@ -580,10 +594,42 @@ string PolicyCompiler_nft::PrintRule::_printModules(PolicyRule *rule)
                 if (ruleopt->getInt(oldopt) > 0)
                     compiler->abort(rule, string("Unsupported native nftables hashlimit option: ") + oldopt);
 
-            ostr << " meter fwb_" << name << " { " << selectors;
-            int expiry = ruleopt->getInt("hashlimit_expire");
-            if (expiry > 0) ostr << " timeout " << expiry << "ms";
-            ostr << " " << rate << " }";
+            // A named dynamic set is declared exactly once per family/table,
+            // then shared by every rule (including INPUT and FORWARD) with
+            // the same FWB hashlimit name. Implicit `meter` declarations in
+            // two rule statements can conflict inside one nft transaction.
+            const string set_name = "fwb_" + name;
+            const string table = nft_utils::managedTableName(nft_comp->my_table);
+            const string family = nft_utils::familyName(nft_comp->ipv6);
+            const int expiry = ruleopt->getInt("hashlimit_expire");
+            const string config = selectors + ":" + key_types + ":" + std::to_string(expiry) + ":" + rate;
+            const string marker = "__fwb_nft_meter:" + table + ":" + set_name + ":";
+            const string tracking_key = marker + config;
+            auto *tracking = nft_comp->minus_n_commands;
+            if (tracking == nullptr)
+                compiler->abort(rule, "Native nftables meter declaration tracking is unavailable");
+            for (auto it = tracking->lower_bound(marker);
+                 it != tracking->end() && it->first.compare(0, marker.size(), marker) == 0;
+                 ++it)
+            {
+                if (it->first != tracking_key)
+                    compiler->abort(rule,
+                        "Conflicting native nftables hashlimit settings for name: " + name);
+            }
+            if (tracking->count(tracking_key) == 0)
+            {
+                const bool atomic = useNftablesAtomic(compiler->getCachedFwOpt());
+                std::ostringstream def;
+                def << nft_utils::commandPrefix(atomic) << "add set " << family << " "
+                    << table << " " << set_name << " { type " << key_types
+                    << "; size 65535; flags dynamic";
+                if (expiry > 0)
+                    def << ",timeout; timeout " << expiry << "ms";
+                def << "; }\n";
+                pending_hashlimit_set_declaration = def.str();
+                (*tracking)[tracking_key] = true;
+            }
+            ostr << " update @" << set_name << " { " << selectors << " " << rate << " }";
         }
     }
 
@@ -1521,6 +1567,7 @@ string PolicyCompiler_nft::PrintRule::PolicyRuleToString(PolicyRule *rule)
 
     have_m_iprange = false;
     resetSetTracking();
+    pending_hashlimit_set_declaration.clear();
 
     command_line << _startRuleLine();
 
@@ -1618,7 +1665,7 @@ string PolicyCompiler_nft::PrintRule::PolicyRuleToString(PolicyRule *rule)
 
 //    command_line << endl;
 
-    return command_line.str();
+    return pending_hashlimit_set_declaration + command_line.str();
 }
 
 string PolicyCompiler_nft::PrintRule::_declareTable()
