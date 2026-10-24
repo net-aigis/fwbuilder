@@ -69,6 +69,7 @@
 #include <stdexcept>
 #include <cstring>
 #include <algorithm>
+#include <set>
 
 #include <assert.h>
 
@@ -488,13 +489,96 @@ string PolicyCompiler_nft::PrintRule::_printModules(PolicyRule *rule)
 
     if (ruleopt!=nullptr && (lim=ruleopt->getInt("hashlimit_value"))>0)
     {
-        ostr << " limit rate " << lim;
+        // iptables hashlimit has independent buckets per selected key. A
+        // global nft 'limit rate' is only equivalent if no mode was chosen.
+        string mode = ruleopt->getStr("hashlimit_mode");
+        if (mode.empty())
+        {
+            const char *legacy_modes[] = {"srcip", "dstip", "srcport", "dstport"};
+            for (const char *part : legacy_modes)
+                if (ruleopt->getBool(string("hashlimit_mode_") + part))
+                {
+                    if (!mode.empty()) mode += ",";
+                    mode += part;
+                }
+        }
 
-        string ls = ruleopt->getStr("hashlimit_suffix");
-        if (!ls.empty()) ostr << ls;
+        string suffix = ruleopt->getStr("hashlimit_suffix");
+        if (suffix.empty()) suffix = "/second";
+        if (suffix == "/sec") suffix = "/second";
+        else if (suffix == "/min") suffix = "/minute";
+        else if (suffix == "/hour") suffix = "/hour";
+        else if (suffix == "/day") suffix = "/day";
+        else if (suffix != "/second" && suffix != "/minute")
+            compiler->abort(rule, "Unsupported native nftables hashlimit interval: " + suffix);
 
-        int lb=ruleopt->getInt("hashlimit_burst");
-        if (lb>0) ostr << " burst " << lb;
+        string rate = "limit rate ";
+        // Mirror the legacy --hashlimit direction, which tests traffic
+        // within the specified rate. The rule action decides what follows.
+        rate += std::to_string(lim) + suffix;
+        int burst = ruleopt->getInt("hashlimit_burst");
+        if (burst > 0) rate += " burst " + std::to_string(burst) + " packets";
+
+        if (mode.empty())
+        {
+            ostr << " " << rate;
+        } else
+        {
+            PolicyCompiler_nft *nft_comp =
+                dynamic_cast<PolicyCompiler_nft*>(compiler);
+            string selectors;
+            std::set<string> seen;
+            std::istringstream parts(mode);
+            string part;
+            while (std::getline(parts, part, ','))
+            {
+                string expr;
+                if (part == "srcip")
+                    expr = nft_comp->ipv6 ? "ip6 saddr" : "ip saddr";
+                else if (part == "dstip")
+                    expr = nft_comp->ipv6 ? "ip6 daddr" : "ip daddr";
+                else if (part == "srcport") expr = "th sport";
+                else if (part == "dstport") expr = "th dport";
+                else compiler->abort(rule, "Unsupported native nftables hashlimit mode: " + part);
+                if (!seen.insert(part).second)
+                    compiler->abort(rule, "Duplicate native nftables hashlimit mode: " + part);
+                if (!selectors.empty()) selectors += " . ";
+                selectors += expr;
+            }
+            if (selectors.empty() || (!mode.empty() && mode.back() == ','))
+                compiler->abort(rule, "Invalid native nftables hashlimit mode");
+
+            if (seen.count("srcport") || seen.count("dstport"))
+            {
+                Service *srv = compiler->getFirstSrv(rule);
+                if (srv == nullptr || (!TCPService::isA(srv) && !UDPService::isA(srv)))
+                    compiler->abort(rule,
+                        "Native nftables port-key hashlimit needs a TCP or UDP service");
+            }
+
+            string name = ruleopt->getStr("hashlimit_name");
+            if (name.empty()) name = "htable_rule_" + std::to_string(rule->getPosition());
+            if (name.size() > 45 || name.empty() ||
+                !((name[0] >= 'a' && name[0] <= 'z') ||
+                  (name[0] >= 'A' && name[0] <= 'Z') || name[0] == '_'))
+                compiler->abort(rule, "Invalid native nftables hashlimit name");
+            for (char c : name)
+                if (!((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
+                      (c >= '0' && c <= '9') || c == '_'))
+                    compiler->abort(rule, "Invalid native nftables hashlimit name");
+
+            // Unlike iptables, nft meters cannot honor the old hash bucket
+            // sizing / GC intervals. Refuse rather than silently changing
+            // explicitly configured behavior.
+            for (const char *oldopt : {"hashlimit_size", "hashlimit_max", "hashlimit_gcinterval"})
+                if (ruleopt->getInt(oldopt) > 0)
+                    compiler->abort(rule, string("Unsupported native nftables hashlimit option: ") + oldopt);
+
+            ostr << " meter fwb_" << name << " { " << selectors;
+            int expiry = ruleopt->getInt("hashlimit_expire");
+            if (expiry > 0) ostr << " timeout " << expiry << "ms";
+            ostr << " " << rate << " }";
+        }
     }
 
     return ostr.str();

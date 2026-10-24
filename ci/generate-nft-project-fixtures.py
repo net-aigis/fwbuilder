@@ -313,6 +313,58 @@ def _case_native_user_service(tree, negated):
     only(rule, './' + tag('Srv')).set('neg', 'True' if negated else 'False')
 
 
+def _case_native_hashlimit(tree, ipv6=False, combo=False):
+    if ipv6:
+        case_ipv6(tree)
+        fw = only(tree.getroot(), ".//%s[@name='nft-test']" % tag('Firewall'))
+        pr = only(only(fw, './' + tag('Policy')), "./%s[@id='id9001X30989']" % tag('PolicyRule'))
+        replace_ref(pr, 'Srv', 'tcp-HTTP')
+    else:
+        fw = prepare_packet_policy(tree, 'tcp-HTTP')
+        pr = only(only(fw, './' + tag('Policy')), "./%s[@id='id9001X30989']" % tag('PolicyRule'))
+    opts = only(pr, './' + tag('PolicyRuleOptions'))
+    chosen = {
+        'hashlimit_value': '8',
+        'hashlimit_suffix': '/second',
+        'hashlimit_burst': '4',
+        'hashlimit_mode': 'srcip,dstport' if combo else 'srcip',
+        'hashlimit_name': 'ci_srcip_dstport' if combo else 'ci_srcip',
+        'hashlimit_expire': '3000',
+    }
+    for option_name, value in chosen.items():
+        existing = opts.find("./%s[@name='%s']" % (tag('Option'), option_name))
+        if existing is None:
+            existing = ET.SubElement(opts, tag('Option'), {'name': option_name})
+        existing.text = value
+
+
+def case_hashlimit_srcip(tree):
+    _case_native_hashlimit(tree)
+
+
+def case_hashlimit_srcip_dstport(tree):
+    _case_native_hashlimit(tree, combo=True)
+
+
+def case_ipv6_hashlimit_srcip(tree):
+    _case_native_hashlimit(tree, ipv6=True)
+
+
+def case_reject_hashlimit_bad_mode(tree):
+    _case_native_hashlimit(tree)
+    pr = only(tree.getroot(), ".//%s[@id='id9001X30989']" % tag('PolicyRule'))
+    opts = only(pr, './' + tag('PolicyRuleOptions'))
+    only(opts, "./%s[@name='hashlimit_mode']" % tag('Option')).text = 'srcip;accept'
+
+
+def case_reject_hashlimit_icmp_port(tree):
+    _case_native_hashlimit(tree)
+    pr = only(tree.getroot(), ".//%s[@id='id9001X30989']" % tag('PolicyRule'))
+    replace_ref(pr, 'Srv', 'ip-IP_Fragments')
+    opts = only(pr, './' + tag('PolicyRuleOptions'))
+    only(opts, "./%s[@name='hashlimit_mode']" % tag('Option')).text = 'srcport'
+
+
 def case_user_service_outbound(tree):
     _case_native_user_service(tree, False)
 
@@ -542,6 +594,11 @@ def case_dynamic_address_sets(tree):
 
 
 CASES = {
+    'reject-hashlimit-bad-mode': case_reject_hashlimit_bad_mode,
+    'reject-hashlimit-icmp-port': case_reject_hashlimit_icmp_port,
+    'hashlimit-srcip': case_hashlimit_srcip,
+    'hashlimit-srcip-dstport': case_hashlimit_srcip_dstport,
+    'ipv6-hashlimit-srcip': case_ipv6_hashlimit_srcip,
     'user-service-outbound': case_user_service_outbound,
     'negated-user-service-outbound': case_negated_user_service_outbound,
     'negated-ipv4-option-rr': case_negated_ipv4_option_rr,

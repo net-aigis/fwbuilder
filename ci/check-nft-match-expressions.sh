@@ -76,6 +76,17 @@ FWB_PR6_NAT_CONNCOUNT
     # Make sure the native printers actually use the syntax just checked.
     grep -Fq 'tsrc->getAddressPtr()->isV6()' src/nftlib/NATCompiler_PrintRule_nft.cpp
     grep -Fq 'ostr << " ct count over " << lim' src/nftlib/PolicyCompiler_PrintRule_nft.cpp
+    cat > "$fixture" <<'FWB_PR6_HASHLIMIT'
+add table ip fwb_pr6_hashlimit_check
+add chain ip fwb_pr6_hashlimit_check INPUT { type filter hook input priority 0; policy accept; }
+add rule ip fwb_pr6_hashlimit_check INPUT tcp dport 80 meter fwb_ci_srcip { ip saddr timeout 3000ms limit rate 8/second burst 4 packets } accept
+add rule ip fwb_pr6_hashlimit_check INPUT tcp dport 80 meter fwb_ci_srcip_dstport { ip saddr . th dport timeout 3000ms limit rate 8/second burst 4 packets } accept
+add table ip6 fwb_pr6_hashlimit6_check
+add chain ip6 fwb_pr6_hashlimit6_check INPUT { type filter hook input priority 0; policy accept; }
+add rule ip6 fwb_pr6_hashlimit6_check INPUT tcp dport 80 meter fwb_ci_srcip { ip6 saddr timeout 3000ms limit rate 8/second burst 4 packets } accept
+FWB_PR6_HASHLIMIT
+    nft --check --file "$fixture"
+    echo 'PASS: native IPv4/IPv6 per-key hashlimit meter grammar'
     echo 'PASS: IPv6 SNAT port and connlimit grammar'
     echo 'PASS: native IPv4 options grammar'     echo 'PASS: native DSCP, fragment, MAC and time expressions accepted by nft --check'
 elif [ "${FWB_REQUIRE_NFT:-0}" = 1 ]; then
