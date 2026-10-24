@@ -626,7 +626,12 @@ string PolicyCompiler_nft::PrintRule::_printModules(PolicyRule *rule)
                 if (expiry > 0)
                     def << ",timeout; timeout " << expiry << "ms";
                 def << "; }\n";
-                pending_hashlimit_set_declaration = def.str();
+                // Register the declaration with the driver.  Emitting it
+                // through printRunTimeWrappers() can drop the declaration
+                // while retaining the rule's update @set reference.
+                // The driver emits each registered definition before the
+                // rules, after the managed nftables table is created.
+                (*tracking)["__fwb_nft_setdef:" + def.str()] = true;
                 (*tracking)[tracking_key] = true;
             }
             ostr << " update @" << set_name << " { " << selectors << " " << rate << " }";
@@ -1567,7 +1572,6 @@ string PolicyCompiler_nft::PrintRule::PolicyRuleToString(PolicyRule *rule)
 
     have_m_iprange = false;
     resetSetTracking();
-    pending_hashlimit_set_declaration.clear();
 
     command_line << _startRuleLine();
 
@@ -1665,7 +1669,7 @@ string PolicyCompiler_nft::PrintRule::PolicyRuleToString(PolicyRule *rule)
 
 //    command_line << endl;
 
-    return pending_hashlimit_set_declaration + command_line.str();
+    return command_line.str();
 }
 
 string PolicyCompiler_nft::PrintRule::_declareTable()

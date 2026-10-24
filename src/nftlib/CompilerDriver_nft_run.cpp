@@ -599,12 +599,27 @@ QString CompilerDriver_nft::run(const std::string &cluster_id,
                 }
             }
 
+            // Hashlimit dynamic sets must be declared exactly once for each
+            // managed nftables table, before any rule can use update @set.
+            // Keep declarations out of per-rule runtime wrappers: those
+            // wrappers are intended for executable rules, not nft objects.
+            // The maps are scoped to this address-family run and shared
+            // across all policy rulesets for the corresponding table.
+            auto nftSetDeclarations = [](const std::map<const std::string, bool> &tracker) {
+                const std::string prefix = "__fwb_nft_setdef:";
+                std::string declarations;
+                for (const auto &entry : tracker)
+                    if (entry.first.compare(0, prefix.size(), prefix) == 0)
+                        declarations += entry.first.substr(prefix.size());
+                return declarations;
+            };
+
             generated_script += dumpScript(fw,
                                            automaitc_rules_stream.str(),
                                            automaitc_mangle_stream.str(),
                                            nat_rules_stream.str(),
-                                           mangle_rules_stream.str(),
-                                           filter_rules_stream.str(),
+                                           nftSetDeclarations(minus_n_commands_mangle) + mangle_rules_stream.str(),
+                                           nftSetDeclarations(minus_n_commands_filter) + filter_rules_stream.str(),
                                            ipv6_policy);
             if (single_rule_compile_on)
                 generated_script += "\n\n";
