@@ -80,10 +80,12 @@ FWB_PR6_NAT_CONNCOUNT
 add table ip fwb_pr6_hashlimit_check
 add chain ip fwb_pr6_hashlimit_check INPUT { type filter hook input priority 0; policy accept; }
 add rule ip fwb_pr6_hashlimit_check INPUT tcp dport 80 meter fwb_ci_srcip { ip saddr timeout 3000ms limit rate 8/second burst 4 packets } accept
-add rule ip fwb_pr6_hashlimit_check INPUT tcp dport 80 meter fwb_ci_srcip_dstport { ip saddr . th dport timeout 3000ms limit rate 8/second burst 4 packets } accept
+add rule ip fwb_pr6_hashlimit_check INPUT tcp dport 80 meter fwb_ci_srcip_dstport { ip saddr . tcp dport timeout 3000ms limit rate 8/second burst 4 packets } accept
+add rule ip fwb_pr6_hashlimit_check INPUT udp dport 53 meter fwb_ci_udp_port { ip saddr . udp dport timeout 3000ms limit rate 8/second burst 4 packets } accept
 add table ip6 fwb_pr6_hashlimit6_check
 add chain ip6 fwb_pr6_hashlimit6_check INPUT { type filter hook input priority 0; policy accept; }
 add rule ip6 fwb_pr6_hashlimit6_check INPUT tcp dport 80 meter fwb_ci_srcip { ip6 saddr timeout 3000ms limit rate 8/second burst 4 packets } accept
+add rule ip6 fwb_pr6_hashlimit6_check INPUT tcp dport 80 meter fwb_ci_ip6_port { ip6 saddr . tcp dport timeout 3000ms limit rate 8/second burst 4 packets } accept
 FWB_PR6_HASHLIMIT
     nft --check --file "$fixture"
     echo 'PASS: native IPv4/IPv6 per-key hashlimit meter grammar'

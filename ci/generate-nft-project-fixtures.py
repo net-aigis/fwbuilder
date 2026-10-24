@@ -313,14 +313,14 @@ def _case_native_user_service(tree, negated):
     only(rule, './' + tag('Srv')).set('neg', 'True' if negated else 'False')
 
 
-def _case_native_hashlimit(tree, ipv6=False, combo=False):
+def _case_native_hashlimit(tree, ipv6=False, combo=False, udp=False):
     if ipv6:
         case_ipv6(tree)
         fw = only(tree.getroot(), ".//%s[@name='nft-test']" % tag('Firewall'))
         pr = only(only(fw, './' + tag('Policy')), "./%s[@id='id9001X30989']" % tag('PolicyRule'))
-        replace_ref(pr, 'Srv', 'tcp-HTTP')
+        replace_ref(pr, 'Srv', 'udp-DNS' if udp else 'tcp-HTTP')
     else:
-        fw = prepare_packet_policy(tree, 'tcp-HTTP')
+        fw = prepare_packet_policy(tree, 'udp-DNS' if udp else 'tcp-HTTP')
         pr = only(only(fw, './' + tag('Policy')), "./%s[@id='id9001X30989']" % tag('PolicyRule'))
     opts = only(pr, './' + tag('PolicyRuleOptions'))
     chosen = {
@@ -346,8 +346,16 @@ def case_hashlimit_srcip_dstport(tree):
     _case_native_hashlimit(tree, combo=True)
 
 
+def case_hashlimit_udp_srcip_dstport(tree):
+    _case_native_hashlimit(tree, combo=True, udp=True)
+
+
 def case_ipv6_hashlimit_srcip(tree):
     _case_native_hashlimit(tree, ipv6=True)
+
+
+def case_ipv6_hashlimit_srcip_dstport(tree):
+    _case_native_hashlimit(tree, ipv6=True, combo=True)
 
 
 def case_reject_hashlimit_bad_mode(tree):
@@ -598,7 +606,9 @@ CASES = {
     'reject-hashlimit-icmp-port': case_reject_hashlimit_icmp_port,
     'hashlimit-srcip': case_hashlimit_srcip,
     'hashlimit-srcip-dstport': case_hashlimit_srcip_dstport,
+    'hashlimit-udp-srcip-dstport': case_hashlimit_udp_srcip_dstport,
     'ipv6-hashlimit-srcip': case_ipv6_hashlimit_srcip,
+    'ipv6-hashlimit-srcip-dstport': case_ipv6_hashlimit_srcip_dstport,
     'user-service-outbound': case_user_service_outbound,
     'negated-user-service-outbound': case_negated_user_service_outbound,
     'negated-ipv4-option-rr': case_negated_ipv4_option_rr,

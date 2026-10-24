@@ -530,6 +530,7 @@ string PolicyCompiler_nft::PrintRule::_printModules(PolicyRule *rule)
             std::set<string> seen;
             std::istringstream parts(mode);
             string part;
+            string transport;
             while (std::getline(parts, part, ','))
             {
                 string expr;
@@ -537,8 +538,21 @@ string PolicyCompiler_nft::PrintRule::_printModules(PolicyRule *rule)
                     expr = nft_comp->ipv6 ? "ip6 saddr" : "ip saddr";
                 else if (part == "dstip")
                     expr = nft_comp->ipv6 ? "ip6 daddr" : "ip daddr";
-                else if (part == "srcport") expr = "th sport";
-                else if (part == "dstport") expr = "th dport";
+                else if (part == "srcport" || part == "dstport")
+                {
+                    // Raw 'th sport/dport' is not a suitable typed key for
+                    // nftables concatenated meters. Use the same transport
+                    // protocol as the compiled FWB service match.
+                    if (transport.empty())
+                    {
+                        Service *srv = compiler->getFirstSrv(rule);
+                        if (srv == nullptr || (!TCPService::isA(srv) && !UDPService::isA(srv)))
+                            compiler->abort(rule,
+                                "Native nftables port-key hashlimit needs a TCP or UDP service");
+                        transport = TCPService::isA(srv) ? "tcp" : "udp";
+                    }
+                    expr = transport + (part == "srcport" ? " sport" : " dport");
+                }
                 else compiler->abort(rule, "Unsupported native nftables hashlimit mode: " + part);
                 if (!seen.insert(part).second)
                     compiler->abort(rule, "Duplicate native nftables hashlimit mode: " + part);
@@ -547,14 +561,6 @@ string PolicyCompiler_nft::PrintRule::_printModules(PolicyRule *rule)
             }
             if (selectors.empty() || (!mode.empty() && mode.back() == ','))
                 compiler->abort(rule, "Invalid native nftables hashlimit mode");
-
-            if (seen.count("srcport") || seen.count("dstport"))
-            {
-                Service *srv = compiler->getFirstSrv(rule);
-                if (srv == nullptr || (!TCPService::isA(srv) && !UDPService::isA(srv)))
-                    compiler->abort(rule,
-                        "Native nftables port-key hashlimit needs a TCP or UDP service");
-            }
 
             string name = ruleopt->getStr("hashlimit_name");
             if (name.empty()) name = "htable_rule_" + std::to_string(rule->getPosition());
