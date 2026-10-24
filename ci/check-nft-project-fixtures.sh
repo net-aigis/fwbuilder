@@ -80,8 +80,18 @@ check_positive() {
         return 1
     fi
     for expected in "$@"; do
-        if ! grep -Eq "^add rule $table_family fwb_(filter|nat|mangle) .*${expected}" "$work/$name.ruleset.nft"; then
-            echo "FAIL: $name has no expected nftables expression ($expected)" >&2
+        if [[ "$expected" == 'add set '* ]]; then
+            # Set declarations are independent nft statements, never rule
+            # expressions. Require exactly one complete declaration so a
+            # missing or accidentally duplicated dynamic set is rejected.
+            local declaration_count
+            declaration_count=$(grep -Ec "^${expected}$" "$work/$name.ruleset.nft" || true)
+            if [[ "$declaration_count" != 1 ]]; then
+                echo "FAIL: $name expected exactly one nftables set declaration ($expected); found $declaration_count" >&2
+                return 1
+            fi
+        elif ! grep -Eq "^add rule $table_family fwb_(filter|nat|mangle) .*${expected}" "$work/$name.ruleset.nft"; then
+            echo "FAIL: $name has no expected nftables rule expression ($expected)" >&2
             return 1
         fi
     done
