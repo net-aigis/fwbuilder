@@ -901,8 +901,14 @@ QString CompilerDriver_nft::run(const std::string &cluster_id,
                 if (!std::isalnum(ch) && ch != '.' && ch != '_' && ch != '-')
                     firewall_name[i] = '_';
             }
-            Configlet routing_functions(fw, "nftables", "routing_functions");
-            routing_functions.setVariable("firewall_name", firewall_name.c_str());
+            // The firewall object is host_OS linux24. The object
+            // constructor would load linux24/routing_functions, whose
+            // unset {{$proto_filter}} survives as a literal "{{".
+            // Load the nftables file by prefix so that file is used.
+            Configlet routing_functions("nftables", "routing_functions");
+            routing_functions.removeComments("##");
+            routing_functions.setVariable(
+                "firewall_name", QString::fromStdString(firewall_name));
             script << routing_functions.expand();
             script << "\n";
         }
