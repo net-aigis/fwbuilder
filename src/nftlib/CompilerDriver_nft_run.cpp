@@ -31,6 +31,7 @@
 #include <stdexcept>
 
 #include <ctype.h>
+#include <cctype>
 #include <assert.h>
 #include <cstring>
 #include <iomanip>
@@ -625,31 +626,43 @@ QString CompilerDriver_nft::run(const std::string &cluster_id,
                 generated_script += "\n\n";
         }
 
-        std::unique_ptr<RoutingCompiler_nft> routing_compiler(
-            new RoutingCompiler_nft(objdb, fw, false, oscnf.get()));
-
+        // IPv4 and IPv6 routing are separate compiler passes. The shared
+        // shell preamble is emitted once later, after both passes.
+        std::string routing_script;
+        bool routing_installs = false;
         RuleSet *routing = RuleSet::cast(fw->getFirstByType(Routing::TYPENAME));
         if (routing)
         {
-            routing_compiler->setSourceRuleSet(routing);
-            routing_compiler->setRuleSetName(routing->getName());
-            routing_compiler->setPersistentObjects(persistent_objects);
-
-            routing_compiler->setSingleRuleCompileMode(single_rule_id);
-            routing_compiler->setDebugLevel( dl );
-            if (rule_debug_on) routing_compiler->setDebugRule(drr);
-            routing_compiler->setVerbose( verbose );
-            if (inTestMode()) routing_compiler->setTestMode();
-            if (inEmbeddedMode()) routing_compiler->setEmbeddedMode();
-
-            if ( (routing_rules_count=routing_compiler->prolog()) > 0 )
+            for (int pass = 0; pass < 2; ++pass)
             {
-                routing_compiler->compile();
-                routing_compiler->epilog();
-            }
+                const bool routing_ipv6 = (pass == 1);
+                std::unique_ptr<RoutingCompiler_nft> routing_compiler(
+                    new RoutingCompiler_nft(objdb, fw, routing_ipv6, oscnf.get()));
+                routing_compiler->setSourceRuleSet(routing);
+                routing_compiler->setRuleSetName(routing->getName());
+                routing_compiler->setPersistentObjects(persistent_objects);
 
-            if (routing_compiler->haveErrorsAndWarnings())
-                all_errors.push_back(routing_compiler->getErrors("").c_str());
+                routing_compiler->setSingleRuleCompileMode(single_rule_id);
+                routing_compiler->setDebugLevel( dl );
+                if (rule_debug_on) routing_compiler->setDebugRule(drr);
+                routing_compiler->setVerbose( verbose );
+                if (inTestMode()) routing_compiler->setTestMode();
+                if (inEmbeddedMode()) routing_compiler->setEmbeddedMode();
+
+                if ( (routing_rules_count=routing_compiler->prolog()) > 0 )
+                {
+                    routing_compiler->compile();
+                    routing_compiler->epilog();
+                }
+
+                if (routing_compiler->haveErrorsAndWarnings())
+                    all_errors.push_back(routing_compiler->getErrors("").c_str());
+
+                const std::string pass_script = routing_compiler->getCompiledScript();
+                if (pass_script.find("route add") != std::string::npos)
+                    routing_installs = true;
+                routing_script += pass_script;
+            }
         }
 
         /*
@@ -670,7 +683,7 @@ QString CompilerDriver_nft::run(const std::string &cluster_id,
                 QString::fromUtf8(
                     (getErrors("") + 
                      generated_script +
-                     routing_compiler->getCompiledScript()).c_str()));
+                     routing_script).c_str()));
         }
 
 
@@ -878,7 +891,24 @@ QString CompilerDriver_nft::run(const std::string &cluster_id,
         {
             script << QString::fromUtf8(generated_script.c_str());
         }
-        script << QString::fromUtf8(routing_compiler->getCompiledScript().c_str());
+        if (routing_installs && !single_rule_compile_on)
+        {
+            std::string firewall_name = fw->getName();
+            for (std::string::size_type i = 0; i < firewall_name.size(); ++i)
+            {
+                const unsigned char ch =
+                    static_cast<unsigned char>(firewall_name[i]);
+                if (!std::isalnum(ch) && ch != '.' && ch != '_' && ch != '-')
+                    firewall_name[i] = '_';
+            }
+            Configlet routing_functions(fw, "nftables", "routing_functions");
+            routing_functions.setVariable("firewall_name", firewall_name.c_str());
+            script << routing_functions.expand();
+            script << "\n";
+        }
+        script << QString::fromUtf8(routing_script.c_str());
+        if (routing_installs && !single_rule_compile_on)
+            script << "fwb_routing_finish\n";
 
         script << '\n';
 

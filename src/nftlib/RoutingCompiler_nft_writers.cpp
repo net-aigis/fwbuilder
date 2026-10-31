@@ -40,6 +40,8 @@
 #include "fwbuilder/Routing.h"
 #include "fwbuilder/Interface.h"
 #include "fwbuilder/IPv4.h"
+#include "fwbuilder/IPv6.h"
+#include "fwbuilder/Host.h"
 #include "fwbuilder/Firewall.h"
 #include "fwbuilder/FWOptions.h"
 #include "fwbuilder/Resources.h"
@@ -52,6 +54,7 @@
 #include <sstream>
 
 #include <assert.h>
+#include <list>
 
 using namespace libfwbuilder;
 using namespace fwcompiler;
@@ -77,8 +80,34 @@ string RoutingCompiler_nft::PrintRule::_printAddr(Address  *o)
 
     const InetAddr *addr;
     const InetAddr *mask;
-    addr = o->getAddressPtr();
-    mask = o->getNetmaskPtr();
+    RoutingCompiler_nft *nft_compiler =
+        dynamic_cast<RoutingCompiler_nft*>(compiler);
+    if (nft_compiler != nullptr && nft_compiler->compilingIPv6() &&
+        (Host::cast(o) != nullptr || Interface::cast(o) != nullptr))
+    {
+        list<FWObject*> interfaces;
+        if (Interface::cast(o) != nullptr)
+            interfaces.push_back(o);
+        else
+            interfaces = o->getByTypeDeep(Interface::TYPENAME);
+        addr = nullptr;
+        mask = nullptr;
+        for (list<FWObject*>::iterator it = interfaces.begin();
+             it != interfaces.end(); ++it)
+        {
+            list<FWObject*> addresses = (*it)->getByType(IPv6::TYPENAME);
+            if (addresses.empty()) continue;
+            Address *selected = Address::cast(addresses.front());
+            addr = selected->getAddressPtr();
+            mask = selected->getNetmaskPtr();
+            break;
+        }
+    }
+    else
+    {
+        addr = o->getAddressPtr();
+        mask = o->getNetmaskPtr();
+    }
 
     if (addr==nullptr)
     {
@@ -100,7 +129,18 @@ string RoutingCompiler_nft::PrintRule::_printAddr(Address  *o)
     }
 
 
-    if (addr->isAny() && mask->isAny()) 
+    bool unspecified_v6_prefix = false;
+    if (addr->isV6() && mask->isV6())
+    {
+        const uint32_t *words =
+            reinterpret_cast<const uint32_t *>(mask->getV6());
+        unspecified_v6_prefix =
+            words[0] == 0 && words[1] == 0 && words[2] == 0 && words[3] == 0 &&
+            addr->toString() == "::";
+    }
+    // InetAddr::getLength() reports 128 for an all-zero IPv6 mask, so a
+    // ::/0 network cannot be recognized from that length.
+    if ((addr->isAny() && mask->isAny()) || unspecified_v6_prefix)
     {
         ostr << "default ";
     } else 
@@ -128,40 +168,14 @@ RoutingCompiler_nft::PrintRule::PrintRule(const std::string &name) : RoutingRule
 
 bool RoutingCompiler_nft::PrintRule::processNext()
 {
-    RoutingCompiler_nft *ipt_comp = dynamic_cast<RoutingCompiler_nft*>(compiler);
     RoutingRule *rule = getNext(); 
     if (rule==nullptr) return false;
 
     tmp_queue.push_back(rule);
     
-    if (print_once_on_top && !compiler->inSingleRuleCompileMode())
-    {
-        // string os_family = Resources::os_res[compiler->fw->getStr("host_OS")]->
-        //     getResourceStr("/FWBuilderResources/Target/family");
-        Configlet routing_functions(compiler->fw, "linux24", "routing_functions");
-
-        // we should delete default route if we have a new one to
-        // install. IF user did not define any routes that look like
-        // default (i.e. where destination is "any"), then we should
-        // preserve default so that we won't leave machine with no
-        // default at all.
-        QString route_pattern = "";
-        if (ipt_comp->have_default_route)
-        {
-            // If we will install default route, delete it now
-            route_pattern = "'proto kernel'";
-        } else
-        {
-            // do not delete default if we won't install new one
-            route_pattern = "'\\( proto kernel \\)\\|\\(default via \\)'";
-        }
-
-        routing_functions.setVariable("proto_filter", route_pattern);
-        compiler->output << routing_functions.expand().toStdString();
-
-        ipt_comp->defined_restore_script_output = true;
-        print_once_on_top = false;
-    }
+    // Routing shell functions are emitted once by the driver, for both
+    // address families. Printing them here would initialize them twice
+    // and would delete routes this script does not own.
     
     // TODO: convert this into virtual function RoutingCompiler_nft::printComment()
     string rl = rule->getLabel();
@@ -224,20 +238,17 @@ bool RoutingCompiler_nft::PrintRule::processNext()
         ecmp_rules_buffer_it = ecmp_rules_buffer.find(ecmp_id);
         if( ecmp_rules_buffer_it == ecmp_rules_buffer.end() )
         {
-            // ECMP Dst not seen so far, add "ip route add x.x.x.x"
-            // and comment's header
+            // ECMP Dst not seen so far. The shell prefix is added when
+            // the completed nexthop list is activated.
             ecmp_comments_buffer[ecmp_id] = "#\n# Multipath Rule "
                 " derived from the following routing rules:\n#\n";
-            
+
+            string spec = _printRDst(rule);
+            while (!spec.empty() && spec[spec.size() - 1] == ' ')
+                spec.erase(spec.size() - 1);
             if (rule->getMetricAsString() != "0")
-            {
-                ecmp_rules_buffer[ecmp_id] += "$IP route add " +
-                    _printRDst(rule) + "metric " + metric;
-            } else
-            {
-                ecmp_rules_buffer[ecmp_id] += "$IP route add " +
-                    _printRDst(rule);
-            }
+                spec += " metric " + metric;
+            ecmp_rules_buffer[ecmp_id] = spec;
         }
         
         ecmp_comments_buffer[ecmp_id] += "# Rule " + rl + "\n";
@@ -251,9 +262,14 @@ bool RoutingCompiler_nft::PrintRule::processNext()
         ecmp_comments_buffer[ecmp_id] += "#    " + comm.substr(c1) + "\n";
         
         // Collect the nexthop information for the multipath rules, indexed by the sorted dst ids
-        ecmp_rules_buffer[ecmp_id] += " \\\nnexthop " ;
-        ecmp_rules_buffer[ecmp_id] += _printRGtw(rule);
-        ecmp_rules_buffer[ecmp_id] += _printRItf(rule);
+        string nexthop = string("nexthop ") + _printRGtw(rule) + _printRItf(rule);
+        while (!nexthop.empty() && nexthop[nexthop.size() - 1] == ' ')
+            nexthop.erase(nexthop.size() - 1);
+        FWObject *onlink_obj = rule->getFirstByType(RoutingRuleOptions::TYPENAME);
+        RoutingRuleOptions *onlink = RoutingRuleOptions::cast(onlink_obj);
+        if (onlink && onlink->getBool("use_onlink_option"))
+            nexthop += " onlink";
+        ecmp_rules_buffer[ecmp_id] += " " + nexthop;
         
         
     }
@@ -271,38 +287,45 @@ string RoutingCompiler_nft::PrintRule::RoutingRuleToString(RoutingRule *rule)
     if(dst==nullptr)
         compiler->abort(rule, "Broken DST");
         
-    ostringstream command_line;
-
-    command_line << "$IP route add ";
-    command_line << _printRDst(rule);
+    string spec = _printRDst(rule);
+    while (!spec.empty() && spec[spec.size() - 1] == ' ')
+        spec.erase(spec.size() - 1);
     if (rule->getMetricAsString() != "0")
+        spec += " metric " + rule->getMetricAsString();
+    string gateway = _printRGtw(rule);
+    string interface_name = _printRItf(rule);
+    while (!gateway.empty() && gateway[gateway.size() - 1] == ' ')
+        gateway.erase(gateway.size() - 1);
+    while (!interface_name.empty() && interface_name[interface_name.size() - 1] == ' ')
+        interface_name.erase(interface_name.size() - 1);
+    if (!gateway.empty()) spec += " " + gateway;
+    if (!interface_name.empty()) spec += " " + interface_name;
+    // Same opt-in as the iptables routing compiler. Absent option
+    // leaves the historical command unchanged.
+    FWObject *onlink_obj = rule->getFirstByType(RoutingRuleOptions::TYPENAME);
+    RoutingRuleOptions *onlink = RoutingRuleOptions::cast(onlink_obj);
+    if (onlink && onlink->getBool("use_onlink_option"))
+        spec += " onlink";
+
+    RoutingCompiler_nft *nft = dynamic_cast<RoutingCompiler_nft*>(compiler);
+    if (nft == nullptr)
     {
-        command_line << " metric " << rule->getMetricAsString() << " ";
+        compiler->abort(rule, "Broken routing compiler");
+        return "";
     }
-    command_line << _printRGtw(rule);
-    command_line << _printRItf(rule);
 
-    // to make generated script more readable in single rule compile mode,
-    // skip the part that rolls back in case of an error
-    if (!compiler->inSingleRuleCompileMode())
+    // no_fail still has to report the failure without rolling the
+    // whole routing table back. The shared activation wrapper does
+    // that rollback; no_fail only suppresses the fatal exit.
+    FWObject *opt_dummy = rule->getFirstByType(RoutingRuleOptions::TYPENAME);
+    RoutingRuleOptions *opt = opt_dummy ? RoutingRuleOptions::cast(opt_dummy) : 0;
+    if (opt && opt->getBool("no_fail") && !compiler->inSingleRuleCompileMode())
     {
-        command_line << "\\\n|| ";
-
-        FWObject *opt_dummy = rule->getFirstByType(RoutingRuleOptions::TYPENAME);
-        RoutingRuleOptions *opt = opt_dummy ? RoutingRuleOptions::cast(opt_dummy) : 0;
-        if ( opt && opt->getBool("no_fail") )
-        {
-            command_line << "echo \"*** Warning: routing rule "
-                         << rule->getLabel() << " failed. ignored. ***\"\n";
-        } else
-        {
-            command_line << "route_command_error "
-                         << "\"" << rule->getLabel() << "\"" << endl;;
-        }
+        return nft->routeAddPrefix() + spec +
+            " || echo \"*** Warning: routing rule " +
+            rule->getLabel() + " failed. ignored. ***\"\n";
     }
-    command_line << endl;
-
-    return command_line.str();
+    return nft->activationCommand(spec, rule->getLabel());
 }
 
 string RoutingCompiler_nft::PrintRule::_printRGtw(RoutingRule *rule)

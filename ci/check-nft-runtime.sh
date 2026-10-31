@@ -98,6 +98,7 @@ recovery_cases=0
 recovery_failures=0
 shell_lifecycle_cases=0
 shell_start_reload_cases=0
+shell_route_rollback_cases=0
 for fw in "$@"; do
     [ -s "$fw" ] || { echo "Missing policy: $fw" >&2; exit 1; }
     index=$((index + 1))
@@ -281,6 +282,28 @@ for fw in "$@"; do
             }
             shell_start_reload_cases=$((shell_start_reload_cases + 1))
             ;;
+        nft-ci-ipv6-route-rollback.fw)
+            for required in unshare setpriv python3 ip; do
+                command -v "$required" >/dev/null 2>&1 || {
+                    echo "ERROR: required isolated routing tool missing: $required" >&2
+                    exit 2
+                }
+            done
+            FWB_START_PARENT_NETNS=$(readlink /proc/self/ns/net)
+            export FWB_START_PARENT_NETNS
+            unshare --net -- setpriv --no-new-privs --bounding-set=-sys_module,-sys_rawio,-sys_admin -- \
+                sh ci/check-nft-route-rollback.sh "$fw" > "$dir/route-rollback.log" 2>&1 || {
+                    cat "$dir/route-rollback.log" >&2
+                    echo 'ERROR: isolated generated routing rollback failed' >&2
+                    exit 1
+                }
+            cat "$dir/route-rollback.log"
+            grep -Fq 'RESULT: PASS generated-route-rollback' "$dir/route-rollback.log" || {
+                echo 'ERROR: routing rollback success marker absent' >&2
+                exit 1
+            }
+            shell_route_rollback_cases=$((shell_route_rollback_cases + 1))
+            ;;
     esac
 
     echo 'PASS: start / rollback / reload / block / stop; foreign tables preserved'
@@ -316,5 +339,11 @@ if [ "${FWB_REQUIRE_PACKET_MATRIX:-0}" = 1 ] && [ "$shell_start_reload_cases" -n
 fi
 printf 'FWB generated shell start/reload matrix: %s cases; %s passed; 0 failed\n' \
     "$shell_start_reload_cases" "$shell_start_reload_cases"
+if [ "${FWB_REQUIRE_PACKET_MATRIX:-0}" = 1 ] && [ "$shell_route_rollback_cases" -ne 1 ]; then
+    echo "ERROR: expected one generated routing rollback test, got $shell_route_rollback_cases" >&2
+    exit 1
+fi
+printf 'FWB generated routing rollback matrix: %s cases; %s passed; 0 failed\n' \
+    "$shell_route_rollback_cases" "$shell_route_rollback_cases"
 [ "$packet_failures" -eq 0 ] && [ "$block_failures" -eq 0 ] && [ "$recovery_failures" -eq 0 ] || exit 1
 echo 'Native nftables kernel transaction and coexistence tests passed in isolated network namespace.'

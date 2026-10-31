@@ -75,6 +75,11 @@ required = (
     b'192.0.2.1/24',
     b'Verifying interfaces: eth0 lo eth1',
     b'$IP route add default via 192.168.1.10 dev eth1',
+    b'$IP -6 route add 2001:db8:9::/64 metric 100 via 2001:db8:1::fe dev eth0',
+    b'$IP -6 route add 2001:db8:8::/64 via fe80::1 dev eth0',
+    b'$IP -6 route add default via fe80::1 dev eth0',
+    b'nexthop via 2001:db8:1::2 dev eth0',
+    b'nexthop via 2001:db8:2::2 dev eth1',
     b'echo 1 > /proc/sys/net/ipv4/ip_forward',
     b'FWB_NFT_RULESET', b'FWB_NFT_BLOCK', b'FWB_NFT_STOP',
     b'"$0" start',
@@ -93,6 +98,9 @@ ip link set lo up
 ip link set eth0 up
 ip link set eth1 up
 ip addr add 192.168.1.1/24 dev eth1
+# Foreign and DHCP routes that the generated script must not remove.
+ip route add 203.0.113.0/24 via 192.168.1.9 dev eth1 proto dhcp
+ip route add 198.51.100.0/24 via 192.168.1.8 dev eth1 proto static
 nft add table ip fwb_ci_foreign
 nft add table ip6 fwb_ci_foreign
 
@@ -147,6 +155,17 @@ check_status 0
 ip -6 addr show dev eth0 | grep -Fq '2001:db8:1::1/64'
 ip -4 addr show dev eth0 | grep -Fq '192.0.2.1/24'
 ip route show default | grep -Fq 'via 192.168.1.10 dev eth1'
+ip -6 route show default | grep -Fq 'via fe80::1 dev eth0'
+ip -6 route show 2001:db8:9::/64 | grep -Fq 'via 2001:db8:1::fe'
+ip -6 route show 2001:db8:9::/64 | grep -Fq 'metric 100'
+ip -6 route show 2001:db8:8::/64 | grep -Fq 'via fe80::1 dev eth0'
+ip -6 route show 2001:db8:50::/64 | grep -Fq 'nexthop'
+ip route show 203.0.113.0/24 | grep -Fq 'proto dhcp'
+ip route show 198.51.100.0/24 | grep -Fq 'proto static'
+ip route show 192.168.1.0/24 | grep -Fq 'proto kernel'
+ip -6 route show 2001:db8:1::/64 | grep -Fq 'proto kernel'
+# Router-advertisement routes appear only after the script has configured IPv6.
+ip -6 route add 2001:db8:77::/64 via fe80::abcd dev eth0 proto ra
 [ "$(cat /proc/sys/net/ipv4/ip_forward)" = 1 ] || {
     echo 'ERROR: generated start did not enable forwarding in its namespace' >&2
     exit 1
@@ -166,6 +185,11 @@ cmp "$scratch/start.rules" "$scratch/reload.rules" || {
     exit 1
 }
 ip route show default | grep -Fq 'via 192.168.1.10 dev eth1'
+ip -6 route show default | grep -Fq 'via fe80::1 dev eth0'
+ip -6 route show 2001:db8:77::/64 | grep -Fq 'proto ra'
+ip route show 203.0.113.0/24 | grep -Fq 'proto dhcp'
+ip route show 198.51.100.0/24 | grep -Fq 'proto static'
+ip -6 route show 2001:db8:1::/64 | grep -Fq 'proto kernel'
 
 sh "$scratch/firewall.fw" stop > "$scratch/stop.log" 2>&1 || {
     cat "$scratch/stop.log" >&2

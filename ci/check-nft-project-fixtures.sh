@@ -291,7 +291,42 @@ run_case() {
 }
 
 run_case ipv6-icmp check_positive ipv6-icmp 6 'ip6 saddr' 'icmpv6 type'
-run_case ipv6-ndp check_positive ipv6-ndp 6 'icmpv6 type 128' 'icmpv6 type 135' 'icmpv6 type 136'
+check_ipv6_ndp_with_routes() {
+    check_positive ipv6-ndp 6 'icmpv6 type 128' 'icmpv6 type 135' 'icmpv6 type 136' || return 1
+    local fw="$output/nft-ci-ipv6-ndp.fw"
+    local needle
+    local -a needles=(
+        '$IP route add default via 192.168.1.10 dev eth1'
+        '$IP -6 route add 2001:db8:9::/64 metric 100 via 2001:db8:1::fe dev eth0'
+        '$IP -6 route add 2001:db8:8::/64 via fe80::1 dev eth0'
+        '$IP -6 route add default via fe80::1 dev eth0'
+        '$IP -6 route add 2001:db8:50::/64 metric 20 nexthop via 2001:db8:1::2 dev eth0 nexthop via 2001:db8:2::2 dev eth1'
+    )
+    for needle in "${needles[@]}"; do
+        if ! grep -Fq "$needle" "$fw"; then
+            echo "FAIL: generated script is missing compiler route: $needle" >&2
+            return 1
+        fi
+    done
+    local begins finishes
+    begins=$(grep -c 'FWB_ROUTING_INITIALIZED=1' "$fw")
+    finishes=$(grep -c '^fwb_routing_finish$' "$fw")
+    if [[ "$begins" != 1 || "$finishes" != 1 ]]; then
+        echo "FAIL: routing functions initialized ${begins} times and finished ${finishes} times" >&2
+        return 1
+    fi
+    if grep -Eq 'route flush|while read route' "$fw"; then
+        echo 'FAIL: generated routing script flushes or walks the whole routing table' >&2
+        return 1
+    fi
+    echo 'PASS: compiler emitted one dual-stack routing activation'
+}
+
+run_case ipv6-ndp check_ipv6_ndp_with_routes
+run_case ipv6-route-rollback check_positive ipv6-route-rollback 6 'icmpv6 type 128'
+run_case reject-ipv6-route-link-local check_negative reject-ipv6-route-link-local 'Link-local IPv6 gateway requires an interface' 6
+run_case reject-ipv6-route-netmask check_negative reject-ipv6-route-netmask 'has invalid netmask' 6
+run_case reject-ipv6-route-mixed check_negative reject-ipv6-route-mixed 'Routing rule mixes IPv4 and IPv6' 6
 run_case udp-workhours check_positive udp-workhours 4 'meta hour' 'meta day'
 run_case reject-hashlimit-bad-mode check_negative reject-hashlimit-bad-mode 'Unsupported native nftables hashlimit mode'
 run_case reject-hashlimit-icmp-port check_negative reject-hashlimit-icmp-port 'Native nftables port-key hashlimit needs a TCP or UDP service'

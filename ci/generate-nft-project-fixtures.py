@@ -123,6 +123,7 @@ def case_ipv6_ndp(tree):
         replace_ref(rule, 'Srv', service)
         policy.insert(pos, rule)
     deny.set('position', '3')
+    _install_successful_ipv6_routes(tree)
 
 
 def case_udp_workhours(tree):
@@ -583,6 +584,120 @@ def case_reject_ipv6_nat_lb_port_translation(tree):
     _case_ipv6_nat_lb(tree, invalid='port')
 
 
+def _route_group(root):
+    return only(root, ".//%s[@id='id1550X1251']" % tag('ObjectGroup'))
+
+
+def _add_route_object(group, kind, obj_id, name, address, netmask):
+    element = ET.Element(tag(kind), {
+        'id': obj_id,
+        'name': name,
+        'comment': 'CI routing object',
+        'ro': 'False',
+        'address': address,
+        'netmask': netmask,
+    })
+    group.append(element)
+    return obj_id
+
+
+def _add_routing_rule(fw, rule_id, position, dst, gtw, itf, metric):
+    routing = only(fw, './' + tag('Routing'))
+    rule = ET.Element(tag('RoutingRule'), {
+        'id': rule_id,
+        'disabled': 'False',
+        'group': '',
+        'metric': str(metric),
+        'position': str(position),
+        'comment': '',
+    })
+    for child_name, ref in (('RDst', dst), ('RGtw', gtw), ('RItf', itf)):
+        child = ET.SubElement(rule, tag(child_name), {'neg': 'False'})
+        ET.SubElement(child, tag('ObjectRef'), {'ref': ref})
+    ET.SubElement(rule, tag('RoutingRuleOptions'))
+    options = only(routing, './' + tag('RuleSetOptions'))
+    routing.insert(list(routing).index(options), rule)
+
+
+def _ipv6_route_ids(tree):
+    """Real IPv6 route objects. The caller already selected the IPv6 fixture."""
+    root = tree.getroot()
+    fw = only(root, ".//%s[@name='nft-test']" % tag('Firewall'))
+    group = _route_group(root)
+    eth0 = only(fw, "./%s[@name='eth0']" % tag('Interface')).get('id')
+    eth1 = only(fw, "./%s[@name='eth1']" % tag('Interface')).get('id')
+    objects = {
+        'net9': _add_route_object(group, 'NetworkIPv6', 'fwb-ci-route-net9',
+                                  'CI route net9', '2001:db8:9::', '64'),
+        'net8': _add_route_object(group, 'NetworkIPv6', 'fwb-ci-route-net8',
+                                  'CI route net8', '2001:db8:8::', '64'),
+        'net50': _add_route_object(group, 'NetworkIPv6', 'fwb-ci-route-net50',
+                                   'CI route net50', '2001:db8:50::', '64'),
+        'default6': _add_route_object(group, 'NetworkIPv6', 'fwb-ci-route-default6',
+                                      'CI IPv6 default', '::', '0'),
+        'gw': _add_route_object(group, 'IPv6', 'fwb-ci-route-gw',
+                                'CI global gateway', '2001:db8:1::fe', '128'),
+        'll': _add_route_object(group, 'IPv6', 'fwb-ci-route-ll',
+                                'CI link-local gateway', 'fe80::1', '128'),
+        'ecmp_a': _add_route_object(group, 'IPv6', 'fwb-ci-route-ecmp-a',
+                                    'CI ECMP gateway A', '2001:db8:1::2', '128'),
+        'ecmp_b': _add_route_object(group, 'IPv6', 'fwb-ci-route-ecmp-b',
+                                    'CI ECMP gateway B', '2001:db8:2::2', '128'),
+        'connected': _add_route_object(
+            group, 'NetworkIPv6', 'fwb-ci-route-connected',
+            'CI connected net', '2001:db8:1::', '64'),
+    }
+    return fw, eth0, eth1, objects
+
+
+def _install_successful_ipv6_routes(tree):
+    fw, eth0, eth1, obj = _ipv6_route_ids(tree)
+    _add_routing_rule(fw, 'fwb-ci-route-net9-rule', 1,
+                      obj['net9'], obj['gw'], eth0, 100)
+    _add_routing_rule(fw, 'fwb-ci-route-ll-rule', 2,
+                      obj['net8'], obj['ll'], eth0, 0)
+    _add_routing_rule(fw, 'fwb-ci-route-default6-rule', 3,
+                      obj['default6'], obj['ll'], eth0, 0)
+    _add_routing_rule(fw, 'fwb-ci-route-ecmp-a-rule', 4,
+                      obj['net50'], obj['ecmp_a'], eth0, 20)
+    _add_routing_rule(fw, 'fwb-ci-route-ecmp-b-rule', 5,
+                      obj['net50'], obj['ecmp_b'], eth1, 20)
+    return fw
+
+
+def case_ipv6_route_rollback(tree):
+    """Successful routes, then one destination owned by the kernel."""
+    case_ipv6_ndp(tree)
+    fw = only(tree.getroot(), ".//%s[@name='nft-test']" % tag('Firewall'))
+    eth0 = only(fw, "./%s[@name='eth0']" % tag('Interface')).get('id')
+    _add_routing_rule(fw, 'fwb-ci-route-connected-rule', 6,
+                      'fwb-ci-route-connected', 'fwb-ci-route-ll', eth0, 0)
+
+
+def case_reject_ipv6_route_link_local(tree):
+    case_ipv6(tree)
+    fw, _eth0, _eth1, obj = _ipv6_route_ids(tree)
+    _add_routing_rule(fw, 'fwb-ci-route-ll-no-dev', 1,
+                      obj['net8'], obj['ll'], 'sysid0', 0)
+
+
+def case_reject_ipv6_route_netmask(tree):
+    case_ipv6(tree)
+    fw, eth0, _eth1, obj = _ipv6_route_ids(tree)
+    bad = _add_route_object(
+        _route_group(tree.getroot()), 'NetworkIPv6', 'fwb-ci-route-bad-mask',
+        'CI invalid IPv6 net', '2001:db8:9::1', '64')
+    _add_routing_rule(fw, 'fwb-ci-route-bad-mask-rule', 1,
+                      bad, obj['gw'], eth0, 0)
+
+
+def case_reject_ipv6_route_mixed(tree):
+    case_ipv6(tree)
+    fw, eth0, _eth1, obj = _ipv6_route_ids(tree)
+    _add_routing_rule(fw, 'fwb-ci-route-mixed-rule', 1,
+                      obj['net9'], 'id3D84EECE', eth0, 0)
+
+
 def case_dynamic_address_sets(tree):
     """Real FWB AddressTable: an IPv4 allowlist with atomic runtime sets."""
     fw = prepare_packet_policy(tree, 'tcp-HTTP')
@@ -625,6 +740,10 @@ CASES = {
     'ipv4-option-combined': case_ipv4_option_combined,
     'ipv6-icmp': case_ipv6,
     'ipv6-ndp': case_ipv6_ndp,
+    'ipv6-route-rollback': case_ipv6_route_rollback,
+    'reject-ipv6-route-link-local': case_reject_ipv6_route_link_local,
+    'reject-ipv6-route-netmask': case_reject_ipv6_route_netmask,
+    'reject-ipv6-route-mixed': case_reject_ipv6_route_mixed,
     'udp-workhours': case_udp_workhours,
     'policy-fragments': case_policy_fragments,
     'nat-fragments': case_nat_fragments,

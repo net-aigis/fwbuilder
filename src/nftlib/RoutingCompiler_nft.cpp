@@ -36,10 +36,16 @@
 #include "fwbuilder/Routing.h"
 #include "fwbuilder/Interface.h"
 #include "fwbuilder/IPv4.h"
+#include "fwbuilder/IPv6.h"
 #include "fwbuilder/Firewall.h"
+#include "fwbuilder/Host.h"
 #include "fwbuilder/Network.h"
+#include "fwbuilder/NetworkIPv6.h"
+#include "fwbuilder/InetAddrMask.h"
 
 #include <assert.h>
+#include <sstream>
+#include <list>
 
 using namespace libfwbuilder;
 using namespace fwcompiler;
@@ -194,41 +200,34 @@ void RoutingCompiler_nft::compile()
     add(new recursiveGroupsInRDst("Check for recursive Groups in RDst"));
     add(new emptyGroupsInRDst("Check for empty Groups in RDst"));
     add(new emptyRDstAndRItf("Check if RDst and RItf are both empty"));
-    add(new singleAdressInRGtw(
-            "Check if RGtw object has exactly one IP adress"));
     add(new rItfChildOfFw("Check if RItf is an Iterface of this firewall"));
-
-    // unfortunately ExpandGroups also filters out objects that do not
-    // match address family but does not issue a warning when that
-    // happens. Since I need to show a warning when user places ipv6
-    // object in a routing rule, I call DropIPv6RulesWithWarning()
-    // before expanding groups. This has limited effect though: user
-    // gets a warning when a single ipv6 address or network object
-    // appears in the rule but gets no warning when it appears as a
-    // member of a group.
-    add(new DropIPv6RulesWithWarning(
-            "drop ipv6 rules",
-            "Rule has been suppressed because it contains IPv6 "
-            "objects and Firewall Builder does not support IPv6 "
-            "routing rules at this time"));
 
     add(new ExpandGroups("Expand groups in DST"));
     add(new ExpandMultipleAddresses(
             "Expand objects with multiple addresses in DST"));
     add(new dropRuleWithEmptyRE("drop rules with empty rule elements"));
+    add(new rejectMixedAddressFamilies(
+            "Reject routing rules that mix IPv4 and IPv6"));
 
-    add(new DropIPv6RulesWithWarning(
-            "drop ipv6 rules",
-            "Rule has been suppressed because it contains IPv6 "
-            "objects and Firewall Builder does not support IPv6 "
-            "routing rules at this time"));
-
-
-    add(new validateNetwork("Validate network addresses"));
-    add(new reachableAddressInRGtw(
-            "Check if RGtw is reachable via local networks"));
-    add(new contradictionRGtwAndRItf(
-            "Check if RGtw is in a network of RItf"));
+    // Each address family is compiled by its own pass. IPv6 rules are
+    // not reported as unsupported: the IPv6 pass compiles them.
+    if (ipv6)
+    {
+        add(new DropIPv4Rules("drop ipv4 rules"));
+        add(new validateIPv6Route(
+                "Validate IPv6 destination, gateway and interface"));
+    }
+    else
+    {
+        add(new DropIPv6Rules("drop ipv6 rules"));
+        add(new singleAdressInRGtw(
+                "Check if RGtw object has exactly one IP adress"));
+        add(new validateNetwork("Validate network addresses"));
+        add(new reachableAddressInRGtw(
+                "Check if RGtw is reachable via local networks"));
+        add(new contradictionRGtwAndRItf(
+                "Check if RGtw is in a network of RItf"));
+    }
 
     add(new addressRangesInDst("process address ranges"));
 
@@ -293,22 +292,241 @@ void RoutingCompiler_nft::epilog()
              ++ecmp_comments_buffer_it)
         {
             output << ecmp_comments_buffer_it->second << "#\n" << flush;
-    
-            output << ecmp_rules_buffer[ecmp_comments_buffer_it->first] << flush;
-           
-            output << " \\\n|| route_command_error " << "\"" << ++nb << "\"" << endl;
+
+            ostringstream label;
+            label << ++nb;
+            output << activationCommand(
+                ecmp_rules_buffer[ecmp_comments_buffer_it->first],
+                label.str());
 
             //echo \"Error: The ECMP routing rule #" << ++nb <<" couldn't be activated! Please make sure your kernel is compiled with the CONFIG_IP_ROUTE_MULTIPATH option.\"" << endl;
             
         }
     }
     
-    if (!inSingleRuleCompileMode() && defined_restore_script_output)
+}
+
+namespace {
+
+bool isLinkLocalV6(const InetAddr *addr)
+{
+    if (addr == nullptr || !addr->isV6()) return false;
+    const unsigned char *bytes =
+        reinterpret_cast<const unsigned char *>(addr->getV6());
+    return bytes[0] == 0xfe && (bytes[1] & 0xc0) == 0x80;
+}
+
+void noteRouteFamily(FWObject *object, bool &ipv4, bool &ipv6)
+{
+    if (object == nullptr) return;
+    if (object->getId() == FWObjectDatabase::ANY_ADDRESS_ID) return;
+    if (Interface::cast(object) != nullptr) return;
+    Address *address = Address::cast(object);
+    if (address == nullptr || address->isAny()) return;
+    const InetAddr *ip = address->getAddressPtr();
+    if (ip == nullptr) return;
+    if (ip->isV6()) ipv6 = true;
+    if (ip->isV4()) ipv4 = true;
+}
+
+bool gatewayInIPv6Network(Interface *iface, const InetAddr *gateway)
+{
+    for (FWObjectTypedChildIterator addresses = iface->findByType(IPv6::TYPENAME);
+         addresses != addresses.end(); ++addresses)
     {
-        // function restore_script_output may not be defined if we
-        // have no rules or all rules are disabled
-        output << endl;
-        output << "restore_script_output" << endl;
-        output << "echo \"...done.\"" << endl;
+        Address *local = Address::cast(*addresses);
+        if (local == nullptr || local->getAddressPtr() == nullptr ||
+            local->getNetmaskPtr() == nullptr)
+            continue;
+        InetAddrMask network(*local->getAddressPtr(), *local->getNetmaskPtr());
+        if (network.belongs(*gateway)) return true;
     }
+    return false;
+}
+
+string shellQuote(const string &value)
+{
+    string quoted = "'";
+    for (string::size_type i = 0; i < value.size(); ++i)
+    {
+        if (value[i] == '\'') quoted += "'\\''";
+        else quoted += value[i];
+    }
+    quoted += "'";
+    return quoted;
+}
+
+}
+
+
+bool RoutingCompiler_nft::rejectMixedAddressFamilies::processNext()
+{
+    RoutingRule *rule = getNext();
+    if (rule == nullptr) return false;
+
+    bool ipv4 = false;
+    bool ipv6_object = false;
+    RuleElement *elements[2] = { rule->getRDst(), rule->getRGtw() };
+    for (int index = 0; index < 2; ++index)
+    {
+        RuleElement *element = elements[index];
+        if (element == nullptr) continue;
+        for (FWObject::iterator it = element->begin(); it != element->end(); ++it)
+            noteRouteFamily(FWReference::getObject(*it), ipv4, ipv6_object);
+    }
+    if (ipv4 && ipv6_object)
+    {
+        compiler->abort(rule, "Routing rule mixes IPv4 and IPv6");
+        return true;
+    }
+    tmp_queue.push_back(rule);
+    return true;
+}
+
+bool RoutingCompiler_nft::validateIPv6Route::processNext()
+{
+    RoutingRule *rule = getNext();
+    if (rule == nullptr) return false;
+    tmp_queue.push_back(rule);
+
+    FWObject *destination_object = FWReference::getObject(rule->getRDst()->front());
+    Address *destination = Address::cast(destination_object);
+    if (destination == nullptr)
+    {
+        compiler->abort(rule, "Broken DST");
+        return true;
+    }
+    NetworkIPv6 *network = NetworkIPv6::cast(destination_object);
+    if (network != nullptr && !network->isValidRoutingNet())
+    {
+        compiler->abort(
+            rule,
+            "Object \"" + destination_object->getName() +
+            "\" used as destination in the routing rule " +
+            rule->getLabel() + " has invalid netmask");
+        return true;
+    }
+
+    FWObject *gateway_object = FWReference::getObject(rule->getRGtw()->front());
+    if (gateway_object->getId() == FWObjectDatabase::ANY_ADDRESS_ID ||
+        (Address::cast(gateway_object) != nullptr &&
+         Address::cast(gateway_object)->isAny()))
+        return true;
+
+    const InetAddr *gateway = nullptr;
+    if (IPv6::cast(gateway_object) != nullptr)
+    {
+        gateway = Address::cast(gateway_object)->getAddressPtr();
+    }
+    else if (Interface::cast(gateway_object) != nullptr ||
+             Host::cast(gateway_object) != nullptr)
+    {
+        list<FWObject*> addresses;
+        if (Interface::cast(gateway_object) != nullptr)
+            addresses = gateway_object->getByType(IPv6::TYPENAME);
+        else
+        {
+            list<FWObject*> interfaces =
+                gateway_object->getByType(Interface::TYPENAME);
+            if (interfaces.size() != 1)
+            {
+                compiler->abort(
+                    rule,
+                    "Object \"" + gateway_object->getName() +
+                    "\" used as a gateway in the routing rule " +
+                    rule->getLabel() + " has multiple ip adresses");
+                return true;
+            }
+            addresses = interfaces.front()->getByType(IPv6::TYPENAME);
+        }
+        if (addresses.size() != 1)
+        {
+            compiler->abort(
+                rule,
+                "Object \"" + gateway_object->getName() +
+                "\" used as a gateway in the routing rule " +
+                rule->getLabel() + " has multiple ip adresses");
+            return true;
+        }
+        gateway = Address::cast(addresses.front())->getAddressPtr();
+    }
+    if (gateway == nullptr || !gateway->isV6())
+    {
+        compiler->abort(rule, "IPv6 routing gateway must be a single IPv6 address");
+        return true;
+    }
+
+    FWObject *interface_object = FWReference::getObject(rule->getRItf()->front());
+    Interface *interface = Interface::cast(interface_object);
+    bool interface_any = rule->getRItf()->isAny() || interface == nullptr;
+    if (isLinkLocalV6(gateway))
+    {
+        if (interface_any)
+            compiler->abort(rule, "Link-local IPv6 gateway requires an interface");
+        return true;
+    }
+
+    if (!interface_any)
+    {
+        if (!gatewayInIPv6Network(interface, gateway))
+        {
+            compiler->abort(
+                rule,
+                "Object \"" + gateway_object->getName() +
+                "\" used as gateway in the routing rule " +
+                rule->getLabel() +
+                " is not in the same local network as interface " +
+                interface->getName());
+        }
+        return true;
+    }
+
+    bool reachable = false;
+    RoutingCompiler_nft *nft = dynamic_cast<RoutingCompiler_nft*>(compiler);
+    list<FWObject*> interfaces = nft->fw->getByTypeDeep(Interface::TYPENAME);
+    for (list<FWObject*>::iterator it = interfaces.begin();
+         it != interfaces.end(); ++it)
+    {
+        if (gatewayInIPv6Network(Interface::cast(*it), gateway))
+        {
+            reachable = true;
+            break;
+        }
+    }
+    if (!reachable)
+    {
+        compiler->abort(
+            rule,
+            "Object \"" + gateway_object->getName() +
+            "\" used as gateway in the routing rule " +
+            rule->getLabel() +
+            " is not in any local IPv6 network of the firewall");
+    }
+    return true;
+}
+
+string RoutingCompiler_nft::routeAddPrefix() const
+{
+    return ipv6 ? "$IP -6 route add " : "$IP route add ";
+}
+
+string RoutingCompiler_nft::activationCommand(const string &spec,
+                                              const string &label) const
+{
+    string command = routeAddPrefix() + spec;
+    if (inSingleRuleCompileMode())
+        return command + "\n";
+
+    string destination = spec;
+    string::size_type space = destination.find(' ');
+    if (space != string::npos) destination.erase(space);
+
+    ostringstream out;
+    out << "fwb_route_prepare " << (ipv6 ? "6" : "4") << " "
+        << shellQuote(destination) << " && \\\n"
+        << command << " && \\\n"
+        << "fwb_route_committed " << (ipv6 ? "6" : "4") << " "
+        << shellQuote(destination) << " " << shellQuote(spec) << " \\\n"
+        << "|| route_command_error \"" << label << "\"\n";
+    return out.str();
 }

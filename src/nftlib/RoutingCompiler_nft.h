@@ -72,6 +72,31 @@ namespace fwcompiler {
         DECLARE_ROUTING_RULE_PROCESSOR(FindDefaultRoute);
 
         /**
+         * Abort when one routing rule contains both address families.
+         * Pure IPv4 rules stay on the IPv4 pass and pure IPv6 rules on
+         * the IPv6 pass.
+         */
+        class rejectMixedAddressFamilies : public RoutingRuleProcessor
+        {
+        public:
+            explicit rejectMixedAddressFamilies(const std::string &name)
+                : RoutingRuleProcessor(name) {}
+            virtual bool processNext();
+        };
+
+        /**
+         * IPv6 destination, gateway, interface and link-local checks.
+         * The shared IPv4 processors stay unchanged for the IPv4 pass.
+         */
+        class validateIPv6Route : public RoutingRuleProcessor
+        {
+        public:
+            explicit validateIPv6Route(const std::string &name)
+                : RoutingRuleProcessor(name) {}
+            virtual bool processNext();
+        };
+
+        /**
 	 * expand address range objects in destination
 	 */
         DECLARE_ROUTING_RULE_PROCESSOR(addressRangesInDst);
@@ -155,6 +180,11 @@ namespace fwcompiler {
 
         };
         friend class RoutingCompiler_nft::PrintRule;
+
+        bool compilingIPv6() const { return ipv6; }
+        std::string routeAddPrefix() const;
+        std::string activationCommand(const std::string &spec,
+                                      const std::string &label) const;
 
 	virtual std::string myPlatformName();
 
