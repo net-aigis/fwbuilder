@@ -184,7 +184,7 @@ namespace fwcompiler {
         bool compilingIPv6() const { return ipv6; }
         std::string routeAddPrefix() const;
         std::string activationCommand(const std::string &spec,
-                                      const std::string &label) const;
+                                      const std::string &label);
 
 	virtual std::string myPlatformName();
 

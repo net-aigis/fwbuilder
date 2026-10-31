@@ -511,7 +511,7 @@ string RoutingCompiler_nft::routeAddPrefix() const
 }
 
 string RoutingCompiler_nft::activationCommand(const string &spec,
-                                              const string &label) const
+                                              const string &label)
 {
     string command = routeAddPrefix() + spec;
     if (inSingleRuleCompileMode())
