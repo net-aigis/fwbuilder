@@ -167,14 +167,15 @@ bool RoutingCompiler_nft::addressRangesInDst::processNext()
 
 bool RoutingCompiler_nft::FindDefaultRoute::processNext()
 {
-    RoutingCompiler_nft *ipt_comp = dynamic_cast<RoutingCompiler_nft*>(compiler);
+    RoutingCompiler_nft *nft_comp =
+        static_cast<RoutingCompiler_nft*>(compiler);
     RoutingRule *rule;
     rule=getNext(); if (rule==nullptr) return false;
 
     RuleElementRDst *dstrel = rule->getRDst();
     FWObject *ref = dstrel->front();
     Address *dst = Address::cast(FWReference::cast(ref)->getPointer());
-    if (dst->isAny()) ipt_comp->have_default_route = true;
+    if (dst->isAny()) nft_comp->have_default_route = true;
 
     tmp_queue.push_back(rule);
     return true;
@@ -202,20 +203,18 @@ void RoutingCompiler_nft::compile()
     add(new emptyRDstAndRItf("Check if RDst and RItf are both empty"));
     add(new rItfChildOfFw("Check if RItf is an Iterface of this firewall"));
 
-    add(new ExpandGroups("Expand groups in DST"));
-    // Reject mixed rules and drop the other address family BEFORE
-    // ExpandMultipleAddresses. That expander uses MatchesAddressFamily and
-    // clears non-matching objects from rule elements, which would turn a
-    // mixed rule into a silent empty rule instead of an error, and would
-    // discard IPv6 routes on the IPv4 pass before they can be ignored
-    // cleanly.
+    // Classify before ExpandGroups/ExpandMultipleAddresses. Both expanders
+    // call MatchesAddressFamily and clear non-matching objects from rule
+    // elements, which would turn a mixed rule into a silent empty rule
+    // and would discard the other family before keepMatching can see it.
     add(new rejectMixedAddressFamilies(
             "Reject routing rules that mix IPv4 and IPv6"));
     // Do not use DropIPv4Rules/DropIPv6Rules here: they remove dual-stack
     // interfaces from RItf and silently discard every IPv6 route that
     // names an interface.
     add(new keepMatchingAddressFamily(
-            "Keep routing rules for this address family"));
+            "Keep routing rules for this address family", ipv6));
+    add(new ExpandGroups("Expand groups in DST"));
     add(new ExpandMultipleAddresses(
             "Expand objects with multiple addresses in DST"));
     add(new dropRuleWithEmptyRE("drop rules with empty rule elements"));
@@ -431,8 +430,6 @@ bool RoutingCompiler_nft::keepMatchingAddressFamily::processNext()
             noteRouteFamily(FWReference::getObject(*it), has_ipv4, has_ipv6);
     }
 
-    RoutingCompiler_nft *nft = dynamic_cast<RoutingCompiler_nft*>(compiler);
-    const bool want_ipv6 = nft != nullptr && nft->compilingIPv6();
     if (want_ipv6)
     {
         if (!has_ipv6) return true;
@@ -545,8 +542,7 @@ bool RoutingCompiler_nft::validateIPv6Route::processNext()
     }
 
     bool reachable = false;
-    RoutingCompiler_nft *nft = dynamic_cast<RoutingCompiler_nft*>(compiler);
-    list<FWObject*> interfaces = nft->fw->getByTypeDeep(Interface::TYPENAME);
+    list<FWObject*> interfaces = compiler->fw->getByTypeDeep(Interface::TYPENAME);
     for (list<FWObject*>::iterator it = interfaces.begin();
          it != interfaces.end(); ++it)
     {

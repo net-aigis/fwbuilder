@@ -81,8 +81,8 @@ string RoutingCompiler_nft::PrintRule::_printAddr(Address  *o)
     const InetAddr *addr;
     const InetAddr *mask;
     RoutingCompiler_nft *nft_compiler =
-        dynamic_cast<RoutingCompiler_nft*>(compiler);
-    if (nft_compiler != nullptr && nft_compiler->compilingIPv6() &&
+        static_cast<RoutingCompiler_nft*>(compiler);
+    if (nft_compiler->compilingIPv6() &&
         (Host::cast(o) != nullptr || Interface::cast(o) != nullptr))
     {
         list<FWObject*> interfaces;
@@ -307,12 +307,7 @@ string RoutingCompiler_nft::PrintRule::RoutingRuleToString(RoutingRule *rule)
     if (onlink && onlink->getBool("use_onlink_option"))
         spec += " onlink";
 
-    RoutingCompiler_nft *nft = dynamic_cast<RoutingCompiler_nft*>(compiler);
-    if (nft == nullptr)
-    {
-        compiler->abort(rule, "Broken routing compiler");
-        return "";
-    }
+    RoutingCompiler_nft *nft = static_cast<RoutingCompiler_nft*>(compiler);
 
     // no_fail still has to report the failure without rolling the
     // whole routing table back. The shared activation wrapper does

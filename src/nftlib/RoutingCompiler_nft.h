@@ -99,13 +99,16 @@ namespace fwcompiler {
         /**
          * Keep rules that belong to this compiler pass. Unlike the
          * shared DropIPv4/DropIPv6 processors, this does not strip
-         * dual-stack interfaces out of RItf.
+         * dual-stack interfaces out of RItf. The wanted family is
+         * captured at construction so the filter does not depend on
+         * cross-cast of the compiler pointer.
          */
         class keepMatchingAddressFamily : public RoutingRuleProcessor
         {
+            bool want_ipv6;
         public:
-            explicit keepMatchingAddressFamily(const std::string &name)
-                : RoutingRuleProcessor(name) {}
+            keepMatchingAddressFamily(const std::string &name, bool ipv6)
+                : RoutingRuleProcessor(name), want_ipv6(ipv6) {}
             virtual bool processNext();
         };
 
