@@ -100,7 +100,7 @@ void FWWindowTest::checkForUpgrade_1()
 void FWWindowTest::checkForUpgrade_2()
 {
     prepareMW();
-    st->setTimeOfLastUpdateAvailableWarning(QDateTime::currentDateTime().addSecs(-60*60*25).toTime_t());
+    st->setTimeOfLastUpdateAvailableWarning(QDateTime::currentDateTime().addSecs(-60*60*25).toSecsSinceEpoch());
     QTimer::singleShot(1000, this, SLOT(findMessageBox()));
     mw->startupLoad();
     QTest::qWait(1500);
@@ -110,7 +110,7 @@ void FWWindowTest::checkForUpgrade_2()
 void FWWindowTest::checkForUpgrade_3()
 {
     prepareMW();
-    st->setTimeOfLastUpdateAvailableWarning(QDateTime::currentDateTime().addSecs(-60*60*2).toTime_t());
+    st->setTimeOfLastUpdateAvailableWarning(QDateTime::currentDateTime().addSecs(-60*60*2).toSecsSinceEpoch());
     QTimer::singleShot(1000, this, SLOT(findNoMessageBox()));
     mw->startupLoad();
     QTest::qWait(1500);
@@ -124,7 +124,7 @@ void FWWindowTest::checkForUpgrade_4()
     updatefile.open(QFile::WriteOnly);
     updatefile.resize(0);
     updatefile.close();
-    st->setTimeOfLastUpdateAvailableWarning(QDateTime::currentDateTime().addSecs(-60*60*25).toTime_t());
+    st->setTimeOfLastUpdateAvailableWarning(QDateTime::currentDateTime().addSecs(-60*60*25).toSecsSinceEpoch());
     QTimer::singleShot(1000, this, SLOT(findNoMessageBox()));
     mw->startupLoad();
     QTest::qWait(1500);

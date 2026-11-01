@@ -107,15 +107,15 @@ void ClusterDialog::updateTimeStamps()
     time_t t;
             
     t = obj->getInt("lastModified");
-    dt.setTime_t(t);
+    dt.setSecsSinceEpoch(t);
     m_dialog->last_modified->setText((t)? dt.toString():"-");
             
     t = obj->getInt("lastCompiled");
-    dt.setTime_t(t);
+    dt.setSecsSinceEpoch(t);
     m_dialog->last_compiled->setText((t)? dt.toString():"-");
             
     t = obj->getInt("lastInstalled");
-    dt.setTime_t(t);
+    dt.setSecsSinceEpoch(t);
     m_dialog->last_installed->setText((t)? dt.toString():"-");
 }
 

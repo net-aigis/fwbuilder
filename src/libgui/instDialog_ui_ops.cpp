@@ -295,13 +295,13 @@ void instDialog::setFlags(QTreeWidgetItem* item)
         }
     }
 
-    dt.setTime_t(lm);
+    dt.setSecsSinceEpoch(lm);
     item->setText(LAST_MODIFIED_COLUMN, (lm)?dt.toString():QString("Never"));
 
-    dt.setTime_t(lc);
+    dt.setSecsSinceEpoch(lc);
     item->setText(LAST_COMPILED_COLUMN, (lc)?dt.toString():QString("Never"));
 
-    dt.setTime_t(li);
+    dt.setSecsSinceEpoch(li);
     item->setText(LAST_INSTALLED_COLUMN, (li)?dt.toString():QString("Never"));
 }
 
