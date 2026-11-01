@@ -434,14 +434,18 @@ bool RoutingCompiler_nft::keepMatchingAddressFamily::processNext()
     // Drop only rules that clearly belong to the other family. Rules with
     // no detectable family still go through ExpandGroups / validators so a
     // missed type check cannot silently discard every IPv6 route.
-    if (want_ipv6)
+    const bool drop = want_ipv6 ? (has_ipv4 && !has_ipv6)
+                                : (has_ipv6 && !has_ipv4);
     {
-        if (has_ipv4 && !has_ipv6) return true;
+        ostringstream msg;
+        msg << " routing family filter " << rule->getLabel()
+            << " want_ipv6=" << want_ipv6
+            << " has_ipv4=" << has_ipv4
+            << " has_ipv6=" << has_ipv6
+            << (drop ? " DROP" : " KEEP");
+        compiler->info(msg.str());
     }
-    else
-    {
-        if (has_ipv6 && !has_ipv4) return true;
-    }
+    if (drop) return true;
 
     tmp_queue.push_back(rule);
     return true;
