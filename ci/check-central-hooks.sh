@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# Verify central prolog/epilog hooks against a built fwb_ipt binary.
+# Verify central prolog/epilog hooks against a built fwb_ipt or fwb_nft binary.
 # Skips cleanly when the compiler is not present so the script can ship
 # before a full matrix job is attached.
 set -euo pipefail
 
 if (( $# < 2 )); then
-    echo "Usage: $0 FWB_IPT BASELINE.fwb [OUTPUT_DIR]" >&2
+    echo "Usage: $0 FWB_COMPILER BASELINE.fwb [OUTPUT_DIR]" >&2
     exit 2
 fi
 
@@ -24,37 +24,49 @@ if [[ ! -s "$baseline" ]]; then
     exit 2
 fi
 
+compiler_base=$(basename "$compiler")
+case "$compiler_base" in
+    fwb_nft) want_platform=nftables ;;
+    fwb_ipt) want_platform=iptables ;;
+    *)
+        echo "SKIP: unsupported compiler binary name: $compiler_base"
+        exit 0
+        ;;
+esac
+
 hooks=$(mktemp -d "$outdir/hooks.XXXXXX")
 trap 'rm -rf "$hooks"' EXIT
 
 mkdir -p "$hooks/prolog.d" "$hooks/epilog.d" \
-         "$hooks/platforms/iptables/prolog.d" \
+         "$hooks/platforms/$want_platform/prolog.d" \
          "$hooks/profiles/opensuse-leap-15.6/prolog.d"
 
 printf '%s\n' 'echo central-global-prolog' > "$hooks/prolog.d/10-common.sh"
-printf '%s\n' 'echo central-platform-prolog' > "$hooks/platforms/iptables/prolog.d/20-platform.sh"
-printf '%s\n' 'echo central-profile-prolog' > "$hooks/profiles/opensuse-leap-15.6/prolog.d/30-profile.sh"
+printf '%s\n' 'echo central-platform-prolog' \
+    > "$hooks/platforms/$want_platform/prolog.d/20-platform.sh"
+printf '%s\n' 'echo central-profile-prolog' \
+    > "$hooks/profiles/opensuse-leap-15.6/prolog.d/30-profile.sh"
 printf '%s\n' 'echo central-global-epilog' > "$hooks/epilog.d/90-finish.sh"
 printf '%s\n' '# comment only' > "$hooks/prolog.d/README.md"
 
 export FWBUILDER_HOOKS_DIR="$hooks"
 
-# Find an iptables firewall name inside the baseline if present.
-fw_name=$(python3 - "$baseline" <<'PY'
+fw_name=$(python3 - "$baseline" "$want_platform" <<'PY'
 import sys, xml.etree.ElementTree as ET
 root = ET.parse(sys.argv[1]).getroot()
+want = sys.argv[2]
 ns = ''
 if root.tag.startswith('{'):
     ns = root.tag.split('}')[0] + '}'
 for fw in root.iter(ns + 'Firewall'):
-    if fw.get('platform') == 'iptables' and fw.get('inactive', 'False') == 'False':
+    if fw.get('platform') == want and fw.get('inactive', 'False') == 'False':
         print(fw.get('name'))
         break
 else:
     sys.exit(3)
 PY
 ) || {
-    echo "SKIP: no iptables firewall object in baseline"
+    echo "SKIP: no $want_platform firewall object in baseline"
     exit 0
 }
 
@@ -85,7 +97,7 @@ for needle in \
     'echo central-profile-prolog' \
     'echo central-global-epilog' \
     'begin fwbuilder central hook: prolog.d/10-common.sh' \
-    'begin fwbuilder central hook: platforms/iptables/prolog.d/20-platform.sh'
+    "begin fwbuilder central hook: platforms/$want_platform/prolog.d/20-platform.sh"
 do
     grep -Fq "$needle" "$script" || {
         echo "FAIL: missing hook output: $needle" >&2
@@ -127,6 +139,38 @@ grep -Fq 'Cannot read central hooks file' "$fail_dir/compile.log" || {
 }
 chmod a+r "$hooks/prolog.d/10-common.sh"
 
+# Symbolic link to a hook file must fail the compile.
+ln -s "$hooks/prolog.d/10-common.sh" "$hooks/prolog.d/15-link.sh"
+fail_link="$outdir/compile-symlink"
+rm -rf "$fail_link"
+mkdir -p "$fail_link"
+if "$compiler" -f "$baseline" -d "$fail_link" "$fw_name" > "$fail_link/compile.log" 2>&1; then
+    echo "FAIL: symbolic-link hook file was accepted" >&2
+    exit 1
+fi
+grep -Fq 'symbolic link' "$fail_link/compile.log" || {
+    cat "$fail_link/compile.log" >&2
+    echo "FAIL: symbolic-link hook did not report a clear error" >&2
+    exit 1
+}
+rm -f "$hooks/prolog.d/15-link.sh"
+
+# Broken profiles.map must fail.
+printf '%s\n' 'only-one-column' > "$hooks/profiles.map"
+fail_map="$outdir/compile-bad-map"
+rm -rf "$fail_map"
+mkdir -p "$fail_map"
+if "$compiler" -f "$baseline" -d "$fail_map" "$fw_name" > "$fail_map/compile.log" 2>&1; then
+    echo "FAIL: invalid profiles.map was accepted" >&2
+    exit 1
+fi
+grep -Fq 'profiles.map' "$fail_map/compile.log" || {
+    cat "$fail_map/compile.log" >&2
+    echo "FAIL: invalid profiles.map did not report a clear error" >&2
+    exit 1
+}
+printf '%s\n' "$fw_name opensuse-leap-15.6" > "$hooks/profiles.map"
+
 # No hooks configured → historical output must not contain central markers.
 unset FWBUILDER_HOOKS_DIR
 clean="$outdir/compile-clean"
@@ -139,4 +183,4 @@ if grep -Fq 'begin fwbuilder central hook:' "${clean_script[0]}"; then
     exit 1
 fi
 
-echo "PASS: central hooks ($fw_name)"
+echo "PASS: central hooks ($want_platform / $fw_name)"

@@ -135,7 +135,7 @@ jobs:
       # Full legacy/GUI build remains intact for the preserved baseline.
       # PR #6 builds only native nftables and its direct static dependencies.
       - name: Compile preserved FWB 5.3.8 baseline
-        if: ${{ github.event_name != 'pull_request' || github.head_ref != 'feature/native-nftables-port' }}
+        if: ${{ github.event_name != 'pull_request' || (github.head_ref != 'feature/native-nftables-port' && github.head_ref != 'feature/central-hooks-on-nft') }}
         run: |
           set -euo pipefail
           export PATH="/tmp/fwb-ci-compiler-wrappers:$PATH"
@@ -143,7 +143,7 @@ jobs:
           make -j2 2>&1 | tee ci-logs/build.log
 
       - name: Compile native nftables and direct dependencies only
-        if: ${{ github.event_name == 'pull_request' && github.head_ref == 'feature/native-nftables-port' }}
+        if: ${{ github.event_name == 'pull_request' && (github.head_ref == 'feature/native-nftables-port' || github.head_ref == 'feature/central-hooks-on-nft') }}
         run: |
           set -euo pipefail
           export PATH="/tmp/fwb-ci-compiler-wrappers:$PATH"
@@ -195,7 +195,7 @@ jobs:
           key: ${{ steps.ccache_restore.outputs.cache-primary-key }}
 
       - name: Inventory compiled firewall policy compilers
-        if: ${{ github.event_name != 'pull_request' || github.head_ref != 'feature/native-nftables-port' }}
+        if: ${{ github.event_name != 'pull_request' || (github.head_ref != 'feature/native-nftables-port' && github.head_ref != 'feature/central-hooks-on-nft') }}
         run: |
           set -euo pipefail
           find . -type f \
@@ -210,7 +210,7 @@ jobs:
           echo 'Compiled backend inventory recorded; no firewall rules deployed.'
 
       - name: Smoke-test native nftables CLI and generated policy
-        if: ${{ github.event_name == 'pull_request' && github.head_ref == 'feature/native-nftables-port' }}
+        if: ${{ github.event_name == 'pull_request' && (github.head_ref == 'feature/native-nftables-port' || github.head_ref == 'feature/central-hooks-on-nft') }}
         run: |
           set -euo pipefail
           compiler="$(find src/nft -type f -name fwb_nft -perm /111 -print -quit)"
@@ -251,13 +251,22 @@ jobs:
       # built fwb_nft binary. Only positive scenarios enter nft-output;
       # the existing second job validates all outputs against nft and kernel.
       - name: Compile expanded native FWB XML test matrix
-        if: ${{ github.event_name == 'pull_request' && github.head_ref == 'feature/native-nftables-port' }}
+        if: ${{ github.event_name == 'pull_request' && (github.head_ref == 'feature/native-nftables-port' || github.head_ref == 'feature/central-hooks-on-nft') }}
         run: |
           set -euo pipefail
           bash ci/check-nft-project-fixtures.sh \
             "$PWD/src/nft/fwb_nft" \
             "$PWD/src/unit_tests/generatedScriptTestsNft/test1.fwb" \
             ci-logs/nft-output 2>&1 | tee ci-logs/nft-fixture-results.log
+
+      - name: Verify central prolog/epilog hooks with fwb_nft
+        if: ${{ github.event_name == 'pull_request' && github.head_ref == 'feature/central-hooks-on-nft' }}
+        run: |
+          set -euo pipefail
+          bash ci/check-central-hooks.sh \
+            "$PWD/src/nft/fwb_nft" \
+            "$PWD/src/unit_tests/generatedScriptTestsNft/test1.fwb" \
+            ci-logs/central-hooks 2>&1 | tee ci-logs/central-hooks.log
 
       - name: Upload build diagnostics and compiler inventory
         if: ${{ always() }}
@@ -272,7 +281,7 @@ jobs:
   nft-syntax:
     name: Check generated nftables grammar without loading rules
     needs: qt5-baseline
-    if: ${{ github.event_name == 'pull_request' && github.head_ref == 'feature/native-nftables-port' }}
+    if: ${{ github.event_name == 'pull_request' && (github.head_ref == 'feature/native-nftables-port' || github.head_ref == 'feature/central-hooks-on-nft') }}
     runs-on: ubuntu-24.04
     steps:
       - name: Check out syntax checker only
