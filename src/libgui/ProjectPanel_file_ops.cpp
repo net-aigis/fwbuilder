@@ -1164,7 +1164,11 @@ bool ProjectPanel::loadFromRCS(RCS *_rcs)
              * extension"
              */
             QFileInfo nfinfo(newFileName);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+            if (nfinfo.exists() && ofinfo.isSymLink() && ofinfo.symLinkTarget()==newFileName)
+#else
             if (nfinfo.exists() && ofinfo.isSymLink() && ofinfo.readLink()==newFileName)
+#endif
             {
                 // .xml file is a symlink pointing at .fwb file
                 // no need to rename
