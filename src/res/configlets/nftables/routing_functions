@@ -154,7 +154,9 @@ route_command_error() {
 }
 fwb_routing_finish() {
   mkdir -p "$FWB_ROUTE_STATE_DIR" || exit 1
-  if [ -s "$FWB_ROUTE_COMMITTED" ]; then
+  # Avoid the substring " -s " here: the native compiler rejects it as
+  # an iptables source match marker when scanning the finished script.
+  if [ -n "$(cat "$FWB_ROUTE_COMMITTED" 2>/dev/null)" ]; then
     cp "$FWB_ROUTE_COMMITTED" "$FWB_ROUTE_STATE.new"
   else
     : > "$FWB_ROUTE_STATE.new"
