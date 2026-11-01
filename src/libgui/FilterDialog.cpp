@@ -58,7 +58,7 @@
 #include <qapplication.h>
 #include <qstackedwidget.h>
 #include <qcursor.h>
-#include <qregexp.h>
+#include <QRegularExpression>
 #include <qtablewidget.h>
 #include <qmessagebox.h>
 
@@ -255,7 +255,7 @@ void  FilterDialog::load()
 
 void FilterDialog::update()
 {
-    QRegExp r;
+    FilterPattern r;
     Filter newflt;
 
     newflt.setMatchAny(m_dialog->combo->currentIndex());
@@ -288,39 +288,17 @@ void FilterDialog::update()
     {
         *flt=newflt;
     }
-    /*
-    bool res=false;
-
-    Filter newflt;
-
-    newflt.setAddrPattern( addresspattern->text());
-    newflt.setNamePattern( namepattern->text());
-
-    newflt.setWildcard( radioButton1->isChecked());
-    newflt.setCaseSens( casesens->isChecked());
-
-    newflt.flt_name = name_checkbox->isChecked();
-    newflt.flt_addr = addr_checkbox->isChecked();
-
-    if (newflt.isValid())
-    {
-        *flt=newflt;
-        res=true;
-    }
-
-    return res;
-    */
 }
 bool FilterDialog::validate()
 {
     bool res=true;
-    QRegExp r;
+    FilterPattern r;
 
     int n=m_dialog->table->rowCount();
     for(int i=0; i<n;i++)
     {
         r=constructRegExp(i);
-        if(!r.isValid())
+        if(!r.re.isValid())
         {
             res=false;
             m_dialog->table->selectRow(i);
@@ -331,23 +309,26 @@ bool FilterDialog::validate()
 
     return res;
 }
-QRegExp FilterDialog::constructRegExp(int p)
+FilterPattern FilterDialog::constructRegExp(int p)
 {
-    QRegExp r;
+    FilterPattern r;
     QString buf;
-    r.setCaseSensitivity((m_dialog->case_sensitive->isChecked())?
-            Qt::CaseSensitive:Qt::CaseInsensitive);
+    QRegularExpression::PatternOptions opts =
+        QRegularExpression::NoPatternOption;
+    if (!m_dialog->case_sensitive->isChecked())
+        opts |= QRegularExpression::CaseInsensitiveOption;
+
+    bool wildcard = false;
     switch(((QComboBox*)m_dialog->table->cellWidget(p,1))->currentIndex())
     {
         case FWF_CONTAINS:
             {
-                r.setPatternSyntax(QRegExp::Wildcard);
+                wildcard = true;
                 buf=m_dialog->table->item(p,2)->text().toLatin1().constData();
                 break;
             }
         case FWF_IS_EQUAL_TO:
             {
-                r.setPatternSyntax(QRegExp::RegExp);
                 buf="^";
                 buf+=m_dialog->table->item(p,2)->text().toLatin1().constData();
                 buf+="$";
@@ -355,27 +336,24 @@ QRegExp FilterDialog::constructRegExp(int p)
             }
         case FWF_STARTS_WITH:
             {
-                r.setPatternSyntax(QRegExp::RegExp);
                 buf="^";
                 buf+=m_dialog->table->item(p,2)->text().toLatin1().constData();
                 break;
             }
         case FWF_ENDS_WITH:
             {
-                r.setPatternSyntax(QRegExp::RegExp);
                 buf=m_dialog->table->item(p,2)->text().toLatin1().constData();
                 buf+="$";
                 break;
             }
         case FWF_MATCHES_WILDCARD:
             {
-                r.setPatternSyntax(QRegExp::Wildcard);
+                wildcard = true;
                 buf=m_dialog->table->item(p,2)->text().toLatin1().constData();
                 break;
             }
         case FWF_MATCHES_REGEXP:
             {
-                r.setPatternSyntax(QRegExp::RegExp);
                 buf=m_dialog->table->item(p,2)->text().toLatin1().constData();
                 break;
             }
@@ -383,7 +361,14 @@ QRegExp FilterDialog::constructRegExp(int p)
             {
             }
     }
-    r.setPattern(buf);
+
+    if (wildcard)
+    {
+        buf = QRegularExpression::wildcardToRegularExpression(
+            buf, QRegularExpression::UnanchoredWildcardConversion);
+    }
+    r.wildcard = wildcard;
+    r.re = QRegularExpression(buf, opts);
     return r;
 }
 void FilterDialog::addPattern()
@@ -445,22 +430,22 @@ bool Filter::isCaseSens()
 {
     return CaseSensitive;
 }
-void Filter::addNameRegExp(const QRegExp &r)
+void Filter::addNameRegExp(const FilterPattern &r)
 {
     name_patterns.push_back(r);
 }
-void Filter::addAddrRegExp(const QRegExp &r)
+void Filter::addAddrRegExp(const FilterPattern &r)
 {
     addr_patterns.push_back(r);
 }
 
 QString  Filter::getNamePatternString(int p)
 {
-    return name_patterns[p].pattern();
+    return name_patterns[p].re.pattern();
 }
 QString  Filter::getAddrPatternString(int p)
 {
-    return addr_patterns[p].pattern();
+    return addr_patterns[p].re.pattern();
 }
 
 int  Filter::getNamePatternsNumber()
@@ -474,11 +459,11 @@ int Filter::getAddrPatternsNumber()
 
 bool Filter::isNameWildcard(int p)
 {
-    return name_patterns[p].patternSyntax() == QRegExp::Wildcard;
+    return name_patterns[p].wildcard;
 }
 bool Filter::isAddrWildcard(int p)
 {
-    return addr_patterns[p].patternSyntax() == QRegExp::Wildcard;
+    return addr_patterns[p].wildcard;
 }
 
 Filter & Filter::operator=(const Filter& f)
@@ -490,14 +475,6 @@ Filter & Filter::operator=(const Filter& f)
 
     return *this;
 }
-/*
-void FilterDialog::closeEvent(QCloseEvent *e)
-{
-    if (fwbdebug)
-        qDebug("FilterDialog::closeEvent  got close event: %p",e);
-    hide();
-}
-*/
 
 Filter::Filter()
 {
@@ -509,11 +486,35 @@ Filter::~Filter()
 }
 void Filter::addNamePattern(const QString &s,bool wc)
 {
-    name_patterns.push_back(QRegExp(s,Qt::CaseSensitive,wc?QRegExp::Wildcard:QRegExp::RegExp));
+    FilterPattern fp;
+    fp.wildcard = wc;
+    if (wc)
+    {
+        fp.re = QRegularExpression(
+            QRegularExpression::wildcardToRegularExpression(
+                s, QRegularExpression::UnanchoredWildcardConversion));
+    }
+    else
+    {
+        fp.re = QRegularExpression(s);
+    }
+    name_patterns.push_back(fp);
 }
 void Filter::addAddrPattern(const QString &s,bool wc)
 {
-    addr_patterns.push_back(QRegExp(s,Qt::CaseSensitive,wc?QRegExp::Wildcard:QRegExp::RegExp));
+    FilterPattern fp;
+    fp.wildcard = wc;
+    if (wc)
+    {
+        fp.re = QRegularExpression(
+            QRegularExpression::wildcardToRegularExpression(
+                s, QRegularExpression::UnanchoredWildcardConversion));
+    }
+    else
+    {
+        fp.re = QRegularExpression(s);
+    }
+    addr_patterns.push_back(fp);
 }
 void Filter::clear()
 {
@@ -534,29 +535,28 @@ bool Filter::isMatchAny ()
 }
 bool Filter::testName(const QString &s)
 {
-    int cmp;
     if (name_patterns.isEmpty())
     {
         return addr_patterns.isEmpty() || !MatchAny;
     }
     for (int i=0;i<name_patterns.size();i++)
     {
-        name_patterns[i].setCaseSensitivity(Qt::CaseSensitive);
-        cmp=name_patterns[i].indexIn(s);
+        // Preserve old QRegExp behavior: force case-sensitive at test time.
+        QRegularExpression re(name_patterns[i].re.pattern());
+        bool matched = re.match(s).hasMatch();
         if (MatchAny)
         {
-            if(cmp>=0) return true;
+            if(matched) return true;
         }
         else
         {
-            if(cmp<0) return false;
+            if(!matched) return false;
         }
     }
     return !MatchAny;
 }
 bool Filter::testAddr(const QString &s)
 {
-    int cmp;
     if (addr_patterns.isEmpty())
     {
         return (name_patterns.isEmpty() || !MatchAny);
@@ -564,15 +564,16 @@ bool Filter::testAddr(const QString &s)
 
     for (int i=0;i<addr_patterns.size();i++)
     {
-        addr_patterns[i].setCaseSensitivity(Qt::CaseSensitive);
-        cmp=addr_patterns[i].indexIn(s);
+        // Preserve old QRegExp behavior: force case-sensitive at test time.
+        QRegularExpression re(addr_patterns[i].re.pattern());
+        bool matched = re.match(s).hasMatch();
         if (MatchAny)
         {
-            if(cmp>=0) return true;
+            if(matched) return true;
         }
         else
         {
-            if(cmp<0) return false;
+            if(!matched) return false;
         }
     }
     return !MatchAny;
