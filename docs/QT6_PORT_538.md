@@ -34,9 +34,9 @@ Qt6 preferred on this branch; Qt5 path must stay buildable (CI baseline still us
 
 ## Build status (local Leap 16 + qmake6)
 
-- Autotools/configure with `qmake6` works.
-- `import`, `iptlib`, `pflib`, `nftlib`, `cisco_lib` and CLI tools compile past the first Qt6 API wave.
-- `libgui` still open: WindowFlags defaults, uic PMF connects (`-c string`), remaining QRegExp-on-QString call sites.
+- Full tree builds with `qmake6` (EXIT 0), including `src/gui/fwbuilder` and policy compilers (`fwb_nft`, `fwb_ipt`, …).
+- `QMAKE_UIC_FLAGS += -c string` required so `.ui` subclass slots compile.
+- Remaining work: drop Qt5Compat/`QRegExp` where still used, Windows/macOS smoke, CI green on PR #9.
 
 ## Next code passes
 

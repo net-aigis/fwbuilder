@@ -1,3 +1,4 @@
+#include <QRegExp>
 /*
 
                           Firewall Builder

@@ -1,3 +1,4 @@
+#include <QRandomGenerator>
 /****************************************************************************
 **
 ** Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).
@@ -91,7 +92,7 @@ static char *q_mkdtemp(char *templateName)
         return 0;
 
     for (int i = 0; i < 256; ++i) {
-        int v = qrand();
+        int v = QRandomGenerator::global()->generate();
 
         /* Fill in the random bits.  */
         XXXXXX[0] = letters[v % 62];

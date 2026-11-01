@@ -422,7 +422,7 @@ void newHostDialog::showPage(const int page)
             FWObject *o=*m;
 
             QPixmap pm;
-            if ( ! QPixmapCache::find( icn, pm) )
+            if ( ! QPixmapCache::find(icn, &pm) )
             {
                 pm.load( icn );
                 QPixmapCache::insert( icn, pm);

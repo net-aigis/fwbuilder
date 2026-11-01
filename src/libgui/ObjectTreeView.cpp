@@ -1,3 +1,4 @@
+#include <QRegExp>
 /*
 
                           Firewall Builder
@@ -420,7 +421,7 @@ void ObjectTreeView::startDrag(Qt::DropActions supportedActions)
     FWObjectDrag *drag = new FWObjectDrag(dragobj, this);
 
     QPixmap pm;
-    if ( ! QPixmapCache::find( icn, pm) )
+    if ( ! QPixmapCache::find(icn, &pm) )
     {
         pm.load( icn );
         QPixmapCache::insert( icn, pm);
@@ -477,7 +478,11 @@ void ObjectTreeView::startDrag(Qt::DropActions supportedActions)
     if (fwbdebug) qDebug("ObjectTreeView::dragObject()  this=%p visible=%d",
                          this,visible);
 
+    #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    drag->exec(supportedActions);
+#else
     drag->start(supportedActions);
+#endif
 }
 
 void ObjectTreeView::dragEnterEvent( QDragEnterEvent *ev)

@@ -124,7 +124,7 @@ void FindWhereUsedWidget::setShowObject(bool fl)
 void FindWhereUsedWidget::itemActivated(QTreeWidgetItem* item, int)
 {
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-    FWObject *container = (FWObject*)(qVariantValue<void*>(item->data(1, Qt::UserRole)));
+    FWObject *container = (FWObject*)(qvariant_cast<void*>(item->data(1, Qt::UserRole)));
 #else
     FWObject *container = (FWObject*)(item->data(1, Qt::UserRole).value<void*>());
 #endif
@@ -146,7 +146,7 @@ void FindWhereUsedWidget::itemActivated(QTreeWidgetItem* item, int)
 void FindWhereUsedWidget::itemClicked(QTreeWidgetItem* item, int)
 {
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-FWObject *container = (FWObject*)(qVariantValue<void*>(item->data(1, Qt::UserRole)));
+FWObject *container = (FWObject*)(qvariant_cast<void*>(item->data(1, Qt::UserRole)));
 #else
     FWObject *container = (FWObject*)(item->data(1, Qt::UserRole).value<void*>());
 #endif
@@ -365,7 +365,7 @@ QTreeWidgetItem* FindWhereUsedWidget::createQTWidgetItem(FWObject *o,
     item->setIcon(1, QIcon(parent_icon));
     item->setIcon(0, QIcon(object_icon));
 
-    item->setData(1, Qt::UserRole, qVariantFromValue((void*)container));
+    item->setData(1, Qt::UserRole, QVariant::fromValue((void*)container));
 
     return item;
 }

@@ -32,6 +32,7 @@
 #include "interfacePropertiesObjectFactory.h"
 
 #include <QObject>
+#include <QRegExp>
 #include <QStringList>
 #include <QComboBox>
 #include <QtDebug>

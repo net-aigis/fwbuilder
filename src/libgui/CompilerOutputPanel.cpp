@@ -27,6 +27,7 @@
 
 #include "config.h"
 #include <QObject>
+#include <QRegExp>
 #include "global.h"
 
 #include "CompilerOutputPanel.h"

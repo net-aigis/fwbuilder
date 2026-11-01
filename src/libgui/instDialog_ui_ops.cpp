@@ -75,6 +75,7 @@
 #include <QBrush>
 #include <QTextFormat>
 #include <QObject>
+#include <QRegExp>
 #include <QtDebug>
 #include <QTime>
 
@@ -135,7 +136,7 @@ QTreeWidgetItem* instDialog::createTreeItem(QTreeWidgetItem* parent,
 
     QString icn_filename = (":/Icons/" + fw->getTypeName() + "/icon").c_str();
     QPixmap pm;
-    if ( ! QPixmapCache::find(icn_filename, pm))
+    if ( ! QPixmapCache::find(icn_filename, &pm))
     {
         pm.load(icn_filename);
         QPixmapCache::insert(icn_filename, pm);
@@ -265,7 +266,7 @@ void instDialog::setFlags(QTreeWidgetItem* item)
                     // Standby
                     item->setText(0, QString("%1 (standby)").arg(txt));
                     item->setCheckState(INSTALL_CHECKBOX_COLUMN, Qt::Unchecked);
-                    item->setFlags(0);
+                    item->setFlags(Qt::ItemFlags());
                 }
             }
         }

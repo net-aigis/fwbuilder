@@ -527,8 +527,13 @@ void RuleSetView::mouseMoveEvent( QMouseEvent* ev )
     if (startingDrag)
     {
         QDrag* drag = dragObject();
-        if (drag)
+        if (drag) {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+            drag->exec(Qt::CopyAction | Qt::MoveAction);
+#else
             drag->start(Qt::CopyAction | Qt::MoveAction); //just start dragging
+#endif
+        }
         startingDrag = false;
         return;
     }

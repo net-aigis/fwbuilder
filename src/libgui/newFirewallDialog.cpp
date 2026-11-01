@@ -741,7 +741,7 @@ void newFirewallDialog::showPage(const int page)
 */
 
             QPixmap pm;
-            if ( ! QPixmapCache::find( icn, pm) )
+            if ( ! QPixmapCache::find(icn, &pm) )
             {
                 pm.load( icn );
                 QPixmapCache::insert( icn, pm);

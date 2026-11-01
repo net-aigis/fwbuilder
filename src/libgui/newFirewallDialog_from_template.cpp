@@ -1,3 +1,4 @@
+#include <QMultiMap>
 /*
 
                           Firewall Builder
@@ -159,7 +160,7 @@ void newFirewallDialog::changedAddressesInNewFirewall()
                  * If user created more addresses than there used to
                  * be, extra addresses are not added to rules.
                  */
-                QMap<libfwbuilder::Address*, AddressInfo >::iterator addrit;
+                QMultiMap<libfwbuilder::Address*, AddressInfo >::iterator addrit;
                 for (addrit=new_data.addresses.begin(); addrit!=new_data.addresses.end(); ++addrit)
                 {
                     Address *old_addr_obj = addrit.key();
