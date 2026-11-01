@@ -53,6 +53,7 @@
 #include <QTextCodec>
 #include <QTimer>
 #include <QMessageBox>
+#include <QObject>
 #include <QtDebug>
 
 

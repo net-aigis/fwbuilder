@@ -42,6 +42,7 @@
 #include <qapplication.h>
 #include <qdatetime.h>
 #include <QtDebug>
+#include <QRegularExpression>
 #include <QTime>
 
 #include <iostream>
@@ -561,9 +562,9 @@ void SSHSession::readFromStdout()
          * Matches ESC [ n ; m H (move cursor to position), ESC ? 25 l and ESC ? 25 h
          * (hide and show cursor) and a few others
          */
-        QRegExp suppress_ansi_codes(
+        QRegularExpression suppress_ansi_codes(
             "\x1B\\[((\\d*A)|(\\d*B)|(\\d*C)|(\\d*D)|(\\d*G)|(\\?\\d+l)|(\\d*J)|(2K)|(\\d*;\\d*[fHmr])|(\\?25h)|(\\?25l))");
-        QRegExp cursor_next_line("\x1B\\d*E");
+        QRegularExpression cursor_next_line("\x1B\\d*E");
 
         while (buf.indexOf(suppress_ansi_codes) != -1)
             buf.replace(suppress_ansi_codes, "");
@@ -582,7 +583,7 @@ void SSHSession::readFromStdout()
         QString lastLine = "";
 
         // split on LF
-        QStringList bufLines = buf.split("\n", QString::KeepEmptyParts);
+        QStringList bufLines = buf.split("\n", Qt::KeepEmptyParts);
 
         // if buf ends with a LF character, the last element in the list is
         // an empty string
@@ -759,7 +760,7 @@ bool SSHSession::cmpPrompt(const QString &str, const QString &prompt)
     return res;
 }
 
-bool SSHSession::cmpPrompt(const QString &str,const QRegExp &prompt)
+bool SSHSession::cmpPrompt(const QString &str,const QRegularExpression &prompt)
 {
 #if STATE_MACHINE_DEBUG
     if (fwbdebug)

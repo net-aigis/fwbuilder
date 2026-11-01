@@ -32,6 +32,7 @@
 #include "fwbuilder/Library.h"
 #include "fwbuilder/ObjectGroup.h"
 
+#include <QObject>
 #include <QtDebug>
 
 using namespace libfwbuilder;

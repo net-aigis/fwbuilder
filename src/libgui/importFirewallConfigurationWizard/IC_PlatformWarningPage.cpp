@@ -31,10 +31,12 @@
 
 #include "platforms.h"
 
+#include <QObject>
 #include <QString>
 #include <QFile>
 #include <QRegExp>
 #include <QTextStream>
+#include <QIODevice>
 #include <QDesktopServices>
 
 #include <list>

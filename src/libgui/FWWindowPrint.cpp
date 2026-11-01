@@ -215,7 +215,7 @@ void FWWindow::filePrint()
                 QMessageBox::information(
                     this,"Firewall Builder",
                     tr("Printing aborted"),
-                    tr("&Continue"), QString::null,QString::null,
+                    tr("&Continue"), QString(),QString(),
                     0, 1 );
             } else
                 showStatusBarMessage(tr("Printing completed"));
@@ -247,7 +247,7 @@ class UpgradePredicate: public XMLTools::UpgradePredicate
     public:
     virtual bool operator()(const string&) const
     {
-        cout << "Data file has been created in the old version of Firewall Builder. Use fwbuilder GUI to convert it." << endl;
+        cout << "Data file has been created in the old version of Firewall Builder. Use fwbuilder GUI to convert it." << std::endl;
         return false;
     }
 };

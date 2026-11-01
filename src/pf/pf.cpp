@@ -59,16 +59,16 @@ class UpgradePredicate: public XMLTools::UpgradePredicate
     public:
     virtual bool operator()(const string&) const 
     { 
-	cout << "Data file has been created in the old version of Firewall Builder. Use fwbuilder GUI to convert it." << endl;
+	cout << "Data file has been created in the old version of Firewall Builder. Use fwbuilder GUI to convert it." << std::endl;
 	return false;
     }
 };
 
 void usage(const char *name)
 {
-    cout << "Firewall Builder:  policy compiler for OpenBSD PF" << endl;
-    cout << "Version " << VERSION << endl;
-    cout << "Usage: " << name << " [-x] [-v] [-V] [-f filename.xml] [-o output.fw] [-d destdir] [-D datadir] [-m] [-4|-6] firewall_object_name" << endl;
+    cout << "Firewall Builder:  policy compiler for OpenBSD PF" << std::endl;
+    cout << "Version " << VERSION << std::endl;
+    cout << "Usage: " << name << " [-x] [-v] [-V] [-f filename.xml] [-o output.fw] [-d destdir] [-D datadir] [-m] [-4|-6] firewall_object_name" << std::endl;
 }
 
 
@@ -166,13 +166,13 @@ int main(int argc, char **argv)
 
     } catch(const FWException &ex)
     {
-	cerr << ex.toString() << endl;
+	cerr << ex.toString() << std::endl;
         return 1;
 #if __GNUC__ >= 3
 /* need to check version because std::ios::failure does not seem to be
  * supported in gcc 2.9.5 on FreeBSD 4.10 */
     } catch (const std::ios::failure &e) {
-        cerr << "Error while opening or writing to the output file" << endl;
+        cerr << "Error while opening or writing to the output file" << std::endl;
         return 1;
 #endif
     } catch (const std::string &s) {

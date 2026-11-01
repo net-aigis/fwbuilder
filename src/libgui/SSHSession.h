@@ -1,3 +1,4 @@
+#include <QRegularExpression>
 /* 
 
                           Firewall Builder
@@ -153,7 +154,7 @@ class SSHSession : public QObject {
 
     
     bool cmpPrompt(const QString &str,const QString &prompt);
-    bool cmpPrompt(const QString &str,const QRegExp &prompt);
+    bool cmpPrompt(const QString &str,const QRegularExpression &prompt);
 
     void startHeartBeat();
     void stopHeartBeat();

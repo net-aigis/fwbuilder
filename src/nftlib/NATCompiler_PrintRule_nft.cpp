@@ -122,11 +122,11 @@ string NATCompiler_nft::PrintRule::_createChain(const string &chain)
             "nat", chain, ipt_comp->ipv6, "");
         if (!base_chain.empty())
         {
-            res << prefix << base_chain << endl;
+            res << prefix << base_chain << "\n";
         } else
         {
             res << prefix << "add chain " << nft_utils::familyName(ipt_comp->ipv6)
-                << " " << nft_utils::managedTableName("nat") << " " << chain << endl;
+                << " " << nft_utils::managedTableName("nat") << " " << chain << "\n";
         }
 	(*(ipt_comp->minus_n_commands))[chain] = true;
     }
@@ -159,15 +159,15 @@ string NATCompiler_nft::PrintRule::_printRuleLabel(NATRule *rule)
     {
         if (!compiler->inSingleRuleCompileMode() && !nocomm)
         {
-            res << "# " << endl;
-            res << "# Rule " << rl << endl;
-            res << "# " << endl;
+            res << "# " << "\n";
+            res << "# Rule " << rl << "\n";
+            res << "# " << "\n";
         }
         if (useNftablesAtomic(compiler->getCachedFwOpt()))
-            res << "# Rule " << rl << endl;
+            res << "# Rule " << rl << "\n";
         else
-            res << "echo " << _quote(string("Rule ")+rl) << endl;
-        res << "# " << endl;
+            res << "echo " << _quote(string("Rule ")+rl) << "\n";
+        res << "# " << "\n";
 
 /* do not put comment in the script if it is intended for linksys */
         if (!nocomm || compiler->inSingleRuleCompileMode())
@@ -175,22 +175,22 @@ string NATCompiler_nft::PrintRule::_printRuleLabel(NATRule *rule)
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 15, 0))
             QStringList comm = QString(rule->getComment().c_str()).split("\n", Qt::SkipEmptyParts);
 #else
-            QStringList comm = QString(rule->getComment().c_str()).split("\n", QString::SkipEmptyParts);
+            QStringList comm = QString(rule->getComment().c_str()).split("\n", Qt::SkipEmptyParts);
 #endif
             foreach(QString line, comm)
             {
-                res << "# " << line.toStdString() << endl;
+                res << "# " << line.toStdString() << "\n";
             }
-            //res << "# " << endl;
+            //res << "# " << "\n";
 
             string err = compiler->getErrorsForRule(rule, "# ");
-            if (!err.empty()) res << err << endl;
+            if (!err.empty()) res << err << "\n";
         }
         current_rule_label=rl;
     }
 
 //    string err = rule->getCompilerMessage();
-//    if (!err.empty()) res << "# " << err << endl;
+//    if (!err.empty()) res << "# " << err << "\n";
 
     return res.str();
 }
@@ -884,7 +884,7 @@ bool NATCompiler_nft::PrintRule::processNext()
 
     cmdout << _endRuleLine();
 
-//    cmdout  << endl;
+//    cmdout  << "\n";
 
     compiler->output
         << dynamic_cast<OSConfigurator_linux24*>(compiler->osconfigurator)->

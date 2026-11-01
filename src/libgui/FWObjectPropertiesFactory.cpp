@@ -1,3 +1,4 @@
+#include <QIODevice>
 /* 
 
                           Firewall Builder
@@ -275,7 +276,7 @@ QString FWObjectPropertiesFactory::getObjectPropertiesBrief(FWObject *obj)
         }
     } catch (FWException &ex)
     {
-        cerr << ex.toString() << endl;
+        cerr << ex.toString() << std::endl;
     }
 
     return QString::fromUtf8(res.toStdString().c_str());
@@ -469,7 +470,7 @@ QString FWObjectPropertiesFactory::getObjectProperties(FWObject *obj)
         }
     } catch (FWException &ex)
     {
-        cerr << ex.toString() << endl;
+        cerr << ex.toString() << std::endl;
     }
 
     return res;
@@ -917,7 +918,7 @@ QString FWObjectPropertiesFactory::getObjectPropertiesDetailed(FWObject *obj,
         }
     } catch (FWException &ex)
     {
-        cerr << ex.toString() << endl;
+        cerr << ex.toString() << std::endl;
     }
 
     if (richText) return str;

@@ -39,6 +39,7 @@
 #include <qeventloop.h>
 #include <QtDebug>
 
+#include <QRegularExpression>
 #include <iostream>
 
 using namespace std;
@@ -136,7 +137,7 @@ bool SSHUnx::checkForErrors(QStringList *errptr)
 
     foreach (QString err, *errptr)
     {
-        if (stdoutBuffer.lastIndexOf(QRegExp(err), -1) != -1)
+        if (stdoutBuffer.lastIndexOf(QRegularExpression(err), -1) != -1)
         {
             if (fwbdebug)
                 qDebug("SSHUnx::stateMachine: MATCH. Error detected.");

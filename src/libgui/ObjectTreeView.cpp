@@ -1005,7 +1005,7 @@ static bool filterMatchesCommand(const QString &text,
     QRegExp rx("(?:(port)|(ip)):(.*)", Qt::CaseInsensitive);
     if (!rx.exactMatch(text)) return false;
 
-    QStringList args = rx.cap(3).split(",", QString::SkipEmptyParts);
+    QStringList args = rx.cap(3).split(",", Qt::SkipEmptyParts);
 
     if (rx.pos(1) != -1)
         return (filterMatchesPortRange(args, item->getFWObject()));

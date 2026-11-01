@@ -95,13 +95,13 @@ bool RoutingCompiler_freebsd::PrintRule::processNext()
         {
             compiler->output << QString("static_routes=\"%1\"")
                 .arg(rule_ids.join(" ")).toStdString()
-                             << endl;
+                             << "\n";
         }
 
         for (deque<Rule*>::iterator k=tmp_queue.begin(); k!=tmp_queue.end(); ++k) 
         {
             RoutingRule *rule = RoutingRule::cast( *k );
-            compiler->output << RoutingRuleToString(rule) << endl;
+            compiler->output << RoutingRuleToString(rule) << "\n";
         }
 
         return true;

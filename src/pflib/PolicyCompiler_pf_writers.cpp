@@ -705,7 +705,7 @@ void PolicyCompiler_pf::PrintRule::_printDstService(RuleElement  *rel)
                     if (ICMP6Service::isA(srv)) 
                         compiler->output << "icmp6-type { " << str << " } ";
                     else
-                        compiler->output << str << " " << endl;
+                        compiler->output << str << " " << "\n";
                 }
             }
 	}
@@ -954,7 +954,7 @@ bool PolicyCompiler_pf::PrintRule::processNext()
 
     _printProtocol(srv);
 
-//    cerr << "CP 2" << endl;
+//    cerr << "CP 2" << std::endl;
 
     compiler->output << " from ";
     _printSrcAddr(srcrel);
@@ -1182,7 +1182,7 @@ bool PolicyCompiler_pf::PrintRule::processNext()
     if (XMLTools::version_compare(version, "4.7")>=0)
         _printRouteOptions(rule);
 
-    compiler->output << endl;
+    compiler->output << "\n";
 
     return true;
 }

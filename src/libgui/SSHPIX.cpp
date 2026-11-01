@@ -1,3 +1,4 @@
+#include <QRegularExpression>
 /*
 
                           Firewall Builder
@@ -70,7 +71,7 @@ void SSHPIX::stateMachine()
     switch (state)
     {
     case ENABLE:
-        if ( cmpPrompt(stdoutBuffer, QRegExp(enable_prompt)) )
+        if ( cmpPrompt(stdoutBuffer, QRegularExpression(enable_prompt)) )
         {
             if (pre_config_commands.size()>0)
             {
@@ -107,7 +108,7 @@ void SSHPIX::stateMachine()
         break;
 
     case EXECUTING_COMMAND:
-        if ( cmpPrompt(stdoutBuffer, QRegExp(enable_prompt)) )
+        if ( cmpPrompt(stdoutBuffer, QRegularExpression(enable_prompt)) )
         {
             //QCoreApplication::exit();
             state = COMMAND_DONE;
@@ -118,14 +119,14 @@ void SSHPIX::stateMachine()
         break;
 
     case GET_ACLS:
-        if ( cmpPrompt(stdoutBuffer,QRegExp(enable_prompt)) )
+        if ( cmpPrompt(stdoutBuffer,QRegularExpression(enable_prompt)) )
         {
             QTimer::singleShot( 0, this, SLOT(getACLs()) );
         }
         break;
 
     case GET_OG:
-        if ( cmpPrompt(stdoutBuffer,QRegExp(enable_prompt)) )
+        if ( cmpPrompt(stdoutBuffer,QRegularExpression(enable_prompt)) )
         {
             QTimer::singleShot( 0, this, SLOT(getObjectGroups()) );
         }
@@ -133,14 +134,14 @@ void SSHPIX::stateMachine()
 
 
     case CLEAR_ACLS:
-        if ( cmpPrompt(stdoutBuffer,QRegExp(enable_prompt)) )
+        if ( cmpPrompt(stdoutBuffer,QRegularExpression(enable_prompt)) )
         {
             QTimer::singleShot( 0, this, SLOT(clearACLs()) );
         }
         break;
 
     case CLEAR_OG:
-        if ( cmpPrompt(stdoutBuffer,QRegExp(enable_prompt)) )
+        if ( cmpPrompt(stdoutBuffer,QRegularExpression(enable_prompt)) )
         {
             QTimer::singleShot( 0, this, SLOT(clearObjectGroups()) );
         }

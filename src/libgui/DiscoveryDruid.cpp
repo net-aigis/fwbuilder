@@ -1,3 +1,4 @@
+#include <QIODevice>
 /*
 
                           Firewall Builder
@@ -51,6 +52,7 @@
 #include <qhostinfo.h>
 #include <qgroupbox.h>
 #include <qmessagebox.h>
+#include <QObject>
 #include <QtDebug>
 
 #include "DiscoveryDruid.h"
@@ -1502,7 +1504,7 @@ void DiscoveryDruid::saveScanLog()
 
         QTextStream strm(&f);
         QString txt = m_dialog->discoverylog->toPlainText();
-        strm << txt << endl;
+        strm << txt << "\n";
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
         if (fwbdebug) qDebug("%s",txt.toLatin1().constData());
 #else
@@ -2346,7 +2348,7 @@ FWObject* DiscoveryDruid::addInterface(FWObject *parent, InterfaceData *in,
                     ipv4->setNetmask(*netm);
                 } catch (FWException &ex)
                 {
-                    cerr << "FWException: " << ex.toString() << endl;
+                    cerr << "FWException: " << ex.toString() << std::endl;
                 }
             }
 
@@ -2364,7 +2366,7 @@ FWObject* DiscoveryDruid::addInterface(FWObject *parent, InterfaceData *in,
                     ipv6->setNetmask(*netm);
                 } catch (FWException &ex)
                 {
-                    cerr << "FWException: " << ex.toString() << endl;
+                    cerr << "FWException: " << ex.toString() << std::endl;
                 }
             }
         }

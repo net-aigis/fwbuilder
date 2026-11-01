@@ -86,11 +86,11 @@ string OSConfigurator_linux24_nft::printPathForAllTools(const string &os)
             << "=\""
             << getPathForATool(os, OSData_nft::tools(*i))
             << "\""
-            << endl;
+            << "\n";
 
     string nft_conf = fw->getOptionsObject()->getStr("nftables_conf_path");
     if (!nft_conf.empty())
-        res << "NFTABLES_CONF=\"" << nft_conf << "\"" << endl;
+        res << "NFTABLES_CONF=\"" << nft_conf << "\"" << "\n";
 
     return res.str();
 }
@@ -190,10 +190,10 @@ string OSConfigurator_linux24_nft::printRunTimeAddressTablesCode()
         if (!at_file.empty())
         {
             check_ostr << "check_file " << fwbNftShellQuote(at_name)
-                       << " " << fwbNftShellQuote(at_file) << endl;
+                       << " " << fwbNftShellQuote(at_file) << "\n";
             load_ostr << "fwb_nft_stage_one_address_table "
                       << fwbNftShellQuote(at_name) << " "
-                      << fwbNftShellQuote(at_file) << " || return 1" << endl;
+                      << fwbNftShellQuote(at_file) << " || return 1" << "\n";
         }
     }
 

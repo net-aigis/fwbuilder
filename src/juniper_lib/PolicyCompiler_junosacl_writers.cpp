@@ -80,7 +80,7 @@ bool PolicyCompiler_junosacl::ClearACLs::processNext()
 
     if ( compiler->fw->getOptionsObject()->getBool("iosacl_acl_basic") )
     {
-        compiler->output << clearACLcmd << endl;
+        compiler->output << clearACLcmd << "\n";
     }
 
     if (compiler->fw->getOptionsObject()->getBool("iosacl_acl_substitution"))
@@ -89,9 +89,9 @@ bool PolicyCompiler_junosacl::ClearACLs::processNext()
              i!=junosacl_comp->acls.end(); ++i)
         {
             ciscoACL *acl=(*i).second;
-            compiler->output << clearACLcmd << " " << acl->workName() << endl;
+            compiler->output << clearACLcmd << " " << acl->workName() << "\n";
         }
-        compiler->output << endl;
+        compiler->output << "\n";
     }
 
     if ( !compiler->fw->getOptionsObject()->getBool("iosacl_acl_no_clear") )
@@ -105,9 +105,9 @@ bool PolicyCompiler_junosacl::ClearACLs::processNext()
         string clearSSHcmd = Resources::platform_res[platform]->getResourceStr(
             string("/FWBuilderResources/Target/options/")+
             "version_"+vers+"/iosacl_commands/clear_ssh");
-        //compiler->output << clearICMPcmd    << endl;
-        //compiler->output << clearTelnetcmd  << endl;
-        //compiler->output << clearSSHcmd     << endl;
+        //compiler->output << clearICMPcmd    << "\n";
+        //compiler->output << clearTelnetcmd  << "\n";
+        //compiler->output << clearSSHcmd     << "\n";
     }
 
     return true;
@@ -158,7 +158,7 @@ bool PolicyCompiler_junosacl::PrintCompleteACLs::processNext()
         std::for_each(tmp_queue.begin(), tmp_queue.end(),
                       printRulesForACL(junosacl_comp,
                                        this, acl, &(compiler->output)));
-        compiler->output << "        }\n    }\n}" << endl;
+        compiler->output << "        }\n    }\n}" << "\n";
     }
 
     return true;
@@ -690,7 +690,7 @@ string PolicyCompiler_junosacl::PrintRule::_printAddr(Address  *o)
                  << o->getName()
                  << " (" << o->getTypeName() << ") "
                  << " has no netmask"
-                 << endl;
+                 << std::endl;
             srcmask = InetAddr(InetAddr::getAllOnes(srcaddr->addressFamily()));
         }
 

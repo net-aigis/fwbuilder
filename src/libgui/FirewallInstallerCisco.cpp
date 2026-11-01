@@ -128,7 +128,7 @@ bool FirewallInstallerCisco::packInstallJobsList(Firewall*)
         QMessageBox::critical(
             inst_dlg, "Firewall Builder",
             tr("Can not read generated script %1").arg(ff),
-            tr("&Continue"), QString::null,QString::null,
+            tr("&Continue"), QString(),QString(),
             0, 1 );
         return false;
     }
@@ -254,10 +254,10 @@ void FirewallInstallerCisco::activatePolicy(const QString&, const QString&)
     replaceMacrosInCommand(&post_config);
 
     ssh_object->loadPreConfigCommands(
-        pre_config.expand().split("\n", QString::SkipEmptyParts) );
+        pre_config.expand().split("\n", Qt::SkipEmptyParts) );
 
     ssh_object->loadPostConfigCommands(
-        post_config.expand().split("\n", QString::SkipEmptyParts) );
+        post_config.expand().split("\n", Qt::SkipEmptyParts) );
 
     Configlet activation(host_os, os_family, "installer_commands_reg_user");
     activation.removeComments();
@@ -277,7 +277,7 @@ void FirewallInstallerCisco::activatePolicy(const QString&, const QString&)
     }
 
     ssh_object->loadActivationCommands(
-        activation.expand().split("\n", QString::SkipEmptyParts) );
+        activation.expand().split("\n", Qt::SkipEmptyParts) );
 
     runSSHSession(ssh_object);
 

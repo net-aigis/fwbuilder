@@ -1204,7 +1204,7 @@ bool PolicyCompiler_nft::printRuleElements::processNext()
          << "  src: " << printRE(srcrel)
          << "  dst: " << printRE(dstrel)
          << "  srv: " << printRE(srvrel)
-         << endl;
+         << std::endl;
 
     tmp_queue.push_back(rule);
     return true;
@@ -3217,10 +3217,10 @@ bool PolicyCompiler_nft::decideOnChainIfSrcFW::processNext()
     }
 
 #ifdef DEBUG_FOR_DMZ
-    cerr << endl;
+    cerr << std::endl;
     cerr << "PolicyCompiler_nft::decideOnChainIfSrcFW "
          << " rule " << rule->getLabel()
-         << endl;
+         << std::endl;
 #endif
 
     Address *src = compiler->correctForCluster(compiler->getFirstSrc(rule));
@@ -4939,7 +4939,7 @@ string PolicyCompiler_nft::debugPrintRule(Rule *r)
             i5!=itfrel->end()) 
     {
 
-        str << endl;
+        str << "\n";
 
         ostringstream src;
         ostringstream dst;
@@ -5074,7 +5074,7 @@ void PolicyCompiler_nft::epilog()
         getCompiledScriptLength()>0 &&
         ! inSingleRuleCompileMode())
     {
-        output << "#" << endl;
+        output << "#" << "\n";
     }
 }
 

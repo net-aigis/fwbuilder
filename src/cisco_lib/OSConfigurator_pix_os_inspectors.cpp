@@ -127,9 +127,9 @@ string OSConfigurator_pix_os::_printMPFPolicyMap()
         }
     }
 
-    res << "class-map inspection_default" << endl;
-    res << "  match default-inspection-traffic" << endl;
-    res << endl;
+    res << "class-map inspection_default" << "\n";
+    res << "  match default-inspection-traffic" << "\n";
+    res << "\n";
 
     std::list<InspectionClassMap>::iterator i1;
 
@@ -137,16 +137,16 @@ string OSConfigurator_pix_os::_printMPFPolicyMap()
     {
         for (i1=customClassMaps.begin(); i1!=customClassMaps.end(); i1++)
         {
-            res << "class-map " << i1->class_map_name << endl;
-            res << "  " << i1->getMatchCommand() << endl;
+            res << "class-map " << i1->class_map_name << "\n";
+            res << "  " << i1->getMatchCommand() << "\n";
         }
-        res << endl;
+        res << "\n";
     }
     
-    res << "policy-map global_policy" << endl;
+    res << "policy-map global_policy" << "\n";
     if (defaultClassMaps.size()>0)
     {
-        res << "  class inspection_default" << endl;
+        res << "  class inspection_default" << "\n";
         for (i1=defaultClassMaps.begin(); i1!=defaultClassMaps.end(); i1++)
         {
             string pn = i1->getPrintableName();
@@ -155,7 +155,7 @@ string OSConfigurator_pix_os::_printMPFPolicyMap()
             {
                 res << "    ";
                 if (i1->status==FIXUP_DISABLE) res << "no ";
-                res << "inspect " << pn << endl;
+                res << "inspect " << pn << "\n";
                 DefaultInspectionInspectStatements[pn]=1;
             }
         }
@@ -168,18 +168,18 @@ string OSConfigurator_pix_os::_printMPFPolicyMap()
             if (i1->status!=FIXUP_SKIP &&
                 CustomInspectionInspectStatements[pn]!=1)
             {
-                res << "  class " << i1->class_map_name << endl;
+                res << "  class " << i1->class_map_name << "\n";
                 res << "    ";
                 if (i1->status==FIXUP_DISABLE) res << "no ";
-                res << "inspect " << i1->getPrintableName() << endl;
+                res << "inspect " << i1->getPrintableName() << "\n";
                 CustomInspectionInspectStatements[pn]=1;
             }
         }
     }
 
-    res << endl;
-    res << "service-policy global_policy global" << endl;
-    res << endl;
+    res << "\n";
+    res << "service-policy global_policy global" << "\n";
+    res << "\n";
 
     return res.str();
 }

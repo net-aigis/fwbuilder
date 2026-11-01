@@ -802,10 +802,10 @@ bool PolicyCompiler_pf::printScrubRule::processNext()
 
     if (!init && options->getBool("pf_do_scrub"))
     {
-        compiler->output << "#" << endl;
-        compiler->output << "# Defragmentation" << endl;
-        compiler->output << "#" << endl;
-        compiler->output << "scrub in from any to any" << endl << endl; 
+        compiler->output << "#" << "\n";
+        compiler->output << "# Defragmentation" << "\n";
+        compiler->output << "#" << "\n";
+        compiler->output << "scrub in from any to any" << "\n" << "\n"; 
         init=true;
     }
 

@@ -110,8 +110,8 @@ string OSConfigurator_pix_os::_printPolicyMapTypeInspect()
 
     if (ip_options_matches.size() > 0)
     {
-        res << "policy-map type inspect ip-options ip-options-map" << endl;
-        res << "parameters" << endl;
+        res << "policy-map type inspect ip-options ip-options-map" << "\n";
+        res << "parameters" << "\n";
         
         for(list<InspectionClassMap>::iterator i=ip_options_matches.begin();
             i!=ip_options_matches.end(); ++i)
@@ -121,11 +121,11 @@ string OSConfigurator_pix_os::_printPolicyMapTypeInspect()
             {
             case FIXUP_ENABLE:
                 res << "  " << i->getPrintableName() << " action ";
-                res << "allow" << endl;
+                res << "allow" << "\n";
                 break;
             case FIXUP_CLEAR:
                 res << "  "  << i->getPrintableName() << " action ";
-                res << "clear" << endl;
+                res << "clear" << "\n";
                 break;
             default:
                 break;
@@ -133,7 +133,7 @@ string OSConfigurator_pix_os::_printPolicyMapTypeInspect()
         }
     }
 
-    res << endl;
+    res << "\n";
 
     return res.str();
 }

@@ -91,7 +91,7 @@ void CustomServiceDialog::loadFWObject(FWObject *o)
     for (i=platforms.begin(); i!=platforms.end(); i++,cp++)
     {
 //        cerr << "m_dialog->platform: key=" << i.key()
-//             << "  data=" << i.data() << endl;
+//             << "  data=" << i.data() << std::endl;
 
 /*
  * here i.key is m_dialog->platform m_dialog->code ( "ipf", "ipfw",

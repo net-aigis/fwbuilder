@@ -26,6 +26,7 @@
 
 
 #include "config.h"
+#include <QObject>
 #include "global.h"
 
 #include "CompilerOutputPanel.h"

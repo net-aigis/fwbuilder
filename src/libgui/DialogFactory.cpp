@@ -26,6 +26,7 @@
 
 
 #include "config.h"
+#include <QObject>
 #include "global.h"
 #include "utils.h"
 #include "platforms.h"
@@ -259,7 +260,7 @@ QWidget *DialogFactory::createFWDialog(QWidget *parent, FWObject *o)
     if (dlgname=="procurveacl") return new procurveaclAdvancedDialog(parent,o);
 
     cerr << "Firewall settings dialog for " << dlgname
-         << " is not implemented" << endl;
+         << " is not implemented" << std::endl;
     return NULL;
 }
 
@@ -293,7 +294,7 @@ QWidget *DialogFactory::createOSDialog(QWidget *parent,FWObject *o)
     if (dlgname=="secuwall")  return new secuwallosAdvancedDialog(parent, o);
 
     cerr << "OS settings dialog for " << dlgname
-         << " is not implemented" << endl;
+         << " is not implemented" << std::endl;
 
     return NULL;
 }
@@ -323,7 +324,7 @@ QWidget *DialogFactory::createIfaceDialog(QWidget *parent,FWObject *o)
     if (dlgname=="vlan_only")  return new vlanOnlyIfaceOptsDialog(parent, o);
 
     cerr << "Interface settings dialog for OS " << host_OS
-         << " is not implemented" << endl;
+         << " is not implemented" << std::endl;
 
     return NULL;
 }
@@ -344,7 +345,7 @@ QWidget *DialogFactory::createClusterConfDialog(QWidget *parent, FWObject *o)
     if (dlgname == "basic")  return new clusterMembersDialog(parent, o);
 
     cerr << "Cluster configuration dialog for OS " << host_OS
-         << " is not implemented" << endl;
+         << " is not implemented" << std::endl;
 
     return NULL;
 }

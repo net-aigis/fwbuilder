@@ -49,6 +49,7 @@
 #include <qmessagebox.h>
 #include <qpushbutton.h>
 #include <QUndoStack>
+#include <QObject>
 #include <QtDebug>
 #include <QApplication>
 

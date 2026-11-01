@@ -63,6 +63,7 @@
 #include <QFileInfo>
 #include <QFile>
 #include <QTextStream>
+#include <QIODevice>
 
 
 using namespace std;
@@ -81,8 +82,8 @@ QString CompilerDriver_ipfw::assembleManifest(Cluster*, Firewall* , bool )
     if (!remote_file_names[FW_FILE].isEmpty())
         script << " " << this->escapeFileName(remote_file_names[FW_FILE]);
     script << "\n";
-    script << "#" << endl;
-    script << "#" << endl;
+    script << "#" << "\n";
+    script << "#" << "\n";
     return script_buffer;
 }
 
@@ -269,9 +270,9 @@ QString CompilerDriver_ipfw::run(const std::string &cluster_id,
                     {
                         if (!single_rule_compile_on)
                             c_str << "# ================ Rule set "
-                                  << branch_name << endl;
+                                  << branch_name << "\n";
                         c_str << c.getCompiledScript();
-                        c_str << endl;
+                        c_str << "\n";
                         empty_output = false;
                     }
                     if (c.haveErrorsAndWarnings())

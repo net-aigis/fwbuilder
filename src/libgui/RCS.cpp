@@ -27,6 +27,7 @@
 #include "global.h"
 #include "utils.h"
 #include "utils_no_qt.h"
+#include <algorithm>
 
 #include "FWBApplication.h"
 #include "RCS.h"
@@ -43,8 +44,10 @@
 #include <qapplication.h>
 #include <qeventloop.h>
 #include <qtextcodec.h>
+#include <QObject>
 #include <QtDebug>
 
+#include <QRegularExpression>
 #include <stdlib.h>
 
 #if defined(_WIN32)
@@ -199,7 +202,7 @@ RCSEnvFix::RCSEnvFix()
 
 #endif
 
-    TZOffset.sprintf("%02d:%02d",tzoffset/60,tzoffset%60);
+    TZOffset.asprintf("%02d:%02d",tzoffset/60,tzoffset%60);
     TZOffset = tzsign + TZOffset;
 
     if (fwbdebug)
@@ -363,7 +366,7 @@ RCS::RCS(const QString &file)
  * not have env. var LANG so it always runs in english
  */
         QString rl = rlog();
-        QStringList split_log = rl.split(QRegExp("------|======"));
+        QStringList split_log = rl.split(QRegularExpression("------|======"));
 
         QString head_section = split_log[0];
 
@@ -447,7 +450,7 @@ RCS::RCS(const QString &file)
         }
         // sort list revisions; its defined like this:
         // QList<Revision> revisions
-        qSort(revisions);
+        std::sort(revisions.begin(), revisions.end());
 
         inrcs         = true;
         tracking_file = true;
@@ -822,7 +825,7 @@ bool RCS::co(const QString &rev,bool force)
                             app->activeWindow(),"Firewall Builder",
                             tr("File is opened and locked by %1.\nYou can only open it read-only.")
                             .arg(locked_by),
-                            "Open &read-only", "&Cancel", QString::null,
+                            "Open &read-only", "&Cancel", QString(),
                             0, 1 ) )
                 {
                 case 0:  ro=true;   return false;

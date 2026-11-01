@@ -174,7 +174,7 @@ int ObjConflictResolutionDialog::run(FWObject *o1, FWObject *o2)
          */
 
         cerr << "Deleted object found: o2 "
-             << o2->getId() << " " << o2->getName() << endl;
+             << o2->getId() << " " << o2->getName() << std::endl;
 
         return QDialog::Rejected;
 
@@ -389,9 +389,9 @@ int CompareObjectsDialog::run(FWObject *o1,FWObject *o2)
 
     if (fwbdebug) qDebug("%s",r_text.ascii());
 
-    str << l_text << endl;
-    str << r_text << endl;
-    str << endl;
+    str << l_text << "\n";
+    str << r_text << "\n";
+    str << "\n";
 */
 
     num_conflicts++;
@@ -461,7 +461,7 @@ int CompareObjectsDialog::run(FWObject *o1,FWObject *o2)
         writeColumn(str, 1, attr);
         writeColumn(str, 2, propdict1[attr]);
         writeColumn(str, 3, propdict2[attr]);
-        str << endl;
+        str << "\n";
 
         propdict1[attr] = "";
         propdict2[attr] = "";
@@ -484,7 +484,7 @@ int CompareObjectsDialog::run(FWObject *o1,FWObject *o2)
         else                         writeColumn(str, 2, " ");
         if (propdict2.contains(key)) writeColumn(str, 3, propdict2[key]);
         else                         writeColumn(str, 3, " ");
-        str << endl;
+        str << "\n";
 
         propdict1[key] = "";
         propdict2[key] = "";
@@ -507,10 +507,10 @@ int CompareObjectsDialog::run(FWObject *o1,FWObject *o2)
         else                         writeColumn(str, 2, " ");
         if (propdict2.contains(key)) writeColumn(str, 3, propdict2[key]);
         else                         writeColumn(str, 3, " ");
-        str << endl;
+        str << "\n";
     }
 
-    str << setw(78) << setfill('-') << '-' << endl;
+    str << setw(78) << setfill('-') << '-' << "\n";
 
     report.push_back( QString(str.str().c_str()) );
 
@@ -526,9 +526,9 @@ list<QString> CompareObjectsDialog::getReport()
 {
     ostringstream str;
 
-    str << "File 1:  " << current_filename.toLatin1().constData() << endl;
-    str << "File 2:  " << new_filename.toLatin1().constData() << endl;
-    str << setw(78) << setfill('-') << '-' << endl;
+    str << "File 1:  " << current_filename.toLatin1().constData() << "\n";
+    str << "File 2:  " << new_filename.toLatin1().constData() << "\n";
+    str << setw(78) << setfill('-') << '-' << "\n";
 
     report.push_front( QString(str.str().c_str()) );
 

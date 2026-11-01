@@ -50,6 +50,7 @@
 
 #include "../libgui/platforms.h"
 
+#include <QObject>
 #include <QString>
 #include <QtDebug>
 

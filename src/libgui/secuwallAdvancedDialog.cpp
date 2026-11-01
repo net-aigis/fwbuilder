@@ -15,6 +15,7 @@
  */
 
 #include "../../config.h"
+#include <QObject>
 #include "global.h"
 #include "platforms.h"
 

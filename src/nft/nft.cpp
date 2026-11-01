@@ -70,11 +70,11 @@ class UpgradePredicate: public XMLTools::UpgradePredicate
 void usage(const char *name)
 {
     cout << "Firewall Builder:  policy compiler for "
-            "Linux 2.4.x and 2.6.x nftables" << endl;
-    cout << "Version " << VERSION << endl;
+            "Linux 2.4.x and 2.6.x nftables" << std::endl;
+    cout << "Version " << VERSION << std::endl;
     cout << "Usage: " << name
          << " [-x level] [-v] [-V] [-q] [-f filename.xml] [-d destdir] "
-            "[-D datadir ] [-m] [-4|-6] firewall_object_name" << endl;
+            "[-D datadir ] [-m] [-4|-6] firewall_object_name" << std::endl;
 }
 
 int main(int argc, char **argv)
@@ -113,7 +113,7 @@ int main(int argc, char **argv)
         {
             if (idx + 1 >= args.size())
             {
-                cerr << "Missing filename after -f" << endl;
+                cerr << "Missing filename after -f" << std::endl;
                 usage(argv[0]);
                 return 1;
             }
@@ -171,7 +171,7 @@ int main(int argc, char **argv)
 
 	QTime time_spent = QTime().addMSecs(total_time_timer.elapsed());
 	cerr << "Compile time: "
-	     << time_spent.toString("hh:mm:ss").toStdString() << endl;
+	     << time_spent.toString("hh:mm:ss").toStdString() << std::endl;
 
         delete driver;
         delete objdb;

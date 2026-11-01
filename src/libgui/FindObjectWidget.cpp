@@ -55,7 +55,9 @@
 #include "fwbuilder/AddressRange.h"
 
 #include <QLineEdit>
+#include <QRegularExpression>
 #include <QStackedWidget>
+#include <QObject>
 #include <QtDebug>
 #include <qradiobutton.h>
 #include <qcheckbox.h>
@@ -245,8 +247,8 @@ bool FindObjectWidget::matchAttr(FWObject *obj)
 
         if (m_widget->useRegexp->isChecked())
         {
-            res = (name.indexOf( QRegExp(s) )!=-1 ||
-                   (!label.isEmpty() && label.indexOf( QRegExp(s) )!=-1));
+            res = (name.indexOf( QRegularExpression(s) )!=-1 ||
+                   (!label.isEmpty() && label.indexOf( QRegularExpression(s) )!=-1));
         } else
         {
             res = (name == s || (!label.isEmpty() && label == s));
@@ -292,7 +294,7 @@ bool FindObjectWidget::matchAttr(FWObject *obj)
                 QString addr = inet_addr->toString().c_str();
 
                 if (m_widget->useRegexp->isChecked())
-                    res = ( addr.indexOf( QRegExp(s) )!=-1 );
+                    res = ( addr.indexOf( QRegularExpression(s) )!=-1 );
                 else
                     res= ( addr == s );
             }
@@ -308,13 +310,13 @@ bool FindObjectWidget::matchAttr(FWObject *obj)
             {
                 QString port;
                 port.setNum(TCPUDPService::cast(obj)->getSrcRangeStart());
-                res |= ( port.indexOf( QRegExp(s) )!=-1 );
+                res |= ( port.indexOf( QRegularExpression(s) )!=-1 );
                 port.setNum(TCPUDPService::cast(obj)->getSrcRangeEnd());
-                res |= ( port.indexOf( QRegExp(s) )!=-1 );
+                res |= ( port.indexOf( QRegularExpression(s) )!=-1 );
                 port.setNum(TCPUDPService::cast(obj)->getDstRangeStart());
-                res |= ( port.indexOf( QRegExp(s) )!=-1 );
+                res |= ( port.indexOf( QRegularExpression(s) )!=-1 );
                 port.setNum(TCPUDPService::cast(obj)->getDstRangeEnd());
-                res |= ( port.indexOf( QRegExp(s) )!=-1 );
+                res |= ( port.indexOf( QRegularExpression(s) )!=-1 );
             } else
             {
                 bool conversion_status = false;
@@ -339,7 +341,7 @@ bool FindObjectWidget::matchAttr(FWObject *obj)
             {
                 QString proto;
                 proto.setNum(obj->getInt("protocol_num"));
-                res |= ( proto.indexOf( QRegExp(s) )!=-1 );
+                res |= ( proto.indexOf( QRegularExpression(s) )!=-1 );
             } else
             {
                 bool conversion_status = false;
@@ -357,7 +359,7 @@ bool FindObjectWidget::matchAttr(FWObject *obj)
             {
                 QString icmptype;
                 icmptype.setNum(obj->getInt("type"));
-                res |= ( icmptype.indexOf( QRegExp(s) )!=-1 );
+                res |= ( icmptype.indexOf( QRegularExpression(s) )!=-1 );
             } else
             {
                 bool conversion_status = false;
@@ -467,7 +469,7 @@ loop:
             if ( QMessageBox::warning(
                      this,"Firewall Builder",
                      tr("Search hit the end of the policy rules."),
-                     tr("&Continue at top"), tr("&Stop"), QString::null, 0, 1 )==0 )
+                     tr("&Continue at top"), tr("&Stop"), QString(), 0, 1 )==0 )
                 goto loop;
         }
         else
@@ -476,7 +478,7 @@ loop:
             bool r= ( QMessageBox::warning(
                      this,"Firewall Builder",
                      tr("Search hit the end of the object tree."),
-                     tr("&Continue at top"), tr("&Stop"), QString::null, 0, 1 )==0);
+                     tr("&Continue at top"), tr("&Stop"), QString(), 0, 1 )==0);
             if (fwbdebug) qDebug("widget that has focus: %p",mw->focusWidget());
             if (r)  goto loop;
         }

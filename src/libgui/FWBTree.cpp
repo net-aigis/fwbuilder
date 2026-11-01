@@ -26,6 +26,7 @@
 
 #include <QtDebug>
 #include <QPixmap>
+#include <QObject>
 #include <QString>
 
 #include "FWBTree.h"

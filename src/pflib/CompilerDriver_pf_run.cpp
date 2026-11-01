@@ -74,6 +74,7 @@
 #include <QFileInfo>
 #include <QFile>
 #include <QTextStream>
+#include <QIODevice>
 #include <QtDebug>
 
 
@@ -510,12 +511,12 @@ QString CompilerDriver_pf::run(const std::string &cluster_id,
                         {
                             *(generated_scripts[ruleset_name])
                                 << "# NAT compiler errors and warnings:"
-                                << endl;
+                                << "\n";
                             *(generated_scripts[ruleset_name]) << n.getErrors("# ");
                         }
                     }
                     *(generated_scripts[ruleset_name]) << n.getCompiledScript();
-                    *(generated_scripts[ruleset_name]) << endl;
+                    *(generated_scripts[ruleset_name]) << "\n";
                 }
 
                 all_errors.push_back(n.getErrors("").c_str());
@@ -596,12 +597,12 @@ QString CompilerDriver_pf::run(const std::string &cluster_id,
                         {
                             *(generated_scripts[ruleset_name])
                                 << "# Policy compiler errors and warnings:"
-                                << endl;
+                                << "\n";
                             *(generated_scripts[ruleset_name]) << c.getErrors("# ");
                         }
                     }
                     *(generated_scripts[ruleset_name]) << c.getCompiledScript();
-                    *(generated_scripts[ruleset_name]) << endl;
+                    *(generated_scripts[ruleset_name]) << "\n";
                 }
 
                 all_errors.push_back(c.getErrors("").c_str());
@@ -701,7 +702,7 @@ QString CompilerDriver_pf::run(const std::string &cluster_id,
             if (ostr == NULL) continue;
             *ostr << QString("load anchor %1 from \"%2\"")
                 .arg(ruleset_name).arg(remote_file_name).toUtf8().constData()
-                                             << endl;
+                                             << "\n";
         }
 
 

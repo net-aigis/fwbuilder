@@ -45,6 +45,7 @@
 #include <QMainWindow>
 #include <QUuid>
 #include <QRegExp>
+#include <QObject>
 #include <QtDebug>
 #include <QCryptographicHash>
 #include <QTime>

@@ -25,6 +25,8 @@
 #include <QMap>
 #include <QString>
 
+#include <list>
+
 namespace libfwbuilder
 {
     class FWObject;

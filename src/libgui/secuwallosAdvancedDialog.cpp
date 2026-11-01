@@ -15,6 +15,7 @@
  */
 
 #include "../../config.h"
+#include <QObject>
 #include "global.h"
 #include "platforms.h"
 
@@ -322,7 +323,7 @@ void secuwallosAdvancedDialog::buttonOpenURLClicked()
     {
         QMessageBox::warning
             (this, "Firewall Builder",
-             message, "&Continue", QString::null, QString::null, 0, 1);
+             message, "&Continue", QString(), QString(), 0, 1);
     }
 }
 
@@ -418,7 +419,7 @@ bool secuwallosAdvancedDialog::validate()
         // display errror message
         QMessageBox::warning(this, "Firewall Builder",
                              tr("Input not valid: %1").arg(message), "&Continue",
-                             QString::null, QString::null, 0, 1);
+                             QString(), QString(), 0, 1);
     }
     return valid;
 }

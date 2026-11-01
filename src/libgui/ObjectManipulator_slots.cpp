@@ -233,14 +233,14 @@ void ObjectManipulator::pasteObj()
 
         // Check if we have already copied the same object before
         QString buff;
-        buff.sprintf(".copy_of_%p", co->getRoot());
+        buff.asprintf(".copy_of_%p", co->getRoot());
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
         string dedup_attribute = buff.toLatin1().constData();
 #else
         string dedup_attribute = buff.toLatin1().constData();
 #endif
 
-        buff.sprintf("%d", co->getId());
+        buff.asprintf("%d", co->getId());
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
         QByteArray bytes = buff.toLatin1();
 #else
@@ -345,7 +345,7 @@ void ObjectManipulator::delObj(QUndoCommand* macro)
                                 "disappear from the tree and all groups and rules that reference them.\n"
                                 "Do you still want to delete library %1?")
                             .arg(QString::fromUtf8(obj->getName().c_str())),
-                            tr("&Yes"), tr("&No"), QString::null,
+                            tr("&Yes"), tr("&No"), QString(),
                             0, 1 )!=0 ) continue;
                 }
     

@@ -37,6 +37,7 @@
 #include "fwbuilder/FailoverClusterGroup.h"
 
 
+#include <QObject>
 #include <QtDebug>
 
 #include <list>
@@ -73,41 +74,41 @@ void OSConfigurator_pix_os::processFirewallOptions()
 
     if ( fw->getOptionsObject()->getBool("pix_set_host_name") )
     {
-        output << "hostname " << fw->getName() << endl;
-        output << endl;
+        output << "hostname " << fw->getName() << "\n";
+        output << "\n";
     }
 
     output << _printInterfaceConfiguration();
-    output << endl;
+    output << "\n";
 
     if (fw->getOptionsObject()->getBool("cluster_member"))
     {
         output << _printFailoverConfiguration();
-        output << endl;
-        output << endl;
-        output << endl;
+        output << "\n";
+        output << "\n";
+        output << "\n";
     }
 
     output << _printLogging();
-    output << endl;
+    output << "\n";
 
     output << _printTimeouts();
-    output << endl;
+    output << "\n";
 
     output << _printSSHConfiguration();
-    output << endl;
+    output << "\n";
 
     output << _printSNMP();
-    output << endl;
+    output << "\n";
 
     output << _printNTP();
-    output << endl;
+    output << "\n";
 
     output << _printSysopt();
-    output << endl;
+    output << "\n";
 
     output << getProtocolInspectionCommands();
-    output << endl;
+    output << "\n";
 }
 
 void OSConfigurator_pix_os::_getFailoverAddresses(ClusterGroup *cluster_group,
@@ -296,8 +297,8 @@ string OSConfigurator_pix_os::_printInterfaceConfiguration()
         }
 
         res << cnf->expand().toStdString();
-        res << endl;
-        res << endl;
+        res << "\n";
+        res << "\n";
         
         delete cnf;
     }
@@ -450,7 +451,7 @@ string OSConfigurator_pix_os::_printLogging()
                   " does not belong to any known network zone");
         Interface *syslog_iface = Interface::cast(dbcopy->findInIndex(iface_id));
 
-        str << endl;
+        str << "\n";
 
         str << "logging host " 
             << syslog_iface->getLabel() 
@@ -459,47 +460,47 @@ string OSConfigurator_pix_os::_printLogging()
         if ( fw->getOptionsObject()->getBool("pix_emblem_log_format") )
             str << " format emblem ";
 
-        str << endl;
+        str << "\n";
 
         str << "logging queue " 
-            << syslog_queue_size <<  endl;
+            << syslog_queue_size << "\n";
 
         if ( ! syslog_facility.empty() )
-            str << "logging facility " << syslog_facility <<  endl;
+            str << "logging facility " << syslog_facility << "\n";
 
         if ( ! trap_level.empty() )
-            str << "logging trap " << trap_level << endl;
+            str << "logging trap " << trap_level << "\n";
 
         logging_on=true;
     }
 
-    if ( ! buffered ) str << "no logging buffered" << endl;
+    if ( ! buffered ) str << "no logging buffered" << "\n";
     else
     {
-        str << "logging buffered " << buffered_level << endl;
+        str << "logging buffered " << buffered_level << "\n";
         logging_on=true;
     }
 
-    if ( ! console )  str << "no logging console" << endl;
+    if ( ! console )  str << "no logging console" << "\n";
     else
     {
-        str << "logging console " << console_level << endl;
+        str << "logging console " << console_level << "\n";
         logging_on=true;
     }
 
     if ( ! timestamp ) str << "no ";
-    str << "logging timestamp" << endl;
+    str << "logging timestamp" << "\n";
 
     if ( ! logging_on) str << "no ";
-    str << "logging on" << endl;
+    str << "logging on" << "\n";
 
     string s=fw->getOptionsObject()->getStr("pix_syslog_device_id_opt");
     string v=fw->getOptionsObject()->getStr("pix_syslog_device_id_val");
-    if (s=="hostname")  str << "logging device-id hostname" << endl;
-    if (s=="interface") str << "logging device-id ipaddress " << v << endl;
-    if (s=="string")    str << "logging device-id string " << v << endl;
+    if (s=="hostname")  str << "logging device-id hostname" << "\n";
+    if (s=="interface") str << "logging device-id ipaddress " << v << "\n";
+    if (s=="string")    str << "logging device-id string " << v << "\n";
 
-    str << endl;
+    str << "\n";
 
     return str.str();
 }
@@ -667,32 +668,32 @@ string OSConfigurator_pix_os::_printSysopt()
     bool tcpmss = fw->getOptionsObject()->getBool("pix_tcpmss");
     int  tcpmss_val = fw->getOptionsObject()->getInt("pix_tcpmss_value");
 
-    res << endl;
+    res << "\n";
 
     if (fw->getOptionsObject()->getBool("pix_resetinbound"))
-        res << "service resetinbound" << endl;
+        res << "service resetinbound" << "\n";
     else
-        res << "no service resetinbound" << endl;
+        res << "no service resetinbound" << "\n";
 
     if (Resources::platform_res[platform]->getResourceBool(
             "/FWBuilderResources/Target/options/version_" + version +
             "/pix_resetoutside_supported"))
     {
         if (fw->getOptionsObject()->getBool("pix_resetoutside"))
-            res << "service resetoutside" << endl;
+            res << "service resetoutside" << "\n";
         else
-            res << "no service resetoutside" << endl;
+            res << "no service resetoutside" << "\n";
     }
 
     if (tcpmss)
-        res << "sysopt connection tcpmss " << tcpmss_val << endl;
+        res << "sysopt connection tcpmss " << tcpmss_val << "\n";
 
     if (fw->getStr("platform")=="pix")
     {
         if (fw->getOptionsObject()->getBool("pix_connection_timewait"))
-            res << "sysopt connection timewait" << endl;
+            res << "sysopt connection timewait" << "\n";
         else
-            res << "no sysopt connection timewait" << endl;
+            res << "no sysopt connection timewait" << "\n";
     }
 
     if (Resources::platform_res[platform]->getResourceBool(
@@ -700,29 +701,29 @@ string OSConfigurator_pix_os::_printSysopt()
             "/pix_security_fragguard_supported") )
     {
         if ( fw->getOptionsObject()->getBool("pix_fragguard") ) 
-            res  << "sysopt security fragguard" << endl;
+            res  << "sysopt security fragguard" << "\n";
         else
-            res  << "no sysopt security fragguard" << endl;
+            res  << "no sysopt security fragguard" << "\n";
     }
 
     if ( fw->getOptionsObject()->getBool("pix_nodnsalias_inbound") )
-        res << "sysopt nodnsalias inbound" << endl;
+        res << "sysopt nodnsalias inbound" << "\n";
     else
-        res << "no sysopt nodnsalias inbound" << endl;
+        res << "no sysopt nodnsalias inbound" << "\n";
 
     if ( fw->getOptionsObject()->getBool("pix_nodnsalias_outbound") )
-        res << "sysopt nodnsalias outbound" << endl;
+        res << "sysopt nodnsalias outbound" << "\n";
     else
-        res << "no sysopt nodnsalias outbound" << endl;
+        res << "no sysopt nodnsalias outbound" << "\n";
 
     if (Resources::platform_res[platform]->getResourceBool(
             "/FWBuilderResources/Target/options/version_"+version+
             "/pix_route_dnat_supported") )
     {
         if ( fw->getOptionsObject()->getBool("pix_route_dnat") ) 
-            res  << "sysopt route dnat" << endl;
+            res  << "sysopt route dnat" << "\n";
         else
-            res  << "no sysopt route dnat" << endl;
+            res  << "no sysopt route dnat" << "\n";
     }
 
     if (Resources::platform_res[platform]->getResourceBool(
@@ -730,12 +731,12 @@ string OSConfigurator_pix_os::_printSysopt()
             "/pix_floodguard_supported") )
     {
         if ( fw->getOptionsObject()->getBool("pix_floodguard") ) 
-            res  << "floodguard enable" << endl;
+            res  << "floodguard enable" << "\n";
         else
-            res  << "floodguard disable" << endl;
+            res  << "floodguard disable" << "\n";
     }
 
-    res << endl;
+    res << "\n";
 
     return res.str();
 }
@@ -806,12 +807,12 @@ string OSConfigurator_pix_os::_printTimeouts()
     res << _printServiceTimeout("sip_media");
     res << _printServiceTimeout("half-closed");
     res << _printServiceTimeout("uauth");
-    res << endl;
+    res << "\n";
 
     int to;
     to = fw->getOptionsObject()->getInt("pix_telnet_timeout");
     if (to>60)  abort("Telnet timeout should not exceed 60 minutes");
-    if (to!=0)  res << "telnet timeout " << to << endl;
+    if (to!=0)  res << "telnet timeout " << to << "\n";
 
     return res.str();
 }

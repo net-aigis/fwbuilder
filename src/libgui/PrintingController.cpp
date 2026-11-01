@@ -25,6 +25,7 @@
 
 
 #include "config.h"
+#include <QObject>
 #include "global.h"
 #include "utils.h"
 #include "platforms.h"

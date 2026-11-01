@@ -26,6 +26,7 @@
 #include "HostsFile.h"
 
 #include <QFile>
+#include <QIODevice>
 #include <QRegExp>
 #include <QtDebug>
 

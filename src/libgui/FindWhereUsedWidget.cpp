@@ -30,6 +30,7 @@
 #include "utils_no_qt.h"
 #include "platforms.h"
 #include "events.h"
+#include <algorithm>
 
 #include "FindWhereUsedWidget.h"
 #include "FWWindow.h"
@@ -209,7 +210,7 @@ void FindWhereUsedWidget::_find(FWObject *obj)
     // TODO: This is not ideal because lines are sorted alphabetically.
     // Rules should be sorted by their numbers numerically.
     QStringList keys = widget_items.keys();
-    qSort(keys);
+    std::sort(keys.begin(), keys.end());
     foreach(QString k, keys)
     {
         QTreeWidgetItem *item = widget_items[k];

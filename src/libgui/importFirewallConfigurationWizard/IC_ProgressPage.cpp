@@ -35,6 +35,7 @@
 #include <QString>
 #include <QFileDialog>
 #include <QTextStream>
+#include <QIODevice>
 #include <QtDebug>
 
 
@@ -309,7 +310,7 @@ void IC_ProgressPage::saveLog()
             }
             QTextStream strm(&f);
             QString txt = m_dialog->importLog->toPlainText();
-            strm << txt << endl;
+            strm << txt << "\n";
             if (fwbdebug)
             {
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)

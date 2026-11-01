@@ -61,6 +61,7 @@
 #include <QString>
 #include <QtDebug>
 #include <QRegExp>
+#include <QRegularExpression>
 #include <QStringList>
 
 
@@ -212,7 +213,7 @@ void OSConfigurator_linux24::processFirewallOptions()
         &conntrack_vars, "conntrack_tcp_be_liberal");
 
     output << kernel_vars.expand().toStdString();
-    output << endl;
+    output << "\n";
     output << conntrack_vars.expand().toStdString();
 }
 
@@ -300,7 +301,7 @@ void OSConfigurator_linux24::addVirtualAddressForNAT(const Address *addr)
 string OSConfigurator_linux24::normalizeSetName(const string &txt)
 {
     QString table_name = txt.c_str();
-    table_name.replace(QRegExp("[ +*!#|]"), "_");
+    table_name.replace(QRegularExpression("[ +*!#|]"), "_");
     return table_name.toStdString();
 }
 
@@ -425,9 +426,9 @@ string OSConfigurator_linux24::printRunTimeAddressTablesCode()
         if (!at_file.empty())
         {
             check_ostr << "check_file \"" + at_name +
-                "\" \"" + at_file + "\"" << endl;
+                "\" \"" + at_file + "\"" << "\n";
             load_ostr << "reload_address_table \"" + at_name +
-                "\" \"" + at_file + "\"" << endl;
+                "\" \"" + at_file + "\"" << "\n";
         }
     }
 
@@ -464,7 +465,7 @@ string  OSConfigurator_linux24::printPathForAllTools(const string &os)
             << "=\""
             << getPathForATool(os, OSData_ipt::tools(*i))
             << "\""
-            << endl;
+            << "\n";
     return res.str();
 }
 
@@ -499,7 +500,7 @@ QString OSConfigurator_linux24::addressTableWrapper(FWObject *rule,
     int pos = address_table_re.indexIn(command);
     if (pos > -1)
     {
-        QStringList command_lines = QString(command).split("\n", QString::SkipEmptyParts);
+        QStringList command_lines = QString(command).split("\n", Qt::SkipEmptyParts);
         if (command_lines.size() > 1)
         {
             command_lines.push_front("{");
@@ -587,7 +588,7 @@ string OSConfigurator_linux24::printRunTimeWrappers(FWObject *rule,
     if (!no_wrapper)
     {
         QStringList command_lines = 
-            QString(combined_command).split("\n", QString::SkipEmptyParts);
+            QString(combined_command).split("\n", Qt::SkipEmptyParts);
         if (command_lines.size() > 1)
         {
             command_lines.push_front("{");

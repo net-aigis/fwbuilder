@@ -93,9 +93,9 @@ string PolicyCompiler_ipt::PrintRuleIptRst::_printRuleLabel(PolicyRule *rule)
     {
         if (!compiler->inSingleRuleCompileMode() && !nocomm)
         {
-            res << "# " << endl;
-            res << "# Rule " << rl << endl;
-            res << "# " << endl;
+            res << "# " << "\n";
+            res << "# Rule " << rl << "\n";
+            res << "# " << "\n";
         }
 
 /* do not put comment in the script if it is intended for linksys */
@@ -104,9 +104,9 @@ string PolicyCompiler_ipt::PrintRuleIptRst::_printRuleLabel(PolicyRule *rule)
             QStringList comm = QString(rule->getComment().c_str()).split("\n");
             foreach(QString line, comm)
             {
-                res << "# " << line.toStdString() << endl;
+                res << "# " << line.toStdString() << "\n";
             }
-            //res << "# " << endl;
+            //res << "# " << "\n";
         }
         current_rule_label=rl;
     }
@@ -130,7 +130,7 @@ string PolicyCompiler_ipt::PrintRuleIptRst::_declareTable()
     PolicyCompiler_ipt *ipt_comp=dynamic_cast<PolicyCompiler_ipt*>(compiler);
     ostringstream res;
 
-    res << "*" << ipt_comp->my_table << endl;
+    res << "*" << ipt_comp->my_table << "\n";
 
     return res.str();
 }

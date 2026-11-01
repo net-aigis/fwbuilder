@@ -27,6 +27,7 @@
 
 #include "IPTImporter.h"
 
+#include <QObject>
 #include <QString>
 #include <QStringList>
 #include <QRegExp>

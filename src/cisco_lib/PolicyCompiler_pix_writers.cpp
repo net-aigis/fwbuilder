@@ -278,7 +278,7 @@ string PolicyCompiler_pix::PrintRule::_printICMPCommand(PolicyRule *rule)
             str1 << s->getStr("type");
             str1 << " ";
             str1 << rule_iface->getLabel();
-            str1 << endl;
+            str1 << "\n";
 
             if ( ! suppressDuplicateICMPCommands(str1.str()))  str << str1.str();
         }
@@ -292,7 +292,7 @@ string PolicyCompiler_pix::PrintRule::_printICMPCommand(PolicyRule *rule)
         str << _printDstService( Service::cast(srv) );
         str << " ";
         str << rule_iface->getLabel();
-        str << endl;
+        str << "\n";
 
         if ( ! suppressDuplicateICMPCommands(str.str()))  return str.str();
     }
@@ -501,7 +501,7 @@ bool PolicyCompiler_pix::PrintRule::processNext()
 
     aclstr << _printLog( rule );
 
-//    aclstr << endl;
+//    aclstr << "\n";
 
     compiler->output << acl->addLine(aclstr.str());
 

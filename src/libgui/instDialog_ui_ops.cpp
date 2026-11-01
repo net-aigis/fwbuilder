@@ -1,3 +1,4 @@
+#include <QIODevice>
 /*
 
                           Firewall Builder
@@ -73,6 +74,7 @@
 #include <QTextBlockFormat>
 #include <QBrush>
 #include <QTextFormat>
+#include <QObject>
 #include <QtDebug>
 #include <QTime>
 
@@ -1449,7 +1451,7 @@ void instDialog::logItemClicked(QUrl data)
     if (parts.size()<3)
     {
         if(fwbdebug)
-            cout << "Wrong error message clicked" << endl;
+            cout << "Wrong error message clicked" << std::endl;
         return;
     }
     emit activateRule(project, parts[0], parts[1], parts[2].toInt());

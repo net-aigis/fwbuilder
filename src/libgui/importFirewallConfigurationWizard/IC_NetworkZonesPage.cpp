@@ -22,6 +22,7 @@
 */
 
 #include "global.h"
+#include <QObject>
 #include "events.h"
 #include "FWBSettings.h"
 #include "networkZoneManager.h"

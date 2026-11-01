@@ -294,22 +294,22 @@ string OSConfigurator_linux24::printVlanInterfaceConfigurationCommands()
                 QString sintf_name = subinterface->getName().c_str();
                 QString vlan_name;
                 QStringList supported_vlan_names;
-                vlan_name.sprintf("vlan%04d", vlan_id);
+                vlan_name.asprintf("vlan%04d", vlan_id);
                 supported_vlan_names.append(vlan_name);
                 if (vlan_name == sintf_name) name_type = "VLAN_PLUS_VID";
                 else
                 {
-                    vlan_name.sprintf("vlan%d", vlan_id);
+                    vlan_name.asprintf("vlan%d", vlan_id);
                     supported_vlan_names.append(vlan_name);
                     if (vlan_name == sintf_name) name_type = "VLAN_PLUS_VID_NO_PAD";
                     else
                     {
-                        vlan_name.sprintf("%s.%04d", iface->getName().c_str(), vlan_id);
+                        vlan_name.asprintf("%s.%04d", iface->getName().c_str(), vlan_id);
                         supported_vlan_names.append(vlan_name);
                         if (vlan_name == sintf_name) name_type = "DEV_PLUS_VID_PAD";
                         else
                         {
-                            vlan_name.sprintf("%s.%d", iface->getName().c_str(), vlan_id);
+                            vlan_name.asprintf("%s.%d", iface->getName().c_str(), vlan_id);
                             supported_vlan_names.append(vlan_name);
                             if (vlan_name == sintf_name) name_type = "DEV_PLUS_VID_NO_PAD";
                         }
@@ -335,7 +335,7 @@ string OSConfigurator_linux24::printVlanInterfaceConfigurationCommands()
                 << " "
                 << vlan_interfaces.join(" ").toStdString()
                 << "\""
-                << endl;
+                << "\n";
             foreach(QString intf, vlan_interfaces)
             {
                 all_vlans.push_back(QString("%1@%2").arg(intf).arg(parent_interface));
@@ -343,7 +343,7 @@ string OSConfigurator_linux24::printVlanInterfaceConfigurationCommands()
         }
     }
     out << "clear_vlans_except_known"
-        << " " << all_vlans.join(" ").toStdString() << endl;
+        << " " << all_vlans.join(" ").toStdString() << "\n";
     return out.str();
 }
 
@@ -520,23 +520,23 @@ string OSConfigurator_linux24::printDynamicAddressesConfigurationCommands()
                     << iface->getName()
                     << "  "
                     << getInterfaceVarName(iface, false)
-                    << endl;
+                    << "\n";
                 out << "getaddr6 "
                     << iface->getName()
                     << "  "
                     << getInterfaceVarName(iface, true)
-                    << endl;
+                    << "\n";
 
                 out << "getnet "
                     << iface->getName()
                     << "  "
                     << getInterfaceVarName(iface, false) << "_network"
-                    << endl;
+                    << "\n";
                 out << "getnet6 "
                     << iface->getName()
                     << "  "
                     << getInterfaceVarName(iface, true) << "_network"
-                    << endl;
+                    << "\n";
             }
         }
     }

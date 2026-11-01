@@ -60,7 +60,7 @@ class QListViewItem;
 class QCheckListItem;
 class QPushButton;
 class QProgressBar;
-class QStringList;
+#include <QStringList>
 class QTreeWidgetItem;
 class QTextCharFormat;
 //class QCheckTableItem;

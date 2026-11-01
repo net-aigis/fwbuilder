@@ -98,12 +98,12 @@ int sig = FWB_SIG;
 void usage()
 {
     cerr << "Usage: fwbuilder [-hv] [-P object_name] [-o file_name] [-r] [ [-f] filename]\n";
-    cerr << endl;
+    cerr << std::endl;
 }
 
 int main( int argc, char *argv[] )
 {
-    cout << "Firewall Builder GUI " VERSION << endl << flush;
+    cout << "Firewall Builder GUI " VERSION << std::endl << flush;
 
     filename = "";
     print_output_file_name = "";
@@ -153,7 +153,7 @@ int main( int argc, char *argv[] )
             break;
 
 	case 'v':
-	    cout << VERSION << endl;
+	    cout << VERSION << std::endl;
 	    exit(0);
 
         case 'P':

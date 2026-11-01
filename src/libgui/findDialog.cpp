@@ -1,3 +1,4 @@
+#include <QRegularExpression>
 /*
 
                           Firewall Builder
@@ -139,7 +140,7 @@ bool findDialog::matchName(const QString &name)
 
     bool res=false;
 
-    if (m_dialog->useRegexp->isChecked()) res= ( name.indexOf( QRegExp(s) )!=-1 );
+    if (m_dialog->useRegexp->isChecked()) res= ( name.indexOf( QRegularExpression(s) )!=-1 );
     else                        res= ( name == s );
 
     return res;
@@ -160,7 +161,7 @@ bool findDialog::matchAttr(libfwbuilder::FWObject *obj)
         if (a!=NULL)
         {
             QString addr = a->getAddressPtr()->toString().c_str();
-            if (m_dialog->useRegexp->isChecked()) res= ( addr.indexOf( QRegExp(s) )!=-1 );
+            if (m_dialog->useRegexp->isChecked()) res= ( addr.indexOf( QRegularExpression(s) )!=-1 );
             else                        res= ( addr == s );
         }
         break;
@@ -172,13 +173,13 @@ bool findDialog::matchAttr(libfwbuilder::FWObject *obj)
             {
                 QString port;
                 port.setNum(TCPUDPService::cast(obj)->getSrcRangeStart());
-                res |= ( port.indexOf( QRegExp(s) )!=-1 );
+                res |= ( port.indexOf( QRegularExpression(s) )!=-1 );
                 port.setNum(TCPUDPService::cast(obj)->getSrcRangeEnd());
-                res |= ( port.indexOf( QRegExp(s) )!=-1 );
+                res |= ( port.indexOf( QRegularExpression(s) )!=-1 );
                 port.setNum(TCPUDPService::cast(obj)->getDstRangeStart());
-                res |= ( port.indexOf( QRegExp(s) )!=-1 );
+                res |= ( port.indexOf( QRegularExpression(s) )!=-1 );
                 port.setNum(TCPUDPService::cast(obj)->getDstRangeEnd());
-                res |= ( port.indexOf( QRegExp(s) )!=-1 );
+                res |= ( port.indexOf( QRegularExpression(s) )!=-1 );
             } else
             {
                 int port = s.toInt();
@@ -197,7 +198,7 @@ bool findDialog::matchAttr(libfwbuilder::FWObject *obj)
             {
                 QString proto;
                 proto.setNum(obj->getInt("protocol_num"));
-                res |= ( proto.indexOf( QRegExp(s) )!=-1 );
+                res |= ( proto.indexOf( QRegularExpression(s) )!=-1 );
             } else
             {
                 int proto = s.toInt();
@@ -213,7 +214,7 @@ bool findDialog::matchAttr(libfwbuilder::FWObject *obj)
             {
                 QString icmptype;
                 icmptype.setNum(obj->getInt("type"));
-                res |= ( icmptype.indexOf( QRegExp(s) )!=-1 );
+                res |= ( icmptype.indexOf( QRegularExpression(s) )!=-1 );
             } else
             {
                 int icmptype = s.toInt();
@@ -273,7 +274,7 @@ loop:
         if ( QMessageBox::warning(
               this,"Firewall Builder",
               tr("Search hit the end of the object tree."),
-              tr("&Continue at top"), tr("&Stop"), QString::null, 0, 1 )==0 ) goto loop;
+              tr("&Continue at top"), tr("&Stop"), QString(), 0, 1 )==0 ) goto loop;
 
         return;
     }

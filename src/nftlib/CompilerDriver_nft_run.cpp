@@ -82,6 +82,7 @@
 #include <QFile>
 #include <QDir>
 #include <QTextStream>
+#include <QIODevice>
 #include <QtDebug>
 #include <QTime>
 
@@ -787,7 +788,7 @@ QString CompilerDriver_nft::run(const std::string &cluster_id,
 
         ostringstream ostr;
 
-        ostr << "# Configure interfaces" << endl;
+        ostr << "# Configure interfaces" << "\n";
 
         if ( options->getBool("configure_bonding_interfaces") ) 
             ostr << oscnf->printBondingInterfaceConfigurationCommands();

@@ -32,6 +32,12 @@ The Leap Qt6 **reference** job that builds upstream `master` with CMake
 Qt6 preferred on this branch; Qt5 path must stay buildable (CI baseline still uses
 `--with-qmake=qmake-qt5`).
 
+## Build status (local Leap 16 + qmake6)
+
+- Autotools/configure with `qmake6` works.
+- `import`, `iptlib`, `pflib`, `nftlib`, `cisco_lib` and CLI tools compile past the first Qt6 API wave.
+- `libgui` still open: WindowFlags defaults, uic PMF connects (`-c string`), remaining QRegExp-on-QString call sites.
+
 ## Next code passes
 
 1. Drive Qt6 CI green (fix remaining compile breaks after first CI run).

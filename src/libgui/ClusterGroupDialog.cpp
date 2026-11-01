@@ -39,6 +39,7 @@
 #include <qmessagebox.h>
 #include <qdialog.h>
 #include <QCoreApplication>
+#include <QObject>
 #include <QtDebug>
 #include <QUndoStack>
 
@@ -337,7 +338,7 @@ void ClusterGroupDialog::openClusterConfDialog()
         QMessageBox::critical(
             this, "Firewall Builder",
             tr("FWBuilder API error: %1").arg(ex.toString().c_str()),
-            tr("&Continue"), QString::null, QString::null, 0, 1);
+            tr("&Continue"), QString(), QString(), 0, 1);
         return;
     }
 }
