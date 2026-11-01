@@ -755,7 +755,7 @@ void instDialog::saveLog()
     if (!s.endsWith(".txt")) s += ".txt";
     if (fwbdebug)
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-        qDebug( "Saving log to file %s", s.toAscii().constData() );
+        qDebug( "Saving log to file %s", s.toLatin1().constData() );
 #else
         qDebug( "Saving log to file %s", s.toLatin1().constData() );
 #endif
@@ -834,7 +834,7 @@ void instDialog::interpretLogLine(const QString &line)
 {
     if (fwbdebug)
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-        qDebug("instDialog::interpretLogLine %s", line.toAscii().constData() );
+        qDebug("instDialog::interpretLogLine %s", line.toLatin1().constData() );
 #else
         qDebug("instDialog::interpretLogLine %s", line.toLatin1().constData() );
 #endif
@@ -846,7 +846,7 @@ void instDialog::interpretLogLine(const QString &line)
         for (int i=0; i<words.size(); ++i)
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
             qDebug("instDialog::interpretLogLine words[%d]='%s'",
-                   i, words[i].toAscii().constData());
+                   i, words[i].toLatin1().constData());
 #else
             qDebug("instDialog::interpretLogLine words[%d]='%s'",
                    i, words[i].toLatin1().constData());
@@ -1279,7 +1279,7 @@ void instDialog::readInstallerOptionsFromFirewallObject(Firewall *fw)
             getResourceStr("/FWBuilderResources/Target/diff").c_str();
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
         cnf.diff_pgm = getPathToBinary(
-            cnf.diff_pgm.toAscii().constData()).c_str();
+            cnf.diff_pgm.toLatin1().constData()).c_str();
 #else
         cnf.diff_pgm = getPathToBinary(
             cnf.diff_pgm.toLatin1().constData()).c_str();
@@ -1302,9 +1302,9 @@ void instDialog::readInstallerOptionsFromFirewallObject(Firewall *fw)
             qDebug("user_can_change_install_dir=%d", uccid);
             qDebug("firewall_dir='%s'", fwopt->getStr("firewall_dir").c_str());
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-            qDebug("management address: %s", cnf.maddr.toAscii().constData());
-            qDebug("cnf.fwdir='%s'", cnf.fwdir.toAscii().constData());
-            qDebug("activationCmd='%s'", cnf.activationCmd.toAscii().constData());
+            qDebug("management address: %s", cnf.maddr.toLatin1().constData());
+            qDebug("cnf.fwdir='%s'", cnf.fwdir.toLatin1().constData());
+            qDebug("activationCmd='%s'", cnf.activationCmd.toLatin1().constData());
 #else
             qDebug("management address: %s", cnf.maddr.toLatin1().constData());
             qDebug("cnf.fwdir='%s'", cnf.fwdir.toLatin1().constData());

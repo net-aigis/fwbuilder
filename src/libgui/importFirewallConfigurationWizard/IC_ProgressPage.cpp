@@ -313,7 +313,7 @@ void IC_ProgressPage::saveLog()
             if (fwbdebug)
             {
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-                qDebug("%s",txt.toAscii().constData());
+                qDebug("%s",txt.toLatin1().constData());
 #else
                 qDebug("%s",txt.toLatin1().constData());
 #endif

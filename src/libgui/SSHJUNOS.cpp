@@ -212,7 +212,7 @@ void SSHJunos::stateMachine()
         {
             stdoutBuffer="";
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-            proc->write( (pwd + "\n").toAscii() );
+            proc->write( (pwd + "\n").toLatin1() );
 #else
             proc->write( (pwd + "\n").toLatin1() );
 #endif

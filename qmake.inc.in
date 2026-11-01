@@ -19,6 +19,12 @@ CPPUNIT_LIBS = @CPPUNIT_LIBS@
 # CONFIG += release
 CONFIG += debug
 
+# Qt6: C++17 is required; QRegExp/QTextCodec live in Qt5Compat until migrated.
+greaterThan(QT_MAJOR_VERSION, 5) {
+    CONFIG += c++17
+    QT += core5compat
+}
+
 unix {
     PREFIX = @PREFIX@
 

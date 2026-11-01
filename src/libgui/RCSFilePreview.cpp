@@ -119,7 +119,7 @@ void RCSFilePreview::selectedRevision(QTreeWidgetItem *itm)
     if (fwbdebug)
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
         qDebug("RCSFilePreview::selectedRevision : %s",
-               rev.toAscii().constData());
+               rev.toLatin1().constData());
 #else
         qDebug("RCSFilePreview::selectedRevision : %s",
                rev.toLatin1().constData());

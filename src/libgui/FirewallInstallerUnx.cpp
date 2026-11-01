@@ -94,7 +94,7 @@ bool FirewallInstallerUnx::packInstallJobsList(Firewall* fw)
     if (fwbdebug)
         qDebug("FirewallInstaller::packInstallJobsList read manifest from %s",
        #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-               cnf->script.toAscii().constData());
+               cnf->script.toLatin1().constData());
        #else
                cnf->script.toLatin1().constData());
        #endif
@@ -130,7 +130,7 @@ bool FirewallInstallerUnx::packInstallJobsList(Firewall* fw)
             inst_dlg->addToLog(QString("Copy file: %1 --> %2\n")
                                .arg(local_name)
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-                                .arg(remote_name).toAscii().constData());
+                                .arg(remote_name).toLatin1().constData());
 #else
                                 .arg(remote_name).toLatin1().constData());
 #endif
@@ -164,7 +164,7 @@ bool FirewallInstallerUnx::packInstallJobsList(Firewall* fw)
         inst_dlg->addToLog(QString("Copy data file: %1 --> %2\n")
                            .arg(fwbfile_base.fileName())
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-                           .arg(dest_dir).toAscii().constData());
+                           .arg(dest_dir).toLatin1().constData());
 #else
                            .arg(dest_dir).toLatin1().constData());
 #endif

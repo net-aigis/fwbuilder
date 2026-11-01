@@ -683,8 +683,8 @@ int GetServByName::getPortByName(const QString &name, const QString &proto)
         return ports["tcp"][name];
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-    struct servent *se = getservbyname(name.toAscii().constData(),
-                                       proto.toAscii().constData());
+    struct servent *se = getservbyname(name.toLatin1().constData(),
+                                       proto.toLatin1().constData());
 #else
     struct servent *se = getservbyname(name.toLatin1().constData(),
                                        proto.toLatin1().constData());

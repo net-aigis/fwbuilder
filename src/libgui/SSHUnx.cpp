@@ -125,7 +125,7 @@ bool SSHUnx::checkForErrors(QStringList *errptr)
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
         qDebug(
             QString("SSHUnx::stateMachine:  Checking for errors. Buffer='%1'").
-            arg(stdoutBuffer).toAscii().constData());
+            arg(stdoutBuffer).toLatin1().constData());
 #else
         qDebug(
             QString("SSHUnx::stateMachine:  Checking for errors. Buffer='%1'").
@@ -197,7 +197,7 @@ void SSHUnx::stateMachine()
         {
             stdoutBuffer="";
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-            proc->write( pwd.toAscii() );
+            proc->write( pwd.toLatin1() );
 #else
             proc->write( pwd.toLatin1() );
 #endif
@@ -290,7 +290,7 @@ void SSHUnx::stateMachine()
         {
             stdoutBuffer="";
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-            proc->write( pwd.toAscii() );
+            proc->write( pwd.toLatin1() );
 #else
             proc->write( pwd.toLatin1() );
 #endif

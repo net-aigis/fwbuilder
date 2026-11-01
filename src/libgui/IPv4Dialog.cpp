@@ -245,7 +245,7 @@ void IPv4Dialog::DNSlookup()
     {
         QString name = m_dialog->obj_name->text().trimmed();
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-        if (fwbdebug) qDebug("IPv4Dialog::DNSlookup()  name=%s", name.toAscii().constData());
+        if (fwbdebug) qDebug("IPv4Dialog::DNSlookup()  name=%s", name.toLatin1().constData());
 #else
         if (fwbdebug) qDebug("IPv4Dialog::DNSlookup()  name=%s", name.toLatin1().constData());
 #endif
@@ -271,7 +271,7 @@ void IPv4Dialog::DNSlookup()
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
             if (fwbdebug) qDebug("IPv4Dialog::DNSlookup()  name=%s",
-                name.toAscii().constData());
+                name.toLatin1().constData());
 #else
             if (fwbdebug) qDebug("IPv4Dialog::DNSlookup()  name=%s",
                 name.toLatin1().constData());

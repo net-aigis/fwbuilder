@@ -188,7 +188,7 @@ void SSHPIX::PIXbackup()
     {
         ofstream ofs(backupFile.toLatin1().constData());
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-        ofs << cfg.toAscii().constData();
+        ofs << cfg.toLatin1().constData();
 #else
         ofs << cfg.toLatin1().constData();
 #endif
@@ -256,7 +256,7 @@ void SSHPIX::clearACLs()
         {
             if (fwbdebug)
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-                qDebug("clear access-list %s",ca.toAscii().constData());
+                qDebug("clear access-list %s",ca.toLatin1().constData());
 #else
                 qDebug("clear access-list %s",ca.toLatin1().constData());
 #endif
@@ -327,7 +327,7 @@ void SSHPIX::clearObjectGroups()
         {
             if (fwbdebug)
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-                qDebug("clear object-group %s",ca.toAscii().constData());
+                qDebug("clear object-group %s",ca.toLatin1().constData());
 #else
                 qDebug("clear object-group %s",ca.toLatin1().constData());
 #endif

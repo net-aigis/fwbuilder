@@ -78,7 +78,7 @@ bool FirewallInstaller::parseManifestLine(const QString &line,
 
     if (fwbdebug)
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-        qDebug("Manifest line: '%s'", line.toAscii().constData());
+        qDebug("Manifest line: '%s'", line.toLatin1().constData());
 #else
         qDebug("Manifest line: '%s'", line.toLatin1().constData());
 #endif
@@ -124,13 +124,13 @@ bool FirewallInstaller::parseManifestLine(const QString &line,
     if (fwbdebug)
         qDebug() << "local_name:"
             #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-                 << local_file_name->toAscii().constData()
+                 << local_file_name->toLatin1().constData()
             #else
                  << local_file_name->toLatin1().constData()
             #endif
                  << "remote_name:"
             #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-                 << remote_file_name->toAscii().constData()
+                 << remote_file_name->toLatin1().constData()
             #else
                  << remote_file_name->toLatin1().constData()
             #endif
@@ -424,14 +424,14 @@ void FirewallInstaller::packSCPArgs(const QString &local_name,
     try
     {
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-        InetAddr addr(AF_INET6, cnf->maddr.toAscii().constData());
+        InetAddr addr(AF_INET6, cnf->maddr.toLatin1().constData());
 #else
         InetAddr addr(AF_INET6, cnf->maddr.toLatin1().constData());
 #endif
         if (fwbdebug)
             qDebug("SCP will talk to the firewall using address %s ( %s )",
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-                   cnf->maddr.toAscii().constData(),
+                   cnf->maddr.toLatin1().constData(),
 #else
                    cnf->maddr.toLatin1().constData(),
 #endif
@@ -591,13 +591,13 @@ void FirewallInstaller::copyFile(const QString &local_name, const QString &remot
 
     inst_dlg->addToLog( tr("Copying %1 -> %2:%3\n")
                     #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-                        .arg(QString::fromUtf8(local_name.toAscii().constData()))
+                        .arg(QString::fromUtf8(local_name.toLatin1().constData()))
                     #else
                         .arg(QString::fromUtf8(local_name.toLatin1().constData()))
                     #endif
                         .arg(cnf->maddr)
                     #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-                        .arg(QString::fromUtf8(remote_name.toAscii().constData())));
+                        .arg(QString::fromUtf8(remote_name.toLatin1().constData())));
                     #else
                         .arg(QString::fromUtf8(remote_name.toLatin1().constData())));
                     #endif

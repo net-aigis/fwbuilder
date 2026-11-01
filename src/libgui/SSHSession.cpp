@@ -197,7 +197,7 @@ void SSHSession::startSession()
     if (fwbdebug)
     {
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-        qDebug("Launch external ssh client %s", program.toAscii().constData());
+        qDebug("Launch external ssh client %s", program.toLatin1().constData());
 #else
         qDebug("Launch external ssh client %s", program.toLatin1().constData());
 #endif
@@ -205,7 +205,7 @@ void SSHSession::startSession()
         QStringList::const_iterator i;
         for (i=arguments.begin(); i!=arguments.end(); ++i)
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-            qDebug("    %s", (*i).toAscii().constData());
+            qDebug("    %s", (*i).toLatin1().constData());
 #else
             qDebug("    %s", (*i).toLatin1().constData());
 #endif
@@ -573,7 +573,7 @@ void SSHSession::readFromStdout()
         stdoutBuffer.append(buf);
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-        if (fwbdebug) qDebug() << buf.toAscii().constData() << "\n";
+        if (fwbdebug) qDebug() << buf.toLatin1().constData() << "\n";
 #else
         if (fwbdebug) qDebug() << buf.toLatin1().constData() << "\n";
 #endif
@@ -649,7 +649,7 @@ void SSHSession::readFromStderr()
             QString s=QString(ba);
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
             if (fwbdebug) qDebug("SSHSession::readFromStderr  buf=%s",
-                                 s.toAscii().constData());
+                                 s.toLatin1().constData());
 #else
             if (fwbdebug) qDebug("SSHSession::readFromStderr  buf=%s",
                                  s.toLatin1().constData());
@@ -735,7 +735,7 @@ bool SSHSession::cmpPrompt(const QString &str, const QString &prompt)
     if (fwbdebug)
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
         qDebug("SSHSession::cmpPrompt: str='%s' prompt='%s'",
-               str.toAscii().constData(),prompt.toAscii().constData());
+               str.toLatin1().constData(),prompt.toLatin1().constData());
 #else
         qDebug("SSHSession::cmpPrompt: str='%s' prompt='%s'",
                str.toLatin1().constData(),prompt.toLatin1().constData());
@@ -765,7 +765,7 @@ bool SSHSession::cmpPrompt(const QString &str,const QRegExp &prompt)
     if (fwbdebug)
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
         qDebug("SSHSession::cmpPrompt: str='%s' prompt='%s' (regexp)",
-               str.toAscii().constData(),prompt.pattern().toAscii().constData());
+               str.toLatin1().constData(),prompt.pattern().toLatin1().constData());
 #else
         qDebug("SSHSession::cmpPrompt: str='%s' prompt='%s' (regexp)",
                str.toLatin1().constData(),prompt.pattern().toLatin1().constData());
@@ -789,7 +789,7 @@ void SSHSession::sendCommand(const QString &cmd)
     if (!dry_run)
     {
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-        proc->write((cmd + "\n").toAscii());
+        proc->write((cmd + "\n").toLatin1());
 #else
         proc->write((cmd + "\n").toLatin1());
 #endif

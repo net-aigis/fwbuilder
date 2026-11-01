@@ -260,7 +260,7 @@ void TimeDialog::applyChanges()
         weekDays.append("6");
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-    interval->setDaysOfWeek(weekDays.join(",").toAscii().data());
+    interval->setDaysOfWeek(weekDays.join(",").toLatin1().data());
 #else
     interval->setDaysOfWeek(weekDays.join(",").toLatin1().data());
 #endif

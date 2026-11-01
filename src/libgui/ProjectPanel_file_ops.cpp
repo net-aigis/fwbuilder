@@ -214,7 +214,7 @@ bool ProjectPanel::fileNew()
     if (fwbdebug)
         qDebug("ProjectPanel::fileNew()  rcs=%p  rcs->getFileName()='%s'",
                rcs, rcs == 0 ? "<null>" :
-               rcs->getFileName().toAscii().constData());
+               rcs->getFileName().toLatin1().constData());
 #else
     if (fwbdebug)
         qDebug("ProjectPanel::fileNew()  rcs=%p  rcs->getFileName()='%s'",
@@ -1137,11 +1137,11 @@ bool ProjectPanel::loadFromRCS(RCS *_rcs)
             {
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
                 qDebug("Need to rename file:  %s",
-                       fn.toAscii().constData());
+                       fn.toLatin1().constData());
                 qDebug("             dirPath: %s",
-                       ofinfo.dir().absolutePath().toAscii().constData());
+                       ofinfo.dir().absolutePath().toLatin1().constData());
                 qDebug("            filePath: %s",
-                       ofinfo.absoluteFilePath().toAscii().constData());
+                       ofinfo.absoluteFilePath().toLatin1().constData());
 
 #else
                 qDebug("Need to rename file:  %s",

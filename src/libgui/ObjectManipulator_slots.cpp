@@ -235,14 +235,14 @@ void ObjectManipulator::pasteObj()
         QString buff;
         buff.sprintf(".copy_of_%p", co->getRoot());
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-        string dedup_attribute = buff.toAscii().constData();
+        string dedup_attribute = buff.toLatin1().constData();
 #else
         string dedup_attribute = buff.toLatin1().constData();
 #endif
 
         buff.sprintf("%d", co->getId());
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-        QByteArray bytes = buff.toAscii();
+        QByteArray bytes = buff.toLatin1();
 #else
         QByteArray bytes = buff.toLatin1();
 #endif

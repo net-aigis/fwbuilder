@@ -34,8 +34,12 @@
 #include "FWBTree.h"
 #include "events.h"
 #include "FWBApplication.h"
-#include "QDesktopWidget"
 #include "networkZoneManager.h"
+#include <QGuiApplication>
+#include <QScreen>
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+#include <QDesktopWidget>
+#endif
 #include "ObjConflictResolutionDialog.h"
 
 #include "interfaceProperties.h"
@@ -187,7 +191,12 @@ newFirewallDialog::newFirewallDialog(QWidget *parentw, FWObject *_p) :
     );
 
     this->resize(this->width(), this->minimumHeight());
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+    QScreen *scr = QGuiApplication::primaryScreen();
+    int maxheight = (int)((scr ? scr->geometry().height() : 768)*0.9);
+#else
     int maxheight = (int)(app->desktop()->height()*0.9);
+#endif
     if (this->height() > maxheight)
         this->resize(this->width(), maxheight);
 
@@ -462,7 +471,7 @@ void newFirewallDialog::getInterfacesViaSNMP()
             QString a = getAddrByName(m_dialog->snmpIP->text(), AF_INET);
             QApplication::restoreOverrideCursor();
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-            addr = InetAddr(a.toAscii().constData());
+            addr = InetAddr(a.toLatin1().constData());
 #else
             addr = InetAddr(a.toLatin1().constData());
 #endif
@@ -663,7 +672,7 @@ void newFirewallDialog::showPage(const int page)
             {
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
                 tmpldb->load(
-                    m_dialog->templateFilePath->text().toAscii().data(),
+                    m_dialog->templateFilePath->text().toLatin1().data(),
                     &upgrade_predicate, Constants::getDTDDirectory());
 #else
                 tmpldb->load(
@@ -720,8 +729,8 @@ void newFirewallDialog::showPage(const int page)
   possible platforms, or we should not filter by platform.
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-            string platform = readPlatform(m_dialog->platform).toAscii().constData();
-            string host_os = readHostOS(m_dialog->hostOS).toAscii().constData();
+            string platform = readPlatform(m_dialog->platform).toLatin1().constData();
+            string host_os = readHostOS(m_dialog->hostOS).toLatin1().constData();
 #else
             string platform = readPlatform(m_dialog->platform).toLatin1().constData();
             string host_os = readHostOS(m_dialog->hostOS).toLatin1().constData();
@@ -1123,8 +1132,8 @@ void newFirewallDialog::finishClicked()
             return;
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-    string platform = readPlatform(m_dialog->platform).toAscii().constData();
-    string host_os = readHostOS(m_dialog->hostOS).toAscii().constData();
+    string platform = readPlatform(m_dialog->platform).toLatin1().constData();
+    string host_os = readHostOS(m_dialog->hostOS).toLatin1().constData();
 #else
     string platform = readPlatform(m_dialog->platform).toLatin1().constData();
     string host_os = readHostOS(m_dialog->hostOS).toLatin1().constData();

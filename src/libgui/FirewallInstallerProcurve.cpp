@@ -65,7 +65,7 @@ bool FirewallInstallerProcurve::packInstallJobsList(Firewall*)
     if (fwbdebug)
         qDebug("FirewallInstallerProcurve::packInstallJobList  script=%s",
        #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-               cnf->script.toAscii().constData());
+               cnf->script.toLatin1().constData());
        #else
                cnf->script.toLatin1().constData());
        #endif

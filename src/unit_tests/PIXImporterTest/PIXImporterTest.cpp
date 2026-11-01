@@ -116,7 +116,7 @@ void PIXImporterTest::compareResults(QueueLogger* logger,
     QFile rw(obtained_result_file_name);
     rw.open(QFile::WriteOnly);
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-    rw.write(result.toAscii());
+    rw.write(result.toLatin1());
 #else
     rw.write(result.toLatin1());
 #endif

@@ -79,8 +79,8 @@ void newFirewallDialog::createFirewallFromTemplate()
     assert (template_fw!=NULL);
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-    string platform = readPlatform(m_dialog->platform).toAscii().constData();
-    string host_os = readHostOS(m_dialog->hostOS).toAscii().constData();
+    string platform = readPlatform(m_dialog->platform).toLatin1().constData();
+    string host_os = readHostOS(m_dialog->hostOS).toLatin1().constData();
 #else
     string platform = readPlatform(m_dialog->platform).toLatin1().constData();
     string host_os = readHostOS(m_dialog->hostOS).toLatin1().constData();

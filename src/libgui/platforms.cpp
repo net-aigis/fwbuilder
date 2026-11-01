@@ -249,7 +249,7 @@ bool isDefaultPolicyRuleOptions(FWOptions *opt)
         {
             string vers="version_"+p->getStr("version");
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-            if ( Resources::platform_res[platform.toAscii().constData()]->getResourceBool(
+            if ( Resources::platform_res[platform.toLatin1().constData()]->getResourceBool(
                   "/FWBuilderResources/Target/options/"+vers+"/pix_rule_syslog_settings"))
 #else
             if ( Resources::platform_res[platform.toLatin1().constData()]->getResourceBool(
@@ -453,7 +453,7 @@ void getVersionsForPlatform(const QString &platform, std::list<QStringPair> &res
         {
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
             QString lst = Resources::platform_res[
-                platform.toAscii().constData()]->getResourceStr(
+                platform.toLatin1().constData()]->getResourceStr(
                     "/FWBuilderResources/Target/versions").c_str();
 #else
             QString lst = Resources::platform_res[

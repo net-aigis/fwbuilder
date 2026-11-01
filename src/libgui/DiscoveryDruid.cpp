@@ -1504,7 +1504,7 @@ void DiscoveryDruid::saveScanLog()
         QString txt = m_dialog->discoverylog->toPlainText();
         strm << txt << endl;
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-        if (fwbdebug) qDebug("%s",txt.toAscii().constData());
+        if (fwbdebug) qDebug("%s",txt.toLatin1().constData());
 #else
         if (fwbdebug) qDebug("%s",txt.toLatin1().constData());
 #endif
@@ -2116,7 +2116,7 @@ int DiscoveryDruid::monitorOperation()
 
         /*if (fwbdebug) qDebug("monitorOperation  appending the following buf: (1)");
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-        if (fwbdebug) qDebug(buf.toAscii().constData());
+        if (fwbdebug) qDebug(buf.toLatin1().constData());
 #else
         if (fwbdebug) qDebug(buf.toLatin1().constData());
 #endif
@@ -2152,7 +2152,7 @@ int DiscoveryDruid::monitorOperation()
 
         /*if (fwbdebug) qDebug("monitorOperation  appending the following buf: (2)");
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-        if (fwbdebug) qDebug(buf.toAscii().constData());
+        if (fwbdebug) qDebug(buf.toLatin1().constData());
 #else
         if (fwbdebug) qDebug(buf.toLatin1().constData());
 #endif
@@ -2769,7 +2769,7 @@ void HostsFileImport::run()
         try
         {
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-            hf->parse( file_name.toAscii().constData() );
+            hf->parse( file_name.toLatin1().constData() );
 #else
             hf->parse( file_name.toLatin1().constData() );
 #endif
@@ -2777,7 +2777,7 @@ void HostsFileImport::run()
         {
             last_error = ex.toString().c_str();
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-            *Log << "Exception: " << last_error.toAscii().constData() << "\n";
+            *Log << "Exception: " << last_error.toLatin1().constData() << "\n";
 #else
             *Log << "Exception: " << last_error.toLatin1().constData() << "\n";
 #endif

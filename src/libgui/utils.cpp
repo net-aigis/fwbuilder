@@ -327,7 +327,7 @@ QString getAddrByName(const QString &name, int af_type)
     try
     {
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-        results = DNS::getHostByName(name.toAscii().constData(), af_type);
+        results = DNS::getHostByName(name.toLatin1().constData(), af_type);
 #else
         results = DNS::getHostByName(name.toLatin1().constData(), af_type);
 #endif
@@ -463,7 +463,7 @@ void LoadPixmap(const QString &path, QPixmap &pm)
         pm.load( path );
         if (pm.width() == 0)
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-            qDebug("pixmap load failed: %s", path.toAscii().constData());
+            qDebug("pixmap load failed: %s", path.toLatin1().constData());
 #else
             qDebug("pixmap load failed: %s", path.toLatin1().constData());
 #endif

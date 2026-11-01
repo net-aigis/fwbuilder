@@ -235,7 +235,7 @@ void IPv6Dialog::DNSlookup()
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
         if (fwbdebug)
             qDebug("IPv6Dialog::DNSlookup()  name=%s",
-                   name.toAscii().constData());
+                   name.toLatin1().constData());
 
 #else
         if (fwbdebug)
@@ -268,7 +268,7 @@ void IPv6Dialog::DNSlookup()
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
             if (fwbdebug) qDebug("IPv6Dialog::DNSlookup()  name=%s",
-                name.toAscii().constData());
+                name.toLatin1().constData());
 #else
             if (fwbdebug) qDebug("IPv6Dialog::DNSlookup()  name=%s",
                 name.toLatin1().constData());

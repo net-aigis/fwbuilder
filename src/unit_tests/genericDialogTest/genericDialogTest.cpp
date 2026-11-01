@@ -252,7 +252,7 @@ void genericDialogTest::testDialog(QWidget *dialog, FWObject *object)
         {
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
             QWARN(QString("Dont know how to test widget %1. It might be unknown class, empty QComboBox or QRadioButton with not other QRadio button in group.")
-                  .arg(widgets.at(i)->objectName()).toAscii().data());
+                  .arg(widgets.at(i)->objectName()).toLatin1().data());
 #else
             QWARN(QString("Dont know how to test widget %1. It might be unknown class, empty QComboBox or QRadioButton with not other QRadio button in group.")
                   .arg(widgets.at(i)->objectName()).toLatin1().data());
@@ -268,7 +268,7 @@ void genericDialogTest::testDialog(QWidget *dialog, FWObject *object)
         }
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
         QVERIFY2(!old->cmp(object, true),
-                 QString("Widget %1 does not affect object").arg(widget->objectName()).toAscii().data());
+                 QString("Widget %1 does not affect object").arg(widget->objectName()).toLatin1().data());
 #else
         QVERIFY2(!old->cmp(object, true),
                  QString("Widget %1 does not affect object").arg(widget->objectName()).toLatin1().data());

@@ -83,7 +83,7 @@ StartTipDialog::StartTipDialog(QWidget *parent): QDialog(parent)
         QString contents;
         if (fwbdebug)
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-            qDebug("Trying tip file %s", tip_file.toAscii().constData());
+            qDebug("Trying tip file %s", tip_file.toLatin1().constData());
 #else
             qDebug("Trying tip file %s", tip_file.toLatin1().constData());
 #endif

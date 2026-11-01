@@ -918,11 +918,11 @@ void pixAdvancedDialog::setDefaultTimeoutValue(const QString &option)
 
     if (option=="uauth_abs" || option=="uauth_inact")
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-        data.setWidgetValue(option.toAscii().constData(),
+        data.setWidgetValue(option.toLatin1().constData(),
                         Resources::platform_res[platform]->getResourceBool(
      "/FWBuilderResources/Target/options/"+vers+"/timeouts/"+option.toLatin1().constData()));
     else
-        data.setWidgetValue(option.toAscii().constData(),
+        data.setWidgetValue(option.toLatin1().constData(),
                         Resources::platform_res[platform]->getResourceInt(
      "/FWBuilderResources/Target/options/"+vers+"/timeouts/"+option.toLatin1().constData()));
 #else

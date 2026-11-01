@@ -128,21 +128,21 @@ SSHCisco::~SSHCisco()
 QString SSHCisco::cmd(QProcess*, const QString &cmd)
 {
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-    if (fwbdebug) qDebug("Command '%s'", cmd.toAscii().constData());
+    if (fwbdebug) qDebug("Command '%s'", cmd.toLatin1().constData());
 #else
     if (fwbdebug) qDebug("Command '%s'", cmd.toLatin1().constData());
 #endif
     sendCommand(cmd);
     //stdoutBuffer = "";
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-    //proc->write( (cmd + "\n").toAscii() );
+    //proc->write( (cmd + "\n").toLatin1() );
 #else
     //proc->write( (cmd + "\n").toLatin1() );
 #endif
     state = EXECUTING_COMMAND;
     local_event_loop->exec();
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-    if (fwbdebug) qDebug("Command '%s' completed", cmd.toAscii().constData());
+    if (fwbdebug) qDebug("Command '%s' completed", cmd.toLatin1().constData());
 #else
     if (fwbdebug) qDebug("Command '%s' completed", cmd.toLatin1().constData());
 #endif
@@ -209,7 +209,7 @@ void SSHCisco::stateMachine()
         {
             stdoutBuffer="";
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-            proc->write( (pwd + "\n").toAscii() );
+            proc->write( (pwd + "\n").toLatin1() );
 #else
             proc->write( (pwd + "\n").toLatin1() );
 #endif
@@ -289,7 +289,7 @@ void SSHCisco::stateMachine()
         {
             stdoutBuffer="";
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-            if (!epwd.isEmpty()) proc->write( (epwd + "\n").toAscii() );
+            if (!epwd.isEmpty()) proc->write( (epwd + "\n").toLatin1() );
 #else
             if (!epwd.isEmpty()) proc->write( (epwd + "\n").toLatin1() );
 #endif
@@ -303,7 +303,7 @@ void SSHCisco::stateMachine()
         {
             stdoutBuffer="";
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-            if (!epwd.isEmpty()) proc->write( (epwd + "\n").toAscii() );
+            if (!epwd.isEmpty()) proc->write( (epwd + "\n").toLatin1() );
 #else
             if (!epwd.isEmpty()) proc->write( (epwd + "\n").toLatin1() );
 #endif
@@ -337,7 +337,7 @@ void SSHCisco::stateMachine()
                 if (cmd.indexOf("reload in")!=-1) state = SCHEDULE_RELOAD_DIALOG;
                 sendCommand(cmd);
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-                //proc->write( (cmd + "\n").toAscii() );
+                //proc->write( (cmd + "\n").toLatin1() );
 #else
                 //proc->write( (cmd + "\n").toLatin1() );
 #endif

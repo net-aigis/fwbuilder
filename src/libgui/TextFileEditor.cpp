@@ -115,7 +115,7 @@ void TextFileEditor::save()
     {
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
         if (owf.open(QIODevice::WriteOnly) &&
-            owf.write(m_dialog->editor->toPlainText().toAscii().constData()) >= 0)
+            owf.write(m_dialog->editor->toPlainText().toLatin1().constData()) >= 0)
 #else
         if (owf.open(QIODevice::WriteOnly) &&
             owf.write(m_dialog->editor->toPlainText().toLatin1().constData()) >= 0)
@@ -138,7 +138,7 @@ void TextFileEditor::save()
     QFile wf(tmp_file_name);
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
     if (wf.open(QIODevice::WriteOnly) &&
-        wf.write(m_dialog->editor->toPlainText().toAscii().constData()) >= 0)
+        wf.write(m_dialog->editor->toPlainText().toLatin1().constData()) >= 0)
 #else
     if (wf.open(QIODevice::WriteOnly) &&
         wf.write(m_dialog->editor->toPlainText().toLatin1().constData()) >= 0)

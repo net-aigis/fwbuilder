@@ -29,7 +29,6 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
-#include <QDesktopWidget>
 #include <QDebug>
 #include <QMenuBar>
 #include <QInputDialog>
@@ -169,7 +168,7 @@ void RuleSetViewTest::actuallyClickMenuItem()
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
     QFAIL(QString("Menu item %1 not found. Menu consists of: %2")
           .arg(itemToClick)
-          .arg(items.join(" ")).toAscii().constData());
+          .arg(items.join(" ")).toLatin1().constData());
 #else
     QFAIL(QString("Menu item %1 not found. Menu consists of: %2")
           .arg(itemToClick)

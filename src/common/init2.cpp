@@ -61,7 +61,7 @@ void init_win()
     QDir dir(QCoreApplication::applicationDirPath());
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-    appRootDir = string(dir.absolutePath().toAscii().constData());
+    appRootDir = string(dir.absolutePath().toLatin1().constData());
 #else
     appRootDir = string(dir.absolutePath().toLatin1().constData());
 #endif

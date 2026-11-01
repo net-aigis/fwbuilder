@@ -29,7 +29,6 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
-#include <QDesktopWidget>
 #include <QDebug>
 #include <QMenuBar>
 #include <QInputDialog>
@@ -164,7 +163,7 @@ void RuleSetViewContextMenuTest::actuallyClickMenuItem()
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
     QFAIL(QString("Menu item %1 not found. Menu consists of: %2")
           .arg(itemToClick)
-          .arg(items.join(" ")).toAscii().constData());
+          .arg(items.join(" ")).toLatin1().constData());
 #else
     QFAIL(QString("Menu item %1 not found. Menu consists of: %2")
           .arg(itemToClick)
@@ -365,7 +364,7 @@ void RuleSetViewContextMenuTest::test_menus()
         verifyMenu(i);
         showContextMenu(findCell(rule, i));
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-        QVERIFY2(!failed, QString("Failed for column %1").arg(i).toAscii().constData());
+        QVERIFY2(!failed, QString("Failed for column %1").arg(i).toLatin1().constData());
 #else
         QVERIFY2(!failed, QString("Failed for column %1").arg(i).toLatin1().constData());
 #endif
@@ -417,7 +416,7 @@ void RuleSetViewContextMenuTest::test_group_menus()
             verifyMenu(i);
             showContextMenu(findCell(getRuleForPosition(j), i));
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-            QVERIFY2(!failed, QString("Failed for column %1").arg(i).toAscii().constData());
+            QVERIFY2(!failed, QString("Failed for column %1").arg(i).toLatin1().constData());
 #else
             QVERIFY2(!failed, QString("Failed for column %1").arg(i).toLatin1().constData());
 #endif
@@ -433,7 +432,7 @@ void RuleSetViewContextMenuTest::test_group_menus()
     //    QTest::qWait(1000);
         showContextMenu(findCell(getRuleForPosition(i), 0));
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-        QVERIFY2(!failed, QString("Failed for rule #%1 of 5").arg(i+1).toAscii().constData());
+        QVERIFY2(!failed, QString("Failed for rule #%1 of 5").arg(i+1).toLatin1().constData());
 #else
         QVERIFY2(!failed, QString("Failed for rule #%1 of 5").arg(i+1).toLatin1().constData());
 #endif
@@ -472,7 +471,7 @@ void RuleSetViewContextMenuTest::test_platforms()
         verifyMenu(6);
         showContextMenu(findCell(rule, 6));
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-        QVERIFY2(!failed, QString("Failed for paltform %1").arg(platform).toAscii().constData());
+        QVERIFY2(!failed, QString("Failed for paltform %1").arg(platform).toLatin1().constData());
 #else
         QVERIFY2(!failed, QString("Failed for paltform %1").arg(platform).toLatin1().constData());
 #endif

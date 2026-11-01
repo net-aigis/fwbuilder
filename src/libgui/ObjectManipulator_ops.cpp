@@ -671,7 +671,7 @@ void ObjectManipulator::groupObjects()
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
                     if (fwbdebug)
                         qDebug("ObjectManipulator::groupObjects(): could not find standard slot for object of type %s in library %s",
-                               type.toAscii().constData(),lib->getName().c_str());
+                               type.toLatin1().constData(),lib->getName().c_str());
 
 #else
                     if (fwbdebug)

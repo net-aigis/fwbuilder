@@ -43,12 +43,16 @@
 
 #include <QDir>
 #include <QMainWindow>
-#include <QDesktopWidget>
 #include <QUuid>
 #include <QRegExp>
 #include <QtDebug>
 #include <QCryptographicHash>
 #include <QTime>
+#include <QGuiApplication>
+#include <QScreen>
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+#include <QDesktopWidget>
+#endif
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -653,9 +657,13 @@ QPoint FWBSettings::getScreenPosition(const QString &wname)
     int  width = 150;  // won't get closer to the screen edge than this
     int height = 150;
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+    QScreen *scr = (mw && mw->screen()) ? mw->screen() : QGuiApplication::primaryScreen();
+    QRect sg = scr ? scr->geometry() : QRect(0, 0, 1024, 768);
+#else
     QDesktopWidget *d = QApplication::desktop();
-// get geometry of the screen that contains mw
     QRect sg = d->screenGeometry(mw);
+#endif
 
     if (x+width > sg.width())   x=sg.width()-width;
     if (y+height > sg.height()) y=sg.height()-height;
@@ -705,9 +713,13 @@ void FWBSettings::restoreGeometry(QWidget *w)
     int     width  = val.section(',',2,2).toInt();
     int     height = val.section(',',3,3).toInt();
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+    QScreen *scr = (mw && mw->screen()) ? mw->screen() : QGuiApplication::primaryScreen();
+    QRect sg = scr ? scr->geometry() : QRect(0, 0, 1024, 768);
+#else
     QDesktopWidget *d = QApplication::desktop();
-// get geometry of the screen that contains mw
     QRect sg = d->screenGeometry(mw);
+#endif
 
     if (width > sg.width() || height > sg.height())
     {
@@ -724,7 +736,7 @@ void FWBSettings::restoreGeometry(QWidget *w)
     {
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
         qDebug("FWBSettings::restoreGeometry  widget '%s' vis=%d x=%d y=%d",
-                   name.toAscii().constData(), w->isVisible(), x,y);
+                   name.toLatin1().constData(), w->isVisible(), x,y);
 #else
         qDebug("FWBSettings::restoreGeometry  widget '%s' vis=%d x=%d y=%d",
                    name.toLatin1().constData(), w->isVisible(), x,y);
@@ -746,9 +758,13 @@ void FWBSettings::restoreGeometry(QWidget *w, const QRect &dg)
     int     width  = val.section(',',2,2).toInt();
     int     height = val.section(',',3,3).toInt();
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+    QScreen *scr = (mw && mw->screen()) ? mw->screen() : QGuiApplication::primaryScreen();
+    QRect sg = scr ? scr->geometry() : QRect(0, 0, 1024, 768);
+#else
     QDesktopWidget *d = QApplication::desktop();
-// get geometry of the screen that contains mw
     QRect sg = d->screenGeometry(mw);
+#endif
 
     if (width > sg.width() || height > sg.height())
     {
@@ -765,7 +781,7 @@ void FWBSettings::restoreGeometry(QWidget *w, const QRect &dg)
     {
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
         qDebug("FWBSettings::restoreGeometry  widget '%s' vis=%d x=%d y=%d",
-                   name.toAscii().constData(), w->isVisible(), x,y);
+                   name.toLatin1().constData(), w->isVisible(), x,y);
 #else
         qDebug("FWBSettings::restoreGeometry  widget '%s' vis=%d x=%d y=%d",
                    name.toLatin1().constData(), w->isVisible(), x,y);
@@ -798,7 +814,7 @@ void FWBSettings::saveGeometry(QWidget *w)
     {
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
         qDebug("FWBSettings::saveGeometry  widget '%s' vis=%d val=%s",
-                   name.toAscii().constData(), w->isVisible(), val.toAscii().constData());
+                   name.toLatin1().constData(), w->isVisible(), val.toLatin1().constData());
 #else
         qDebug("FWBSettings::saveGeometry  widget '%s' vis=%d val=%s",
                    name.toLatin1().constData(), w->isVisible(), val.toLatin1().constData());
@@ -1097,7 +1113,7 @@ void FWBSettings::setTimeOfLastUpdateAvailableWarning(uint v)
 uint FWBSettings::getTimeOfLastAnnouncement(const QString &announcement)
 {
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-    QByteArray h = QCryptographicHash::hash(announcement.toAscii().constData(),
+    QByteArray h = QCryptographicHash::hash(announcement.toLatin1().constData(),
                                             QCryptographicHash::Md5).toHex();
 #else
     QByteArray h = QCryptographicHash::hash(announcement.toLatin1().constData(),
@@ -1109,7 +1125,7 @@ uint FWBSettings::getTimeOfLastAnnouncement(const QString &announcement)
 void FWBSettings::setTimeOfLastAnnouncement(const QString &announcement, uint v)
 {
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-    QByteArray h = QCryptographicHash::hash(announcement.toAscii().constData(),
+    QByteArray h = QCryptographicHash::hash(announcement.toLatin1().constData(),
                                             QCryptographicHash::Md5).toHex();
 #else
     QByteArray h = QCryptographicHash::hash(announcement.toLatin1().constData(),

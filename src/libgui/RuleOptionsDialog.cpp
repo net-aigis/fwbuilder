@@ -329,7 +329,7 @@ void RuleOptionsDialog::loadFWObject(FWObject *o)
     {
         string vers = "version_" + version;
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-        if (Resources::platform_res[platform.toAscii().constData()]->getResourceBool(
+        if (Resources::platform_res[platform.toLatin1().constData()]->getResourceBool(
               "/FWBuilderResources/Target/options/" +
               vers + "/pix_rule_syslog_settings"))
 #else

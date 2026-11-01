@@ -664,7 +664,7 @@ Firewall* CompilerDriver::locateObject()
         obj = Firewall::cast(
             objdb->findInIndex(
                 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-                objdb->getIntId(fwobjectname.toAscii().constData())));
+                objdb->getIntId(fwobjectname.toLatin1().constData())));
                 #else
                 objdb->getIntId(fwobjectname.toLatin1().constData())));
                 #endif
