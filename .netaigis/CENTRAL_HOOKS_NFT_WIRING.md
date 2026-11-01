@@ -1,19 +1,12 @@
 # nftables wiring for central hooks
 
 `CentralHooks` already treats platform `nftables` as a shell-hook
-backend. PR #6 (`feature/native-nftables-port`) sets `prolog_script` /
-`epilog_script` in `CompilerDriver_nft_run.cpp` the same way iptables
-does.
+backend. Branch `feature/central-hooks-on-nft` (based on PR #6) applies
+the compose call in `CompilerDriver_nft_run.cpp` and extends
+`ci/check-central-hooks.sh` for `fwb_nft`.
 
-When integrating that branch into `modernization/start`, apply the same
-compose call used in `CompilerDriver_ipt_run.cpp`:
-
-```cpp
-#include "CentralHooks.h"
-// ...
-QString prolog_merged = CentralHooks::composeOrAbort(
-    CentralHooks::Prolog, fw, platform,
-    fw->getOptionsObject()->getStr("prolog_script"), &hooks_error);
-```
+Prefer merging that combined branch after PR #6, or cherry-pick its
+nft wiring commit onto `modernization/start` once #6 and this hooks
+branch have both landed.
 
 Do not rework the native nftables routing compiler for this feature.
