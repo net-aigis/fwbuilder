@@ -187,7 +187,8 @@ bool RoutingCompiler_nft::FindDefaultRoute::processNext()
  */
 void RoutingCompiler_nft::compile()
 {
-    string banner = " Compiling routing rules for " + fw->getName();
+    string banner = " Compiling routing rules for " + fw->getName() +
+        (ipv6 ? " (IPv6)" : " (IPv4)");
     info(banner);
 
     Compiler::compile();
@@ -430,13 +431,16 @@ bool RoutingCompiler_nft::keepMatchingAddressFamily::processNext()
             noteRouteFamily(FWReference::getObject(*it), has_ipv4, has_ipv6);
     }
 
+    // Drop only rules that clearly belong to the other family. Rules with
+    // no detectable family still go through ExpandGroups / validators so a
+    // missed type check cannot silently discard every IPv6 route.
     if (want_ipv6)
     {
-        if (!has_ipv6) return true;
+        if (has_ipv4 && !has_ipv6) return true;
     }
     else
     {
-        if (!has_ipv4) return true;
+        if (has_ipv6 && !has_ipv4) return true;
     }
 
     tmp_queue.push_back(rule);
