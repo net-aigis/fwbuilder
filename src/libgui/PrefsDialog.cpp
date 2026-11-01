@@ -114,6 +114,7 @@ PrefsDialog::PrefsDialog(QWidget *parent) : QDialog(parent)
 
     m_dialog->wDir->setText(st->getWDir());
     m_dialog->dataDir->setText(st->getDataDir());
+    m_dialog->hooksDir->setText(st->getHooksBaseDir());
 
     m_dialog->objTooltips->setChecked( st->getObjTooltips() );
     m_dialog->advTooltipMode->setChecked(st->getBool("UI/AdvancedTooltips"));
@@ -475,6 +476,21 @@ void PrefsDialog::findDataDir()
     m_dialog->dataDir->setText(dir);
 }
 
+void PrefsDialog::findHooksDir()
+{
+    QString hooksDir = m_dialog->hooksDir->text();
+    if (hooksDir.isEmpty()) hooksDir = st->getHooksBaseDir();
+    if (hooksDir.isEmpty()) hooksDir = st->getOpenFileDir();
+    QString dir = QFileDialog::getExistingDirectory(
+        this, tr("Find central hooks directory"), hooksDir,
+        QFileDialog::ShowDirsOnly);
+
+    if (dir.isEmpty()) return;
+    st->setOpenFileDir(dir);
+
+    m_dialog->hooksDir->setText(dir);
+}
+
 void PrefsDialog::findSSH()
 {
     QString sshPath = m_dialog->sshPath->text();
@@ -528,6 +544,7 @@ void PrefsDialog::accept()
 
     st->setWDir( wd );
     st->setDataDir(m_dialog->dataDir->text());
+    st->setHooksBaseDir(m_dialog->hooksDir->text().trimmed());
 
     st->setObjTooltips( m_dialog->objTooltips->isChecked() );
     st->setBool("UI/AdvancedTooltips", m_dialog->advTooltipMode->isChecked());

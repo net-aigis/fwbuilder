@@ -92,6 +92,9 @@ class FWBSettings : public QSettings
     QString getDataDir();
     void    setDataDir(const QString &dataDir);
 
+    QString getHooksBaseDir();
+    void    setHooksBaseDir(const QString &dir);
+
     QString getOpenFileDir( const QString &existingPath = "");
     void    setOpenFileDir( const QString &d );
 

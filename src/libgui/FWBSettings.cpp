@@ -75,6 +75,7 @@ const char* ResSetpath = SETTINGS_PATH_PREFIX "/System/ResPath";
 const char* compression = SETTINGS_PATH_PREFIX "/DataFile/compression";
 const char* wdirSetpath = SETTINGS_PATH_PREFIX "/Environment/WDir";
 const char* datadirSetpath = SETTINGS_PATH_PREFIX "/Environment/DataDir";
+const char* hooksdirSetpath = SETTINGS_PATH_PREFIX "/Environment/HooksBaseDir";
 const char* ofdirSetpath = SETTINGS_PATH_PREFIX "/Environment/OpenFileDir";
 const char* startupActionSetpath =
     SETTINGS_PATH_PREFIX "/Environment/StartupAction";
@@ -520,6 +521,14 @@ QString FWBSettings::getDataDir() { return value(datadirSetpath).toString();}
 void FWBSettings::setDataDir(const QString &d) {
     setValue(datadirSetpath, d);
     FWObject::setDataDir(d.toUtf8().constData());
+}
+QString FWBSettings::getHooksBaseDir()
+{
+    return value(hooksdirSetpath).toString();
+}
+void FWBSettings::setHooksBaseDir(const QString &d)
+{
+    setValue(hooksdirSetpath, d);
 }
 int FWBSettings::getInfoStyle() { return value(infoStyleSetpath).toInt();}
 void FWBSettings::setInfoStyle(int s) { setValue(infoStyleSetpath,s);}
