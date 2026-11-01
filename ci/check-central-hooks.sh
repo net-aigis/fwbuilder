@@ -122,22 +122,27 @@ if positions != sorted(positions):
 print('PASS: hook order')
 PY
 
-# Unreadable file must fail the compile.
-chmod a-r "$hooks/prolog.d/10-common.sh"
-fail_dir="$outdir/compile-unreadable"
-rm -rf "$fail_dir"
-mkdir -p "$fail_dir"
-if "$compiler" -f "$baseline" -d "$fail_dir" "$fw_name" > "$fail_dir/compile.log" 2>&1; then
-    echo "FAIL: unreadable hook file was accepted" >&2
-    exit 1
+# Unreadable file must fail the compile. Root can still read mode-000
+# files, so skip this check when the runner is uid 0 (typical CI).
+if [[ "$(id -u)" != 0 ]]; then
+    chmod a-r "$hooks/prolog.d/10-common.sh"
+    fail_dir="$outdir/compile-unreadable"
+    rm -rf "$fail_dir"
+    mkdir -p "$fail_dir"
+    if "$compiler" -f "$baseline" -d "$fail_dir" "$fw_name" > "$fail_dir/compile.log" 2>&1; then
+        echo "FAIL: unreadable hook file was accepted" >&2
+        exit 1
+    fi
+    grep -Fq 'not readable' "$fail_dir/compile.log" || \
+    grep -Fq 'Cannot read central hooks file' "$fail_dir/compile.log" || {
+        cat "$fail_dir/compile.log" >&2
+        echo "FAIL: unreadable hook did not report a clear error" >&2
+        exit 1
+    }
+    chmod a+r "$hooks/prolog.d/10-common.sh"
+else
+    echo "SKIP: unreadable-hook check (running as root)"
 fi
-grep -Fq 'not readable' "$fail_dir/compile.log" || \
-grep -Fq 'Cannot read central hooks file' "$fail_dir/compile.log" || {
-    cat "$fail_dir/compile.log" >&2
-    echo "FAIL: unreadable hook did not report a clear error" >&2
-    exit 1
-}
-chmod a+r "$hooks/prolog.d/10-common.sh"
 
 # Symbolic link to a hook file must fail the compile.
 ln -s "$hooks/prolog.d/10-common.sh" "$hooks/prolog.d/15-link.sh"
