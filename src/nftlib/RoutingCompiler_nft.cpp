@@ -208,18 +208,21 @@ void RoutingCompiler_nft::compile()
     add(new dropRuleWithEmptyRE("drop rules with empty rule elements"));
     add(new rejectMixedAddressFamilies(
             "Reject routing rules that mix IPv4 and IPv6"));
+    // Do not use DropIPv4Rules/DropIPv6Rules here: they remove dual-stack
+    // interfaces from RItf and silently discard every IPv6 route that
+    // names an interface.
+    add(new keepMatchingAddressFamily(
+            "Keep routing rules for this address family"));
 
     // Each address family is compiled by its own pass. IPv6 rules are
     // not reported as unsupported: the IPv6 pass compiles them.
     if (ipv6)
     {
-        add(new DropIPv4Rules("drop ipv4 rules"));
         add(new validateIPv6Route(
                 "Validate IPv6 destination, gateway and interface"));
     }
     else
     {
-        add(new DropIPv6Rules("drop ipv6 rules"));
         add(new singleAdressInRGtw(
                 "Check if RGtw object has exactly one IP adress"));
         add(new validateNetwork("Validate network addresses"));
@@ -379,6 +382,40 @@ bool RoutingCompiler_nft::rejectMixedAddressFamilies::processNext()
         compiler->abort(rule, "Routing rule mixes IPv4 and IPv6");
         return true;
     }
+    tmp_queue.push_back(rule);
+    return true;
+}
+
+bool RoutingCompiler_nft::keepMatchingAddressFamily::processNext()
+{
+    RoutingRule *rule = getNext();
+    if (rule == nullptr) return false;
+
+    bool has_ipv4 = false;
+    bool has_ipv6 = false;
+    RuleElementRDst *destination = rule->getRDst();
+    if (destination != nullptr && destination->isAny())
+        has_ipv4 = true;
+    RuleElement *elements[2] = { rule->getRDst(), rule->getRGtw() };
+    for (int index = 0; index < 2; ++index)
+    {
+        RuleElement *element = elements[index];
+        if (element == nullptr || element->isAny()) continue;
+        for (FWObject::iterator it = element->begin(); it != element->end(); ++it)
+            noteRouteFamily(FWReference::getObject(*it), has_ipv4, has_ipv6);
+    }
+
+    RoutingCompiler_nft *nft = dynamic_cast<RoutingCompiler_nft*>(compiler);
+    const bool want_ipv6 = nft != nullptr && nft->compilingIPv6();
+    if (want_ipv6)
+    {
+        if (!has_ipv6) return true;
+    }
+    else
+    {
+        if (!has_ipv4) return true;
+    }
+
     tmp_queue.push_back(rule);
     return true;
 }

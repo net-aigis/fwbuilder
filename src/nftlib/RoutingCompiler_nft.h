@@ -97,6 +97,19 @@ namespace fwcompiler {
         };
 
         /**
+         * Keep rules that belong to this compiler pass. Unlike the
+         * shared DropIPv4/DropIPv6 processors, this does not strip
+         * dual-stack interfaces out of RItf.
+         */
+        class keepMatchingAddressFamily : public RoutingRuleProcessor
+        {
+        public:
+            explicit keepMatchingAddressFamily(const std::string &name)
+                : RoutingRuleProcessor(name) {}
+            virtual bool processNext();
+        };
+
+        /**
 	 * expand address range objects in destination
 	 */
         DECLARE_ROUTING_RULE_PROCESSOR(addressRangesInDst);
