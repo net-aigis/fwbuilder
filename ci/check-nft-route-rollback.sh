@@ -78,12 +78,7 @@ ip link set lo up
 ip link set eth0 up
 ip link set eth1 up
 ip addr add 192.168.1.1/24 dev eth1
-for iface in all default eth0 eth1; do
-    [ -w "/proc/sys/net/ipv6/conf/$iface/accept_dad" ] &&
-        printf '0\n' > "/proc/sys/net/ipv6/conf/$iface/accept_dad"
-    [ -w "/proc/sys/net/ipv6/conf/$iface/dad_transmits" ] &&
-        printf '0\n' > "/proc/sys/net/ipv6/conf/$iface/dad_transmits"
-done
+ip -6 addr add 2001:db8:2::1/64 dev eth1 nodad
 ip route add 203.0.113.0/24 via 192.168.1.9 dev eth1 proto dhcp
 ip route add 198.51.100.0/24 via 192.168.1.8 dev eth1 proto static
 printf '0' > /proc/sys/net/ipv4/ip_forward

@@ -98,16 +98,9 @@ ip link set lo up
 ip link set eth0 up
 ip link set eth1 up
 ip addr add 192.168.1.1/24 dev eth1
-# DAD leaves freshly added IPv6 addresses tentative, so the connected
-# route is missing and "ip -6 route add via ..." fails with ENETUNREACH.
-# The generated script adds addresses and routes in one start; disable
-# DAD in this disposable namespace before that sequence runs.
-for iface in all default eth0 eth1; do
-    [ -w "/proc/sys/net/ipv6/conf/$iface/accept_dad" ] &&
-        printf '0\n' > "/proc/sys/net/ipv6/conf/$iface/accept_dad"
-    [ -w "/proc/sys/net/ipv6/conf/$iface/dad_transmits" ] &&
-        printf '0\n' > "/proc/sys/net/ipv6/conf/$iface/dad_transmits"
-done
+# eth1 is unnumbered in the FWB fixture, so the generated script does not
+# configure it. ECMP still uses a nexthop on eth1 in 2001:db8:2::/64.
+ip -6 addr add 2001:db8:2::1/64 dev eth1 nodad
 # Foreign and DHCP routes that the generated script must not remove.
 ip route add 203.0.113.0/24 via 192.168.1.9 dev eth1 proto dhcp
 ip route add 198.51.100.0/24 via 192.168.1.8 dev eth1 proto static
