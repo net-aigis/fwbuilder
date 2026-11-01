@@ -30,6 +30,7 @@
 #include <iomanip>
 
 #include "CompilerDriver.h"
+#include "CentralHooks.h"
 #include "Configlet.h"
 
 #include "fwbuilder/FWObject.h"
@@ -86,6 +87,32 @@ void CompilerDriver::assembleFwScriptInternal(Cluster *cluster,
     string prolog_place = options->getStr("prolog_place");
     if (prolog_place.empty()) prolog_place = "fw_file";  // old default
     string pre_hook = fw->getOptionsObject()->getStr("prolog_script");
+    string post_hook = fw->getOptionsObject()->getStr("epilog_script");
+    // Central .sh hooks belong only in shell activation scripts, never in
+    // device policy languages (for example PF conf embedding).
+    if (prolog_place == "fw_file")
+    {
+        string hooks_error;
+        QString merged = CentralHooks::composeOrAbort(
+            CentralHooks::Prolog, fw, platform, pre_hook, &hooks_error);
+        if (!hooks_error.empty())
+        {
+            abort(hooks_error);
+            return;
+        }
+        pre_hook = merged.toUtf8().constData();
+    }
+    {
+        string hooks_error;
+        QString merged = CentralHooks::composeOrAbort(
+            CentralHooks::Epilog, fw, platform, post_hook, &hooks_error);
+        if (!hooks_error.empty())
+        {
+            abort(hooks_error);
+            return;
+        }
+        post_hook = merged.toUtf8().constData();
+    }
     string firewall_dir = options->getStr("firewall_dir");
     if (firewall_dir=="") firewall_dir = "/etc/fw";
 
@@ -156,7 +183,6 @@ void CompilerDriver::assembleFwScriptInternal(Cluster *cluster,
 
     script_skeleton->setVariable("verify_interfaces", "");
 
-    script_skeleton->setVariable("epilog_script",
-                                fw->getOptionsObject()->getStr("epilog_script").c_str());
+    script_skeleton->setVariable("epilog_script", post_hook.c_str());
 }
 

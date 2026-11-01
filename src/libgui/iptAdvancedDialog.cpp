@@ -203,6 +203,9 @@ iptAdvancedDialog::iptAdvancedDialog(QWidget *parent,FWObject *o)
     data.registerOption(m_dialog->epilog_script, fwoptions,
                         "epilog_script");
 
+    data.registerOption(m_dialog->hooks_profile, fwoptions,
+                        "hooks_profile");
+
     data.loadAll();
     switchLOG_ULOG();
 

@@ -68,6 +68,7 @@ public slots:
     virtual void accept();
     virtual void findWDir();
     virtual void findDataDir();
+    virtual void findHooksDir();
     virtual void findSSH();
     virtual void findSCP();
     virtual void findDiff();
