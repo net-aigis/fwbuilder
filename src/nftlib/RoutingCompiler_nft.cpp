@@ -203,9 +203,12 @@ void RoutingCompiler_nft::compile()
     add(new rItfChildOfFw("Check if RItf is an Iterface of this firewall"));
 
     add(new ExpandGroups("Expand groups in DST"));
-    add(new ExpandMultipleAddresses(
-            "Expand objects with multiple addresses in DST"));
-    add(new dropRuleWithEmptyRE("drop rules with empty rule elements"));
+    // Reject mixed rules and drop the other address family BEFORE
+    // ExpandMultipleAddresses. That expander uses MatchesAddressFamily and
+    // clears non-matching objects from rule elements, which would turn a
+    // mixed rule into a silent empty rule instead of an error, and would
+    // discard IPv6 routes on the IPv4 pass before they can be ignored
+    // cleanly.
     add(new rejectMixedAddressFamilies(
             "Reject routing rules that mix IPv4 and IPv6"));
     // Do not use DropIPv4Rules/DropIPv6Rules here: they remove dual-stack
@@ -213,6 +216,9 @@ void RoutingCompiler_nft::compile()
     // names an interface.
     add(new keepMatchingAddressFamily(
             "Keep routing rules for this address family"));
+    add(new ExpandMultipleAddresses(
+            "Expand objects with multiple addresses in DST"));
+    add(new dropRuleWithEmptyRE("drop rules with empty rule elements"));
 
     // Each address family is compiled by its own pass. IPv6 rules are
     // not reported as unsupported: the IPv6 pass compiles them.
@@ -324,10 +330,30 @@ void noteRouteFamily(FWObject *object, bool &ipv4, bool &ipv6)
     if (object == nullptr) return;
     if (object->getId() == FWObjectDatabase::ANY_ADDRESS_ID) return;
     if (Interface::cast(object) != nullptr) return;
+    if (NetworkIPv6::cast(object) != nullptr || IPv6::cast(object) != nullptr)
+    {
+        ipv6 = true;
+        return;
+    }
+    if (Network::cast(object) != nullptr || IPv4::cast(object) != nullptr)
+    {
+        ipv4 = true;
+        return;
+    }
     Address *address = Address::cast(object);
     if (address == nullptr || address->isAny()) return;
     const InetAddr *ip = address->getAddressPtr();
-    if (ip == nullptr) return;
+    if (ip == nullptr)
+    {
+        // Host/Firewall without a preferred address: look at typed children.
+        if (!object->getByType(IPv6::TYPENAME).empty() ||
+            !object->getByTypeDeep(IPv6::TYPENAME).empty())
+            ipv6 = true;
+        if (!object->getByType(IPv4::TYPENAME).empty() ||
+            !object->getByTypeDeep(IPv4::TYPENAME).empty())
+            ipv4 = true;
+        return;
+    }
     if (ip->isV6()) ipv6 = true;
     if (ip->isV4()) ipv4 = true;
 }
