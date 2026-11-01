@@ -60,7 +60,6 @@
 
 #include <QString>
 #include <QtDebug>
-#include <QRegExp>
 #include <QRegularExpression>
 #include <QStringList>
 
@@ -496,8 +495,9 @@ QString OSConfigurator_linux24::addressTableWrapper(FWObject *rule,
                                                     bool ipv6)
 {
     QString combined_command = command;
-    QRegExp address_table_re("\\$at_(\\S+)");
-    int pos = address_table_re.indexIn(command);
+    QRegularExpression address_table_re("\\$at_(\\S+)");
+    QRegularExpressionMatch address_table_m = address_table_re.match(command);
+    int pos = address_table_m.capturedStart();
     if (pos > -1)
     {
         QStringList command_lines = QString(command).split("\n", Qt::SkipEmptyParts);
@@ -513,7 +513,7 @@ QString OSConfigurator_linux24::addressTableWrapper(FWObject *rule,
         command_wrappers->collapseEmptyStrings(true);
         command_wrappers->setVariable("ipv6", ipv6);
 
-        QString at_var = address_table_re.cap(1);
+        QString at_var = address_table_m.captured(1);
         QString at_file = rule->getStr("address_table_file").c_str();
 
         command_wrappers->setVariable("address_table_file", at_file);
@@ -558,15 +558,18 @@ string OSConfigurator_linux24::printRunTimeWrappers(FWObject *rule,
 
     command_wrappers->setVariable("address_table", false);
 
-    QRegExp intf_re("\\$i_([^ :]+)");
+    QRegularExpression intf_re("\\$i_([^ :]+)");
 
     QStringList iface_names;
     QStringList iface_vars;
     int pos = -1;
-    while ((pos = intf_re.indexIn(combined_command, pos + 1)) > -1)
+    while (true)
     {
-        QString name = intf_re.cap(1);
-        int match_len = intf_re.matchedLength();
+        QRegularExpressionMatch intf_m = intf_re.match(combined_command, pos + 1);
+        pos = intf_m.capturedStart();
+        if (pos < 0) break;
+        QString name = intf_m.captured(1);
+        int match_len = intf_m.capturedLength();
         iface_names.push_back(name);
         iface_vars.push_back("$i_" + name);
         if (name.contains("*")) 

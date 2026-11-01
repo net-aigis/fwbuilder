@@ -1,4 +1,4 @@
-#include <QRegExp>
+#include <QRegularExpression>
 /*
 
                           Firewall Builder
@@ -123,14 +123,14 @@ instDialog::instDialog(QWidget *p) : QDialog(p)
     err_re.push_back("(fwb_[^:]*: \\S*\\.cpp:\\d{1,}: .*: Assertion .* failed.)");
     foreach(string re, err_re)
     {
-        error_re.push_back(QRegExp(re.c_str(), Qt::CaseInsensitive));
+        error_re.push_back(QRegularExpression(re.c_str(), QRegularExpression::CaseInsensitiveOption));
     }
 
     list<string> warn_re;
     BaseCompiler::warningRegExp(&warn_re);
     foreach(string re, warn_re)
     {
-        warning_re.push_back(QRegExp(re.c_str()));
+        warning_re.push_back(QRegularExpression(re.c_str()));
     }
 
 

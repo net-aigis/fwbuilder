@@ -35,7 +35,6 @@
 
 #include "combinedAddress.h"
 
-#include <QRegExp>
 #include <QRegularExpression>
 
 

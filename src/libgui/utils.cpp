@@ -41,7 +41,6 @@
 
 #include <QList>
 #include <QStringList>
-#include <QRegExp>
 #include <QRegularExpression>
 #include <QPixmap>
 #include <QApplication>

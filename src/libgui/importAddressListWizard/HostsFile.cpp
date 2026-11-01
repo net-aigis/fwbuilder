@@ -27,7 +27,7 @@
 
 #include <QFile>
 #include <QIODevice>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QtDebug>
 
 extern int fwbdebug;
@@ -44,8 +44,8 @@ void HostsFile::parse()
 
     data.clear();
 
-    QRegExp comment("^\\s*#");
-    QRegExp hosts_line("^\\s*(\\S+)\\s+(\\S*)");
+    QRegularExpression comment("^\\s*#");
+    QRegularExpression hosts_line("^\\s*(\\S+)\\s+(\\S*)");
 
     while ( ! file.atEnd())
     {
@@ -53,15 +53,16 @@ void HostsFile::parse()
 
         if (fwbdebug) qDebug() << "Line: " << line;
 
-        if (comment.indexIn(line) > -1) continue;
-        if (hosts_line.indexIn(line) > -1)
+        if (comment.match(line).hasMatch()) continue;
+        QRegularExpressionMatch hosts_m = hosts_line.match(line);
+        if (hosts_m.hasMatch())
         {
-            QString addr_s = hosts_line.cap(1);
-            QStringList names = hosts_line.cap(2).split(",");
+            QString addr_s = hosts_m.captured(1);
+            QStringList names = hosts_m.captured(2).split(",");
 
             if (fwbdebug)
-                qDebug() << "cap(1)=" << hosts_line.cap(1)
-                         << "cap(2)=" << hosts_line.cap(2);
+                qDebug() << "cap(1)=" << hosts_m.captured(1)
+                         << "cap(2)=" << hosts_m.captured(2);
 
             try
             {

@@ -38,7 +38,6 @@
 #include <qvector.h>
 #include <set>
 
-class QRegExp;
 class ObjectDescriptor;
 class QWidget;
 

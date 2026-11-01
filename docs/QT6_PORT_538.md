@@ -25,7 +25,7 @@ The Leap Qt6 **reference** job that builds upstream `master` with CMake
 |---------------|--------|---------------|
 | `toAscii()` / `fromAscii` | done (~55 files → `toLatin1`/`fromLatin1`) | — |
 | `QDesktopWidget` | done (GUI uses `QScreen`; Qt&lt;5.14 kept behind `#if`) | — |
-| `QRegExp` | open (~81 files) | Migrate to `QRegularExpression`; interim via Qt5Compat |
+| `QRegExp` | mostly done | Migrated to `QRegularExpression`; `FilterDialog` still on Qt5Compat/`QRegExp` (Wildcard API) |
 | `QTextCodec` | open (test mains + a few) | Qt5Compat or `QStringConverter` |
 | `endl` on streams | open (many) | Prefer `Qt::endl` where needed |
 
@@ -36,10 +36,10 @@ Qt6 preferred on this branch; Qt5 path must stay buildable (CI baseline still us
 
 - Full tree builds with `qmake6` (EXIT 0), including `src/gui/fwbuilder` and policy compilers (`fwb_nft`, `fwb_ipt`, …).
 - `QMAKE_UIC_FLAGS += -c string` required so `.ui` subclass slots compile.
-- Remaining work: drop Qt5Compat/`QRegExp` where still used, Windows/macOS smoke, CI green on PR #9.
+- Remaining work: finish `FilterDialog` Wildcard migration then drop `core5compat` if clear of `QTextCodec` too; Windows/macOS smoke.
 
 ## Next code passes
 
 1. Drive Qt6 CI green (fix remaining compile breaks after first CI run).
-2. Replace `QRegExp` module by module; drop `core5compat` when clear.
+2. Finish `FilterDialog` (`QRegExp::Wildcard` → `QRegularExpression::wildcardToRegularExpression`); drop `core5compat` when `QTextCodec` is also gone.
 3. Windows/macOS Qt6 smoke once Linux CI is green.

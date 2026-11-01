@@ -25,7 +25,7 @@
 
 #include "pixInterfaces.h"
 
-#include <QRegExp>
+#include <QRegularExpression>
 
 /*
  * http://www.cisco.com/en/US/docs/security/asa/asa70/command/reference/gl.html#wp1644971
@@ -41,11 +41,11 @@
 
 bool pixInterfaces::parseVlan(const QString &name, QString *base_name, int *vlan_id)
 {
-    QRegExp vlan_name_pattern("([a-zA-Z-]+\\d{1,}(/\\d{1,})*)\\.(\\d{1,})");
-    if (vlan_name_pattern.indexIn(name) != -1)
-    {
-        if (base_name!=NULL) *base_name = vlan_name_pattern.cap(1);
-        if (vlan_id!=NULL) *vlan_id = vlan_name_pattern.cap(3).toInt();
+    QRegularExpression vlan_name_pattern("([a-zA-Z-]+\\d{1,}(/\\d{1,})*)\\.(\\d{1,})");
+    QRegularExpressionMatch _vlan_name_pattern_m = vlan_name_pattern.match(name);
+    if (_vlan_name_pattern_m.hasMatch()) {
+        if (base_name!=NULL) *base_name = _vlan_name_pattern_m.captured(1);
+        if (vlan_id!=NULL) *vlan_id = _vlan_name_pattern_m.captured(3).toInt();
         return true;
     }
     return false;

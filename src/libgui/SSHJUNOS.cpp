@@ -33,7 +33,6 @@
 
 #include <QObject>
 #include <QTimer>
-#include <QRegExp>
 #include <QRegularExpression>
 #include <QMessageBox>
 #include <QApplication>

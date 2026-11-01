@@ -57,7 +57,6 @@
 #include "config.h"
 
 #include <QString>
-#include <QRegExp>
 #include <QtDebug>
 
 #include <algorithm>

@@ -35,7 +35,6 @@
 #include "fwbuilder/RuleElement.h"
 #include "fwbuilder/Firewall.h"
 
-class QRegExp;
 class ObjectDescriptor;
 class QWidget;
 

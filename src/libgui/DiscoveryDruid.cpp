@@ -1038,15 +1038,15 @@ void DiscoveryDruid::typedCustomNS()
 
 bool DiscoveryDruid::isInetAddr(const QString s)
 {
-    QRegExp r=QRegExp("^(\\d|\\.)+$",Qt::CaseInsensitive); //non wildcard
-    return r.exactMatch(s);
+    QRegularExpression r("^(\\d|\\.)+$", QRegularExpression::CaseInsensitiveOption); //non wildcard
+    return QRegularExpression(QRegularExpression::anchoredPattern(r.pattern()), r.patternOptions()).match(s).hasMatch();
 }
 
 QString DiscoveryDruid::testInetAddr(const QString s)
 {
     QString res;
-    QRegExp r=QRegExp("^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$",Qt::CaseInsensitive); //non wildcard
-    if (r.exactMatch(s))
+    QRegularExpression r("^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$",QRegularExpression::CaseInsensitiveOption); //non wildcard
+    if (QRegularExpression(QRegularExpression::anchoredPattern(r.pattern()), r.patternOptions()).match(s).hasMatch())
     {
         try
         {
@@ -1988,10 +1988,9 @@ void DiscoveryDruid::changedSeedHost()
         { // seems to be an IP Address
             m_dialog->DNSprogress->hide();
             timer->stop();
-            QRegExp r = QRegExp(
-                "^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$",
-                Qt::CaseInsensitive); //non wildcard
-            if (r.exactMatch(HostName))
+            QRegularExpression r("^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$",
+                QRegularExpression::CaseInsensitiveOption); //non wildcard
+            if (QRegularExpression(QRegularExpression::anchoredPattern(r.pattern()), r.patternOptions()).match(HostName).hasMatch())
             {
                 try
                 {

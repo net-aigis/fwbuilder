@@ -34,7 +34,7 @@
 #include "fwbuilder/Rule.h"
 #include "fwbuilder/Firewall.h"
 
-#include <QRegExp>
+#include <QRegularExpression>
 
 #include <list>
 
@@ -47,8 +47,8 @@ class CompilerOutputPanel : public BaseObjectDialog
 
     libfwbuilder::RoutingRule *rule;
     Ui::CompilerOutputPanel_q *m_widget;
-    std::list<QRegExp> error_re;
-    std::list<QRegExp> warning_re;
+    std::list<QRegularExpression> error_re;
+    std::list<QRegularExpression> warning_re;
 
  public:
 

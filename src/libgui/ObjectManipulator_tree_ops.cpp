@@ -84,7 +84,6 @@
 #include <QPixmap>
 #include <QMdiSubWindow>
 #include <QMdiArea>
-#include <QRegExp>
 #include <QUndoStack>
 #include <QScrollBar>
 

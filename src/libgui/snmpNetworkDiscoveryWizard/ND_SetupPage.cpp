@@ -1,4 +1,4 @@
-#include <QRegExp>
+#include <QRegularExpression>
 /*
 
                           Firewall Builder
@@ -99,12 +99,12 @@ bool ND_SetupPage::isSeedHostOK(const QString &hostName)
 {
     if (hostName.isEmpty()) return false;
 
-    QRegExp r = QRegExp("^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$",
-                        Qt::CaseInsensitive); //non wildcard
+    QRegularExpression r("^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$",
+                        QRegularExpression::CaseInsensitiveOption); //non wildcard
 
     last_error = "";
 
-    if (r.exactMatch(hostName))
+    if (QRegularExpression(QRegularExpression::anchoredPattern(r.pattern()), r.patternOptions()).match(hostName).hasMatch())
     {
         try
         {
@@ -125,8 +125,8 @@ bool ND_SetupPage::isSeedHostOK(const QString &hostName)
 
 bool ND_SetupPage::looksLikeIpAddress(const QString &s)
 {
-    QRegExp r=QRegExp("^(\\d|\\.)+$",Qt::CaseInsensitive); //non wildcard
-    return r.exactMatch(s);
+    QRegularExpression r("^(\\d|\\.)+$", QRegularExpression::CaseInsensitiveOption); //non wildcard
+    return QRegularExpression(QRegularExpression::anchoredPattern(r.pattern()), r.patternOptions()).match(s).hasMatch();
 }
 
 void ND_SetupPage::displayStatusError(const QString &err)

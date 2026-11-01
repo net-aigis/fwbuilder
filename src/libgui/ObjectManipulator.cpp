@@ -88,7 +88,7 @@
 #include <QMessageBox>
 #include <QTime>
 #include <QObject>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QtDebug>
 #include <QHeaderView>
 #include <QUndoStack>
@@ -314,11 +314,11 @@ QString ObjectManipulator::makeNameUnique(FWObject* parent,
 
     if (obj_type == Interface::TYPENAME)
     {
-        QRegExp rx("([a-zA-Z-]+)(\\d{1,})");
-        if (rx.indexIn(obj_name) != -1)
-        {
-            basename = rx.cap(1);
-            suffix = rx.cap(2).toInt();
+        QRegularExpression rx("([a-zA-Z-]+)(\\d{1,})");
+        QRegularExpressionMatch _rx_m = rx.match(obj_name);
+        if (_rx_m.hasMatch()) {
+            basename = _rx_m.captured(1);
+            suffix = _rx_m.captured(2).toInt();
         }
     }
 

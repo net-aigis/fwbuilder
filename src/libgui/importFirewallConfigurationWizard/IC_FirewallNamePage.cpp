@@ -30,7 +30,7 @@
 
 #include <QString>
 #include <QFile>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QTextStream>
 #include <QtDebug>
 
@@ -58,13 +58,13 @@ void IC_FirewallNamePage::initializePage()
 
     if (platform == "pix" || platform == "fwsm" || platform == "iosacl")
     {
-        QRegExp cisco_re("^hostname\\s+(\\S+)");
+        QRegularExpression cisco_re("^hostname\\s+(\\S+)");
 
         foreach(QString line, *buf)
         {
-            if (cisco_re.indexIn(line) > -1)
-            {
-                QString name = cisco_re.cap(1).replace("\"", "").replace("'", "");
+            QRegularExpressionMatch _cisco_re_m = cisco_re.match(line);
+            if (_cisco_re_m.hasMatch()) {
+                QString name = _cisco_re_m.captured(1).replace("\"", "").replace("'", "");
                 m_dialog->firewallName->setText(name);
                 break;
             }

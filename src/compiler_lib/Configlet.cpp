@@ -31,7 +31,7 @@
 #include "fwbuilder/Resources.h"
 #include "fwbuilder/Constants.h"
 
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QTextStream>
 #include <QDir>
 #include <QFile>
@@ -172,8 +172,8 @@ QString Configlet::expand()
 {
     // Need non-greedy matching so that if_re matches only one {{?var}} ... {{?}}
     // clause
-    QRegExp var_re("\\{\\{\\$([^}]*)\\}\\}", Qt::CaseSensitive, QRegExp::RegExp2);
-    var_re.setMinimal(true);
+    QRegularExpression var_re("\{\{\$([^}]*)\}\}",
+                               QRegularExpression::InvertedGreedinessOption);
 
     // remove comments before processing {{$var}} and {{if var}} so we can
     // use these in comments
@@ -197,9 +197,12 @@ QString Configlet::expand()
 
     int counter = 0;
     int pos = 0;
-    while ((pos = var_re.indexIn(all_code, pos)) != -1 && counter < 1000)
+    while (counter < 1000)
     {
-        QString var = var_re.cap(1);
+        QRegularExpressionMatch var_m = var_re.match(all_code, pos);
+        pos = var_m.capturedStart();
+        if (pos == -1) break;
+        QString var = var_m.captured(1);
 
         if (vars.count(var) > 0)
         {
@@ -245,21 +248,24 @@ QString Configlet::expand()
  */
 bool Configlet::processIf(QString &stream, int pos)
 {
-    QRegExp if_re("\\{\\{if {1,}([^}]{1,})\\}\\}", Qt::CaseSensitive, QRegExp::RegExp2);
-    QRegExp endif_re("\\{\\{endif\\}\\}", Qt::CaseSensitive, QRegExp::RegExp2);
-    if_re.setMinimal(true);
-    endif_re.setMinimal(true);
-    int current_if_pos = if_re.indexIn(stream, pos);
+    QRegularExpression if_re("\{\{if {1,}([^}]{1,})\}\}",
+                             QRegularExpression::InvertedGreedinessOption);
+    QRegularExpression endif_re("\{\{endif\}\}",
+                                QRegularExpression::InvertedGreedinessOption);
+    QRegularExpressionMatch current_if_m = if_re.match(stream, pos);
+    int current_if_pos = current_if_m.capturedStart();
     if (current_if_pos == -1) return false;
 
-    int current_if_length = if_re.cap(0).length();
-    QString current_if_var = if_re.cap(1);
+    int current_if_length = current_if_m.capturedLength();
+    QString current_if_var = current_if_m.captured(1);
 
     // look what is next, another opening if or closing endif
-    int next_if_pos = if_re.indexIn(
+    QRegularExpressionMatch next_if_m = if_re.match(
         stream, current_if_pos + current_if_length);
-    int next_endif_pos = endif_re.indexIn(
+    int next_if_pos = next_if_m.capturedStart();
+    QRegularExpressionMatch next_endif_m = endif_re.match(
         stream, current_if_pos + current_if_length);
+    int next_endif_pos = next_endif_m.capturedStart();
 
     if (next_if_pos != -1 && next_if_pos < next_endif_pos)
     {
@@ -271,7 +277,7 @@ bool Configlet::processIf(QString &stream, int pos)
 
     if (next_endif_pos != -1)
     {
-        int next_endif_length = endif_re.cap(0).length();
+        int next_endif_length = next_endif_m.capturedLength();
         // current if statement starts at current_if_pos
         // and ends at next_endif_pos + next_endif_length
         int current_if_clause_length =

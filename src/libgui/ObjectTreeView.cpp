@@ -1,4 +1,4 @@
-#include <QRegExp>
+#include <QRegularExpression>
 /*
 
                           Firewall Builder
@@ -895,23 +895,24 @@ static bool filterMatchesPortRange(const QStringList &args,
     TCPUDPService *service = dynamic_cast<TCPUDPService*>(obj);
     if (!service) return false;
 
-    QRegExp rx("\\s*([><]?)\\s*(\\d*)(?:-(\\d*))?");
+    QRegularExpression rx("\\s*([><]?)\\s*(\\d*)(?:-(\\d*))?");
 
     foreach (const QString &arg, args) {
 
-        if (!rx.exactMatch(arg)) continue;
+        QRegularExpressionMatch _rx_m = QRegularExpression(QRegularExpression::anchoredPattern(rx.pattern()), rx.patternOptions()).match(arg);
+        if (!_rx_m.hasMatch()) continue;
 
-        int lowerBound = rx.cap(2).toInt(), upperBound = lowerBound;
+        int lowerBound = _rx_m.captured(2).toInt(), upperBound = lowerBound;
 
-        if (rx.pos(3) != -1) {
-            upperBound = rx.cap(3).toInt();
+        if (_rx_m.capturedStart(3) != -1) {
+            upperBound = _rx_m.captured(3).toInt();
         }
 
-        if (rx.pos(1) != -1) {
-            if (rx.pos(3) != -1) // [><] cannot be combined with range
+        if (_rx_m.capturedStart(1) != -1) {
+            if (_rx_m.capturedStart(3) != -1) // [><] cannot be combined with range
                 continue;
 
-            if (rx.cap(1) == ">") {
+            if (_rx_m.captured(1) == ">") {
                 upperBound = 65535;
                 ++lowerBound; // Adjust for using >= below
             } else {// "<"
@@ -950,22 +951,23 @@ static bool filterMatchesIpAddress(const QStringList &args,
     Address *addr = dynamic_cast<Address*>(obj);
     if (!addr) return false;
 
-    QRegExp rx("\\s*([.:0-9a-fA-F]+)(?:/([.:0-9a-fA-F]+))?");
+    QRegularExpression rx("\\s*([.:0-9a-fA-F]+)(?:/([.:0-9a-fA-F]+))?");
 
     InetAddrMask searchAddrAndMask;
     foreach (const QString &arg, args) {
 
-        if (!rx.exactMatch(arg)) continue;
+        QRegularExpressionMatch _rx_m = QRegularExpression(QRegularExpression::anchoredPattern(rx.pattern()), rx.patternOptions()).match(arg);
+        if (!_rx_m.hasMatch()) continue;
 
         try {
-            std::string netmask = rx.cap(2).isEmpty() ? "32" : rx.cap(2).toStdString();
-            InetAddr ipv4addr(rx.cap(1).toStdString());
+            std::string netmask = _rx_m.captured(2).isEmpty() ? "32" : _rx_m.captured(2).toStdString();
+            InetAddr ipv4addr(_rx_m.captured(1).toStdString());
             InetAddr ipv4mask(netmask);
             searchAddrAndMask = InetAddrMask(ipv4addr, ipv4mask);
         } catch (const FWException &) { // Could not create IPv4 object. Trying IPv6.
             try {
-                int netmask = rx.cap(2).isEmpty() ? 128 : rx.cap(2).toInt();
-                InetAddr ipv6addr(AF_INET6, rx.cap(1).toStdString());
+                int netmask = _rx_m.captured(2).isEmpty() ? 128 : _rx_m.captured(2).toInt();
+                InetAddr ipv6addr(AF_INET6, _rx_m.captured(1).toStdString());
                 InetAddr ipv6mask(AF_INET6, netmask);
                 searchAddrAndMask = InetAddrMask(ipv6addr, ipv6mask);
             } catch (const FWException &) { // Could not create IPv6 object.
@@ -1007,12 +1009,16 @@ static bool filterMatchesIpAddress(const QStringList &args,
 static bool filterMatchesCommand(const QString &text,
                                  ObjectTreeViewItem *item)
 {
-    QRegExp rx("(?:(port)|(ip)):(.*)", Qt::CaseInsensitive);
-    if (!rx.exactMatch(text)) return false;
+    QRegularExpression rx("(?:(port)|(ip)):(.*)",
+                          QRegularExpression::CaseInsensitiveOption);
+    QRegularExpressionMatch _rx_m =
+        QRegularExpression(QRegularExpression::anchoredPattern(rx.pattern()),
+                           rx.patternOptions()).match(text);
+    if (!_rx_m.hasMatch()) return false;
 
-    QStringList args = rx.cap(3).split(",", Qt::SkipEmptyParts);
+    QStringList args = _rx_m.captured(3).split(",", Qt::SkipEmptyParts);
 
-    if (rx.pos(1) != -1)
+    if (_rx_m.capturedStart(1) != -1)
         return (filterMatchesPortRange(args, item->getFWObject()));
     else
         return (filterMatchesIpAddress(args, item->getFWObject()));

@@ -35,7 +35,7 @@
 #include <QObject>
 #include <QtDebug>
 #include <QHash>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QMessageBox>
 #include <QTime>
 #include <QElapsedTimer>
@@ -915,7 +915,7 @@ QString RuleSetModel::findUniqueNameForGroup(const QString &groupName)
 
     bool exactNameExists = false;
 
-    QRegExp rx("^(.*)-(\\d+)$");
+    QRegularExpression rx("^(.*)-(\\d+)$");
 
     foreach (RuleNode *node, root->children)
     {
@@ -925,10 +925,10 @@ QString RuleSetModel::findUniqueNameForGroup(const QString &groupName)
 
         exactNameExists = exactNameExists || (name == groupName);
 
-        if (rx.exactMatch(name))
-        {
-            QString nameSection = rx.capturedTexts().at(1);
-            QString countSection = rx.capturedTexts().at(2);
+        QRegularExpressionMatch _rx_m = QRegularExpression(QRegularExpression::anchoredPattern(rx.pattern()), rx.patternOptions()).match(name);
+        if (_rx_m.hasMatch()) {
+            QString nameSection = _rx_m.capturedTexts().at(1);
+            QString countSection = _rx_m.capturedTexts().at(2);
 
             int curCnt = countSection.toInt();
 

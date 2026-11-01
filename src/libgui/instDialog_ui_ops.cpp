@@ -75,7 +75,7 @@
 #include <QBrush>
 #include <QTextFormat>
 #include <QObject>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QtDebug>
 #include <QTime>
 
@@ -784,10 +784,10 @@ void instDialog::addToLog(const QString &buf)
     {
         QTextCharFormat format = normal_format;
 
-        list<QRegExp>::const_iterator it;
+        list<QRegularExpression>::const_iterator it;
         for (it=error_re.begin(); it!=error_re.end(); ++it)
         {
-            if ((*it).indexIn(line) != -1)
+            if ((*it).match(line).hasMatch())
             {
                 format = error_format;
                 break;
@@ -796,7 +796,7 @@ void instDialog::addToLog(const QString &buf)
 
         for (it=warning_re.begin(); it!=warning_re.end(); ++it)
         {
-            if ((*it).indexIn(line) != -1)
+            if ((*it).match(line).hasMatch())
             {
                 format = warning_format;
                 break;
