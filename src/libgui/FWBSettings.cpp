@@ -50,6 +50,8 @@
 #include <QCryptographicHash>
 #include <QTime>
 #include <QGuiApplication>
+#include <QPageLayout>
+#include <QPageSize>
 #include <QScreen>
 #if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
 #include <QDesktopWidget>
@@ -222,7 +224,6 @@ void FWBSettings::init(bool force_first_time_run)
                 uuid_settings->remove(appGUID_4_0);
             } else
             {
-                qsrand(time(NULL));
                 uuid_settings->setValue(appGUID, QUuid::createUuid().toString());
                 first_run = true;
             }
@@ -286,7 +287,6 @@ void FWBSettings::init(bool force_first_time_run)
     if (my_uuid == "b7203c47-06bf-4878-9ff5-6afffb2db546" ||
         my_uuid == "46759a87-7956-431f-a171-ccb754ef239e")
     {
-        qsrand(time(NULL));
         uuid_settings->setValue(appGUID, QUuid::createUuid().toString());
     }
 
@@ -953,10 +953,17 @@ void FWBSettings::getPrinterOptions(QPrinter *printer,
 #ifndef Q_OS_MAC
     printer->setOutputFileName(getStr("PrintSetup/outputFileName"));
 #endif
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    printer->setPageOrientation(
+        QPageLayout::Orientation(getInt("PrintSetup/orientation")));
+    printer->setPageSize(
+        QPageSize(QPageSize::PageSizeId(getInt("PrintSetup/pageSize"))));
+#else
     printer->setOrientation(
         QPrinter::Orientation(getInt("PrintSetup/orientation")));
     printer->setPageSize(
         QPrinter::PageSize(getInt("PrintSetup/pageSize")));
+#endif
     printer->setPageOrder(
         QPrinter::PageOrder(getInt("PrintSetup/pageOrder")));
 //    int res = getInt("PrintSetup/resolution");
@@ -982,8 +989,13 @@ void FWBSettings::setPrinterOptions(QPrinter *printer,
            printer->printerSelectionOption());
 #endif
     setStr("PrintSetup/outputFileName",printer->outputFileName());
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    setInt("PrintSetup/orientation", int(printer->pageLayout().orientation()));
+    setInt("PrintSetup/pageSize", int(printer->pageLayout().pageSize().id()));
+#else
     setInt("PrintSetup/orientation",printer->orientation());
     setInt("PrintSetup/pageSize",printer->pageSize());
+#endif
     setInt("PrintSetup/pageOrder",printer->pageOrder());
 //    setInt("PrintSetup/resolution",printer->resolution());
     setInt("PrintSetup/colorMode",printer->colorMode());
