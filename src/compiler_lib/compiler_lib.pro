@@ -11,6 +11,7 @@ SOURCES	 =  CompilerDriver.cpp \
 			CompilerDriver_files.cpp \
 			CompilerDriver_compile.cpp \
 			CompilerDriver_generators.cpp \
+			CentralHooks.cpp \
 			Configlet.cpp \
 			interfaceProperties.cpp \
 			linux24Interfaces.cpp \
@@ -26,6 +27,7 @@ SOURCES	 =  CompilerDriver.cpp \
 
 HEADERS	 = ../../config.h \
 			CompilerDriver.h \
+			CentralHooks.h \
 			Configlet.h \
 			interfaceProperties.h \
 			linux24Interfaces.h \

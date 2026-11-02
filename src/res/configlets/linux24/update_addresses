@@ -51,9 +51,11 @@ missing_address() {
     test "$cmd" = "add" && {
       echo "# Adding ip address: $interface $addr"
 ## Use "broadcast +" syntax to make ip assign broadcast automatically,
-## but only for ipv4 addresses
+## but only for ipv4 addresses. IPv6 uses nodad so the connected route
+## appears immediately; otherwise routes added in the same start fail
+## with ENETUNREACH while the address is still tentative.
       echo $addr | grep -q ':' && {
-          $FWBDEBUG $IP addr $cmd $addr dev $interface
+          $FWBDEBUG $IP addr $cmd $addr dev $interface nodad
       } || {
           $FWBDEBUG $IP addr $cmd $addr broadcast + dev $interface
       }

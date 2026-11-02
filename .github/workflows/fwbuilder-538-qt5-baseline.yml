@@ -19,6 +19,11 @@ jobs:
     container:
       image: opensuse/leap:16.0
     timeout-minutes: 60
+    env:
+      # Reuse compiler results across PR commits; compiler identity and
+      # included headers are validated by ccache before each cache hit.
+      CCACHE_COMPILERCHECK: content
+      CCACHE_MAXSIZE: 512M
     defaults:
       run:
         shell: bash
@@ -61,15 +66,57 @@ jobs:
         run: |
           set -euo pipefail
           zypper -n install --no-recommends \
-            gcc gcc-c++ make which autoconf automake libtool gettext-tools pkg-config \
+            gcc gcc-c++ ccache python3 make which autoconf automake libtool gettext-tools pkg-config \
             libqt5-qtbase-devel libqt5-qttools-devel libqt5-qtsvg-devel \
             libxml2-devel libxslt-devel net-snmp-devel \
             flex bison \
             2>&1 | tee ci-logs/dependencies.log
 
+      # A new runner/container has an empty filesystem. Restore only ccache,
+      # never old generated Makefiles or source trees (which can go stale).
+      - name: Restore cached C/C++ compiler results
+        id: ccache_restore
+        uses: actions/cache/restore@v4
+        with:
+          path: .ci-ccache
+          key: fwb-leap16-qt5-ccache-v1-pr${{ github.event.pull_request.number || 0 }}-${{ github.sha }}
+          restore-keys: |
+            fwb-leap16-qt5-ccache-v1-pr${{ github.event.pull_request.number || 0 }}-
+            fwb-leap16-qt5-ccache-v1-
+
+      - name: Enable ccache for legacy qmake/Autotools compiler calls
+        id: ccache_setup
+        run: |
+          set -euo pipefail
+          ccache_bin="$(command -v ccache)"
+          test -x "$ccache_bin"
+          # A repository-relative cache path is shared by the job container
+          # and the cache action. Do not cache the generated Makefiles.
+          export CCACHE_DIR="$GITHUB_WORKSPACE/.ci-ccache"
+          export CCACHE_BASEDIR="$GITHUB_WORKSPACE"
+          mkdir -p "$CCACHE_DIR"
+          printf 'CCACHE_DIR=%s\nCCACHE_BASEDIR=%s\n' \
+            "$CCACHE_DIR" "$CCACHE_BASEDIR" >> "$GITHUB_ENV"
+          # Both qmake and the original Autotools build call compiler names
+          # directly; put lightweight ccache symlinks before /usr/bin.
+          wrappers=/tmp/fwb-ci-compiler-wrappers
+          mkdir -p "$wrappers"
+          for compiler in gcc g++ cc c++; do
+            ln -sfn "$ccache_bin" "$wrappers/$compiler"
+          done
+          # Never write to GITHUB_PATH in a container job. The runner would
+          # reuse its host PATH inside the container and lose bash / tar.
+          PATH="$wrappers:$PATH" command -v ccache >/dev/null
+          test -x "$wrappers/g++"
+          ccache --zero-stats
+          ccache --version | head -n 1
+          echo 'Compiler cache active for subsequent configure/build steps.'
+
       - name: Configure unchanged FWB 5.3.8 Autotools and qmake
         run: |
           set -euo pipefail
+          export PATH="/tmp/fwb-ci-compiler-wrappers:$PATH"
+          test "$(command -v g++)" = /tmp/fwb-ci-compiler-wrappers/g++
           # Legacy autogen.sh uses `which` to detect GNU make.
           command -v which
           command -v make
@@ -85,12 +132,70 @@ jobs:
           bash ./autogen.sh --prefix=/usr --with-qmake="${qmake_bin##*/}" \
             2>&1 | tee ci-logs/configure.log
 
+      # Full legacy/GUI build remains intact for the preserved baseline.
+      # PR #6 builds only native nftables and its direct static dependencies.
       - name: Compile preserved FWB 5.3.8 baseline
+        if: ${{ github.event_name != 'pull_request' || (github.head_ref != 'feature/native-nftables-port' && github.head_ref != 'feature/central-hooks-on-nft') }}
         run: |
           set -euo pipefail
+          export PATH="/tmp/fwb-ci-compiler-wrappers:$PATH"
+          test "$(command -v g++)" = /tmp/fwb-ci-compiler-wrappers/g++
           make -j2 2>&1 | tee ci-logs/build.log
 
+      - name: Compile native nftables and direct dependencies only
+        if: ${{ github.event_name == 'pull_request' && (github.head_ref == 'feature/native-nftables-port' || github.head_ref == 'feature/central-hooks-on-nft') }}
+        run: |
+          set -euo pipefail
+          export PATH="/tmp/fwb-ci-compiler-wrappers:$PATH"
+          test "$(command -v g++)" = /tmp/fwb-ci-compiler-wrappers/g++
+          # These exact link inputs are declared in src/nft/nft.pro.
+          # qmake/autogen creates all Makefiles; do NOT build the GUI or the
+          # unused iptables, PF, Cisco, Juniper and other compiler binaries.
+          targets=(
+            src/libfwbuilder/src/fwbuilder
+            src/libfwbuilder/src/fwcompiler
+            src/common
+            src/compiler_lib
+            src/iptlib
+            src/nftlib
+            src/nft
+          )
+          printf '%s\n' "${targets[@]}" > ci-logs/nft-build-targets.log
+          for target in "${targets[@]}"; do
+            test -f "$target/Makefile" || {
+              echo "Missing qmake-generated Makefile: $target" >&2
+              exit 1
+            }
+          done
+          {
+            for target in "${targets[@]}"; do
+              printf '\n=== Building %s ===\n' "$target"
+              make -j2 -C "$target"
+            done
+          } 2>&1 | tee ci-logs/build.log
+          test -x src/nft/fwb_nft || {
+            echo 'Targeted build did not produce src/nft/fwb_nft' >&2
+            exit 1
+          }
+
+      - name: Report C/C++ compiler cache statistics
+        if: ${{ always() && steps.ccache_setup.outcome == 'success' }}
+        run: |
+          set -euo pipefail
+          mkdir -p ci-logs
+          ccache --show-stats 2>&1 | tee ci-logs/ccache.log
+
+      # Save even when compilation failed: previously compiled translation
+      # units remain useful for the next corrected commit.
+      - name: Preserve C/C++ cache for the next commit
+        if: ${{ always() && steps.ccache_setup.outcome == 'success' && steps.ccache_restore.outputs.cache-hit != 'true' }}
+        uses: actions/cache/save@v4
+        with:
+          path: .ci-ccache
+          key: ${{ steps.ccache_restore.outputs.cache-primary-key }}
+
       - name: Inventory compiled firewall policy compilers
+        if: ${{ github.event_name != 'pull_request' || (github.head_ref != 'feature/native-nftables-port' && github.head_ref != 'feature/central-hooks-on-nft') }}
         run: |
           set -euo pipefail
           find . -type f \
@@ -104,11 +209,160 @@ jobs:
           }
           echo 'Compiled backend inventory recorded; no firewall rules deployed.'
 
+      - name: Smoke-test native nftables CLI and generated policy
+        if: ${{ github.event_name == 'pull_request' && (github.head_ref == 'feature/native-nftables-port' || github.head_ref == 'feature/central-hooks-on-nft') }}
+        run: |
+          set -euo pipefail
+          compiler="$(find src/nft -type f -name fwb_nft -perm /111 -print -quit)"
+          test -n "$compiler" || { echo "Missing native fwb_nft executable" >&2; exit 1; }
+          "$compiler" -V 2>&1 | tee ci-logs/nft-version.log
+          # The native backend uses libfwbuilder's compiled RES_DIR, not the
+          # repository source tree. Install data only in this disposable CI container.
+          make -C src/res install
+          make -C src/libfwbuilder/etc install
+          resource_dir="$(awk '$1 == "#define" && $2 == "RES_DIR" { gsub(/"/, "", $3); print $3; exit }' src/libfwbuilder/src/fwbuilder/libfwbuilder-config.h)"
+          test -n "$resource_dir" || { echo 'Native nft: RES_DIR missing' >&2; exit 1; }
+          test -s "$resource_dir/resources.xml" || { echo "Native nft: missing $resource_dir/resources.xml" >&2; exit 1; }
+          test -s "$resource_dir/fwbuilder.dtd" || { echo "Native nft: missing $resource_dir/fwbuilder.dtd" >&2; exit 1; }
+          test -d "$resource_dir/configlets/nftables" || { echo 'Native nft: nftables configlets missing' >&2; exit 1; }
+          mkdir -p ci-logs/nft-output
+          "$compiler" -f "$PWD/src/unit_tests/generatedScriptTestsNft/test1.fwb" \
+            -d "$PWD/ci-logs/nft-output" nft-test \
+            2>&1 | tee ci-logs/nft-compile.log
+          find ci-logs/nft-output -type f -print | sort | tee ci-logs/nft-generated-files.log
+          test -s ci-logs/nft-generated-files.log || {
+            echo "fwb_nft returned without generating policy output" >&2
+            exit 1
+          }
+          # A non-empty output file alone is not a native nftables test.
+          # Reject known legacy commands, placeholders and restore markers.
+          if grep -nE '\$IP(TABLES|6TABLES)|(^|[[:space:]])echo[[:space:]]+.*(COMMIT|\*(filter|nat|mangle|raw))|--to-(source|destination)|-j (SNAT|DNAT)|\{\{opt_wait\}\}' \
+              ci-logs/nft-output/*.fw; then
+            echo 'Native nftables output contains legacy syntax' >&2
+            exit 1
+          fi
+          # Validate nftables structure, not merely CLI exit status or output size.
+          # Static check only: no policy is loaded into the kernel.
+          sh ci/check-nft-output.sh ci-logs/nft-output/*.fw \
+            2>&1 | tee ci-logs/nft-structure.log
+          echo 'Native nftables CLI and structural checks passed; no policy installed.'
+
+      # Compile several independent real FWB XML projects with the already
+      # built fwb_nft binary. Only positive scenarios enter nft-output;
+      # the existing second job validates all outputs against nft and kernel.
+      - name: Compile expanded native FWB XML test matrix
+        if: ${{ github.event_name == 'pull_request' && (github.head_ref == 'feature/native-nftables-port' || github.head_ref == 'feature/central-hooks-on-nft') }}
+        run: |
+          set -euo pipefail
+          bash ci/check-nft-project-fixtures.sh \
+            "$PWD/src/nft/fwb_nft" \
+            "$PWD/src/unit_tests/generatedScriptTestsNft/test1.fwb" \
+            ci-logs/nft-output 2>&1 | tee ci-logs/nft-fixture-results.log
+
+      - name: Verify central prolog/epilog hooks with fwb_nft
+        if: ${{ github.event_name == 'pull_request' && github.head_ref == 'feature/central-hooks-on-nft' }}
+        run: |
+          set -euo pipefail
+          bash ci/check-central-hooks.sh \
+            "$PWD/src/nft/fwb_nft" \
+            "$PWD/src/unit_tests/generatedScriptTestsNft/test1.fwb" \
+            ci-logs/central-hooks 2>&1 | tee ci-logs/central-hooks.log
+
       - name: Upload build diagnostics and compiler inventory
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
           name: fwbuilder-538-qt5-leap16-baseline-logs
           path: ci-logs/
+          if-no-files-found: warn
+          retention-days: 14
+
+  # This job consumes the already-built policy artifact. No second Qt5 build.
+  nft-syntax:
+    name: Check generated nftables grammar without loading rules
+    needs: qt5-baseline
+    if: ${{ github.event_name == 'pull_request' && (github.head_ref == 'feature/native-nftables-port' || github.head_ref == 'feature/central-hooks-on-nft') }}
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out syntax checker only
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Download generated policy from the preceding build
+        uses: actions/download-artifact@v4
+        with:
+          name: fwbuilder-538-qt5-leap16-baseline-logs
+          path: ci-artifact
+      - name: Validate all generated nftables transactions
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! command -v nft >/dev/null 2>&1; then
+            sudo apt-get update -qq
+            sudo apt-get install -y --no-install-recommends nftables
+          fi
+          nft --version
+          mkdir -p ci-logs
+          shopt -s nullglob
+          policies=(ci-artifact/nft-output/*.fw)
+          test "${#policies[@]}" -gt 0 || {
+            echo 'No generated nftables policy in the existing CI artifact' >&2
+            exit 1
+          }
+          # nft --check parses and validates without applying any kernel rules.
+          sudo sh ci/check-nft-syntax.sh "${policies[@]}" \
+            2>&1 | tee ci-logs/nft-native-syntax.log
+      - name: Test native nftables match expressions and grammar
+        shell: bash
+        run: sudo env FWB_REQUIRE_NFT=1 sh ci/check-nft-match-expressions.sh
+      - name: Exercise nftables transactions in isolated network namespace
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          policies=(ci-artifact/nft-output/*.fw)
+          test "${#policies[@]}" -gt 0
+          # Packet tests require veth, namespace entry and ICMPv6 echo.
+          # Install tools on the disposable runner only, not in the Qt5 build.
+          if ! command -v ip >/dev/null 2>&1 || \
+             ! command -v ping >/dev/null 2>&1 || \
+             ! command -v nsenter >/dev/null 2>&1; then
+            sudo apt-get update -qq
+            sudo apt-get install -y --no-install-recommends iproute2 iputils-ping util-linux
+          fi
+          # Fail closed if network namespace creation is prohibited. Never
+          # execute this runtime test in the host network namespace.
+          sudo unshare --net -- env FWB_REQUIRE_PACKET_MATRIX=1 sh ci/check-nft-runtime.sh "${policies[@]}" \
+            2>&1 | tee ci-logs/nft-native-runtime.log
+
+      - name: Exercise native dynamic address sets in isolated kernel
+        shell: bash
+        run: |
+          set -euo pipefail
+          policy="ci-artifact/nft-sets-output/nft-ci-dynamic-address-sets.fw"
+          test -s "$policy"
+          # The helper adds a second namespace and drops globally dangerous
+          # capabilities before entering the generated shell start path.
+          sudo unshare --net -- sh ci/check-nft-dynamic-sets.sh "$policy" \
+            2>&1 | tee ci-logs/nft-dynamic-sets.log
+
+      - name: Exercise real NAT load balancing with conntrack
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p ci-logs
+          sudo python3 ci/check-nft-nat-lb-kernel.py \
+            ci-artifact/nft-output/nft-ci-packet-nat-lb-sparse.fw \
+            ci-artifact/nft-output/nft-ci-packet-nat-lb-contiguous.fw \
+            2>&1 | tee ci-logs/nft-nat-lb-kernel.log
+      - name: Upload syntax-check diagnostics
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: fwbuilder-nft-syntax-logs
+          path: |
+            ci-logs/nft-native-syntax.log
+            ci-logs/nft-native-runtime.log
+            ci-logs/nft-dynamic-sets.log
           if-no-files-found: warn
           retention-days: 14
