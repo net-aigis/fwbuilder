@@ -113,7 +113,13 @@ export function App() {
   const [trashCount, setTrashCount] = useState(0);
   const [trashOpen, setTrashOpen] = useState(false);
   const [trashItems, setTrashItems] = useState<
-    Array<{ id: string; name: string; type: string; comment?: string }>
+    Array<{
+      id: string;
+      name: string;
+      type: string;
+      comment?: string;
+      deleted_from_parent_id?: string;
+    }>
   >([]);
   const [unusedHits, setUnusedHits] = useState<
     Array<{ id: string; name: string; type: string; comment?: string }>
@@ -416,6 +422,11 @@ export function App() {
         e.preventDefault();
         searchInputRef.current?.focus();
         searchInputRef.current?.select();
+        return;
+      }
+      if (mod && e.key.toLowerCase() === "n" && !e.shiftKey) {
+        e.preventDefault();
+        void onNewProject();
         return;
       }
       if (e.key === "Escape" && !typing) {
@@ -727,6 +738,44 @@ export function App() {
       setTree(t.root);
       setStatus(`Emptied Deleted Objects (${res.purged_count ?? 0} purged)`);
       await refreshTrashCount();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function onRestoreAllTrash() {
+    if (!sessionId || !trashItems.length) return;
+    if (!window.confirm(`Restore all ${trashItems.length} deleted object(s)?`)) return;
+    setBusy(true);
+    setError(null);
+    try {
+      let n = 0;
+      for (const item of [...trashItems]) {
+        await restoreDeletedObject(sessionId, item.id);
+        n += 1;
+      }
+      setDirty(true);
+      const t = await fetchTree(sessionId, 5);
+      setTree(t.root);
+      setStatus(`Restored ${n} object(s) from trash`);
+      await refreshTrashCount();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function onCollapseTree() {
+    if (!sessionId) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const t = await fetchTree(sessionId, 1);
+      setTree(t.root);
+      setStatus("Tree collapsed");
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
@@ -1389,7 +1438,13 @@ export function App() {
           <button type="button" onClick={onOpen} disabled={busy}>
             Open
           </button>
-          <button type="button" className="ghost" onClick={() => void onNewProject()} disabled={busy}>
+          <button
+            type="button"
+            className="ghost"
+            onClick={() => void onNewProject()}
+            disabled={busy}
+            title="New blank project (Ctrl+N)"
+          >
             New
           </button>
           <button type="button" onClick={() => void onSave(false)} disabled={!canOperate}>
@@ -1447,6 +1502,15 @@ export function App() {
                   type="button"
                   className="ghost"
                   disabled={busy}
+                  onClick={() => void onRestoreAllTrash()}
+                  title="Restore every deleted object to its previous parent"
+                >
+                  Restore all
+                </button>
+                <button
+                  type="button"
+                  className="ghost"
+                  disabled={busy}
                   onClick={() => void onEmptyDeleted()}
                 >
                   Empty
@@ -1458,6 +1522,11 @@ export function App() {
                     type="button"
                     className="tree-item"
                     onClick={() => void onSelect({ ...item, deleted: true })}
+                    title={
+                      item.deleted_from_parent_id
+                        ? `Was under ${item.deleted_from_parent_id}`
+                        : undefined
+                    }
                   >
                     <span className="tree-type">{item.type}</span>
                     <span className="tree-name">{item.name || item.id}</span>
@@ -1466,7 +1535,7 @@ export function App() {
                     type="button"
                     className="ghost"
                     disabled={busy}
-                    title="Restore into User Objects"
+                    title="Restore to previous parent"
                     onClick={() => void onRestoreFromTrash(item.id)}
                   >
                     Restore
@@ -1492,6 +1561,15 @@ export function App() {
               onChange={(e) => setTreeFilter(e.target.value)}
               title="Filter loaded tree nodes by name/type/hint"
             />
+            <button
+              type="button"
+              className="ghost"
+              disabled={!sessionId || busy}
+              onClick={() => void onCollapseTree()}
+              title="Reload tree at depth 1"
+            >
+              Collapse
+            </button>
           </div>
           <div className="search-row">
             <input

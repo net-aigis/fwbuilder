@@ -130,6 +130,10 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Restore to previous parent | done | soft-delete stores parent; `POST …/restore`; E2E phase38 |
 | Object path breadcrumb | done | `GET …/path` + nav; E2E phase38 |
 | Make ruleset top | done | toolbar Make top; E2E phase38 |
+| Ctrl+N new project | done | keyboard + New button |
+| Collapse tree | done | depth-1 reload; E2E phase39 |
+| Copy object JSON | done | ObjectDetail button |
+| Restore all trash | done | trash panel; E2E phase39 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Phase 3 — compile / deploy
@@ -179,6 +183,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase36 (unused + trash restore) | done | `e2e-phase36.sh` **OK** |
 | Local E2E phase37 (del ruleset + unused) | done | `e2e-phase37.sh` **OK** |
 | Local E2E phase38 (restore parent + path) | done | `e2e-phase38.sh` **OK** |
+| Local E2E phase39 (restore-all + collapse) | done | `e2e-phase39.sh` **OK** |
 
 ## Local commands
 
@@ -226,6 +231,7 @@ bash webui/scripts/e2e-phase35.sh
 bash webui/scripts/e2e-phase36.sh
 bash webui/scripts/e2e-phase37.sh
 bash webui/scripts/e2e-phase38.sh
+bash webui/scripts/e2e-phase39.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

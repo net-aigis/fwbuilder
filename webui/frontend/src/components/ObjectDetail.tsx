@@ -170,6 +170,20 @@ export function ObjectDetail({ object, readOnly, busy, onSave, onOpenRules, extr
           >
             Copy id
           </button>
+          <button
+            type="button"
+            className="ghost"
+            disabled={busy}
+            onClick={() => {
+              const text = JSON.stringify(object, null, 2);
+              void navigator.clipboard?.writeText(text).catch(() => {
+                window.prompt("Object JSON", text);
+              });
+            }}
+            title="Copy object JSON"
+          >
+            Copy JSON
+          </button>
         </div>
       </header>
 
