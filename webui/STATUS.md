@@ -142,6 +142,9 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Ctrl+Shift+F rule filter | done | focuses rules filter |
 | Visible/total rule count | done | rules panel header |
 | Clear rule filters | done | toolbar when filters active |
+| F2 rename focus | done | ObjectDetail name field |
+| Stats firewall list + JSON download | done | stats panel; E2E phase43 |
+| Download compile log | done | Compile panel button |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Phase 3 — compile / deploy
@@ -195,6 +198,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase40 (ruleset rule_count) | done | `e2e-phase40.sh` **OK** |
 | Local E2E phase41 (project stats) | done | `e2e-phase41.sh` **OK** |
 | Local E2E phase42 (stats unused) | done | `e2e-phase42.sh` **OK** |
+| Local E2E phase43 (stats fw list + rename) | done | `e2e-phase43.sh` **OK** |
 
 ## Local commands
 
@@ -246,6 +250,7 @@ bash webui/scripts/e2e-phase39.sh
 bash webui/scripts/e2e-phase40.sh
 bash webui/scripts/e2e-phase41.sh
 bash webui/scripts/e2e-phase42.sh
+bash webui/scripts/e2e-phase43.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

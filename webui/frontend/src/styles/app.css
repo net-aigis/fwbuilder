@@ -286,6 +286,15 @@ button.linkish:disabled {
   font-family: var(--mono);
 }
 
+.stats-fw-list {
+  margin: 0.35rem 0 0;
+  padding-left: 1.1rem;
+}
+
+.stats-fw-list li {
+  margin: 0.15rem 0;
+}
+
 .tree-row {
   display: flex;
   align-items: center;

@@ -1,10 +1,11 @@
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import type { TreeNode } from "../api/client";
 
 type Props = {
   object?: TreeNode | null;
   readOnly?: boolean;
   busy?: boolean;
+  renameFocusToken?: number;
   onSave?: (patch: {
     name: string;
     comment: string;
@@ -74,10 +75,19 @@ const TYPE_FIELDS: Record<string, string[]> = {
   ],
 };
 
-export function ObjectDetail({ object, readOnly, busy, onSave, onOpenRules, extras }: Props) {
+export function ObjectDetail({
+  object,
+  readOnly,
+  busy,
+  renameFocusToken,
+  onSave,
+  onOpenRules,
+  extras,
+}: Props) {
   const [name, setName] = useState("");
   const [comment, setComment] = useState("");
   const [attrs, setAttrs] = useState<Record<string, string>>({});
+  const nameRef = useRef<HTMLInputElement>(null);
 
   const fields = useMemo(() => {
     const typed = TYPE_FIELDS[object?.type ?? ""] ?? Object.keys(object?.attrs ?? {});
@@ -94,6 +104,12 @@ export function ObjectDetail({ object, readOnly, busy, onSave, onOpenRules, extr
     }
     setAttrs(next);
   }, [object?.id, object?.name, object?.comment, object?.attrs, fields]);
+
+  useEffect(() => {
+    if (!renameFocusToken || !object || object.ro || readOnly) return;
+    nameRef.current?.focus();
+    nameRef.current?.select();
+  }, [renameFocusToken, object, readOnly]);
 
   if (!object) {
     return (
@@ -203,7 +219,13 @@ export function ObjectDetail({ object, readOnly, busy, onSave, onOpenRules, extr
 
       <label className="field block">
         Name
-        <input value={name} disabled={locked || busy} onChange={(e) => setName(e.target.value)} />
+        <input
+          ref={nameRef}
+          value={name}
+          disabled={locked || busy}
+          onChange={(e) => setName(e.target.value)}
+          title="F2 focuses this field"
+        />
       </label>
       <label className="field block">
         Comment

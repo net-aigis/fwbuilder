@@ -129,6 +129,8 @@ export function App() {
   const [sessionCount, setSessionCount] = useState(0);
   const [objectPath, setObjectPath] = useState<ObjectPathEntry[]>([]);
   const [stats, setStats] = useState<ProjectStats | null>(null);
+  const [statsFirewalls, setStatsFirewalls] = useState<TreeNode[]>([]);
+  const [renameFocusToken, setRenameFocusToken] = useState(0);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const ruleFilterRef = useRef<HTMLInputElement>(null);
 
@@ -450,6 +452,12 @@ export function App() {
           ruleFilterRef.current?.focus();
           ruleFilterRef.current?.select();
         });
+        return;
+      }
+      if (!mod && !e.altKey && e.key === "F2") {
+        e.preventDefault();
+        setTab("object");
+        setRenameFocusToken((n) => n + 1);
         return;
       }
       if (e.key === "Escape" && !typing) {
@@ -819,6 +827,14 @@ export function App() {
     try {
       const res = await fetchProjectStats(sessionId);
       setStats(res);
+      try {
+        const fw = await searchObjects(sessionId, "", "Firewall");
+        setStatsFirewalls(
+          (fw.results ?? []).filter((r) => !String(r.id).startsWith("std")),
+        );
+      } catch {
+        setStatsFirewalls([]);
+      }
       setStatus(
         `Stats: ${res.objects} objects, ${res.rules} rules, ${res.deleted} deleted`,
       );
@@ -827,6 +843,37 @@ export function App() {
     } finally {
       setBusy(false);
     }
+  }
+
+  function onDownloadStats() {
+    if (!stats) return;
+    const payload = { ...stats, firewalls_list: statsFirewalls.map((f) => ({
+      id: f.id,
+      name: f.name,
+      type: f.type,
+    })) };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "fwbweb-stats.json";
+    a.click();
+    URL.revokeObjectURL(url);
+    setStatus("Downloaded stats JSON");
+  }
+
+  function onDownloadCompileLog() {
+    if (!compileLog) return;
+    const blob = new Blob([compileLog], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "fwbweb-compile.log";
+    a.click();
+    URL.revokeObjectURL(url);
+    setStatus("Downloaded compile log");
   }
 
   async function onFindUnused() {
@@ -1799,6 +1846,7 @@ export function App() {
             <ObjectDetail
               object={selected}
               busy={busy}
+              renameFocusToken={renameFocusToken}
               onSave={sessionId ? onApplyObject : undefined}
               onOpenRules={
                 sessionId && selected
@@ -2322,7 +2370,19 @@ export function App() {
                 </div>
               ) : null}
               {compileLog ? (
-                <pre className="compile-log pad">{compileLog}</pre>
+                <>
+                  <div className="btn-row pad">
+                    <button
+                      type="button"
+                      className="ghost"
+                      onClick={onDownloadCompileLog}
+                      title="Save compile log as text file"
+                    >
+                      Download log
+                    </button>
+                  </div>
+                  <pre className="compile-log pad">{compileLog}</pre>
+                </>
               ) : (
                 <p className="muted pad">
                   Compile uses the same <code>fwb_*</code> CLIs as the desktop GUI. Deploy runs
@@ -2375,9 +2435,14 @@ export function App() {
           <div className="stats-panel">
             <header className="panel-header">
               <h2>Project stats</h2>
-              <button type="button" className="ghost" onClick={() => setStats(null)}>
-                Close
-              </button>
+              <div className="btn-row">
+                <button type="button" className="ghost" onClick={onDownloadStats}>
+                  Download JSON
+                </button>
+                <button type="button" className="ghost" onClick={() => setStats(null)}>
+                  Close
+                </button>
+              </div>
             </header>
             <dl className="stats-grid">
               {(
@@ -2400,6 +2465,27 @@ export function App() {
                 </div>
               ))}
             </dl>
+            {statsFirewalls.length ? (
+              <div className="pad">
+                <div className="muted">Firewalls</div>
+                <ul className="stats-fw-list">
+                  {statsFirewalls.map((f) => (
+                    <li key={f.id}>
+                      <button
+                        type="button"
+                        className="linkish"
+                        onClick={() => {
+                          setStats(null);
+                          void onSelect(f);
+                        }}
+                      >
+                        {f.name}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
             <p className="muted pad">{stats.path}</p>
           </div>
         </div>
