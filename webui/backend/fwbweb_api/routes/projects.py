@@ -233,6 +233,64 @@ def where_used(
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 
 
+class MemberRequest(BaseModel):
+    member_id: str = Field(..., min_length=1)
+
+
+@router.get("/{session_id}/objects/{object_id}/members")
+def list_members(
+    session_id: str,
+    object_id: str,
+    _: str = Depends(require_token),
+) -> dict[str, Any]:
+    try:
+        session = store.get(session_id)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail="session not found") from exc
+    try:
+        return session.bridge.request("members", id=object_id)
+    except BridgeError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
+@router.post("/{session_id}/objects/{object_id}/members")
+def add_member(
+    session_id: str,
+    object_id: str,
+    body: MemberRequest,
+    _: str = Depends(require_token),
+) -> dict[str, Any]:
+    try:
+        session = store.get(session_id)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail="session not found") from exc
+    try:
+        return session.bridge.request(
+            "add_member", id=object_id, member_id=body.member_id
+        )
+    except BridgeError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
+@router.delete("/{session_id}/objects/{object_id}/members/{member_id}")
+def remove_member(
+    session_id: str,
+    object_id: str,
+    member_id: str,
+    _: str = Depends(require_token),
+) -> dict[str, Any]:
+    try:
+        session = store.get(session_id)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail="session not found") from exc
+    try:
+        return session.bridge.request(
+            "remove_member", id=object_id, member_id=member_id
+        )
+    except BridgeError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
 @router.patch("/{session_id}/objects/{object_id}")
 def update_object(
     session_id: str,

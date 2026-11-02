@@ -187,6 +187,28 @@ export function fetchWhereUsed(sessionId: string, objectId: string) {
   }>(`/api/v1/projects/${sessionId}/objects/${encodeURIComponent(objectId)}/where-used`);
 }
 
+export function fetchMembers(sessionId: string, objectId: string) {
+  return api<{
+    object_id: string;
+    count: number;
+    members: Array<{ id: string; name: string; type: string }>;
+  }>(`/api/v1/projects/${sessionId}/objects/${encodeURIComponent(objectId)}/members`);
+}
+
+export function addMember(sessionId: string, objectId: string, memberId: string) {
+  return api<{ object_id: string; count: number; members: Array<{ id: string; name: string; type: string }> }>(
+    `/api/v1/projects/${sessionId}/objects/${encodeURIComponent(objectId)}/members`,
+    { method: "POST", body: JSON.stringify({ member_id: memberId }) },
+  );
+}
+
+export function removeMember(sessionId: string, objectId: string, memberId: string) {
+  return api<{ object_id: string; count: number; members: Array<{ id: string; name: string; type: string }> }>(
+    `/api/v1/projects/${sessionId}/objects/${encodeURIComponent(objectId)}/members/${encodeURIComponent(memberId)}`,
+    { method: "DELETE" },
+  );
+}
+
 export function fetchRuleset(
   sessionId: string,
   objectId: string,

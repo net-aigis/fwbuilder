@@ -1136,6 +1136,65 @@ static QJsonObject handle(const QJsonObject &req)
         }
     }
 
+    if (cmd == QStringLiteral("members") || cmd == QStringLiteral("add_member") ||
+        cmd == QStringLiteral("remove_member")) {
+        if (!g_db)
+            return errObj(QStringLiteral("no project open"));
+        const string sid =
+            req.value(QStringLiteral("id")).toString().toUtf8().constData();
+        FWObject *group = findByIdString(g_db, sid);
+        if (!group)
+            return errObj(QStringLiteral("object not found"));
+        if (cmd == QStringLiteral("add_member") ||
+            cmd == QStringLiteral("remove_member")) {
+            if (group->isReadOnly())
+                return errObj(QStringLiteral("object is read-only"));
+            const string mid =
+                req.value(QStringLiteral("member_id")).toString().toUtf8().constData();
+            FWObject *member = findByIdString(g_db, mid);
+            if (!member)
+                return errObj(QStringLiteral("member not found"));
+            if (member == group)
+                return errObj(QStringLiteral("cannot add group to itself"));
+            try {
+                if (cmd == QStringLiteral("add_member")) {
+                    if (group->hasRef(member))
+                        return errObj(QStringLiteral("already a member"));
+                    group->addRef(member);
+                } else {
+                    group->removeRef(member);
+                }
+                g_dirty = true;
+                g_db->setDirty(true);
+            } catch (FWException &ex) {
+                return errObj(u8(ex.toString()));
+            }
+        }
+        QJsonArray members;
+        for (FWObject::iterator i = group->begin(); i != group->end(); ++i) {
+            FWObject *child = *i;
+            FWObject *ptr = FWReference::getObject(child);
+            if (!ptr)
+                continue;
+            // Skip nested InterfaceOptions / options-like children that are not refs
+            if (!FWReference::cast(child) && child == ptr)
+                continue;
+            QJsonObject row;
+            row.insert(QStringLiteral("id"),
+                       u8(FWObjectDatabase::getStringId(ptr->getId())));
+            row.insert(QStringLiteral("name"), u8(ptr->getName()));
+            row.insert(QStringLiteral("type"), u8(ptr->getTypeName()));
+            members.append(row);
+        }
+        QJsonObject o = okObj();
+        o.insert(QStringLiteral("dirty"), g_dirty);
+        o.insert(QStringLiteral("object_id"),
+                 u8(FWObjectDatabase::getStringId(group->getId())));
+        o.insert(QStringLiteral("count"), members.size());
+        o.insert(QStringLiteral("members"), members);
+        return o;
+    }
+
     if (cmd == QStringLiteral("where_used")) {
         if (!g_db)
             return errObj(QStringLiteral("no project open"));

@@ -39,6 +39,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Create / delete objects | done | bridge `create`/`delete` + UI; User library parent |
 | Duplicate / reparent objects | done | bridge `duplicate`/`reparent` + UI; E2E phase9 |
 | Where-used references | done | bridge `where_used` + panel; E2E phase10 |
+| Group members add/remove | done | bridge `members`/`add_member`/`remove_member`; E2E phase11 |
 
 ## Phase 3 — compile / deploy
 
@@ -59,6 +60,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase8 (rule schema + service create + host) | done | `e2e-phase8.sh` **OK** |
 | Local E2E phase9 (duplicate + reparent) | done | `e2e-phase9.sh` **OK** |
 | Local E2E phase10 (where-used) | done | `e2e-phase10.sh` **OK** |
+| Local E2E phase11 (group members) | done | `e2e-phase11.sh` **OK** |
 
 ## Local commands
 
@@ -78,4 +80,5 @@ bash webui/scripts/e2e-phase7.sh
 bash webui/scripts/e2e-phase8.sh
 bash webui/scripts/e2e-phase9.sh
 bash webui/scripts/e2e-phase10.sh
+bash webui/scripts/e2e-phase11.sh
 ```

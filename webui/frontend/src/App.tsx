@@ -29,6 +29,7 @@ import { FirewallExtras } from "./components/FirewallExtras";
 import { HostOptions } from "./components/HostOptions";
 import { InterfaceOptions } from "./components/InterfaceOptions";
 import { MoveObject } from "./components/MoveObject";
+import { GroupMembers } from "./components/GroupMembers";
 import { WhereUsed } from "./components/WhereUsed";
 import { ObjectDetail } from "./components/ObjectDetail";
 import { ObjectPicker } from "./components/ObjectPicker";
@@ -580,6 +581,19 @@ export function App() {
                       <WhereUsed
                         sessionId={sessionId}
                         objectId={selected.id}
+                        busy={busy}
+                        onBusy={setBusy}
+                        onStatus={setStatus}
+                        onError={setError}
+                        onSelect={(id) => void refreshTreeSelect(id)}
+                      />
+                    ) : null}
+                    {selected.type.endsWith("Group") || selected.type === "ObjectGroup" || selected.type === "ServiceGroup" ? (
+                      <GroupMembers
+                        sessionId={sessionId}
+                        groupId={selected.id}
+                        groupName={selected.name}
+                        readOnly={selected.ro}
                         busy={busy}
                         onBusy={setBusy}
                         onStatus={setStatus}
