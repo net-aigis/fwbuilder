@@ -130,6 +130,7 @@ export function App() {
   const [objectPath, setObjectPath] = useState<ObjectPathEntry[]>([]);
   const [stats, setStats] = useState<ProjectStats | null>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const ruleFilterRef = useRef<HTMLInputElement>(null);
 
   const canOperate = useMemo(() => Boolean(sessionId) && !busy, [sessionId, busy]);
 
@@ -440,6 +441,15 @@ export function App() {
       if (mod && e.key.toLowerCase() === "i") {
         e.preventDefault();
         void onShowStats();
+        return;
+      }
+      if (mod && e.shiftKey && e.key.toLowerCase() === "f") {
+        e.preventDefault();
+        setTab("rules");
+        queueMicrotask(() => {
+          ruleFilterRef.current?.focus();
+          ruleFilterRef.current?.select();
+        });
         return;
       }
       if (e.key === "Escape" && !typing) {
@@ -1959,7 +1969,16 @@ export function App() {
           ) : (
             <div className="panel">
               <header className="panel-header">
-                <h2>{rulesetName || "Rules"}</h2>
+                <h2>
+                  {rulesetName || "Rules"}
+                  {rules.length ? (
+                    <span className="muted">
+                      {" "}
+                      · {visibleRules.length}
+                      {visibleRules.length !== rules.length ? `/${rules.length}` : ""} rules
+                    </span>
+                  ) : null}
+                </h2>
                 <div className="btn-row">
                   {(["policy", "nat", "routing"] as RulesWhich[]).map((w) => (
                     <button
@@ -2113,12 +2132,28 @@ export function App() {
                   <label className="field inline">
                     Filter
                     <input
+                      ref={ruleFilterRef}
                       value={ruleTextFilter}
                       disabled={busy}
-                      placeholder="comment/action/objects…"
+                      placeholder="comment/action/objects… (Ctrl+Shift+F)"
                       onChange={(e) => setRuleTextFilter(e.target.value)}
                     />
                   </label>
+                  {(ruleTextFilter || ruleGroupFilter || hideDisabled) && (
+                    <button
+                      type="button"
+                      className="ghost"
+                      disabled={busy}
+                      onClick={() => {
+                        setRuleTextFilter("");
+                        setRuleGroupFilter("");
+                        setHideDisabled(false);
+                      }}
+                      title="Clear rule filters"
+                    >
+                      Clear filters
+                    </button>
+                  )}
                   <button
                     type="button"
                     className="ghost"
@@ -2356,6 +2391,7 @@ export function App() {
                   ["Services", stats.services],
                   ["Rules", stats.rules],
                   ["Deleted", stats.deleted],
+                  ["Unused", stats.unused ?? 0],
                 ] as const
               ).map(([label, value]) => (
                 <div key={label}>

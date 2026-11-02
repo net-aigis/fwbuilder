@@ -375,7 +375,10 @@ def project_stats(
     except KeyError as exc:
         raise HTTPException(status_code=404, detail="session not found") from exc
     try:
-        return session.bridge.request("stats")
+        data = session.bridge.request("stats")
+        unused = session.bridge.request("find_unused", limit=1000)
+        data["unused"] = unused.get("count", 0)
+        return data
     except BridgeError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 

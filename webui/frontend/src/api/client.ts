@@ -270,6 +270,7 @@ export type ProjectStats = {
   addresses: number;
   rules: number;
   deleted: number;
+  unused?: number;
 };
 
 export function fetchProjectStats(sessionId: string) {
