@@ -11,8 +11,8 @@ This fork tracks **Qt6** builds and an optional **WebUI** that edits the same
 | Track | State |
 | --- | --- |
 | Desktop GUI (Qt6) | Builds on Linux; Win/Mac smoke via MinGW/local Podman (see `docker/`) |
-| WebUI (`feature/webui`) | Local-only: object tree, typed editors, Policy/NAT/Routing grids, rule add/delete/move, object picker + DnD, compile via `fwb_nft`/`fwb_ipt` |
-| Full GUI parity / deploy | **Not** claimed — see [`webui/STATUS.md` on `feature/webui`](https://github.com/net-aigis/fwbuilder/blob/feature/webui/webui/STATUS.md) |
+| WebUI (`feature/webui`) | Local-only: object tree, typed editors, Policy/NAT/Routing grids, rule ops, picker/DnD, compile, FirewallOptions, simplified `scp`/`ssh` deploy (dry-run default) |
+| Full GUI parity | **Not** claimed — see [`webui/STATUS.md` on `feature/webui`](https://github.com/net-aigis/fwbuilder/blob/feature/webui/webui/STATUS.md) |
 
 ## WebUI (local, no GitHub Actions required)
 
@@ -29,6 +29,7 @@ podman run --rm -v "$PWD":/src:Z -w /src -e JOBS=4 fwbuilder-linux-qt6 \
 bash webui/scripts/e2e-local.sh
 bash webui/scripts/e2e-phase2.sh
 bash webui/scripts/e2e-phase3.sh
+bash webui/scripts/e2e-phase4.sh
 
 # Dev servers
 export FWBWEB_BRIDGE="$(pwd)/webui/bin/fwbweb"
