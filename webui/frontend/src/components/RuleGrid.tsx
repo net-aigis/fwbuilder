@@ -18,6 +18,8 @@ type Props = {
   onEditCell?: (rule: AnyRule, element: string) => void;
   onDropObject?: (rule: AnyRule, element: string, objectId: string) => void;
   onJumpObject?: (objectId: string) => void;
+  onToggleLogging?: (rule: AnyRule) => void;
+  onCycleDirection?: (rule: AnyRule) => void;
   selectedId?: string;
 };
 
@@ -108,6 +110,8 @@ export function RuleGrid({
   onEditCell,
   onDropObject,
   onJumpObject,
+  onToggleLogging,
+  onCycleDirection,
   selectedId,
 }: Props) {
   if (!rules.length) {
@@ -179,8 +183,34 @@ export function RuleGrid({
                   <Cell rule={row.rule} element="srv" el={(row.rule as PolicyRule).srv} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} onJumpObject={onJumpObject} />
                   <Cell rule={row.rule} element="itf" el={(row.rule as PolicyRule).itf} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} onJumpObject={onJumpObject} />
                   <Cell rule={row.rule} element="when" el={(row.rule as PolicyRule).when} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} onJumpObject={onJumpObject} />
-                  <td>{(row.rule as PolicyRule).direction}</td>
-                  <td>{(row.rule as PolicyRule).logging ? "✓" : ""}</td>
+                  <td>
+                    <button
+                      type="button"
+                      className="cell-btn"
+                      disabled={busy}
+                      title="Click to cycle direction (or press G)"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onCycleDirection?.(row.rule);
+                      }}
+                    >
+                      {(row.rule as PolicyRule).direction}
+                    </button>
+                  </td>
+                  <td>
+                    <button
+                      type="button"
+                      className="cell-btn"
+                      disabled={busy}
+                      title="Click to toggle logging (or press L)"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onToggleLogging?.(row.rule);
+                      }}
+                    >
+                      {(row.rule as PolicyRule).logging ? "✓" : "·"}
+                    </button>
+                  </td>
                   <td className="comment-cell">{row.rule.comment}</td>
                 </tr>
               ),

@@ -174,11 +174,22 @@ button.ghost {
 }
 
 .sidebar-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--muted);
   margin-bottom: 0.6rem;
+}
+
+.sidebar-title .trash-count {
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.7rem;
+  padding: 0.15rem 0.4rem;
 }
 
 .tree-row {

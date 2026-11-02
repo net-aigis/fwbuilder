@@ -109,6 +109,10 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Empty Deleted Objects | done | `POST …/empty-deleted`; E2E phase33 |
 | Space toggles rule disabled | done | rules tab keyboard |
 | Trash badge in object tree | done | ObjectTree deleted style |
+| List Deleted Objects | done | `GET …/deleted` + trash count; E2E phase34 |
+| L / G rule logging & direction | done | keyboard + clickable cells; E2E phase34 |
+| Bulk comment visible rules | done | Comment visible… toolbar |
+| Copy object id | done | ObjectDetail button |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Phase 3 — compile / deploy
@@ -153,6 +157,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase31 (copy rule to ruleset) | done | `e2e-phase31.sh` **OK** |
 | Local E2E phase32 (soft-delete + TCP ports) | done | `e2e-phase32.sh` **OK** |
 | Local E2E phase33 (restore + empty trash) | done | `e2e-phase33.sh` **OK** |
+| Local E2E phase34 (deleted list + log/dir) | done | `e2e-phase34.sh` **OK** |
 
 ## Local commands
 
@@ -195,6 +200,7 @@ bash webui/scripts/e2e-phase30.sh
 bash webui/scripts/e2e-phase31.sh
 bash webui/scripts/e2e-phase32.sh
 bash webui/scripts/e2e-phase33.sh
+bash webui/scripts/e2e-phase34.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

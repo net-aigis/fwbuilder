@@ -154,7 +154,23 @@ export function ObjectDetail({ object, readOnly, busy, onSave, onOpenRules, extr
         <p className="muted">
           {object.type} · {object.id}
           {object.ro ? " · read-only" : ""}
+          {object.deleted ? " · deleted" : ""}
         </p>
+        <div className="btn-row">
+          <button
+            type="button"
+            className="ghost"
+            disabled={busy}
+            onClick={() => {
+              void navigator.clipboard?.writeText(object.id).catch(() => {
+                window.prompt("Object id", object.id);
+              });
+            }}
+            title="Copy object id"
+          >
+            Copy id
+          </button>
+        </div>
       </header>
 
       {isFirewall && onOpenRules ? (

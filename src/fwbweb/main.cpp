@@ -1589,6 +1589,43 @@ static QJsonObject handle(const QJsonObject &req)
         }
     }
 
+    if (cmd == QStringLiteral("list_deleted")) {
+        if (!g_db)
+            return errObj(QStringLiteral("no project open"));
+        FWObject *dlib = g_db->findInIndex(FWObjectDatabase::DELETED_OBJECTS_ID);
+        if (!dlib) {
+            for (list<FWObject *>::iterator i = g_db->begin(); i != g_db->end();
+                 ++i) {
+                if (Library::cast(*i) && (*i)->getName() == "Deleted Objects") {
+                    dlib = *i;
+                    break;
+                }
+            }
+        }
+        QJsonArray items;
+        QString lib_id;
+        if (dlib) {
+            lib_id = u8(FWObjectDatabase::getStringId(dlib->getId()));
+            for (FWObject::iterator i = dlib->begin(); i != dlib->end(); ++i) {
+                FWObject *child = *i;
+                if (!child || FWReference::cast(child))
+                    continue;
+                QJsonObject row;
+                row.insert(QStringLiteral("id"),
+                           u8(FWObjectDatabase::getStringId(child->getId())));
+                row.insert(QStringLiteral("name"), u8(child->getName()));
+                row.insert(QStringLiteral("type"), u8(child->getTypeName()));
+                row.insert(QStringLiteral("comment"), u8(child->getComment()));
+                items.append(row);
+            }
+        }
+        QJsonObject o = okObj();
+        o.insert(QStringLiteral("count"), items.size());
+        o.insert(QStringLiteral("deleted_library_id"), lib_id);
+        o.insert(QStringLiteral("objects"), items);
+        return o;
+    }
+
     if (cmd == QStringLiteral("empty_deleted")) {
         if (!g_db)
             return errObj(QStringLiteral("no project open"));

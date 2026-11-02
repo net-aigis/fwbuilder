@@ -7,6 +7,7 @@ import {
   compileFirewall,
   deleteObject,
   emptyDeletedObjects,
+  listDeletedObjects,
   formatRuleObjects,
   duplicateObject,
   reparentObject,
@@ -104,6 +105,7 @@ export function App() {
   const [ruleGroupFilter, setRuleGroupFilter] = useState("");
   const [ruleTextFilter, setRuleTextFilter] = useState("");
   const [treeFilter, setTreeFilter] = useState("");
+  const [trashCount, setTrashCount] = useState(0);
 
   const canOperate = useMemo(() => Boolean(sessionId) && !busy, [sessionId, busy]);
 
@@ -178,9 +180,10 @@ export function App() {
     setTab("object");
     setCompileLog(null);
     setCompileOutputs([]);
-    setDirty(Boolean(t.dirty));
-    setStatus(`${label}: ${t.path}`);
-  }
+      setDirty(Boolean(t.dirty));
+      setStatus(`${label}: ${t.path}`);
+      await refreshTrashCount(opened.session_id);
+    }
 
   async function onOpen() {
     if (sessionId && dirty && !window.confirm("Discard unsaved changes and open another project?"))
@@ -414,6 +417,18 @@ export function App() {
         if (rule) void onToggleRule(rule);
         return;
       }
+      if (e.key.toLowerCase() === "l" && selectedRuleId && !mod && !e.altKey) {
+        e.preventDefault();
+        const rule = visibleRules.find((r) => r.id === selectedRuleId);
+        if (rule) void onToggleLogging(rule);
+        return;
+      }
+      if (e.key.toLowerCase() === "g" && selectedRuleId && !mod && !e.altKey) {
+        e.preventDefault();
+        const rule = visibleRules.find((r) => r.id === selectedRuleId);
+        if (rule) void onCycleDirection(rule);
+        return;
+      }
       if ((e.key === "Delete" || e.key === "Backspace") && selectedRuleId && !mod) {
         e.preventDefault();
         if (window.confirm("Delete selected rule?")) void onDeleteRule();
@@ -480,6 +495,7 @@ export function App() {
       const t = await fetchTree(sessionId, 5);
       setTree(t.root);
       setStatus(res.purged ? "Object purged" : "Object moved to Deleted Objects");
+      await refreshTrashCount();
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
@@ -503,6 +519,7 @@ export function App() {
       setDirty(true);
       await refreshTreeSelect(restored.id);
       setStatus(`Restored ${restored.name} → ${target.name}`);
+      await refreshTrashCount();
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
@@ -522,6 +539,7 @@ export function App() {
       const t = await fetchTree(sessionId, 5);
       setTree(t.root);
       setStatus(`Emptied Deleted Objects (${res.purged_count ?? 0} purged)`);
+      await refreshTrashCount();
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
@@ -560,6 +578,79 @@ export function App() {
       await updateRule(sessionId, rule.id, { disabled: !rule.disabled });
       setDirty(true);
       await refreshRules();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function refreshTrashCount(sid?: string | null) {
+    const id = sid === undefined ? sessionId : sid;
+    if (!id) {
+      setTrashCount(0);
+      return;
+    }
+    try {
+      const res = await listDeletedObjects(id);
+      setTrashCount(res.count ?? 0);
+    } catch {
+      /* ignore */
+    }
+  }
+
+  async function onToggleLogging(rule: AnyRule) {
+    if (!sessionId || rule.type !== "PolicyRule") return;
+    setBusy(true);
+    setError(null);
+    try {
+      await updateRule(sessionId, rule.id, {
+        logging: !(rule as PolicyRule).logging,
+      });
+      setDirty(true);
+      await refreshRules();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function onCycleDirection(rule: AnyRule) {
+    if (!sessionId || rule.type !== "PolicyRule") return;
+    const order = ["Inbound", "Outbound", "Both"];
+    const cur = String((rule as PolicyRule).direction || "Both");
+    const next = order[(order.indexOf(cur) + 1) % order.length] || "Both";
+    setBusy(true);
+    setError(null);
+    try {
+      await updateRule(sessionId, rule.id, { direction: next });
+      setDirty(true);
+      await refreshRules();
+      setStatus(`Direction → ${next}`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function onBulkComment() {
+    if (!sessionId || !visibleRules.length) return;
+    const text = window.prompt(
+      `Set comment on ${visibleRules.length} visible rule(s)`,
+      "",
+    );
+    if (text === null) return;
+    setBusy(true);
+    setError(null);
+    try {
+      for (const rule of visibleRules) {
+        await updateRule(sessionId, rule.id, { comment: text });
+      }
+      setDirty(true);
+      await refreshRules();
+      setStatus(`Commented ${visibleRules.length} visible rules`);
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
@@ -903,6 +994,7 @@ export function App() {
       setCompileLog(null);
       setCompileOutputs([]);
       setDirty(false);
+      setTrashCount(0);
       setStatus("Closed");
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
@@ -1015,7 +1107,20 @@ export function App() {
 
       <div className="workspace">
         <aside className="sidebar">
-          <div className="sidebar-title">Objects</div>
+          <div className="sidebar-title">
+            Objects
+            {sessionId && trashCount > 0 ? (
+              <button
+                type="button"
+                className="ghost trash-count"
+                disabled={busy}
+                title="Empty Deleted Objects"
+                onClick={() => void onEmptyDeleted()}
+              >
+                trash {trashCount}
+              </button>
+            ) : null}
+          </div>
           <div className="search-row">
             <input
               placeholder="Filter tree…"
@@ -1431,6 +1536,15 @@ export function App() {
                   <button
                     type="button"
                     className="ghost"
+                    disabled={!canOperate || !visibleRules.length}
+                    onClick={() => void onBulkComment()}
+                    title="Set the same comment on all visible rules"
+                  >
+                    Comment visible…
+                  </button>
+                  <button
+                    type="button"
+                    className="ghost"
                     disabled={!canOperate || !selectedRuleId}
                     onClick={() => void onDuplicateRule()}
                   >
@@ -1482,6 +1596,8 @@ export function App() {
                   setTab("object");
                   void refreshTreeSelect(id);
                 }}
+                onToggleLogging={onToggleLogging}
+                onCycleDirection={onCycleDirection}
               />
               {sessionId && selectedRuleId ? (
                 <>

@@ -206,6 +206,14 @@ export function emptyDeletedObjects(sessionId: string) {
   );
 }
 
+export function listDeletedObjects(sessionId: string) {
+  return api<{
+    count: number;
+    deleted_library_id?: string;
+    objects: Array<{ id: string; name: string; type: string; comment?: string }>;
+  }>(`/api/v1/projects/${sessionId}/deleted`);
+}
+
 export function reparentObject(sessionId: string, objectId: string, parentId: string) {
   return api<TreeNode>(
     `/api/v1/projects/${sessionId}/objects/${encodeURIComponent(objectId)}/reparent`,
