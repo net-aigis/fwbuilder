@@ -224,19 +224,22 @@ static void applyObjectAttrs(FWObject *obj, const QJsonObject &attrs)
                 continue;
             }
         } else if (Address *addr = Address::cast(obj)) {
+            const bool v6 = IPv6::isA(obj) || NetworkIPv6::isA(obj) ||
+                            (addr->getAddressPtr() && addr->getAddressPtr()->isV6());
+            const int af = v6 ? AF_INET6 : AF_INET;
             if (key == "address") {
-                addr->setAddress(InetAddr(val));
+                addr->setAddress(InetAddr(af, val));
                 continue;
             }
             if (key == "netmask") {
-                // Allow dotted mask or prefix length.
+                // Allow dotted/colon mask or prefix length.
                 if (val.find('.') != string::npos || val.find(':') != string::npos) {
-                    addr->setNetmask(InetAddr(val));
+                    addr->setNetmask(InetAddr(af, val));
                 } else if (addr->getAddressPtr()) {
                     addr->setNetmask(InetAddr(addr->getAddressPtr()->addressFamily(),
                                               atoi(val.c_str())));
                 } else {
-                    addr->setNetmask(InetAddr(AF_INET, atoi(val.c_str())));
+                    addr->setNetmask(InetAddr(af, atoi(val.c_str())));
                 }
                 continue;
             }

@@ -53,6 +53,9 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | AddressTable / Tag / User / CustomService | done | typed attrs + create; E2E phase16 |
 | Policy When column | done | RuleGrid `when` cell; E2E phase16 |
 | NAT action + routing metric edit | done | RuleGrid selects/inputs; E2E phase16 |
+| Insert rule before/after | done | toolbar + `add_rule` where; E2E phase17 |
+| IPv6 / AttachedNetworks create | done | CreateObject under iface/host; E2E phase17 |
+| Tree color swatch + collapse | done | ObjectTree swatch/twisties |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Phase 3 — compile / deploy
@@ -80,6 +83,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase14 (address InetAddr roundtrip) | done | `e2e-phase14.sh` **OK** |
 | Local E2E phase15 (remove ref + MAC + color) | done | `e2e-phase15.sh` **OK** |
 | Local E2E phase16 (AT/Tag/User/When/NAT/metric) | done | `e2e-phase16.sh` **OK** |
+| Local E2E phase17 (insert + IPv6 + AttachedNetworks) | done | `e2e-phase17.sh` **OK** |
 
 ## Local commands
 
@@ -105,6 +109,7 @@ bash webui/scripts/e2e-phase13.sh
 bash webui/scripts/e2e-phase14.sh
 bash webui/scripts/e2e-phase15.sh
 bash webui/scripts/e2e-phase16.sh
+bash webui/scripts/e2e-phase17.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

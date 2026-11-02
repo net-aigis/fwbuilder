@@ -169,11 +169,35 @@ button.ghost {
   margin-bottom: 0.6rem;
 }
 
-.tree-item {
-  width: 100%;
+.tree-row {
   display: flex;
-  gap: 0.5rem;
-  align-items: baseline;
+  align-items: center;
+  gap: 0.15rem;
+}
+
+.tree-twist {
+  flex: 0 0 1.1rem;
+  width: 1.1rem;
+  padding: 0;
+  background: transparent;
+  color: var(--muted);
+  border: none;
+  font-size: 0.75rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.tree-twist.spacer {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.tree-item {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  gap: 0.45rem;
+  align-items: center;
   text-align: left;
   background: transparent;
   color: var(--ink);
@@ -184,6 +208,14 @@ button.ghost {
 .tree-item:hover,
 .tree-item.selected {
   background: var(--select);
+}
+
+.tree-swatch {
+  flex: 0 0 0.7rem;
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 2px;
+  border: 1px solid var(--line);
 }
 
 .tree-type {

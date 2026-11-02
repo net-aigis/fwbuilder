@@ -262,14 +262,17 @@ export function App() {
     }
   }
 
-  async function onAddRule() {
+  async function onAddRule(where: "bottom" | "before" | "after" | "top" = "bottom") {
     if (!sessionId || !rulesFwId) return;
+    if ((where === "before" || where === "after") && !selectedRuleId) return;
+    const selected = rules.find((r) => r.id === selectedRuleId);
     setBusy(true);
     setError(null);
     try {
       const created = await addRule(sessionId, rulesFwId, {
         which: rulesWhich,
-        where: "bottom",
+        where,
+        position: selected?.position,
       });
       setSelectedRuleId(created.id);
       await refreshRules();
@@ -729,8 +732,24 @@ export function App() {
                       {w}
                     </button>
                   ))}
-                  <button type="button" disabled={!canOperate} onClick={() => void onAddRule()}>
+                  <button type="button" disabled={!canOperate} onClick={() => void onAddRule("bottom")}>
                     Add
+                  </button>
+                  <button
+                    type="button"
+                    className="ghost"
+                    disabled={!canOperate || !selectedRuleId}
+                    onClick={() => void onAddRule("before")}
+                  >
+                    Insert before
+                  </button>
+                  <button
+                    type="button"
+                    className="ghost"
+                    disabled={!canOperate || !selectedRuleId}
+                    onClick={() => void onAddRule("after")}
+                  >
+                    Insert after
                   </button>
                   <button
                     type="button"

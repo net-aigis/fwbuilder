@@ -15,14 +15,17 @@ type Props = {
 
 const BASE_TYPES = [
   "Network",
+  "NetworkIPv6",
   "Host",
   "IPv4",
+  "IPv6",
   "AddressRange",
   "DNSName",
   "AddressTable",
   "TCPService",
   "UDPService",
   "ICMPService",
+  "ICMP6Service",
   "IPService",
   "TagService",
   "UserService",
@@ -45,7 +48,12 @@ export function CreateObject({
   onStatus,
 }: Props) {
   const hostLike = parentType === "Firewall" || parentType === "Host" || parentType === "Cluster";
-  const TYPES = hostLike ? ["Interface", "IPv4", ...BASE_TYPES] : BASE_TYPES;
+  const ifaceLike = parentType === "Interface";
+  const TYPES = ifaceLike
+    ? ["IPv4", "IPv6", "AttachedNetworks", ...BASE_TYPES]
+    : hostLike
+      ? ["Interface", "IPv4", "IPv6", ...BASE_TYPES]
+      : BASE_TYPES;
   const [type, setType] = useState(hostLike ? "Interface" : "Network");
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
