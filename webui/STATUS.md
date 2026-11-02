@@ -33,7 +33,9 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Dialog tab pages as option groups | done | extract pages → `option-schema.groups`; UI tabs |
 | Full Qt dialog page/layout parity | open | Types/keys/pages yes; pixel layout no |
 | PolicyRuleOptions editor | done | select rule → Rule options panel; E2E phase6 |
+| Rule options dialog schema (Policy/NAT/Routing) | done | `GET /rule-option-schema`; typed tabs; E2E phase8 |
 | InterfaceOptions editor | done | IfaceOptsDialog fields + `GET /interface-option-schema`; E2E phase7 |
+| Host options + management | done | Host panel; E2E phase8 |
 | Create / delete objects | done | bridge `create`/`delete` + UI; User library parent |
 
 ## Phase 3 — compile / deploy
@@ -52,6 +54,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase5 | done | `e2e-phase5.sh` **OK** |
 | Local E2E phase6 (typed fields + rule options) | done | `e2e-phase6.sh` **OK** |
 | Local E2E phase7 (create/delete + iface options) | done | `e2e-phase7.sh` **OK** |
+| Local E2E phase8 (rule schema + service create + host) | done | `e2e-phase8.sh` **OK** |
 
 ## Local commands
 
@@ -68,4 +71,5 @@ bash webui/scripts/e2e-phase4.sh
 bash webui/scripts/e2e-phase5.sh
 bash webui/scripts/e2e-phase6.sh
 bash webui/scripts/e2e-phase7.sh
+bash webui/scripts/e2e-phase8.sh
 ```

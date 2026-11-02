@@ -40,6 +40,9 @@ export function CreateObject({
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [netmask, setNetmask] = useState("255.255.255.0");
+  const [dstPort, setDstPort] = useState("");
+
+  const isService = type === "TCPService" || type === "UDPService" || type === "TCPUDPService";
 
   async function submit() {
     if (!name.trim()) {
@@ -52,6 +55,10 @@ export function CreateObject({
       const attrs: Record<string, string | number> = {};
       if (address.trim()) attrs.address = address.trim();
       if (netmask.trim() && (type === "Network" || type === "IPv4")) attrs.netmask = netmask.trim();
+      if (isService && dstPort.trim()) {
+        attrs.dst_range_start = dstPort.trim();
+        attrs.dst_range_end = dstPort.trim();
+      }
       const obj = await createObject(sessionId, {
         parent_id: parentId,
         type,
@@ -61,6 +68,7 @@ export function CreateObject({
       onStatus?.(`Created ${obj.type} ${obj.name}`);
       setName("");
       setAddress("");
+      setDstPort("");
       onCreated(obj.id);
     } catch (err) {
       onError?.(err instanceof Error ? err.message : String(err));
@@ -97,6 +105,12 @@ export function CreateObject({
           <label className="field block">
             Netmask
             <input value={netmask} disabled={busy} onChange={(e) => setNetmask(e.target.value)} />
+          </label>
+        ) : null}
+        {isService ? (
+          <label className="field block">
+            Destination port
+            <input value={dstPort} disabled={busy} onChange={(e) => setDstPort(e.target.value)} />
           </label>
         ) : null}
       </div>

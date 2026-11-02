@@ -368,6 +368,54 @@ def option_schema(platform: str, host_os: str = "") -> dict[str, Any]:
     }
 
 
+def _rule_dialog_stem(rule_kind: str | None) -> str | None:
+    if not rule_kind:
+        return None
+    cat = _dialog_catalog()
+    mapping = cat.get("by_rule_dialog") or {}
+    key = rule_kind.strip()
+    return mapping.get(key) or mapping.get(key.lower())
+
+
+def rule_option_schema(rule_kind: str = "policy") -> dict[str, Any]:
+    """Field metadata for Policy/NAT/Routing rule options dialogs."""
+    kind = (rule_kind or "policy").strip() or "policy"
+    cat = _dialog_catalog()
+    dialogs = cat.get("dialogs") or {}
+    stem = _rule_dialog_stem(kind)
+    field_meta: dict[str, dict[str, Any]] = {}
+    pages: list[dict[str, Any]] = []
+    if stem and stem in dialogs:
+        info = dialogs[stem]
+        field_meta = {k: dict(v) for k, v in (info.get("fields") or {}).items()}
+        pages = list(info.get("pages") or [])
+    if pages:
+        groups = [{"id": p["id"], "title": p["title"], "keys": list(p.get("keys") or [])} for p in pages]
+    elif field_meta:
+        groups = [{"id": "rule", "title": "Rule options", "keys": sorted(field_meta.keys())}]
+    else:
+        groups = []
+    featured: list[str] = []
+    seen: set[str] = set()
+    for g in groups:
+        for k in g["keys"]:
+            if k not in seen:
+                featured.append(k)
+                seen.add(k)
+    fields: dict[str, Any] = {}
+    for key in seen:
+        fields[key] = _infer_type(key, "", field_meta.get(key))
+    return {
+        "rule_kind": kind,
+        "dialog_stem": stem,
+        "groups": groups,
+        "featured_keys": featured,
+        "fields": fields,
+        "dialog_field_count": len(field_meta),
+        "dialog_pages": pages,
+    }
+
+
 def interface_option_schema(host_os: str) -> dict[str, Any]:
     """Grouped InterfaceOptions keys from OS interface_dialog + resource defaults."""
     os_info = get_os(host_os)

@@ -12,6 +12,7 @@ from ..platforms import (
     list_oses,
     list_platforms,
     option_schema,
+    rule_option_schema,
 )
 
 router = APIRouter(prefix="/api/v1", tags=["platforms"])
@@ -65,5 +66,16 @@ def get_interface_option_schema(
         return interface_option_schema(host_os)
     except KeyError as exc:
         raise HTTPException(status_code=404, detail=f"unknown os: {host_os}") from exc
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
+@router.get("/rule-option-schema")
+def get_rule_option_schema(
+    rule_kind: str = Query("policy"),
+    _: str = Depends(require_token),
+) -> dict[str, Any]:
+    try:
+        return rule_option_schema(rule_kind)
     except FileNotFoundError as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc

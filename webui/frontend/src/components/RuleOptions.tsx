@@ -1,33 +1,69 @@
-import { useEffect, useState } from "react";
-import { fetchOptions, updateOptions } from "../api/client";
+import { useEffect, useMemo, useState } from "react";
+import {
+  fetchOptions,
+  fetchRuleOptionSchema,
+  updateOptions,
+  type OptionFieldMeta,
+} from "../api/client";
 import { OptionField } from "./OptionField";
 
 type Props = {
   sessionId: string;
   ruleId: string;
+  ruleKind?: "policy" | "nat" | "routing";
   busy?: boolean;
   onBusy?: (busy: boolean) => void;
   onStatus?: (msg: string) => void;
   onError?: (msg: string | null) => void;
 };
 
-function metaFor(key: string, value: string) {
+type Group = { id: string; title: string; keys: string[] };
+
+function metaFor(key: string, value: string, fields: Record<string, OptionFieldMeta>) {
+  if (fields[key]) return fields[key];
   const low = value.trim().toLowerCase();
   if (low === "true" || low === "false") return { type: "bool" };
   if (key.includes("script") || key.includes("command")) return { type: "text" };
   return { type: "string" };
 }
 
-export function RuleOptions({ sessionId, ruleId, busy, onBusy, onStatus, onError }: Props) {
+export function RuleOptions({
+  sessionId,
+  ruleId,
+  ruleKind = "policy",
+  busy,
+  onBusy,
+  onStatus,
+  onError,
+}: Props) {
   const [options, setOptions] = useState<Record<string, string>>({});
+  const [fields, setFields] = useState<Record<string, OptionFieldMeta>>({});
+  const [groups, setGroups] = useState<Group[]>([]);
+  const [activeGroup, setActiveGroup] = useState("rule");
+  const [showAll, setShowAll] = useState(false);
 
   async function reload() {
     onBusy?.(true);
     onError?.(null);
     try {
-      const res = await fetchOptions(sessionId, ruleId);
-      setOptions(res.options ?? {});
-      onStatus?.(`Rule options: ${Object.keys(res.options ?? {}).length}`);
+      const [res, schema] = await Promise.all([
+        fetchOptions(sessionId, ruleId),
+        fetchRuleOptionSchema(ruleKind).catch(() => null),
+      ]);
+      const stored = res.options ?? {};
+      setOptions(stored);
+      setFields(schema?.fields ?? {});
+      const nextGroups = schema?.groups?.length
+        ? schema.groups
+        : Object.keys(stored).length
+          ? [{ id: "rule", title: "Rule options", keys: Object.keys(stored).sort() }]
+          : [];
+      setGroups(nextGroups);
+      if (nextGroups[0]?.id) setActiveGroup(nextGroups[0].id);
+      onStatus?.(
+        `Rule options: ${Object.keys(stored).length}` +
+          (schema ? ` · dialog fields ${schema.dialog_field_count ?? 0}` : ""),
+      );
     } catch (err) {
       onError?.(err instanceof Error ? err.message : String(err));
     } finally {
@@ -38,7 +74,7 @@ export function RuleOptions({ sessionId, ruleId, busy, onBusy, onStatus, onError
   useEffect(() => {
     void reload();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sessionId, ruleId]);
+  }, [sessionId, ruleId, ruleKind]);
 
   async function save() {
     onBusy?.(true);
@@ -54,36 +90,62 @@ export function RuleOptions({ sessionId, ruleId, busy, onBusy, onStatus, onError
     }
   }
 
-  const keys = Object.keys(options).sort();
+  const keys = useMemo(() => {
+    if (showAll) return Object.keys(options).sort();
+    const groupKeys = groups.find((g) => g.id === activeGroup)?.keys;
+    if (groupKeys?.length) {
+      const preferred = groupKeys.filter((k) => k in options);
+      return preferred.length ? preferred : groupKeys;
+    }
+    return Object.keys(options).sort();
+  }, [groups, activeGroup, options, showAll]);
 
   return (
     <div className="rule-options">
       <header className="panel-header">
-        <h3>Rule options</h3>
+        <h3>Rule options · {ruleKind}</h3>
         <div className="btn-row">
+          <button type="button" className="ghost" disabled={busy} onClick={() => setShowAll((v) => !v)}>
+            {showAll ? "Grouped" : "All stored"}
+          </button>
           <button type="button" className="ghost" disabled={busy} onClick={() => void reload()}>
             Reload
           </button>
-          <button type="button" disabled={busy || !keys.length} onClick={() => void save()}>
+          <button type="button" disabled={busy || !Object.keys(options).length} onClick={() => void save()}>
             Save
           </button>
         </div>
       </header>
-      {keys.length ? (
+      {!showAll && groups.length > 1 ? (
+        <div className="btn-row pad">
+          {groups.map((g) => (
+            <button
+              key={g.id}
+              type="button"
+              className={g.id === activeGroup ? undefined : "ghost"}
+              disabled={busy}
+              onClick={() => setActiveGroup(g.id)}
+            >
+              {g.title}
+            </button>
+          ))}
+        </div>
+      ) : null}
+      {keys.length || Object.keys(options).length ? (
         <div className="typed-grid options-grid">
-          {keys.map((key) => (
+          {(keys.length ? keys : Object.keys(options).sort()).map((key) => (
             <OptionField
               key={key}
               name={key}
               value={options[key] ?? ""}
-              meta={metaFor(key, options[key] ?? "")}
+              meta={metaFor(key, options[key] ?? "", fields)}
               disabled={busy}
               onChange={(v) => setOptions((prev) => ({ ...prev, [key]: v }))}
             />
           ))}
         </div>
       ) : (
-        <p className="muted pad">No PolicyRuleOptions on this rule (or unsupported rule type).</p>
+        <p className="muted pad">No rule options on this rule (or unsupported rule type).</p>
       )}
     </div>
   );

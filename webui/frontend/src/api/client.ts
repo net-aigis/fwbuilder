@@ -300,6 +300,18 @@ export function fetchInterfaceOptionSchema(hostOs: string) {
   }>(`/api/v1/interface-option-schema?${qs.toString()}`);
 }
 
+export function fetchRuleOptionSchema(ruleKind: string = "policy") {
+  const qs = new URLSearchParams({ rule_kind: ruleKind });
+  return api<{
+    rule_kind: string;
+    dialog_stem?: string | null;
+    groups: Array<{ id: string; title: string; keys: string[] }>;
+    featured_keys: string[];
+    fields?: Record<string, OptionFieldMeta>;
+    dialog_field_count?: number;
+  }>(`/api/v1/rule-option-schema?${qs.toString()}`);
+}
+
 export function fetchObjectOptions(sessionId: string, objectId: string) {
   return fetchOptions(sessionId, objectId);
 }

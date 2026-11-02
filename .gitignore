@@ -36,6 +36,8 @@ fwbweb
 !src/fwbweb/
 !src/fwbweb/**
 src/fwbweb/fwbweb
+src/fwbweb/Makefile
+src/fwbweb/.obj/
 !webui/bin/fwbweb
 qrc_MainRes.cpp
 fwb_iosacl

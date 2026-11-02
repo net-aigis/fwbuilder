@@ -37,7 +37,687 @@
     "secuwall": "secuwallAdvancedDialog",
     "solaris": "solarisAdvancedDialog"
   },
+  "by_rule_dialog": {
+    "NATRule": "NATRuleOptionsDialog",
+    "PolicyRule": "RuleOptionsDialog",
+    "RoutingRule": "RoutingRuleOptionsDialog",
+    "nat": "NATRuleOptionsDialog",
+    "policy": "RuleOptionsDialog",
+    "routing": "RoutingRuleOptionsDialog"
+  },
   "dialogs": {
+    "NATRuleOptionsDialog": {
+      "field_count": 14,
+      "fields": {
+        "asa8_nat_auto": {
+          "key": "asa8_nat_auto",
+          "type": "string",
+          "widget": "asa8_nat_auto",
+          "widget_class": "QRadioButton"
+        },
+        "asa8_nat_dns": {
+          "key": "asa8_nat_dns",
+          "type": "bool",
+          "widget": "asa8_nat_dns",
+          "widget_class": "QCheckBox"
+        },
+        "asa8_nat_dynamic": {
+          "key": "asa8_nat_dynamic",
+          "type": "string",
+          "widget": "asa8_nat_dynamic",
+          "widget_class": "QRadioButton"
+        },
+        "asa8_nat_static": {
+          "key": "asa8_nat_static",
+          "type": "string",
+          "widget": "asa8_nat_static",
+          "widget_class": "QRadioButton"
+        },
+        "ipt_nat_persistent": {
+          "key": "ipt_nat_persistent",
+          "type": "bool",
+          "widget": "ipt_nat_persistent",
+          "widget_class": "QCheckBox"
+        },
+        "ipt_nat_random": {
+          "key": "ipt_nat_random",
+          "type": "bool",
+          "widget": "ipt_nat_random",
+          "widget_class": "QCheckBox"
+        },
+        "ipt_use_masq": {
+          "key": "ipt_use_masq",
+          "type": "bool",
+          "widget": "ipt_use_masq",
+          "widget_class": "QCheckBox"
+        },
+        "ipt_use_snat_instead_of_masq": {
+          "key": "ipt_use_snat_instead_of_masq",
+          "type": "bool",
+          "widget": "ipt_use_snat_instead_of_masq",
+          "widget_class": "QCheckBox"
+        },
+        "pf_bitmask": {
+          "key": "pf_bitmask",
+          "type": "string",
+          "widget": "pf_bitmask",
+          "widget_class": "QRadioButton"
+        },
+        "pf_pool_type_none": {
+          "key": "pf_pool_type_none",
+          "type": "string",
+          "widget": "pf_pool_type_none",
+          "widget_class": "QRadioButton"
+        },
+        "pf_random": {
+          "key": "pf_random",
+          "type": "string",
+          "widget": "pf_random",
+          "widget_class": "QRadioButton"
+        },
+        "pf_round_robin": {
+          "key": "pf_round_robin",
+          "type": "string",
+          "widget": "pf_round_robin",
+          "widget_class": "QRadioButton"
+        },
+        "pf_source_hash": {
+          "key": "pf_source_hash",
+          "type": "string",
+          "widget": "pf_source_hash",
+          "widget_class": "QRadioButton"
+        },
+        "pf_static_port": {
+          "key": "pf_static_port",
+          "type": "bool",
+          "widget": "pf_static_port",
+          "widget_class": "QCheckBox"
+        }
+      },
+      "pages": [
+        {
+          "id": "main",
+          "keys": [
+            "asa8_nat_auto",
+            "asa8_nat_dns",
+            "asa8_nat_dynamic",
+            "asa8_nat_static",
+            "ipt_nat_persistent",
+            "ipt_nat_random",
+            "ipt_use_masq",
+            "ipt_use_snat_instead_of_masq",
+            "pf_bitmask",
+            "pf_pool_type_none",
+            "pf_random",
+            "pf_round_robin",
+            "pf_source_hash",
+            "pf_static_port"
+          ],
+          "title": "Interface"
+        }
+      ],
+      "ui": "natruleoptionsdialog_q.ui"
+    },
+    "RoutingRuleOptionsDialog": {
+      "field_count": 2,
+      "fields": {
+        "no_fail": {
+          "key": "no_fail",
+          "type": "bool",
+          "widget": "routing_non_critical_rule",
+          "widget_class": "QCheckBox"
+        },
+        "use_onlink_option": {
+          "key": "use_onlink_option",
+          "type": "bool",
+          "widget": "routing_use_onlink_option",
+          "widget_class": "QCheckBox"
+        }
+      },
+      "pages": [
+        {
+          "id": "main",
+          "keys": [
+            "no_fail",
+            "use_onlink_option"
+          ],
+          "title": "Interface"
+        }
+      ],
+      "ui": "routingruleoptionsdialog_q.ui"
+    },
+    "RuleOptionsDialog": {
+      "field_count": 66,
+      "fields": {
+        "classify_str": {
+          "key": "classify_str",
+          "type": "string",
+          "widget": "classify_str",
+          "widget_class": "QLineEdit"
+        },
+        "connlimit_above_not": {
+          "key": "connlimit_above_not",
+          "type": "bool",
+          "widget": "ipt_connlimit_above_not",
+          "widget_class": "QCheckBox"
+        },
+        "connlimit_masklen": {
+          "key": "connlimit_masklen",
+          "type": "int",
+          "widget": "ipt_connlimit_masklen",
+          "widget_class": "QSpinBox"
+        },
+        "connlimit_value": {
+          "key": "connlimit_value",
+          "type": "int",
+          "widget": "ipt_connlimit",
+          "widget_class": "QSpinBox"
+        },
+        "counter_name": {
+          "key": "counter_name",
+          "type": "string",
+          "widget": "counterLineEdit",
+          "widget_class": "QLineEdit"
+        },
+        "disable_logging_for_this_rule": {
+          "key": "disable_logging_for_this_rule",
+          "type": "bool",
+          "widget": "pix_disable_rule_log",
+          "widget_class": "QCheckBox"
+        },
+        "firewall_is_part_of_any_and_networks": {
+          "choices": [
+            "Follow global setting",
+            "On",
+            "Off"
+          ],
+          "key": "firewall_is_part_of_any_and_networks",
+          "type": "enum",
+          "widget": "ipt_assume_fw_is_part_of_any",
+          "widget_class": "QComboBox"
+        },
+        "hashlimit_burst": {
+          "key": "hashlimit_burst",
+          "type": "int",
+          "widget": "ipt_hashlimit_burst",
+          "widget_class": "QSpinBox"
+        },
+        "hashlimit_dstlimit": {
+          "key": "hashlimit_dstlimit",
+          "type": "bool",
+          "widget": "ipt_hashlimit_dstlimit",
+          "widget_class": "QCheckBox"
+        },
+        "hashlimit_expire": {
+          "key": "hashlimit_expire",
+          "type": "int",
+          "widget": "ipt_hashlimit_expire",
+          "widget_class": "QSpinBox"
+        },
+        "hashlimit_gcinterval": {
+          "key": "hashlimit_gcinterval",
+          "type": "int",
+          "widget": "ipt_hashlimit_gcinterval",
+          "widget_class": "QSpinBox"
+        },
+        "hashlimit_max": {
+          "key": "hashlimit_max",
+          "type": "int",
+          "widget": "ipt_hashlimit_max",
+          "widget_class": "QSpinBox"
+        },
+        "hashlimit_mode_dstip": {
+          "key": "hashlimit_mode_dstip",
+          "type": "bool",
+          "widget": "cb_dstip",
+          "widget_class": "QCheckBox"
+        },
+        "hashlimit_mode_dstport": {
+          "key": "hashlimit_mode_dstport",
+          "type": "bool",
+          "widget": "cb_dstport",
+          "widget_class": "QCheckBox"
+        },
+        "hashlimit_mode_srcip": {
+          "key": "hashlimit_mode_srcip",
+          "type": "bool",
+          "widget": "cb_srcip",
+          "widget_class": "QCheckBox"
+        },
+        "hashlimit_mode_srcport": {
+          "key": "hashlimit_mode_srcport",
+          "type": "bool",
+          "widget": "cb_srcport",
+          "widget_class": "QCheckBox"
+        },
+        "hashlimit_name": {
+          "key": "hashlimit_name",
+          "type": "string",
+          "widget": "ipt_hashlimit_name",
+          "widget_class": "QLineEdit"
+        },
+        "hashlimit_size": {
+          "key": "hashlimit_size",
+          "type": "int",
+          "widget": "ipt_hashlimit_size",
+          "widget_class": "QSpinBox"
+        },
+        "hashlimit_suffix": {
+          "choices": [
+            "/day",
+            "/hour",
+            "/minute",
+            "/second"
+          ],
+          "key": "hashlimit_suffix",
+          "type": "enum",
+          "widget": "ipt_hashlimit_suffix",
+          "widget_class": "QComboBox"
+        },
+        "hashlimit_value": {
+          "key": "hashlimit_value",
+          "type": "int",
+          "widget": "ipt_hashlimit",
+          "widget_class": "QSpinBox"
+        },
+        "iosacl_add_mirror_rule": {
+          "key": "iosacl_add_mirror_rule",
+          "type": "bool",
+          "widget": "iosacl_add_mirror_rule",
+          "widget_class": "QCheckBox"
+        },
+        "ipf_keep_frags": {
+          "key": "ipf_keep_frags",
+          "type": "bool",
+          "widget": "ipf_keep_frags",
+          "widget_class": "QCheckBox"
+        },
+        "ipf_log_facility": {
+          "key": "ipf_log_facility",
+          "type": "string",
+          "widget": "ipf_logFacility",
+          "widget_class": "QComboBox"
+        },
+        "ipf_return_icmp_as_dest": {
+          "key": "ipf_return_icmp_as_dest",
+          "type": "bool",
+          "widget": "ipf_masq_icmp",
+          "widget_class": "QCheckBox"
+        },
+        "ipf_route_opt_addr": {
+          "key": "ipf_route_opt_addr",
+          "type": "string",
+          "widget": "ipf_route_opt_addr",
+          "widget_class": "QLineEdit"
+        },
+        "ipf_route_opt_if": {
+          "key": "ipf_route_opt_if",
+          "type": "string",
+          "widget": "ipf_route_opt_if",
+          "widget_class": "QComboBox"
+        },
+        "ipf_route_option": {
+          "choices": [
+            "None",
+            "Route through",
+            "Route reply through",
+            "Route a copy through"
+          ],
+          "key": "ipf_route_option",
+          "type": "enum",
+          "widget": "ipf_route_option",
+          "widget_class": "QComboBox"
+        },
+        "ipfw_classify_method": {
+          "choices": [
+            "None",
+            "dummynet(4) 'pipe'",
+            "dummynet(4) 'queue'"
+          ],
+          "key": "ipfw_classify_method",
+          "type": "enum",
+          "widget": "ipfw_classify_method",
+          "widget_class": "QComboBox"
+        },
+        "ipfw_pipe_queue_num": {
+          "key": "ipfw_pipe_queue_num",
+          "type": "int",
+          "widget": "usePortNum",
+          "widget_class": "QSpinBox"
+        },
+        "ipt_continue": {
+          "key": "ipt_continue",
+          "type": "bool",
+          "widget": "ipt_continue",
+          "widget_class": "QCheckBox"
+        },
+        "ipt_gw": {
+          "key": "ipt_gw",
+          "type": "string",
+          "widget": "ipt_gw",
+          "widget_class": "QLineEdit"
+        },
+        "ipt_iif": {
+          "key": "ipt_iif",
+          "type": "string",
+          "widget": "ipt_iif",
+          "widget_class": "QComboBox"
+        },
+        "ipt_mark_connections": {
+          "key": "ipt_mark_connections",
+          "type": "bool",
+          "widget": "ipt_mark_connections",
+          "widget_class": "QCheckBox"
+        },
+        "ipt_oif": {
+          "key": "ipt_oif",
+          "type": "string",
+          "widget": "ipt_oif",
+          "widget_class": "QComboBox"
+        },
+        "ipt_tee": {
+          "key": "ipt_tee",
+          "type": "bool",
+          "widget": "ipt_tee",
+          "widget_class": "QCheckBox"
+        },
+        "limit_burst": {
+          "key": "limit_burst",
+          "type": "int",
+          "widget": "ipt_burst",
+          "widget_class": "QSpinBox"
+        },
+        "limit_suffix": {
+          "choices": [
+            "/day",
+            "/hour",
+            "/minute",
+            "/second"
+          ],
+          "key": "limit_suffix",
+          "type": "enum",
+          "widget": "ipt_limitSuffix",
+          "widget_class": "QComboBox"
+        },
+        "limit_value": {
+          "key": "limit_value",
+          "type": "int",
+          "widget": "ipt_limit",
+          "widget_class": "QSpinBox"
+        },
+        "limit_value_not": {
+          "key": "limit_value_not",
+          "type": "bool",
+          "widget": "ipt_limit_not",
+          "widget_class": "QCheckBox"
+        },
+        "log_interval": {
+          "key": "log_interval",
+          "type": "int",
+          "widget": "pix_log_interval",
+          "widget_class": "QSpinBox"
+        },
+        "log_level": {
+          "choices": [
+            "emerg",
+            "alert",
+            "crit",
+            "error",
+            "warning",
+            "notice",
+            "info",
+            "debug"
+          ],
+          "key": "log_level",
+          "type": "enum",
+          "widget": "pix_logLevel",
+          "widget_class": "QComboBox"
+        },
+        "log_prefix": {
+          "key": "log_prefix",
+          "type": "string",
+          "widget": "pf_logPrefix",
+          "widget_class": "QLineEdit"
+        },
+        "pf_classify_str": {
+          "key": "pf_classify_str",
+          "type": "string",
+          "widget": "pf_classify_str",
+          "widget_class": "QLineEdit"
+        },
+        "pf_fastroute": {
+          "key": "pf_fastroute",
+          "type": "bool",
+          "widget": "pf_fastroute",
+          "widget_class": "QCheckBox"
+        },
+        "pf_keep_state": {
+          "key": "pf_keep_state",
+          "type": "bool",
+          "widget": "pf_keep_state",
+          "widget_class": "QCheckBox"
+        },
+        "pf_max_src_conn": {
+          "key": "pf_max_src_conn",
+          "type": "int",
+          "widget": "pf_max_src_conn",
+          "widget_class": "QSpinBox"
+        },
+        "pf_max_src_conn_flush": {
+          "key": "pf_max_src_conn_flush",
+          "type": "bool",
+          "widget": "pf_flush",
+          "widget_class": "QCheckBox"
+        },
+        "pf_max_src_conn_global": {
+          "key": "pf_max_src_conn_global",
+          "type": "bool",
+          "widget": "pf_global",
+          "widget_class": "QCheckBox"
+        },
+        "pf_max_src_conn_overload_table": {
+          "key": "pf_max_src_conn_overload_table",
+          "type": "string",
+          "widget": "pf_overload_table",
+          "widget_class": "QLineEdit"
+        },
+        "pf_max_src_conn_rate_num": {
+          "key": "pf_max_src_conn_rate_num",
+          "type": "int",
+          "widget": "pf_max_src_conn_rate_num",
+          "widget_class": "QSpinBox"
+        },
+        "pf_max_src_conn_rate_seconds": {
+          "key": "pf_max_src_conn_rate_seconds",
+          "type": "int",
+          "widget": "pf_max_src_conn_rate_seconds",
+          "widget_class": "QSpinBox"
+        },
+        "pf_max_src_nodes": {
+          "key": "pf_max_src_nodes",
+          "type": "int",
+          "widget": "pf_max_src_nodes",
+          "widget_class": "QSpinBox"
+        },
+        "pf_max_src_states": {
+          "key": "pf_max_src_states",
+          "type": "int",
+          "widget": "pf_max_src_states",
+          "widget_class": "QSpinBox"
+        },
+        "pf_modulate_state": {
+          "key": "pf_modulate_state",
+          "type": "bool",
+          "widget": "pf_modulate",
+          "widget_class": "QCheckBox"
+        },
+        "pf_no_sync": {
+          "key": "pf_no_sync",
+          "type": "bool",
+          "widget": "pf_no_sync",
+          "widget_class": "QCheckBox"
+        },
+        "pf_pflow": {
+          "key": "pf_pflow",
+          "type": "bool",
+          "widget": "pf_pflow",
+          "widget_class": "QCheckBox"
+        },
+        "pf_route_load_option": {
+          "choices": [
+            "None",
+            "Bitmask",
+            "Random",
+            "Source Hash",
+            "Round Robin"
+          ],
+          "key": "pf_route_load_option",
+          "type": "enum",
+          "widget": "pf_route_load_option",
+          "widget_class": "QComboBox"
+        },
+        "pf_route_opt_addr": {
+          "key": "pf_route_opt_addr",
+          "type": "string",
+          "widget": "pf_route_opt_addr",
+          "widget_class": "QLineEdit"
+        },
+        "pf_route_opt_if": {
+          "key": "pf_route_opt_if",
+          "type": "string",
+          "widget": "pf_route_opt_if",
+          "widget_class": "QComboBox"
+        },
+        "pf_route_option": {
+          "choices": [
+            "None",
+            "Route through",
+            "Route reply through",
+            "Route a copy through"
+          ],
+          "key": "pf_route_option",
+          "type": "enum",
+          "widget": "pf_route_option",
+          "widget_class": "QComboBox"
+        },
+        "pf_rule_max_state": {
+          "key": "pf_rule_max_state",
+          "type": "int",
+          "widget": "pf_rule_max_state",
+          "widget_class": "QSpinBox"
+        },
+        "pf_sloppy_tracker": {
+          "key": "pf_sloppy_tracker",
+          "type": "bool",
+          "widget": "pf_sloppy_tracker",
+          "widget_class": "QCheckBox"
+        },
+        "pf_source_tracking": {
+          "key": "pf_source_tracking",
+          "type": "bool",
+          "widget": "pf_source_tracking",
+          "widget_class": "QCheckBox"
+        },
+        "pf_synproxy": {
+          "key": "pf_synproxy",
+          "type": "bool",
+          "widget": "pf_synproxy",
+          "widget_class": "QCheckBox"
+        },
+        "stateless": {
+          "key": "stateless",
+          "type": "bool",
+          "widget": "ipfw_stateless",
+          "widget_class": "QCheckBox"
+        },
+        "ulog_nlgroup": {
+          "key": "ulog_nlgroup",
+          "type": "int",
+          "widget": "ipt_nlgroup",
+          "widget_class": "QSpinBox"
+        }
+      },
+      "pages": [
+        {
+          "id": "tab1",
+          "keys": [
+            "firewall_is_part_of_any_and_networks"
+          ],
+          "title": "General"
+        },
+        {
+          "id": "tab2",
+          "keys": [
+            "ulog_nlgroup"
+          ],
+          "title": "Logging"
+        },
+        {
+          "id": "tab3",
+          "keys": [
+            "limit_value",
+            "limit_suffix",
+            "limit_value_not",
+            "limit_burst"
+          ],
+          "title": "limit"
+        },
+        {
+          "id": "tab4",
+          "keys": [
+            "connlimit_value",
+            "connlimit_above_not",
+            "connlimit_masklen"
+          ],
+          "title": "connlimit"
+        },
+        {
+          "id": "tab5",
+          "keys": [
+            "hashlimit_name",
+            "hashlimit_dstlimit",
+            "hashlimit_value",
+            "hashlimit_suffix",
+            "hashlimit_burst",
+            "hashlimit_mode_srcip",
+            "hashlimit_mode_dstip",
+            "hashlimit_mode_srcport",
+            "hashlimit_mode_dstport",
+            "hashlimit_size",
+            "hashlimit_max",
+            "hashlimit_expire",
+            "hashlimit_gcinterval"
+          ],
+          "title": "hashlimit"
+        },
+        {
+          "id": "tab6",
+          "keys": [
+            "ipt_mark_connections"
+          ],
+          "title": "Tag"
+        },
+        {
+          "id": "tab7_2",
+          "keys": [
+            "classify_str"
+          ],
+          "title": "Classify"
+        },
+        {
+          "id": "tab_3",
+          "keys": [
+            "ipt_iif",
+            "ipt_oif",
+            "ipt_gw",
+            "ipt_continue",
+            "ipt_tee"
+          ],
+          "title": "Route"
+        }
+      ],
+      "ui": "ruleoptionsdialog_q.ui"
+    },
     "bsdIfaceOptsDialog": {
       "field_count": 5,
       "fields": {

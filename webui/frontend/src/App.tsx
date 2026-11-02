@@ -25,6 +25,7 @@ import {
 } from "./api/client";
 import { CreateObject } from "./components/CreateObject";
 import { FirewallExtras } from "./components/FirewallExtras";
+import { HostOptions } from "./components/HostOptions";
 import { InterfaceOptions } from "./components/InterfaceOptions";
 import { ObjectDetail } from "./components/ObjectDetail";
 import { ObjectPicker } from "./components/ObjectPicker";
@@ -525,6 +526,16 @@ export function App() {
                         onError={setError}
                       />
                     ) : null}
+                    {selected.type === "Host" ? (
+                      <HostOptions
+                        sessionId={sessionId}
+                        hostId={selected.id}
+                        busy={busy}
+                        onBusy={setBusy}
+                        onStatus={setStatus}
+                        onError={setError}
+                      />
+                    ) : null}
                     {["ObjectGroup", "Library", "ServiceGroup", "FWObjectDatabase"].includes(
                       selected.type,
                     ) || selected.type.endsWith("Group") ? (
@@ -606,6 +617,7 @@ export function App() {
                 <RuleOptions
                   sessionId={sessionId}
                   ruleId={selectedRuleId}
+                  ruleKind={rulesWhich}
                   busy={busy}
                   onBusy={setBusy}
                   onStatus={setStatus}

@@ -53,6 +53,15 @@ IFACE_DIALOG_CPP = {
     "procurve": "vlanOnlyIfaceOptsDialog",
 }
 
+RULE_DIALOG_CPP = {
+    "policy": "RuleOptionsDialog",
+    "PolicyRule": "RuleOptionsDialog",
+    "nat": "NATRuleOptionsDialog",
+    "NATRule": "NATRuleOptionsDialog",
+    "routing": "RoutingRuleOptionsDialog",
+    "RoutingRule": "RoutingRuleOptionsDialog",
+}
+
 UI_MAP = {
     "iptAdvancedDialog": "iptadvanceddialog_q.ui",
     "pfAdvancedDialog": "pfadvanceddialog_q.ui",
@@ -247,11 +256,11 @@ def main() -> None:
         "dialogs": {},
         "by_platform_dialog": {},
         "by_interface_dialog": {},
+        "by_rule_dialog": {},
     }
-    for cpp in sorted(LIBGUI.glob("*AdvancedDialog.cpp")):
-        catalog["dialogs"][cpp.stem] = extract_one(cpp)
-    for cpp in sorted(LIBGUI.glob("*IfaceOptsDialog.cpp")):
-        catalog["dialogs"][cpp.stem] = extract_one(cpp)
+    for pattern in ("*AdvancedDialog.cpp", "*IfaceOptsDialog.cpp", "*RuleOptionsDialog.cpp"):
+        for cpp in sorted(LIBGUI.glob(pattern)):
+            catalog["dialogs"][cpp.stem] = extract_one(cpp)
 
     for dlg_name, stem in DIALOG_CPP.items():
         if stem in catalog["dialogs"]:
@@ -259,6 +268,9 @@ def main() -> None:
     for dlg_name, stem in IFACE_DIALOG_CPP.items():
         if stem in catalog["dialogs"]:
             catalog["by_interface_dialog"][dlg_name] = stem
+    for dlg_name, stem in RULE_DIALOG_CPP.items():
+        if stem in catalog["dialogs"]:
+            catalog["by_rule_dialog"][dlg_name] = stem
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(catalog, indent=2, sort_keys=True) + "\n", encoding="utf-8")
@@ -272,6 +284,8 @@ def main() -> None:
         "pages:",
         len(linux.get("pages") or []),
     )
+    rule = catalog["dialogs"].get("RuleOptionsDialog", {})
+    print("policy rule fields:", len(rule.get("fields") or {}), "pages:", len(rule.get("pages") or []))
 
 
 if __name__ == "__main__":
