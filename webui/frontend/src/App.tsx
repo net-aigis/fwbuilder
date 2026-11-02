@@ -548,6 +548,18 @@ export function App() {
         setSelectedRuleId(visibleRules[visibleRules.length - 1]?.id);
         return;
       }
+      if (!mod && !e.altKey && e.key.toLowerCase() === "n") {
+        const disabled = rules.filter((r) => r.disabled);
+        if (!disabled.length) return;
+        e.preventDefault();
+        if (hideDisabled) setHideDisabled(false);
+        const idx = disabled.findIndex((r) => r.id === selectedRuleId);
+        const pick = e.shiftKey
+          ? disabled[(idx <= 0 ? disabled.length : idx) - 1]
+          : disabled[(idx + 1) % disabled.length];
+        if (pick) setSelectedRuleId(pick.id);
+        return;
+      }
       if (e.key === " " && selectedRuleId && !mod && !e.altKey) {
         e.preventDefault();
         const rule = visibleRules.find((r) => r.id === selectedRuleId);
@@ -580,6 +592,8 @@ export function App() {
     selectedRuleId,
     selected,
     visibleRules,
+    rules,
+    hideDisabled,
     picker,
     trashOpen,
     unusedHits,
@@ -1916,6 +1930,30 @@ export function App() {
                   type="button"
                   className="ghost"
                   disabled={busy}
+                  onClick={() => {
+                    const lines = [
+                      "id\ttype\tname",
+                      ...unusedHits.map((h) => `${h.id}\t${h.type}\t${(h.name ?? "").replace(/\t|\n/g, " ")}`),
+                    ];
+                    const blob = new Blob([lines.join("\n")], {
+                      type: "text/tab-separated-values",
+                    });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = "fwbweb-unused.tsv";
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    setStatus(`Downloaded ${unusedHits.length} unused object(s) as TSV`);
+                  }}
+                  title="Download unused list as TSV"
+                >
+                  TSV
+                </button>
+                <button
+                  type="button"
+                  className="ghost"
+                  disabled={busy}
                   onClick={() => void onDeleteUnused()}
                   title="Soft-delete all listed unused objects"
                 >
@@ -1971,6 +2009,31 @@ export function App() {
                   title="Download search hits as JSON"
                 >
                   JSON
+                </button>
+                <button
+                  type="button"
+                  className="ghost"
+                  onClick={() => {
+                    const lines = [
+                      "id\ttype\tname",
+                      ...searchHits.map(
+                        (h) => `${h.id}\t${h.type}\t${(h.name ?? "").replace(/\t|\n/g, " ")}`,
+                      ),
+                    ];
+                    const blob = new Blob([lines.join("\n")], {
+                      type: "text/tab-separated-values",
+                    });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = "fwbweb-search.tsv";
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    setStatus(`Downloaded ${searchHits.length} search hit(s) as TSV`);
+                  }}
+                  title="Download search hits as TSV"
+                >
+                  TSV
                 </button>
                 <button
                   type="button"
@@ -2327,6 +2390,21 @@ export function App() {
                       title="Rename the current ruleset"
                     >
                       Rename…
+                    </button>
+                  ) : null}
+                  {rulesetId ? (
+                    <button
+                      type="button"
+                      className="ghost"
+                      title="Copy ruleset object id"
+                      onClick={() => {
+                        void navigator.clipboard.writeText(rulesetId).then(
+                          () => setStatus(`Copied ruleset id ${rulesetId}`),
+                          () => setError("Clipboard write failed"),
+                        );
+                      }}
+                    >
+                      Copy id
                     </button>
                   ) : null}
                   {rulesetId &&
