@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   addRule,
   addRuleRef,
@@ -79,7 +79,26 @@ export function App() {
 
   const canOperate = useMemo(() => Boolean(sessionId) && !busy, [sessionId, busy]);
 
+  useEffect(() => {
+    const onBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (!dirty) return;
+      e.preventDefault();
+      e.returnValue = "";
+    };
+    window.addEventListener("beforeunload", onBeforeUnload);
+    return () => window.removeEventListener("beforeunload", onBeforeUnload);
+  }, [dirty]);
+
   async function onOpen() {
+    if (sessionId && dirty && !window.confirm("Discard unsaved changes and open another project?"))
+      return;
+    if (sessionId) {
+      try {
+        await closeProject(sessionId);
+      } catch {
+        /* best-effort close before reopen */
+      }
+    }
     setBusy(true);
     setError(null);
     try {

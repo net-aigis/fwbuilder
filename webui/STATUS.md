@@ -67,6 +67,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Interface management flag | done | `setManagement`; E2E phase20 |
 | Search type filter | done | sidebar select; E2E phase21 |
 | Lazy tree expand | done | ObjectTree loads children via get; E2E phase21 |
+| Dirty beforeunload / reopen confirm | done | App guards |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Phase 3 — compile / deploy
