@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import xml.etree.ElementTree as ET
 from functools import lru_cache
 from pathlib import Path
@@ -10,6 +11,7 @@ from typing import Any
 from .settings import settings
 
 _REPO_ROOT = Path(__file__).resolve().parents[3]
+_DIALOG_FIELDS_PATH = Path(__file__).resolve().parent / "data" / "dialog_fields.json"
 
 INSTALLER_KEYS = (
     "admUser",
@@ -181,6 +183,60 @@ def compiler_for_platform_name(platform: str) -> str | None:
         return None
 
 
+@lru_cache(maxsize=1)
+def _dialog_catalog() -> dict[str, Any]:
+    if not _DIALOG_FIELDS_PATH.is_file():
+        return {"dialogs": {}, "by_platform_dialog": {}}
+    return json.loads(_DIALOG_FIELDS_PATH.read_text(encoding="utf-8"))
+
+
+def dialog_fields_for(platform: str, host_os: str = "") -> dict[str, dict[str, Any]]:
+    """Merge platform + OS AdvancedDialog field metadata (widget types)."""
+    cat = _dialog_catalog()
+    mapping = cat.get("by_platform_dialog") or {}
+    dialogs = cat.get("dialogs") or {}
+    fields: dict[str, dict[str, Any]] = {}
+
+    def merge(dialog_name: str | None) -> None:
+        if not dialog_name:
+            return
+        stem = mapping.get(dialog_name) or mapping.get(dialog_name.lower())
+        if not stem:
+            return
+        info = dialogs.get(stem) or {}
+        for key, meta in (info.get("fields") or {}).items():
+            fields[key] = dict(meta)
+
+    try:
+        plat = get_platform(platform)
+        merge(plat.get("dialog") or platform)
+    except KeyError:
+        merge(platform)
+    if host_os:
+        try:
+            os_info = get_os(host_os)
+            merge(os_info.get("dialog") or host_os)
+        except KeyError:
+            merge(host_os)
+    return fields
+
+
+def _infer_type(key: str, value: str, meta: dict[str, Any] | None) -> dict[str, Any]:
+    if meta:
+        return {
+            "type": meta.get("type") or "string",
+            "choices": meta.get("choices"),
+            "widget": meta.get("widget"),
+            "widget_class": meta.get("widget_class"),
+        }
+    low = (value or "").strip().lower()
+    if low in {"true", "false"}:
+        return {"type": "bool"}
+    if key in {"prolog_script", "epilog_script"}:
+        return {"type": "text"}
+    return {"type": "string"}
+
+
 def option_schema(platform: str, host_os: str = "") -> dict[str, Any]:
     """Build grouped option keys for the WebUI editor."""
     plat = get_platform(platform)
@@ -191,8 +247,11 @@ def option_schema(platform: str, host_os: str = "") -> dict[str, Any]:
         except KeyError:
             os_info = None
 
+    field_meta = dialog_fields_for(platform, host_os)
     platform_keys = sorted(plat.get("defaults", {}).keys())
     os_keys = sorted((os_info or {}).get("defaults", {}).keys()) if os_info else []
+    dialog_keys = sorted(k for k in field_meta if k not in INSTALLER_KEYS and k not in COMMON_KEYS)
+
     groups = [
         {
             "id": "installer",
@@ -213,6 +272,14 @@ def option_schema(platform: str, host_os: str = "") -> dict[str, Any]:
                 "keys": os_keys,
             }
         )
+    if dialog_keys:
+        groups.append(
+            {
+                "id": "dialog",
+                "title": f"Dialog fields ({plat.get('dialog') or platform})",
+                "keys": dialog_keys,
+            }
+        )
     groups.append(
         {
             "id": "scripts",
@@ -227,17 +294,26 @@ def option_schema(platform: str, host_os: str = "") -> dict[str, Any]:
             if k not in seen:
                 featured.append(k)
                 seen.add(k)
+
+    defaults = {
+        **((os_info or {}).get("defaults") or {}),
+        **(plat.get("defaults") or {}),
+    }
+    fields: dict[str, Any] = {}
+    for key in seen:
+        fields[key] = _infer_type(key, defaults.get(key, ""), field_meta.get(key))
+
     return {
         "platform": plat["name"],
         "host_os": host_os or None,
         "compiler": plat.get("compiler"),
+        "dialog": plat.get("dialog"),
         "description": plat.get("description"),
         "supported_os": plat.get("supported_os"),
         "capabilities": plat.get("capabilities"),
-        "defaults": {
-            **((os_info or {}).get("defaults") or {}),
-            **(plat.get("defaults") or {}),
-        },
+        "defaults": defaults,
         "groups": groups,
         "featured_keys": featured,
+        "fields": fields,
+        "dialog_field_count": len(field_meta),
     }

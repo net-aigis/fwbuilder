@@ -16,6 +16,7 @@ See [ARCHITECTURE.md](ARCHITECTURE.md) and [STATUS.md](STATUS.md).
 - Deploy dry-run / real `scp`+`ssh` (simplified; not the full Qt installer)
 - Platform/OS catalog and option groups from `src/res`
 - Compilers: nft, ipt, pf, ipf, ipfw, pix, iosacl, nxosacl, junosacl, procurve_acl
+- Typed option editors (bool/enum/text from AdvancedDialog `.ui`) + rule options
 
 ## Local workflow (no GitHub Actions)
 
@@ -31,6 +32,7 @@ bash webui/scripts/e2e-phase2.sh
 bash webui/scripts/e2e-phase3.sh
 bash webui/scripts/e2e-phase4.sh
 bash webui/scripts/e2e-phase5.sh
+bash webui/scripts/e2e-phase6.sh
 
 # 3) Dev servers
 export FWBWEB_BRIDGE="$(pwd)/webui/bin/fwbweb"

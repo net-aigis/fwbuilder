@@ -6,7 +6,9 @@ import {
   fetchOptions,
   updateManagement,
   updateOptions,
+  type OptionFieldMeta,
 } from "../api/client";
+import { OptionField } from "./OptionField";
 
 type Props = {
   sessionId: string;
@@ -48,6 +50,7 @@ export function FirewallExtras({
   onError,
 }: Props) {
   const [options, setOptions] = useState<Record<string, string>>({});
+  const [fields, setFields] = useState<Record<string, OptionFieldMeta>>({});
   const [filter, setFilter] = useState("");
   const [mgmtAddr, setMgmtAddr] = useState("");
   const [deployHost, setDeployHost] = useState("");
@@ -78,13 +81,16 @@ export function FirewallExtras({
         setGroups(schema.groups ?? []);
         setFeatured(schema.featured_keys?.length ? schema.featured_keys : FALLBACK_FEATURED);
         setCompiler(schema.compiler || "");
+        setFields(schema.fields ?? {});
         if (schema.groups?.[0]?.id) setActiveGroup(schema.groups[0].id);
+        onStatus?.(
+          `Options: ${Object.keys(o.options ?? {}).length} · dialog fields ${
+            schema.dialog_field_count ?? 0
+          } · ${plat}${schema.compiler ? ` · ${schema.compiler}` : ""}`,
+        );
+      } else {
+        onStatus?.(`Options: ${Object.keys(o.options ?? {}).length} keys`);
       }
-      onStatus?.(
-        `Options: ${Object.keys(o.options ?? {}).length} keys · ${plat}${
-          schema?.compiler ? ` · ${schema.compiler}` : ""
-        }`,
-      );
     } catch (err) {
       onError?.(err instanceof Error ? err.message : String(err));
     } finally {
@@ -229,14 +235,14 @@ export function FirewallExtras({
 
       <div className="typed-grid options-grid">
         {keys.map((key) => (
-          <label key={key} className="field block">
-            {key}
-            <input
-              value={options[key] ?? ""}
-              disabled={busy}
-              onChange={(e) => setOptions((prev) => ({ ...prev, [key]: e.target.value }))}
-            />
-          </label>
+          <OptionField
+            key={key}
+            name={key}
+            value={options[key] ?? ""}
+            meta={fields[key]}
+            disabled={busy}
+            onChange={(v) => setOptions((prev) => ({ ...prev, [key]: v }))}
+          />
         ))}
         {!keys.length ? <p className="muted">No keys in this group.</p> : null}
       </div>
@@ -276,8 +282,8 @@ export function FirewallExtras({
         </button>
       </div>
       <p className="muted pad">
-        Option groups come from <code>src/res/platform</code> / <code>os</code> defaults (not the full
-        Qt dialogs). Deploy uses system <code>scp</code>/<code>ssh</code> (BatchMode).
+        Field types come from libgui AdvancedDialog <code>.ui</code> widgets (checkbox / combo /
+        text). Not every Qt dialog page is mirrored 1:1.
       </p>
       {log ? <pre className="compile-log pad">{log}</pre> : null}
     </div>

@@ -778,6 +778,8 @@ static QJsonObject handle(const QJsonObject &req)
         FWOptions *opt = 0;
         if (Firewall *fw = Firewall::cast(obj))
             opt = fw->getOptionsObject();
+        else if (Rule *rule = Rule::cast(obj))
+            opt = rule->getOptionsObject();
         else if (Host *host = Host::cast(obj))
             opt = host->getOptionsObject();
         else if (FWOptions *direct = FWOptions::cast(obj))

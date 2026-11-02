@@ -29,7 +29,9 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Search in sidebar | done | API `/search` |
 | Local E2E phase2 | done | `e2e-phase2.sh` **OK** |
 | Option groups from `src/res/platform` + `os` | done | `GET /api/v1/option-schema`, UI tabs |
-| Full Qt per-platform dialogs (pixel parity) | open | Schema is defaults/groups, not every dialog widget |
+| Typed fields from libgui AdvancedDialog `.ui` | done | `dialog_fields.json` + checkboxes/enums/textareas |
+| Full Qt dialog page/layout parity | open | Types/keys yes; visual page layout no |
+| PolicyRuleOptions editor | done | select rule → Rule options panel; E2E phase6 |
 
 ## Phase 3 — compile / deploy
 
@@ -45,14 +47,18 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Compilers `fwb_pf` / `fwb_ipf` / `fwb_ipfw` | done | local Podman build; compile via XML `<compiler>` |
 | Cisco/Juniper/Procurve compilers | done | `fwb_pix`, `fwb_iosacl`, `fwb_nxosacl`, `fwb_junosacl`, `fwb_procurve_acl` |
 | Local E2E phase5 | done | `e2e-phase5.sh` **OK** |
+| Local E2E phase6 (typed fields + rule options) | done | `e2e-phase6.sh` **OK** |
 
 ## Local commands
 
 ```bash
 podman run --rm -v "$PWD":/src:Z -w /src fwbuilder-linux-qt6 bash docker/build-linux-qt6-fwbweb.sh
+# regenerate dialog field catalog after GUI UI changes:
+python3 webui/scripts/extract-dialog-fields.py
 bash webui/scripts/e2e-local.sh
 bash webui/scripts/e2e-phase2.sh
 bash webui/scripts/e2e-phase3.sh
 bash webui/scripts/e2e-phase4.sh
 bash webui/scripts/e2e-phase5.sh
+bash webui/scripts/e2e-phase6.sh
 ```

@@ -1,0 +1,4526 @@
+{
+  "by_platform_dialog": {
+    "freebsd": "freebsdAdvancedDialog",
+    "ios": "iosAdvancedDialog",
+    "iosacl": "iosaclAdvancedDialog",
+    "ipcop": "ipcopAdvancedDialog",
+    "ipf": "ipfAdvancedDialog",
+    "ipfw": "ipfwAdvancedDialog",
+    "iptables": "iptAdvancedDialog",
+    "junos": "junosAdvancedDialog",
+    "junosacl": "junosaclAdvancedDialog",
+    "linux24": "linux24AdvancedDialog",
+    "linux317": "linux24AdvancedDialog",
+    "macosx": "macosxAdvancedDialog",
+    "nftables": "iptAdvancedDialog",
+    "nxos": "nxosAdvancedDialog",
+    "nxosacl": "nxosaclAdvancedDialog",
+    "openbsd": "openbsdAdvancedDialog",
+    "pf": "pfAdvancedDialog",
+    "pix": "pixAdvancedDialog",
+    "pix_os": "pixosAdvancedDialog",
+    "procurve_acl": "procurveaclAdvancedDialog",
+    "procurveacl": "procurveaclAdvancedDialog",
+    "secuwall": "secuwallAdvancedDialog",
+    "solaris": "solarisAdvancedDialog"
+  },
+  "dialogs": {
+    "freebsdAdvancedDialog": {
+      "field_count": 10,
+      "fields": {
+        "data_dir": {
+          "key": "data_dir",
+          "type": "string",
+          "widget": "freebsd_data_dir",
+          "widget_class": "QLineEdit"
+        },
+        "freebsd_ip_forward": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "freebsd_ip_forward",
+          "type": "enum",
+          "widget": "freebsd_ip_forward",
+          "widget_class": "QComboBox"
+        },
+        "freebsd_ip_redirect": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "freebsd_ip_redirect",
+          "type": "enum",
+          "widget": "freebsd_ip_redirect",
+          "widget_class": "QComboBox"
+        },
+        "freebsd_ip_sourceroute": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "freebsd_ip_sourceroute",
+          "type": "enum",
+          "widget": "freebsd_ip_sourceroute",
+          "widget_class": "QComboBox"
+        },
+        "freebsd_ipv6_forward": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "freebsd_ipv6_forward",
+          "type": "enum",
+          "widget": "freebsd_ipv6_forward",
+          "widget_class": "QComboBox"
+        },
+        "freebsd_path_ipf": {
+          "key": "freebsd_path_ipf",
+          "type": "string",
+          "widget": "freebsd_path_ipf",
+          "widget_class": "QLineEdit"
+        },
+        "freebsd_path_ipfw": {
+          "key": "freebsd_path_ipfw",
+          "type": "string",
+          "widget": "freebsd_path_ipfw",
+          "widget_class": "QLineEdit"
+        },
+        "freebsd_path_ipnat": {
+          "key": "freebsd_path_ipnat",
+          "type": "string",
+          "widget": "freebsd_path_ipnat",
+          "widget_class": "QLineEdit"
+        },
+        "freebsd_path_pfctl": {
+          "key": "freebsd_path_pfctl",
+          "type": "string",
+          "widget": "freebsd_path_pfctl",
+          "widget_class": "QLineEdit"
+        },
+        "freebsd_path_sysctl": {
+          "key": "freebsd_path_sysctl",
+          "type": "string",
+          "widget": "freebsd_path_sysctl",
+          "widget_class": "QLineEdit"
+        }
+      },
+      "ui": "freebsdadvanceddialog_q.ui"
+    },
+    "iosAdvancedDialog": {
+      "field_count": 2,
+      "fields": {
+        "ios_ip_address": {
+          "key": "ios_ip_address",
+          "type": "bool",
+          "widget": "ios_ip_address",
+          "widget_class": "QCheckBox"
+        },
+        "ios_set_host_name": {
+          "key": "ios_set_host_name",
+          "type": "bool",
+          "widget": "ios_set_host_name",
+          "widget_class": "QCheckBox"
+        }
+      },
+      "ui": "iosadvanceddialog_q.ui"
+    },
+    "iosaclAdvancedDialog": {
+      "field_count": 32,
+      "fields": {
+        "admUser": {
+          "key": "admUser",
+          "type": "string",
+          "widget": "user",
+          "widget_class": "QLineEdit"
+        },
+        "altAddress": {
+          "key": "altAddress",
+          "type": "string",
+          "widget": "altAddress",
+          "widget_class": "QLineEdit"
+        },
+        "check_shading": {
+          "key": "check_shading",
+          "type": "bool",
+          "widget": "iosacl_check_shadowing",
+          "widget_class": "QCheckBox"
+        },
+        "filesystem": {
+          "key": "filesystem",
+          "type": "string",
+          "widget": "filesystem",
+          "widget_class": "QLineEdit"
+        },
+        "firewall_dir": {
+          "key": "firewall_dir",
+          "type": "string",
+          "widget": "filesystem",
+          "widget_class": "QLineEdit"
+        },
+        "ignore_empty_groups": {
+          "key": "ignore_empty_groups",
+          "type": "bool",
+          "widget": "iosacl_ignore_empty_groups",
+          "widget_class": "QCheckBox"
+        },
+        "iosacl_acl_always_new": {
+          "key": "iosacl_acl_always_new",
+          "type": "string",
+          "widget": "iosacl_acl_alwaysNew",
+          "widget_class": null
+        },
+        "iosacl_acl_basic": {
+          "key": "iosacl_acl_basic",
+          "type": "string",
+          "widget": "iosacl_acl_basic",
+          "widget_class": "QRadioButton"
+        },
+        "iosacl_acl_no_clear": {
+          "key": "iosacl_acl_no_clear",
+          "type": "string",
+          "widget": "iosacl_acl_no_clear",
+          "widget_class": "QRadioButton"
+        },
+        "iosacl_acl_substitution": {
+          "key": "iosacl_acl_substitution",
+          "type": "string",
+          "widget": "iosacl_acl_substitution",
+          "widget_class": "QRadioButton"
+        },
+        "iosacl_acl_temp_addr": {
+          "key": "iosacl_acl_temp_addr",
+          "type": "string",
+          "widget": "iosacl_acl_temp_addr",
+          "widget_class": "QLineEdit"
+        },
+        "iosacl_epilog_script": {
+          "key": "iosacl_epilog_script",
+          "type": "text",
+          "widget": "iosacl_epilog_script",
+          "widget_class": "QTextEdit"
+        },
+        "iosacl_generate_logging_commands": {
+          "key": "iosacl_generate_logging_commands",
+          "type": "bool",
+          "widget": "generate_logging_commands",
+          "widget_class": "QCheckBox"
+        },
+        "iosacl_include_comments": {
+          "key": "iosacl_include_comments",
+          "type": "bool",
+          "widget": "iosacl_include_comments",
+          "widget_class": "QCheckBox"
+        },
+        "iosacl_logging_buffered": {
+          "key": "iosacl_logging_buffered",
+          "type": "bool",
+          "widget": "logging_buffered",
+          "widget_class": "QCheckBox"
+        },
+        "iosacl_logging_buffered_level": {
+          "key": "iosacl_logging_buffered_level",
+          "type": "string",
+          "widget": "logging_buffered_level",
+          "widget_class": "QComboBox"
+        },
+        "iosacl_logging_console": {
+          "key": "iosacl_logging_console",
+          "type": "bool",
+          "widget": "logging_console",
+          "widget_class": "QCheckBox"
+        },
+        "iosacl_logging_console_level": {
+          "key": "iosacl_logging_console_level",
+          "type": "string",
+          "widget": "logging_console_level",
+          "widget_class": "QComboBox"
+        },
+        "iosacl_logging_timestamp": {
+          "key": "iosacl_logging_timestamp",
+          "type": "bool",
+          "widget": "logging_timestamp",
+          "widget_class": "QCheckBox"
+        },
+        "iosacl_logging_trap_level": {
+          "key": "iosacl_logging_trap_level",
+          "type": "string",
+          "widget": "logging_trap_level",
+          "widget_class": "QComboBox"
+        },
+        "iosacl_prolog_script": {
+          "key": "iosacl_prolog_script",
+          "type": "text",
+          "widget": "iosacl_prolog_script",
+          "widget_class": "QTextEdit"
+        },
+        "iosacl_regroup_commands": {
+          "key": "iosacl_regroup_commands",
+          "type": "bool",
+          "widget": "iosacl_regroup_commands",
+          "widget_class": "QCheckBox"
+        },
+        "iosacl_syslog_facility": {
+          "key": "iosacl_syslog_facility",
+          "type": "string",
+          "widget": "syslog_facility",
+          "widget_class": "QComboBox"
+        },
+        "iosacl_syslog_host": {
+          "key": "iosacl_syslog_host",
+          "type": "string",
+          "widget": "syslog_host",
+          "widget_class": "QLineEdit"
+        },
+        "iosacl_use_acl_remarks": {
+          "key": "iosacl_use_acl_remarks",
+          "type": "bool",
+          "widget": "iosacl_use_acl_remarks",
+          "widget_class": "QCheckBox"
+        },
+        "iosacl_use_object_groups": {
+          "key": "iosacl_use_object_groups",
+          "type": "bool",
+          "widget": "iosacl_use_object_groups",
+          "widget_class": "QCheckBox"
+        },
+        "mgmt_addr": {
+          "key": "mgmt_addr",
+          "type": "string",
+          "widget": "mgmt_addr",
+          "widget_class": "QLineEdit"
+        },
+        "mgmt_ssh": {
+          "key": "mgmt_ssh",
+          "type": "bool",
+          "widget": "mgmt_ssh",
+          "widget_class": "QCheckBox"
+        },
+        "output_file": {
+          "key": "output_file",
+          "type": "string",
+          "widget": "outputFileName",
+          "widget_class": "QLineEdit"
+        },
+        "scpArgs": {
+          "key": "scpArgs",
+          "type": "string",
+          "widget": "scpArgs",
+          "widget_class": "QLineEdit"
+        },
+        "sshArgs": {
+          "key": "sshArgs",
+          "type": "string",
+          "widget": "sshArgs",
+          "widget_class": "QLineEdit"
+        },
+        "use_scp": {
+          "key": "use_scp",
+          "type": "bool",
+          "widget": "use_scp",
+          "widget_class": "QCheckBox"
+        }
+      },
+      "ui": "iosacladvanceddialog_q.ui"
+    },
+    "ipcopAdvancedDialog": {
+      "field_count": 35,
+      "fields": {
+        "accept_new_tcp_with_no_syn": {
+          "key": "accept_new_tcp_with_no_syn",
+          "type": "bool",
+          "widget": "acceptSessions",
+          "widget_class": "QCheckBox"
+        },
+        "action_on_reject": {
+          "key": "action_on_reject",
+          "type": "string",
+          "widget": "actionOnReject",
+          "widget_class": "QComboBox"
+        },
+        "activationCmd": {
+          "key": "activationCmd",
+          "type": "string",
+          "widget": "activationCmd",
+          "widget_class": "QLineEdit"
+        },
+        "admUser": {
+          "key": "admUser",
+          "type": "string",
+          "widget": "ipt_user",
+          "widget_class": "QLineEdit"
+        },
+        "altAddress": {
+          "key": "altAddress",
+          "type": "string",
+          "widget": "altAddress",
+          "widget_class": "QLineEdit"
+        },
+        "bridging_fw": {
+          "key": "bridging_fw",
+          "type": "bool",
+          "widget": "bridge",
+          "widget_class": "QCheckBox"
+        },
+        "check_shading": {
+          "key": "check_shading",
+          "type": "bool",
+          "widget": "shadowing",
+          "widget_class": "QCheckBox"
+        },
+        "cmdline": {
+          "key": "cmdline",
+          "type": "string",
+          "widget": "compilerArgs",
+          "widget_class": "QLineEdit"
+        },
+        "compiler": {
+          "key": "compiler",
+          "type": "string",
+          "widget": "compiler",
+          "widget_class": "QLineEdit"
+        },
+        "debug": {
+          "key": "debug",
+          "type": "bool",
+          "widget": "iptDebug",
+          "widget_class": "QCheckBox"
+        },
+        "epilog_script": {
+          "key": "epilog_script",
+          "type": "text",
+          "widget": "epilog_script",
+          "widget_class": "QTextEdit"
+        },
+        "firewall_dir": {
+          "key": "firewall_dir",
+          "type": "string",
+          "widget": "ipt_fw_dir",
+          "widget_class": "QLineEdit"
+        },
+        "firewall_is_part_of_any_and_networks": {
+          "key": "firewall_is_part_of_any_and_networks",
+          "type": "bool",
+          "widget": "assumeFwIsPartOfAny",
+          "widget_class": "QCheckBox"
+        },
+        "ignore_empty_groups": {
+          "key": "ignore_empty_groups",
+          "type": "bool",
+          "widget": "emptyGroups",
+          "widget_class": "QCheckBox"
+        },
+        "limit_suffix": {
+          "key": "limit_suffix",
+          "type": "string",
+          "widget": "logLimitSuffix",
+          "widget_class": "QComboBox"
+        },
+        "limit_value": {
+          "key": "limit_value",
+          "type": "int",
+          "widget": "logLimitVal",
+          "widget_class": "QSpinBox"
+        },
+        "local_nat": {
+          "key": "local_nat",
+          "type": "bool",
+          "widget": "localNAT",
+          "widget_class": "QCheckBox"
+        },
+        "log_all": {
+          "key": "log_all",
+          "type": "bool",
+          "widget": "logAll",
+          "widget_class": "QCheckBox"
+        },
+        "log_ip_opt": {
+          "key": "log_ip_opt",
+          "type": "bool",
+          "widget": "logIPopt",
+          "widget_class": "QCheckBox"
+        },
+        "log_level": {
+          "choices": [
+            "emerg",
+            "alert",
+            "crit",
+            "error",
+            "warning",
+            "notice",
+            "info",
+            "debug"
+          ],
+          "key": "log_level",
+          "type": "enum",
+          "widget": "logLevel",
+          "widget_class": "QComboBox"
+        },
+        "log_prefix": {
+          "key": "log_prefix",
+          "type": "string",
+          "widget": "logprefix",
+          "widget_class": "QLineEdit"
+        },
+        "log_tcp_opt": {
+          "key": "log_tcp_opt",
+          "type": "bool",
+          "widget": "logTCPopt",
+          "widget_class": "QCheckBox"
+        },
+        "log_tcp_seq": {
+          "key": "log_tcp_seq",
+          "type": "bool",
+          "widget": "logTCPseq",
+          "widget_class": "QCheckBox"
+        },
+        "mgmt_addr": {
+          "key": "mgmt_addr",
+          "type": "string",
+          "widget": "mgmt_addr",
+          "widget_class": "QLineEdit"
+        },
+        "mgmt_ssh": {
+          "key": "mgmt_ssh",
+          "type": "bool",
+          "widget": "mgmt_ssh",
+          "widget_class": "QCheckBox"
+        },
+        "output_file": {
+          "key": "output_file",
+          "type": "string",
+          "widget": "outputFileName",
+          "widget_class": "QLineEdit"
+        },
+        "prolog_script": {
+          "key": "prolog_script",
+          "type": "text",
+          "widget": "prolog_script",
+          "widget_class": "QTextEdit"
+        },
+        "scpArgs": {
+          "key": "scpArgs",
+          "type": "string",
+          "widget": "scpArgs",
+          "widget_class": "QLineEdit"
+        },
+        "sshArgs": {
+          "key": "sshArgs",
+          "type": "string",
+          "widget": "sshArgs",
+          "widget_class": "QLineEdit"
+        },
+        "ulog_cprange": {
+          "key": "ulog_cprange",
+          "type": "int",
+          "widget": "cprange",
+          "widget_class": "QSpinBox"
+        },
+        "ulog_nlgroup": {
+          "key": "ulog_nlgroup",
+          "type": "int",
+          "widget": "nlgroup",
+          "widget_class": "QSpinBox"
+        },
+        "ulog_qthreshold": {
+          "key": "ulog_qthreshold",
+          "type": "int",
+          "widget": "qthreshold",
+          "widget_class": "QSpinBox"
+        },
+        "use_ULOG": {
+          "key": "use_ULOG",
+          "type": "string",
+          "widget": "useULOG",
+          "widget_class": "QRadioButton"
+        },
+        "use_numeric_log_levels": {
+          "key": "use_numeric_log_levels",
+          "type": "bool",
+          "widget": "logNumsyslog",
+          "widget_class": "QCheckBox"
+        },
+        "verify_interfaces": {
+          "key": "verify_interfaces",
+          "type": "bool",
+          "widget": "verifyInterfaces",
+          "widget_class": "QCheckBox"
+        }
+      },
+      "ui": "ipcopadvanceddialog_q.ui"
+    },
+    "ipcoposAdvancedDialog": {
+      "field_count": 29,
+      "fields": {
+        "linux24_accept_redirects": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "linux24_accept_redirects",
+          "type": "enum",
+          "widget": "linux24_accept_redirects",
+          "widget_class": "QComboBox"
+        },
+        "linux24_accept_source_route": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "linux24_accept_source_route",
+          "type": "enum",
+          "widget": "linux24_accept_source_route",
+          "widget_class": "QComboBox"
+        },
+        "linux24_icmp_echo_ignore_all": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "linux24_icmp_echo_ignore_all",
+          "type": "enum",
+          "widget": "linux24_icmp_echo_ignore_all",
+          "widget_class": "QComboBox"
+        },
+        "linux24_icmp_echo_ignore_broadcasts": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "linux24_icmp_echo_ignore_broadcasts",
+          "type": "enum",
+          "widget": "linux24_icmp_echo_ignore_broadcasts",
+          "widget_class": "QComboBox"
+        },
+        "linux24_icmp_ignore_bogus_error_responses": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "linux24_icmp_ignore_bogus_error_responses",
+          "type": "enum",
+          "widget": "linux24_icmp_ignore_bogus_error_responses",
+          "widget_class": "QComboBox"
+        },
+        "linux24_ip_dynaddr": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "linux24_ip_dynaddr",
+          "type": "enum",
+          "widget": "linux24_ip_dynaddr",
+          "widget_class": "QComboBox"
+        },
+        "linux24_ip_forward": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "linux24_ip_forward",
+          "type": "enum",
+          "widget": "linux24_ip_forward",
+          "widget_class": "QComboBox"
+        },
+        "linux24_ipv6_forward": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "linux24_ipv6_forward",
+          "type": "enum",
+          "widget": "linux24_ipv6_forward",
+          "widget_class": "QComboBox"
+        },
+        "linux24_log_martians": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "linux24_log_martians",
+          "type": "enum",
+          "widget": "linux24_log_martians",
+          "widget_class": "QComboBox"
+        },
+        "linux24_path_brctl": {
+          "key": "linux24_path_brctl",
+          "type": "string",
+          "widget": "linux24_path_brctl",
+          "widget_class": "QLineEdit"
+        },
+        "linux24_path_ifenslave": {
+          "key": "linux24_path_ifenslave",
+          "type": "string",
+          "widget": "linux24_path_ifenslave",
+          "widget_class": "QLineEdit"
+        },
+        "linux24_path_ip": {
+          "key": "linux24_path_ip",
+          "type": "string",
+          "widget": "linux24_path_ip",
+          "widget_class": "QLineEdit"
+        },
+        "linux24_path_ip6tables": {
+          "key": "linux24_path_ip6tables",
+          "type": "string",
+          "widget": "linux24_path_ip6tables",
+          "widget_class": "QLineEdit"
+        },
+        "linux24_path_ip6tables_restore": {
+          "key": "linux24_path_ip6tables_restore",
+          "type": "string",
+          "widget": "linux24_path_ip6tables_restore",
+          "widget_class": "QLineEdit"
+        },
+        "linux24_path_iptables": {
+          "key": "linux24_path_iptables",
+          "type": "string",
+          "widget": "linux24_path_iptables",
+          "widget_class": "QLineEdit"
+        },
+        "linux24_path_iptables_restore": {
+          "key": "linux24_path_iptables_restore",
+          "type": "string",
+          "widget": "linux24_path_iptables_restore",
+          "widget_class": "QLineEdit"
+        },
+        "linux24_path_logger": {
+          "key": "linux24_path_logger",
+          "type": "string",
+          "widget": "linux24_path_logger",
+          "widget_class": "QLineEdit"
+        },
+        "linux24_path_lsmod": {
+          "key": "linux24_path_lsmod",
+          "type": "string",
+          "widget": "linux24_path_lsmod",
+          "widget_class": "QLineEdit"
+        },
+        "linux24_path_modprobe": {
+          "key": "linux24_path_modprobe",
+          "type": "string",
+          "widget": "linux24_path_modprobe",
+          "widget_class": "QLineEdit"
+        },
+        "linux24_path_vconfig": {
+          "key": "linux24_path_vconfig",
+          "type": "string",
+          "widget": "linux24_path_vconfig",
+          "widget_class": "QLineEdit"
+        },
+        "linux24_rp_filter": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "linux24_rp_filter",
+          "type": "enum",
+          "widget": "linux24_rp_filter",
+          "widget_class": "QComboBox"
+        },
+        "linux24_tcp_ecn": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "linux24_tcp_ecn",
+          "type": "enum",
+          "widget": "linux24_tcp_ecn",
+          "widget_class": "QComboBox"
+        },
+        "linux24_tcp_fack": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "linux24_tcp_fack",
+          "type": "enum",
+          "widget": "linux24_tcp_fack",
+          "widget_class": "QComboBox"
+        },
+        "linux24_tcp_fin_timeout": {
+          "key": "linux24_tcp_fin_timeout",
+          "type": "int",
+          "widget": "linux24_tcp_fin_timeout",
+          "widget_class": "QSpinBox"
+        },
+        "linux24_tcp_keepalive_interval": {
+          "key": "linux24_tcp_keepalive_interval",
+          "type": "int",
+          "widget": "linux24_tcp_keepalive_interval",
+          "widget_class": "QSpinBox"
+        },
+        "linux24_tcp_sack": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "linux24_tcp_sack",
+          "type": "enum",
+          "widget": "linux24_tcp_sack",
+          "widget_class": "QComboBox"
+        },
+        "linux24_tcp_syncookies": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "linux24_tcp_syncookies",
+          "type": "enum",
+          "widget": "linux24_tcp_syncookies",
+          "widget_class": "QComboBox"
+        },
+        "linux24_tcp_timestamps": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "linux24_tcp_timestamps",
+          "type": "enum",
+          "widget": "linux24_tcp_timestamps",
+          "widget_class": "QComboBox"
+        },
+        "linux24_tcp_window_scaling": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "linux24_tcp_window_scaling",
+          "type": "enum",
+          "widget": "linux24_tcp_window_scaling",
+          "widget_class": "QComboBox"
+        }
+      },
+      "ui": "ipcoposadvanceddialog_q.ui"
+    },
+    "ipfAdvancedDialog": {
+      "field_count": 40,
+      "fields": {
+        "accept_new_tcp_with_no_syn": {
+          "key": "accept_new_tcp_with_no_syn",
+          "type": "bool",
+          "widget": "ipf_accept_new_tcp_with_no_syn",
+          "widget_class": "QCheckBox"
+        },
+        "action_on_reject": {
+          "key": "action_on_reject",
+          "type": "string",
+          "widget": "actionOnReject",
+          "widget_class": "QComboBox"
+        },
+        "activationCmd": {
+          "key": "activationCmd",
+          "type": "string",
+          "widget": "activationCmd",
+          "widget_class": "QLineEdit"
+        },
+        "admUser": {
+          "key": "admUser",
+          "type": "string",
+          "widget": "ipf_user",
+          "widget_class": "QLineEdit"
+        },
+        "altAddress": {
+          "key": "altAddress",
+          "type": "string",
+          "widget": "altAddress",
+          "widget_class": "QLineEdit"
+        },
+        "check_shading": {
+          "key": "check_shading",
+          "type": "bool",
+          "widget": "ipf_check_shadowing",
+          "widget_class": "QCheckBox"
+        },
+        "cmdline": {
+          "key": "cmdline",
+          "type": "string",
+          "widget": "compilerArgs",
+          "widget_class": "QLineEdit"
+        },
+        "compiler": {
+          "key": "compiler",
+          "type": "string",
+          "widget": "compiler",
+          "widget_class": "QLineEdit"
+        },
+        "configure_interfaces": {
+          "key": "configure_interfaces",
+          "type": "bool",
+          "widget": "ipf_configure_interfaces",
+          "widget_class": "QCheckBox"
+        },
+        "debug": {
+          "key": "debug",
+          "type": "bool",
+          "widget": "ipf_debug",
+          "widget_class": "QCheckBox"
+        },
+        "dynAddr": {
+          "key": "dynAddr",
+          "type": "bool",
+          "widget": "ipf_dynAddr",
+          "widget_class": "QCheckBox"
+        },
+        "eliminate_duplicates": {
+          "key": "eliminate_duplicates",
+          "type": "bool",
+          "widget": "ipf_eliminate_duplicates",
+          "widget_class": "QCheckBox"
+        },
+        "epilog_script": {
+          "key": "epilog_script",
+          "type": "text",
+          "widget": "epilog_script",
+          "widget_class": "QTextEdit"
+        },
+        "firewall_dir": {
+          "key": "firewall_dir",
+          "type": "string",
+          "widget": "ipf_fw_dir",
+          "widget_class": "QLineEdit"
+        },
+        "ignore_empty_groups": {
+          "key": "ignore_empty_groups",
+          "type": "bool",
+          "widget": "ipf_ignore_empty_groups",
+          "widget_class": "QCheckBox"
+        },
+        "ipf_conf_file_name_on_firewall": {
+          "key": "ipf_conf_file_name_on_firewall",
+          "type": "string",
+          "widget": "ipfConfFileNameOnFw",
+          "widget_class": "QLineEdit"
+        },
+        "ipf_log_body": {
+          "key": "ipf_log_body",
+          "type": "bool",
+          "widget": "ipf_log_body",
+          "widget_class": "QCheckBox"
+        },
+        "ipf_log_facility": {
+          "key": "ipf_log_facility",
+          "type": "string",
+          "widget": "logFacility",
+          "widget_class": "QComboBox"
+        },
+        "ipf_log_level": {
+          "key": "ipf_log_level",
+          "type": "string",
+          "widget": "logLevel",
+          "widget_class": "QComboBox"
+        },
+        "ipf_log_or_block": {
+          "key": "ipf_log_or_block",
+          "type": "bool",
+          "widget": "ipf_log_or_block",
+          "widget_class": "QCheckBox"
+        },
+        "ipf_nat_ekshell_proxy": {
+          "key": "ipf_nat_ekshell_proxy",
+          "type": "bool",
+          "widget": "ipf_nat_ekshell_proxy",
+          "widget_class": "QCheckBox"
+        },
+        "ipf_nat_ftp_proxy": {
+          "key": "ipf_nat_ftp_proxy",
+          "type": "bool",
+          "widget": "ipf_nat_ftp_proxy",
+          "widget_class": "QCheckBox"
+        },
+        "ipf_nat_h323_proxy": {
+          "key": "ipf_nat_h323_proxy",
+          "type": "bool",
+          "widget": "ipf_nat_h323_proxy",
+          "widget_class": "QCheckBox"
+        },
+        "ipf_nat_ipsec_proxy": {
+          "key": "ipf_nat_ipsec_proxy",
+          "type": "bool",
+          "widget": "ipf_nat_ipsec_proxy",
+          "widget_class": "QCheckBox"
+        },
+        "ipf_nat_irc_proxy": {
+          "key": "ipf_nat_irc_proxy",
+          "type": "bool",
+          "widget": "ipf_nat_irc_proxy",
+          "widget_class": "QCheckBox"
+        },
+        "ipf_nat_krcmd_proxy": {
+          "key": "ipf_nat_krcmd_proxy",
+          "type": "bool",
+          "widget": "ipf_nat_krcmd_proxy",
+          "widget_class": "QCheckBox"
+        },
+        "ipf_nat_pptp_proxy": {
+          "key": "ipf_nat_pptp_proxy",
+          "type": "bool",
+          "widget": "ipf_nat_pptp_proxy",
+          "widget_class": "QCheckBox"
+        },
+        "ipf_nat_raudio_proxy": {
+          "key": "ipf_nat_raudio_proxy",
+          "type": "bool",
+          "widget": "ipf_nat_raudio_proxy",
+          "widget_class": "QCheckBox"
+        },
+        "ipf_nat_rcmd_proxy": {
+          "key": "ipf_nat_rcmd_proxy",
+          "type": "bool",
+          "widget": "ipf_nat_rcmd_proxy",
+          "widget_class": "QCheckBox"
+        },
+        "ipf_return_icmp_as_dest": {
+          "key": "ipf_return_icmp_as_dest",
+          "type": "bool",
+          "widget": "ipf_return_icmp_as_dest",
+          "widget_class": "QCheckBox"
+        },
+        "manage_virtual_addr": {
+          "key": "manage_virtual_addr",
+          "type": "bool",
+          "widget": "ipf_manage_virtual_addr",
+          "widget_class": "QCheckBox"
+        },
+        "mgmt_addr": {
+          "key": "mgmt_addr",
+          "type": "string",
+          "widget": "mgmt_addr",
+          "widget_class": "QLineEdit"
+        },
+        "mgmt_ssh": {
+          "key": "mgmt_ssh",
+          "type": "bool",
+          "widget": "mgmt_ssh",
+          "widget_class": "QCheckBox"
+        },
+        "nat_conf_file_name_on_firewall": {
+          "key": "nat_conf_file_name_on_firewall",
+          "type": "string",
+          "widget": "natConfFileNameOnFw",
+          "widget_class": "QLineEdit"
+        },
+        "optimize": {
+          "key": "optimize",
+          "type": "bool",
+          "widget": "ipf_optimize",
+          "widget_class": "QCheckBox"
+        },
+        "output_file": {
+          "key": "output_file",
+          "type": "string",
+          "widget": "outputFileName",
+          "widget_class": "QLineEdit"
+        },
+        "prolog_script": {
+          "key": "prolog_script",
+          "type": "text",
+          "widget": "prolog_script",
+          "widget_class": "QTextEdit"
+        },
+        "scpArgs": {
+          "key": "scpArgs",
+          "type": "string",
+          "widget": "scpArgs",
+          "widget_class": "QLineEdit"
+        },
+        "script_name_on_firewall": {
+          "key": "script_name_on_firewall",
+          "type": "string",
+          "widget": "fileNameOnFw",
+          "widget_class": "QLineEdit"
+        },
+        "sshArgs": {
+          "key": "sshArgs",
+          "type": "string",
+          "widget": "sshArgs",
+          "widget_class": "QLineEdit"
+        }
+      },
+      "ui": "ipfadvanceddialog_q.ui"
+    },
+    "ipfwAdvancedDialog": {
+      "field_count": 20,
+      "fields": {
+        "activationCmd": {
+          "key": "activationCmd",
+          "type": "string",
+          "widget": "activationCmd",
+          "widget_class": "QLineEdit"
+        },
+        "add_check_state_rule": {
+          "key": "add_check_state_rule",
+          "type": "bool",
+          "widget": "ipfw_add_check_state_rule",
+          "widget_class": "QCheckBox"
+        },
+        "admUser": {
+          "key": "admUser",
+          "type": "string",
+          "widget": "ipfw_user",
+          "widget_class": "QLineEdit"
+        },
+        "altAddress": {
+          "key": "altAddress",
+          "type": "string",
+          "widget": "altAddress",
+          "widget_class": "QLineEdit"
+        },
+        "check_shading": {
+          "key": "check_shading",
+          "type": "bool",
+          "widget": "ipfw_check_shadowing",
+          "widget_class": "QCheckBox"
+        },
+        "cmdline": {
+          "key": "cmdline",
+          "type": "string",
+          "widget": "compilerArgs",
+          "widget_class": "QLineEdit"
+        },
+        "compiler": {
+          "key": "compiler",
+          "type": "string",
+          "widget": "compiler",
+          "widget_class": "QLineEdit"
+        },
+        "configure_interfaces": {
+          "key": "configure_interfaces",
+          "type": "bool",
+          "widget": "ipfw_configure_interfaces",
+          "widget_class": "QCheckBox"
+        },
+        "debug": {
+          "key": "debug",
+          "type": "bool",
+          "widget": "ipfw_debug",
+          "widget_class": "QCheckBox"
+        },
+        "epilog_script": {
+          "key": "epilog_script",
+          "type": "text",
+          "widget": "epilog_script",
+          "widget_class": "QTextEdit"
+        },
+        "firewall_dir": {
+          "key": "firewall_dir",
+          "type": "string",
+          "widget": "ipfw_fw_dir",
+          "widget_class": "QLineEdit"
+        },
+        "ignore_empty_groups": {
+          "key": "ignore_empty_groups",
+          "type": "bool",
+          "widget": "ipfw_ignore_empty_groups",
+          "widget_class": "QCheckBox"
+        },
+        "manage_virtual_addr": {
+          "key": "manage_virtual_addr",
+          "type": "bool",
+          "widget": "ipfw_manage_virtual_addr",
+          "widget_class": "QCheckBox"
+        },
+        "mgmt_addr": {
+          "key": "mgmt_addr",
+          "type": "string",
+          "widget": "mgmt_addr",
+          "widget_class": "QLineEdit"
+        },
+        "mgmt_ssh": {
+          "key": "mgmt_ssh",
+          "type": "bool",
+          "widget": "mgmt_ssh",
+          "widget_class": "QCheckBox"
+        },
+        "output_file": {
+          "key": "output_file",
+          "type": "string",
+          "widget": "outputFileName",
+          "widget_class": "QLineEdit"
+        },
+        "prolog_script": {
+          "key": "prolog_script",
+          "type": "text",
+          "widget": "prolog_script",
+          "widget_class": "QTextEdit"
+        },
+        "scpArgs": {
+          "key": "scpArgs",
+          "type": "string",
+          "widget": "scpArgs",
+          "widget_class": "QLineEdit"
+        },
+        "script_name_on_firewall": {
+          "key": "script_name_on_firewall",
+          "type": "string",
+          "widget": "fileNameOnFw",
+          "widget_class": "QLineEdit"
+        },
+        "sshArgs": {
+          "key": "sshArgs",
+          "type": "string",
+          "widget": "sshArgs",
+          "widget_class": "QLineEdit"
+        }
+      },
+      "ui": "ipfwadvanceddialog_q.ui"
+    },
+    "iptAdvancedDialog": {
+      "field_count": 54,
+      "fields": {
+        "accept_established": {
+          "key": "accept_established",
+          "type": "bool",
+          "widget": "acceptESTBeforeFirst",
+          "widget_class": "QCheckBox"
+        },
+        "accept_new_tcp_with_no_syn": {
+          "key": "accept_new_tcp_with_no_syn",
+          "type": "bool",
+          "widget": "acceptSessions",
+          "widget_class": "QCheckBox"
+        },
+        "action_on_reject": {
+          "key": "action_on_reject",
+          "type": "string",
+          "widget": "actionOnReject",
+          "widget_class": "QComboBox"
+        },
+        "activationCmd": {
+          "key": "activationCmd",
+          "type": "string",
+          "widget": "activationCmd",
+          "widget_class": "QLineEdit"
+        },
+        "add_mgmt_ssh_rule_when_stoped": {
+          "key": "add_mgmt_ssh_rule_when_stoped",
+          "type": "bool",
+          "widget": "add_mgmt_ssh_rule_when_stoped",
+          "widget_class": "QCheckBox"
+        },
+        "add_rules_for_ipv6_neighbor_discovery": {
+          "key": "add_rules_for_ipv6_neighbor_discovery",
+          "type": "bool",
+          "widget": "ipv6NeighborDiscovery",
+          "widget_class": "QCheckBox"
+        },
+        "admUser": {
+          "key": "admUser",
+          "type": "string",
+          "widget": "ipt_user",
+          "widget_class": "QLineEdit"
+        },
+        "altAddress": {
+          "key": "altAddress",
+          "type": "string",
+          "widget": "altAddress",
+          "widget_class": "QLineEdit"
+        },
+        "bridging_fw": {
+          "key": "bridging_fw",
+          "type": "bool",
+          "widget": "bridge",
+          "widget_class": "QCheckBox"
+        },
+        "check_shading": {
+          "key": "check_shading",
+          "type": "bool",
+          "widget": "shadowing",
+          "widget_class": "QCheckBox"
+        },
+        "clamp_mss_to_mtu": {
+          "key": "clamp_mss_to_mtu",
+          "type": "bool",
+          "widget": "clampMSStoMTU",
+          "widget_class": "QCheckBox"
+        },
+        "clear_unknown_interfaces": {
+          "key": "clear_unknown_interfaces",
+          "type": "bool",
+          "widget": "clearUnknownInterfaces",
+          "widget_class": "QCheckBox"
+        },
+        "cmdline": {
+          "key": "cmdline",
+          "type": "string",
+          "widget": "compilerArgs",
+          "widget_class": "QLineEdit"
+        },
+        "compiler": {
+          "key": "compiler",
+          "type": "string",
+          "widget": "compiler",
+          "widget_class": "QLineEdit"
+        },
+        "configure_bonding_interfaces": {
+          "key": "configure_bonding_interfaces",
+          "type": "bool",
+          "widget": "configure_bonding_interfaces",
+          "widget_class": "QCheckBox"
+        },
+        "configure_bridge_interfaces": {
+          "key": "configure_bridge_interfaces",
+          "type": "bool",
+          "widget": "configure_bridge_interfaces",
+          "widget_class": "QCheckBox"
+        },
+        "configure_interfaces": {
+          "key": "configure_interfaces",
+          "type": "bool",
+          "widget": "configureInterfaces",
+          "widget_class": "QCheckBox"
+        },
+        "configure_vlan_interfaces": {
+          "key": "configure_vlan_interfaces",
+          "type": "bool",
+          "widget": "configure_vlan_interfaces",
+          "widget_class": "QCheckBox"
+        },
+        "debug": {
+          "key": "debug",
+          "type": "bool",
+          "widget": "iptDebug",
+          "widget_class": "QCheckBox"
+        },
+        "drop_invalid": {
+          "key": "drop_invalid",
+          "type": "bool",
+          "widget": "dropInvalid",
+          "widget_class": "QCheckBox"
+        },
+        "epilog_script": {
+          "key": "epilog_script",
+          "type": "text",
+          "widget": "epilog_script",
+          "widget_class": "QTextEdit"
+        },
+        "firewall_dir": {
+          "key": "firewall_dir",
+          "type": "string",
+          "widget": "ipt_fw_dir",
+          "widget_class": "QLineEdit"
+        },
+        "firewall_is_part_of_any_and_networks": {
+          "key": "firewall_is_part_of_any_and_networks",
+          "type": "bool",
+          "widget": "assumeFwIsPartOfAny",
+          "widget_class": "QCheckBox"
+        },
+        "hooks_profile": {
+          "key": "hooks_profile",
+          "type": "string",
+          "widget": "hooks_profile",
+          "widget_class": "QLineEdit"
+        },
+        "ignore_empty_groups": {
+          "key": "ignore_empty_groups",
+          "type": "bool",
+          "widget": "emptyGroups",
+          "widget_class": "QCheckBox"
+        },
+        "limit_suffix": {
+          "key": "limit_suffix",
+          "type": "string",
+          "widget": "logLimitSuffix",
+          "widget_class": "QComboBox"
+        },
+        "limit_value": {
+          "key": "limit_value",
+          "type": "int",
+          "widget": "logLimitVal",
+          "widget_class": "QSpinBox"
+        },
+        "load_modules": {
+          "key": "load_modules",
+          "type": "bool",
+          "widget": "loadModules",
+          "widget_class": "QCheckBox"
+        },
+        "local_nat": {
+          "key": "local_nat",
+          "type": "bool",
+          "widget": "localNAT",
+          "widget_class": "QCheckBox"
+        },
+        "log_all": {
+          "key": "log_all",
+          "type": "bool",
+          "widget": "logAll",
+          "widget_class": "QCheckBox"
+        },
+        "log_invalid": {
+          "key": "log_invalid",
+          "type": "bool",
+          "widget": "logInvalid",
+          "widget_class": "QCheckBox"
+        },
+        "log_ip_opt": {
+          "key": "log_ip_opt",
+          "type": "bool",
+          "widget": "logIPopt",
+          "widget_class": "QCheckBox"
+        },
+        "log_level": {
+          "choices": [
+            "emerg",
+            "alert",
+            "crit",
+            "error",
+            "warning",
+            "notice",
+            "info",
+            "debug"
+          ],
+          "key": "log_level",
+          "type": "enum",
+          "widget": "logLevel",
+          "widget_class": "QComboBox"
+        },
+        "log_prefix": {
+          "key": "log_prefix",
+          "type": "string",
+          "widget": "logprefix",
+          "widget_class": "QLineEdit"
+        },
+        "log_tcp_opt": {
+          "key": "log_tcp_opt",
+          "type": "bool",
+          "widget": "logTCPopt",
+          "widget_class": "QCheckBox"
+        },
+        "log_tcp_seq": {
+          "key": "log_tcp_seq",
+          "type": "bool",
+          "widget": "logTCPseq",
+          "widget_class": "QCheckBox"
+        },
+        "manage_virtual_addr": {
+          "key": "manage_virtual_addr",
+          "type": "bool",
+          "widget": "addVirtualsforNAT",
+          "widget_class": "QCheckBox"
+        },
+        "mgmt_addr": {
+          "key": "mgmt_addr",
+          "type": "string",
+          "widget": "mgmt_addr",
+          "widget_class": "QLineEdit"
+        },
+        "mgmt_ssh": {
+          "key": "mgmt_ssh",
+          "type": "bool",
+          "widget": "mgmt_ssh",
+          "widget_class": "QCheckBox"
+        },
+        "output_file": {
+          "key": "output_file",
+          "type": "string",
+          "widget": "outputFileName",
+          "widget_class": "QLineEdit"
+        },
+        "prolog_place": {
+          "choices": [
+            "on top of the script",
+            "after interface configuration",
+            "after policy reset"
+          ],
+          "key": "prolog_place",
+          "type": "enum",
+          "widget": "prologPlace",
+          "widget_class": "QComboBox"
+        },
+        "prolog_script": {
+          "key": "prolog_script",
+          "type": "text",
+          "widget": "prolog_script",
+          "widget_class": "QTextEdit"
+        },
+        "scpArgs": {
+          "key": "scpArgs",
+          "type": "string",
+          "widget": "scpArgs",
+          "widget_class": "QLineEdit"
+        },
+        "script_name_on_firewall": {
+          "key": "script_name_on_firewall",
+          "type": "string",
+          "widget": "fileNameOnFw",
+          "widget_class": "QLineEdit"
+        },
+        "sshArgs": {
+          "key": "sshArgs",
+          "type": "string",
+          "widget": "sshArgs",
+          "widget_class": "QLineEdit"
+        },
+        "ulog_cprange": {
+          "key": "ulog_cprange",
+          "type": "int",
+          "widget": "cprange",
+          "widget_class": "QSpinBox"
+        },
+        "ulog_nlgroup": {
+          "key": "ulog_nlgroup",
+          "type": "int",
+          "widget": "nlgroup",
+          "widget_class": "QSpinBox"
+        },
+        "ulog_qthreshold": {
+          "key": "ulog_qthreshold",
+          "type": "int",
+          "widget": "qthreshold",
+          "widget_class": "QSpinBox"
+        },
+        "use_ULOG": {
+          "key": "use_ULOG",
+          "type": "string",
+          "widget": "useULOG",
+          "widget_class": "QRadioButton"
+        },
+        "use_iptables_restore": {
+          "key": "use_iptables_restore",
+          "type": "bool",
+          "widget": "iptablesRestoreActivation",
+          "widget_class": "QCheckBox"
+        },
+        "use_kerneltz": {
+          "key": "use_kerneltz",
+          "type": "bool",
+          "widget": "useKernelTz",
+          "widget_class": "QCheckBox"
+        },
+        "use_m_set": {
+          "key": "use_m_set",
+          "type": "bool",
+          "widget": "useModuleSet",
+          "widget_class": "QCheckBox"
+        },
+        "use_numeric_log_levels": {
+          "key": "use_numeric_log_levels",
+          "type": "bool",
+          "widget": "logNumsyslog",
+          "widget_class": "QCheckBox"
+        },
+        "verify_interfaces": {
+          "key": "verify_interfaces",
+          "type": "bool",
+          "widget": "verifyInterfaces",
+          "widget_class": "QCheckBox"
+        }
+      },
+      "ui": "iptadvanceddialog_q.ui"
+    },
+    "junosAdvancedDialog": {
+      "field_count": 2,
+      "fields": {
+        "junos_ip_address": {
+          "key": "junos_ip_address",
+          "type": "bool",
+          "widget": "junos_ip_address",
+          "widget_class": "QCheckBox"
+        },
+        "junos_set_host_name": {
+          "key": "junos_set_host_name",
+          "type": "bool",
+          "widget": "junos_set_host_name",
+          "widget_class": "QCheckBox"
+        }
+      },
+      "ui": "junosadvanceddialog_q.ui"
+    },
+    "junosaclAdvancedDialog": {
+      "field_count": 26,
+      "fields": {
+        "admUser": {
+          "key": "admUser",
+          "type": "string",
+          "widget": "user",
+          "widget_class": "QLineEdit"
+        },
+        "altAddress": {
+          "key": "altAddress",
+          "type": "string",
+          "widget": "altAddress",
+          "widget_class": "QLineEdit"
+        },
+        "check_shading": {
+          "key": "check_shading",
+          "type": "bool",
+          "widget": "junosacl_check_shadowing",
+          "widget_class": "QCheckBox"
+        },
+        "filesystem": {
+          "key": "filesystem",
+          "type": "string",
+          "widget": "filesystem",
+          "widget_class": "QLineEdit"
+        },
+        "filter_prefix": {
+          "key": "filter_prefix",
+          "type": "string",
+          "widget": "filterPrefix",
+          "widget_class": "QLineEdit"
+        },
+        "firewall_dir": {
+          "key": "firewall_dir",
+          "type": "string",
+          "widget": "filesystem",
+          "widget_class": "QLineEdit"
+        },
+        "ignore_empty_groups": {
+          "key": "ignore_empty_groups",
+          "type": "bool",
+          "widget": "junosacl_ignore_empty_groups",
+          "widget_class": "QCheckBox"
+        },
+        "junosacl_acl_always_new": {
+          "key": "junosacl_acl_always_new",
+          "type": "string",
+          "widget": "junosacl_acl_alwaysNew",
+          "widget_class": null
+        },
+        "junosacl_epilog_script": {
+          "key": "junosacl_epilog_script",
+          "type": "text",
+          "widget": "junosacl_epilog_script",
+          "widget_class": "QTextEdit"
+        },
+        "junosacl_generate_logging_commands": {
+          "key": "junosacl_generate_logging_commands",
+          "type": "bool",
+          "widget": "generate_logging_commands",
+          "widget_class": "QCheckBox"
+        },
+        "junosacl_include_comments": {
+          "key": "junosacl_include_comments",
+          "type": "bool",
+          "widget": "junosacl_include_comments",
+          "widget_class": "QCheckBox"
+        },
+        "junosacl_logging_buffered": {
+          "key": "junosacl_logging_buffered",
+          "type": "bool",
+          "widget": "logging_buffered",
+          "widget_class": "QCheckBox"
+        },
+        "junosacl_logging_buffered_level": {
+          "key": "junosacl_logging_buffered_level",
+          "type": "string",
+          "widget": "logging_buffered_level",
+          "widget_class": "QComboBox"
+        },
+        "junosacl_logging_console": {
+          "key": "junosacl_logging_console",
+          "type": "bool",
+          "widget": "logging_console",
+          "widget_class": "QCheckBox"
+        },
+        "junosacl_logging_console_level": {
+          "key": "junosacl_logging_console_level",
+          "type": "string",
+          "widget": "logging_console_level",
+          "widget_class": "QComboBox"
+        },
+        "junosacl_logging_timestamp": {
+          "key": "junosacl_logging_timestamp",
+          "type": "bool",
+          "widget": "logging_timestamp",
+          "widget_class": "QCheckBox"
+        },
+        "junosacl_logging_trap_level": {
+          "key": "junosacl_logging_trap_level",
+          "type": "string",
+          "widget": "logging_trap_level",
+          "widget_class": "QComboBox"
+        },
+        "junosacl_prolog_script": {
+          "key": "junosacl_prolog_script",
+          "type": "text",
+          "widget": "junosacl_prolog_script",
+          "widget_class": "QTextEdit"
+        },
+        "junosacl_syslog_facility": {
+          "key": "junosacl_syslog_facility",
+          "type": "string",
+          "widget": "syslog_facility",
+          "widget_class": "QComboBox"
+        },
+        "junosacl_syslog_host": {
+          "key": "junosacl_syslog_host",
+          "type": "string",
+          "widget": "syslog_host",
+          "widget_class": "QLineEdit"
+        },
+        "junosacl_use_object_groups": {
+          "key": "junosacl_use_object_groups",
+          "type": "string",
+          "widget": "junosacl_use_object_groups",
+          "widget_class": null
+        },
+        "output_file": {
+          "key": "output_file",
+          "type": "string",
+          "widget": "outputFileName",
+          "widget_class": "QLineEdit"
+        },
+        "scpArgs": {
+          "key": "scpArgs",
+          "type": "string",
+          "widget": "scpArgs",
+          "widget_class": "QLineEdit"
+        },
+        "sshArgs": {
+          "key": "sshArgs",
+          "type": "string",
+          "widget": "sshArgs",
+          "widget_class": "QLineEdit"
+        },
+        "use_junos_session": {
+          "key": "use_junos_session",
+          "type": "string",
+          "widget": "use_junos_session",
+          "widget_class": null
+        },
+        "use_scp": {
+          "key": "use_scp",
+          "type": "bool",
+          "widget": "use_scp",
+          "widget_class": "QCheckBox"
+        }
+      },
+      "ui": "junosacladvanceddialog_q.ui"
+    },
+    "linksysAdvancedDialog": {
+      "field_count": 10,
+      "fields": {
+        "linksys_path_brctl": {
+          "key": "linksys_path_brctl",
+          "type": "string",
+          "widget": "linksys_path_brctl",
+          "widget_class": "QLineEdit"
+        },
+        "linksys_path_ifenslave": {
+          "key": "linksys_path_ifenslave",
+          "type": "string",
+          "widget": "linksys_path_ifenslave",
+          "widget_class": "QLineEdit"
+        },
+        "linksys_path_vconfig": {
+          "key": "linksys_path_vconfig",
+          "type": "string",
+          "widget": "linksys_path_vconfig",
+          "widget_class": "QLineEdit"
+        },
+        "linux24_path_ip": {
+          "key": "linux24_path_ip",
+          "type": "string",
+          "widget": "linksys_path_ip",
+          "widget_class": "QLineEdit"
+        },
+        "linux24_path_iptables": {
+          "key": "linux24_path_iptables",
+          "type": "string",
+          "widget": "linksys_path_iptables",
+          "widget_class": "QLineEdit"
+        },
+        "linux24_path_logger": {
+          "key": "linux24_path_logger",
+          "type": "string",
+          "widget": "linksys_path_logger",
+          "widget_class": "QLineEdit"
+        },
+        "linux24_path_lsmod": {
+          "key": "linux24_path_lsmod",
+          "type": "string",
+          "widget": "linksys_path_lsmod",
+          "widget_class": "QLineEdit"
+        },
+        "linux24_path_modprobe": {
+          "key": "linux24_path_modprobe",
+          "type": "string",
+          "widget": "linksys_path_modprobe",
+          "widget_class": "QLineEdit"
+        },
+        "prompt1": {
+          "key": "prompt1",
+          "type": "string",
+          "widget": "linksys_prompt1",
+          "widget_class": "QLineEdit"
+        },
+        "prompt2": {
+          "key": "prompt2",
+          "type": "string",
+          "widget": "linksys_prompt2",
+          "widget_class": "QLineEdit"
+        }
+      },
+      "ui": "linksysadvanceddialog_q.ui"
+    },
+    "linux24AdvancedDialog": {
+      "field_count": 34,
+      "fields": {
+        "data_dir": {
+          "key": "data_dir",
+          "type": "string",
+          "widget": "linux24_data_dir",
+          "widget_class": "QLineEdit"
+        },
+        "linux24_accept_redirects": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "linux24_accept_redirects",
+          "type": "enum",
+          "widget": "linux24_accept_redirects",
+          "widget_class": "QComboBox"
+        },
+        "linux24_accept_source_route": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "linux24_accept_source_route",
+          "type": "enum",
+          "widget": "linux24_accept_source_route",
+          "widget_class": "QComboBox"
+        },
+        "linux24_conntrack_hashsize": {
+          "key": "linux24_conntrack_hashsize",
+          "type": "int",
+          "widget": "conntrack_hashsize",
+          "widget_class": "QSpinBox"
+        },
+        "linux24_conntrack_max": {
+          "key": "linux24_conntrack_max",
+          "type": "int",
+          "widget": "conntrack_max",
+          "widget_class": "QSpinBox"
+        },
+        "linux24_conntrack_tcp_be_liberal": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "linux24_conntrack_tcp_be_liberal",
+          "type": "enum",
+          "widget": "conntrack_tcp_be_liberal",
+          "widget_class": "QComboBox"
+        },
+        "linux24_icmp_echo_ignore_all": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "linux24_icmp_echo_ignore_all",
+          "type": "enum",
+          "widget": "linux24_icmp_echo_ignore_all",
+          "widget_class": "QComboBox"
+        },
+        "linux24_icmp_echo_ignore_broadcasts": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "linux24_icmp_echo_ignore_broadcasts",
+          "type": "enum",
+          "widget": "linux24_icmp_echo_ignore_broadcasts",
+          "widget_class": "QComboBox"
+        },
+        "linux24_icmp_ignore_bogus_error_responses": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "linux24_icmp_ignore_bogus_error_responses",
+          "type": "enum",
+          "widget": "linux24_icmp_ignore_bogus_error_responses",
+          "widget_class": "QComboBox"
+        },
+        "linux24_ip_dynaddr": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "linux24_ip_dynaddr",
+          "type": "enum",
+          "widget": "linux24_ip_dynaddr",
+          "widget_class": "QComboBox"
+        },
+        "linux24_ip_forward": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "linux24_ip_forward",
+          "type": "enum",
+          "widget": "linux24_ip_forward",
+          "widget_class": "QComboBox"
+        },
+        "linux24_ipv6_forward": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "linux24_ipv6_forward",
+          "type": "enum",
+          "widget": "linux24_ipv6_forward",
+          "widget_class": "QComboBox"
+        },
+        "linux24_log_martians": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "linux24_log_martians",
+          "type": "enum",
+          "widget": "linux24_log_martians",
+          "widget_class": "QComboBox"
+        },
+        "linux24_path_brctl": {
+          "key": "linux24_path_brctl",
+          "type": "string",
+          "widget": "linux24_path_brctl",
+          "widget_class": "QLineEdit"
+        },
+        "linux24_path_ifenslave": {
+          "key": "linux24_path_ifenslave",
+          "type": "string",
+          "widget": "linux24_path_ifenslave",
+          "widget_class": "QLineEdit"
+        },
+        "linux24_path_ip": {
+          "key": "linux24_path_ip",
+          "type": "string",
+          "widget": "linux24_path_ip",
+          "widget_class": "QLineEdit"
+        },
+        "linux24_path_ip6tables": {
+          "key": "linux24_path_ip6tables",
+          "type": "string",
+          "widget": "linux24_path_ip6tables",
+          "widget_class": "QLineEdit"
+        },
+        "linux24_path_ip6tables_restore": {
+          "key": "linux24_path_ip6tables_restore",
+          "type": "string",
+          "widget": "linux24_path_ip6tables_restore",
+          "widget_class": "QLineEdit"
+        },
+        "linux24_path_ipset": {
+          "key": "linux24_path_ipset",
+          "type": "string",
+          "widget": "linux24_path_ipset",
+          "widget_class": "QLineEdit"
+        },
+        "linux24_path_iptables": {
+          "key": "linux24_path_iptables",
+          "type": "string",
+          "widget": "linux24_path_iptables",
+          "widget_class": "QLineEdit"
+        },
+        "linux24_path_iptables_restore": {
+          "key": "linux24_path_iptables_restore",
+          "type": "string",
+          "widget": "linux24_path_iptables_restore",
+          "widget_class": "QLineEdit"
+        },
+        "linux24_path_logger": {
+          "key": "linux24_path_logger",
+          "type": "string",
+          "widget": "linux24_path_logger",
+          "widget_class": "QLineEdit"
+        },
+        "linux24_path_lsmod": {
+          "key": "linux24_path_lsmod",
+          "type": "string",
+          "widget": "linux24_path_lsmod",
+          "widget_class": "QLineEdit"
+        },
+        "linux24_path_modprobe": {
+          "key": "linux24_path_modprobe",
+          "type": "string",
+          "widget": "linux24_path_modprobe",
+          "widget_class": "QLineEdit"
+        },
+        "linux24_path_vconfig": {
+          "key": "linux24_path_vconfig",
+          "type": "string",
+          "widget": "linux24_path_vconfig",
+          "widget_class": "QLineEdit"
+        },
+        "linux24_rp_filter": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "linux24_rp_filter",
+          "type": "enum",
+          "widget": "linux24_rp_filter",
+          "widget_class": "QComboBox"
+        },
+        "linux24_tcp_ecn": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "linux24_tcp_ecn",
+          "type": "enum",
+          "widget": "linux24_tcp_ecn",
+          "widget_class": "QComboBox"
+        },
+        "linux24_tcp_fack": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "linux24_tcp_fack",
+          "type": "enum",
+          "widget": "linux24_tcp_fack",
+          "widget_class": "QComboBox"
+        },
+        "linux24_tcp_fin_timeout": {
+          "key": "linux24_tcp_fin_timeout",
+          "type": "int",
+          "widget": "linux24_tcp_fin_timeout",
+          "widget_class": "QSpinBox"
+        },
+        "linux24_tcp_keepalive_interval": {
+          "key": "linux24_tcp_keepalive_interval",
+          "type": "int",
+          "widget": "linux24_tcp_keepalive_interval",
+          "widget_class": "QSpinBox"
+        },
+        "linux24_tcp_sack": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "linux24_tcp_sack",
+          "type": "enum",
+          "widget": "linux24_tcp_sack",
+          "widget_class": "QComboBox"
+        },
+        "linux24_tcp_syncookies": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "linux24_tcp_syncookies",
+          "type": "enum",
+          "widget": "linux24_tcp_syncookies",
+          "widget_class": "QComboBox"
+        },
+        "linux24_tcp_timestamps": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "linux24_tcp_timestamps",
+          "type": "enum",
+          "widget": "linux24_tcp_timestamps",
+          "widget_class": "QComboBox"
+        },
+        "linux24_tcp_window_scaling": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "linux24_tcp_window_scaling",
+          "type": "enum",
+          "widget": "linux24_tcp_window_scaling",
+          "widget_class": "QComboBox"
+        }
+      },
+      "ui": "linux24advanceddialog_q.ui"
+    },
+    "macosxAdvancedDialog": {
+      "field_count": 5,
+      "fields": {
+        "macosx_ip_forward": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "macosx_ip_forward",
+          "type": "enum",
+          "widget": "macosx_ip_forward",
+          "widget_class": "QComboBox"
+        },
+        "macosx_ip_redirect": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "macosx_ip_redirect",
+          "type": "enum",
+          "widget": "macosx_ip_redirect",
+          "widget_class": "QComboBox"
+        },
+        "macosx_ip_sourceroute": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "macosx_ip_sourceroute",
+          "type": "enum",
+          "widget": "macosx_ip_sourceroute",
+          "widget_class": "QComboBox"
+        },
+        "macosx_path_ipfw": {
+          "key": "macosx_path_ipfw",
+          "type": "string",
+          "widget": "macosx_path_ipfw",
+          "widget_class": "QLineEdit"
+        },
+        "macosx_path_sysctl": {
+          "key": "macosx_path_sysctl",
+          "type": "string",
+          "widget": "macosx_path_sysctl",
+          "widget_class": "QLineEdit"
+        }
+      },
+      "ui": "macosxadvanceddialog_q.ui"
+    },
+    "nxosAdvancedDialog": {
+      "field_count": 2,
+      "fields": {
+        "nxos_ip_address": {
+          "key": "nxos_ip_address",
+          "type": "bool",
+          "widget": "nxos_ip_address",
+          "widget_class": "QCheckBox"
+        },
+        "nxos_set_host_name": {
+          "key": "nxos_set_host_name",
+          "type": "bool",
+          "widget": "nxos_set_host_name",
+          "widget_class": "QCheckBox"
+        }
+      },
+      "ui": "nxosadvanceddialog_q.ui"
+    },
+    "nxosaclAdvancedDialog": {
+      "field_count": 33,
+      "fields": {
+        "admUser": {
+          "key": "admUser",
+          "type": "string",
+          "widget": "user",
+          "widget_class": "QLineEdit"
+        },
+        "altAddress": {
+          "key": "altAddress",
+          "type": "string",
+          "widget": "altAddress",
+          "widget_class": "QLineEdit"
+        },
+        "check_shading": {
+          "key": "check_shading",
+          "type": "bool",
+          "widget": "nxosacl_check_shadowing",
+          "widget_class": "QCheckBox"
+        },
+        "filesystem": {
+          "key": "filesystem",
+          "type": "string",
+          "widget": "filesystem",
+          "widget_class": "QLineEdit"
+        },
+        "firewall_dir": {
+          "key": "firewall_dir",
+          "type": "string",
+          "widget": "filesystem",
+          "widget_class": "QLineEdit"
+        },
+        "ignore_empty_groups": {
+          "key": "ignore_empty_groups",
+          "type": "bool",
+          "widget": "nxosacl_ignore_empty_groups",
+          "widget_class": "QCheckBox"
+        },
+        "mgmt_addr": {
+          "key": "mgmt_addr",
+          "type": "string",
+          "widget": "mgmt_addr",
+          "widget_class": "QLineEdit"
+        },
+        "mgmt_ssh": {
+          "key": "mgmt_ssh",
+          "type": "bool",
+          "widget": "mgmt_ssh",
+          "widget_class": "QCheckBox"
+        },
+        "nxosacl_acl_always_new": {
+          "key": "nxosacl_acl_always_new",
+          "type": "string",
+          "widget": "nxosacl_acl_alwaysNew",
+          "widget_class": null
+        },
+        "nxosacl_acl_basic": {
+          "key": "nxosacl_acl_basic",
+          "type": "string",
+          "widget": "nxosacl_acl_basic",
+          "widget_class": "QRadioButton"
+        },
+        "nxosacl_acl_no_clear": {
+          "key": "nxosacl_acl_no_clear",
+          "type": "string",
+          "widget": "nxosacl_acl_no_clear",
+          "widget_class": "QRadioButton"
+        },
+        "nxosacl_acl_substitution": {
+          "key": "nxosacl_acl_substitution",
+          "type": "string",
+          "widget": "nxosacl_acl_substitution",
+          "widget_class": "QRadioButton"
+        },
+        "nxosacl_acl_temp_addr": {
+          "key": "nxosacl_acl_temp_addr",
+          "type": "string",
+          "widget": "nxosacl_acl_temp_addr",
+          "widget_class": "QLineEdit"
+        },
+        "nxosacl_epilog_script": {
+          "key": "nxosacl_epilog_script",
+          "type": "text",
+          "widget": "nxosacl_epilog_script",
+          "widget_class": "QTextEdit"
+        },
+        "nxosacl_generate_logging_commands": {
+          "key": "nxosacl_generate_logging_commands",
+          "type": "bool",
+          "widget": "generate_logging_commands",
+          "widget_class": "QCheckBox"
+        },
+        "nxosacl_include_comments": {
+          "key": "nxosacl_include_comments",
+          "type": "bool",
+          "widget": "nxosacl_include_comments",
+          "widget_class": "QCheckBox"
+        },
+        "nxosacl_logging_buffered": {
+          "key": "nxosacl_logging_buffered",
+          "type": "bool",
+          "widget": "logging_buffered",
+          "widget_class": "QCheckBox"
+        },
+        "nxosacl_logging_buffered_level": {
+          "key": "nxosacl_logging_buffered_level",
+          "type": "string",
+          "widget": "logging_buffered_level",
+          "widget_class": "QComboBox"
+        },
+        "nxosacl_logging_console": {
+          "key": "nxosacl_logging_console",
+          "type": "bool",
+          "widget": "logging_console",
+          "widget_class": "QCheckBox"
+        },
+        "nxosacl_logging_console_level": {
+          "key": "nxosacl_logging_console_level",
+          "type": "string",
+          "widget": "logging_console_level",
+          "widget_class": "QComboBox"
+        },
+        "nxosacl_logging_timestamp": {
+          "key": "nxosacl_logging_timestamp",
+          "type": "bool",
+          "widget": "logging_timestamp",
+          "widget_class": "QCheckBox"
+        },
+        "nxosacl_logging_trap_level": {
+          "key": "nxosacl_logging_trap_level",
+          "type": "string",
+          "widget": "logging_trap_level",
+          "widget_class": "QComboBox"
+        },
+        "nxosacl_prolog_script": {
+          "key": "nxosacl_prolog_script",
+          "type": "text",
+          "widget": "nxosacl_prolog_script",
+          "widget_class": "QTextEdit"
+        },
+        "nxosacl_regroup_commands": {
+          "key": "nxosacl_regroup_commands",
+          "type": "bool",
+          "widget": "nxosacl_regroup_commands",
+          "widget_class": "QCheckBox"
+        },
+        "nxosacl_syslog_facility": {
+          "key": "nxosacl_syslog_facility",
+          "type": "string",
+          "widget": "syslog_facility",
+          "widget_class": "QComboBox"
+        },
+        "nxosacl_syslog_host": {
+          "key": "nxosacl_syslog_host",
+          "type": "string",
+          "widget": "syslog_host",
+          "widget_class": "QLineEdit"
+        },
+        "nxosacl_use_acl_remarks": {
+          "key": "nxosacl_use_acl_remarks",
+          "type": "bool",
+          "widget": "nxosacl_use_acl_remarks",
+          "widget_class": "QCheckBox"
+        },
+        "nxosacl_use_object_groups": {
+          "key": "nxosacl_use_object_groups",
+          "type": "bool",
+          "widget": "nxosacl_use_object_groups",
+          "widget_class": "QCheckBox"
+        },
+        "output_file": {
+          "key": "output_file",
+          "type": "string",
+          "widget": "outputFileName",
+          "widget_class": "QLineEdit"
+        },
+        "scpArgs": {
+          "key": "scpArgs",
+          "type": "string",
+          "widget": "scpArgs",
+          "widget_class": "QLineEdit"
+        },
+        "sshArgs": {
+          "key": "sshArgs",
+          "type": "string",
+          "widget": "sshArgs",
+          "widget_class": "QLineEdit"
+        },
+        "use_nxos_session": {
+          "key": "use_nxos_session",
+          "type": "bool",
+          "widget": "use_nxos_session",
+          "widget_class": "QCheckBox"
+        },
+        "use_scp": {
+          "key": "use_scp",
+          "type": "bool",
+          "widget": "use_scp",
+          "widget_class": "QCheckBox"
+        }
+      },
+      "ui": "nxosacladvanceddialog_q.ui"
+    },
+    "openbsdAdvancedDialog": {
+      "field_count": 8,
+      "fields": {
+        "data_dir": {
+          "key": "data_dir",
+          "type": "string",
+          "widget": "openbsd_data_dir",
+          "widget_class": "QLineEdit"
+        },
+        "openbsd_ip_directed_broadcast": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "openbsd_ip_directed_broadcast",
+          "type": "enum",
+          "widget": "openbsd_ip_directed_broadcast",
+          "widget_class": "QComboBox"
+        },
+        "openbsd_ip_forward": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "openbsd_ip_forward",
+          "type": "enum",
+          "widget": "openbsd_ip_forward",
+          "widget_class": "QComboBox"
+        },
+        "openbsd_ip_redirect": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "openbsd_ip_redirect",
+          "type": "enum",
+          "widget": "openbsd_ip_redirect",
+          "widget_class": "QComboBox"
+        },
+        "openbsd_ip_sourceroute": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "openbsd_ip_sourceroute",
+          "type": "enum",
+          "widget": "openbsd_ip_sourceroute",
+          "widget_class": "QComboBox"
+        },
+        "openbsd_ipv6_forward": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "openbsd_ipv6_forward",
+          "type": "enum",
+          "widget": "openbsd_ipv6_forward",
+          "widget_class": "QComboBox"
+        },
+        "openbsd_path_pfctl": {
+          "key": "openbsd_path_pfctl",
+          "type": "string",
+          "widget": "openbsd_path_pfctl",
+          "widget_class": "QLineEdit"
+        },
+        "openbsd_path_sysctl": {
+          "key": "openbsd_path_sysctl",
+          "type": "string",
+          "widget": "openbsd_path_sysctl",
+          "widget_class": "QLineEdit"
+        }
+      },
+      "ui": "openbsdadvanceddialog_q.ui"
+    },
+    "pfAdvancedDialog": {
+      "field_count": 94,
+      "fields": {
+        "accept_new_tcp_with_no_syn": {
+          "key": "accept_new_tcp_with_no_syn",
+          "type": "bool",
+          "widget": "pf_accept_new_tcp_with_no_syn",
+          "widget_class": "QCheckBox"
+        },
+        "activationCmd": {
+          "key": "activationCmd",
+          "type": "string",
+          "widget": "activationCmd",
+          "widget_class": "QLineEdit"
+        },
+        "admUser": {
+          "key": "admUser",
+          "type": "string",
+          "widget": "pf_user",
+          "widget_class": "QLineEdit"
+        },
+        "altAddress": {
+          "key": "altAddress",
+          "type": "string",
+          "widget": "altAddress",
+          "widget_class": "QLineEdit"
+        },
+        "check_shading": {
+          "key": "check_shading",
+          "type": "bool",
+          "widget": "pf_check_shadowing",
+          "widget_class": "QCheckBox"
+        },
+        "cmdline": {
+          "key": "cmdline",
+          "type": "string",
+          "widget": "compilerArgs",
+          "widget_class": "QLineEdit"
+        },
+        "compiler": {
+          "key": "compiler",
+          "type": "string",
+          "widget": "compiler",
+          "widget_class": "QLineEdit"
+        },
+        "conf1_file": {
+          "key": "conf1_file",
+          "type": "string",
+          "widget": "confFileName",
+          "widget_class": "QLineEdit"
+        },
+        "conf_file_name_on_firewall": {
+          "key": "conf_file_name_on_firewall",
+          "type": "string",
+          "widget": "confFileNameOnFw",
+          "widget_class": "QLineEdit"
+        },
+        "configure_bridge_interfaces": {
+          "key": "configure_bridge_interfaces",
+          "type": "bool",
+          "widget": "pf_configure_bridge_interfaces",
+          "widget_class": "QCheckBox"
+        },
+        "configure_carp_interfaces": {
+          "key": "configure_carp_interfaces",
+          "type": "bool",
+          "widget": "pf_configure_carp_interfaces",
+          "widget_class": "QCheckBox"
+        },
+        "configure_interfaces": {
+          "key": "configure_interfaces",
+          "type": "bool",
+          "widget": "pf_configure_interfaces",
+          "widget_class": "QCheckBox"
+        },
+        "configure_pfsync_interfaces": {
+          "key": "configure_pfsync_interfaces",
+          "type": "bool",
+          "widget": "pf_configure_pfsync_interfaces",
+          "widget_class": "QCheckBox"
+        },
+        "configure_vlan_interfaces": {
+          "key": "configure_vlan_interfaces",
+          "type": "bool",
+          "widget": "pf_configure_vlan_interfaces",
+          "widget_class": "QCheckBox"
+        },
+        "debug": {
+          "key": "debug",
+          "type": "bool",
+          "widget": "pf_debug",
+          "widget_class": "QCheckBox"
+        },
+        "epilog_script": {
+          "key": "epilog_script",
+          "type": "text",
+          "widget": "epilog_script",
+          "widget_class": "QTextEdit"
+        },
+        "fallback_log": {
+          "key": "fallback_log",
+          "type": "bool",
+          "widget": "pf_fallback_log",
+          "widget_class": "QCheckBox"
+        },
+        "firewall_dir": {
+          "key": "firewall_dir",
+          "type": "string",
+          "widget": "pf_fw_dir",
+          "widget_class": "QLineEdit"
+        },
+        "generate_rc_conf_file": {
+          "key": "generate_rc_conf_file",
+          "type": "string",
+          "widget": "generateRcConfFile",
+          "widget_class": "QRadioButton"
+        },
+        "generate_shell_script": {
+          "key": "generate_shell_script",
+          "type": "string",
+          "widget": "generateShellScript",
+          "widget_class": "QRadioButton"
+        },
+        "ignore_empty_groups": {
+          "key": "ignore_empty_groups",
+          "type": "bool",
+          "widget": "pf_ignore_empty_groups",
+          "widget_class": "QCheckBox"
+        },
+        "log_prefix": {
+          "key": "log_prefix",
+          "type": "string",
+          "widget": "pf_log_prefix",
+          "widget_class": "QLineEdit"
+        },
+        "manage_virtual_addr": {
+          "key": "manage_virtual_addr",
+          "type": "bool",
+          "widget": "pf_manage_virtual_addr",
+          "widget_class": "QCheckBox"
+        },
+        "mgmt_addr": {
+          "key": "mgmt_addr",
+          "type": "string",
+          "widget": "mgmt_addr",
+          "widget_class": "QLineEdit"
+        },
+        "mgmt_ssh": {
+          "key": "mgmt_ssh",
+          "type": "bool",
+          "widget": "mgmt_ssh",
+          "widget_class": "QCheckBox"
+        },
+        "output_file": {
+          "key": "output_file",
+          "type": "string",
+          "widget": "outputFileName",
+          "widget_class": "QLineEdit"
+        },
+        "pf_adaptive_end": {
+          "key": "pf_adaptive_end",
+          "type": "int",
+          "widget": "pf_adaptive_end",
+          "widget_class": "QSpinBox"
+        },
+        "pf_adaptive_start": {
+          "key": "pf_adaptive_start",
+          "type": "int",
+          "widget": "pf_adaptive_start",
+          "widget_class": "QSpinBox"
+        },
+        "pf_block_policy": {
+          "choices": [
+            "drop",
+            "return"
+          ],
+          "key": "pf_block_policy",
+          "type": "enum",
+          "widget": "pf_block_policy",
+          "widget_class": "QComboBox"
+        },
+        "pf_do_limit_frags": {
+          "key": "pf_do_limit_frags",
+          "type": "bool",
+          "widget": "pf_do_limit_frags",
+          "widget_class": "QCheckBox"
+        },
+        "pf_do_limit_src_nodes": {
+          "key": "pf_do_limit_src_nodes",
+          "type": "bool",
+          "widget": "pf_do_limit_src_nodes",
+          "widget_class": "QCheckBox"
+        },
+        "pf_do_limit_states": {
+          "key": "pf_do_limit_states",
+          "type": "bool",
+          "widget": "pf_do_limit_states",
+          "widget_class": "QCheckBox"
+        },
+        "pf_do_limit_table_entries": {
+          "key": "pf_do_limit_table_entries",
+          "type": "bool",
+          "widget": "pf_do_limit_table_entries",
+          "widget_class": "QCheckBox"
+        },
+        "pf_do_limit_tables": {
+          "key": "pf_do_limit_tables",
+          "type": "bool",
+          "widget": "pf_do_limit_tables",
+          "widget_class": "QCheckBox"
+        },
+        "pf_do_scrub": {
+          "key": "pf_do_scrub",
+          "type": "bool",
+          "widget": "pf_do_scrub",
+          "widget_class": "QCheckBox"
+        },
+        "pf_do_timeout_frag": {
+          "key": "pf_do_timeout_frag",
+          "type": "bool",
+          "widget": "pf_do_timeout_frag",
+          "widget_class": "QCheckBox"
+        },
+        "pf_do_timeout_interval": {
+          "key": "pf_do_timeout_interval",
+          "type": "bool",
+          "widget": "pf_do_timeout_interval",
+          "widget_class": "QCheckBox"
+        },
+        "pf_flush_states": {
+          "key": "pf_flush_states",
+          "type": "bool",
+          "widget": "pf_flush_states",
+          "widget_class": "QCheckBox"
+        },
+        "pf_icmp_error": {
+          "key": "pf_icmp_error",
+          "type": "int",
+          "widget": "pf_icmp_error",
+          "widget_class": "QSpinBox"
+        },
+        "pf_icmp_first": {
+          "key": "pf_icmp_first",
+          "type": "int",
+          "widget": "pf_icmp_first",
+          "widget_class": "QSpinBox"
+        },
+        "pf_limit_frags": {
+          "key": "pf_limit_frags",
+          "type": "int",
+          "widget": "pf_limit_frags",
+          "widget_class": "QSpinBox"
+        },
+        "pf_limit_src_nodes": {
+          "key": "pf_limit_src_nodes",
+          "type": "int",
+          "widget": "pf_limit_src_nodes",
+          "widget_class": "QSpinBox"
+        },
+        "pf_limit_states": {
+          "key": "pf_limit_states",
+          "type": "int",
+          "widget": "pf_limit_states",
+          "widget_class": "QSpinBox"
+        },
+        "pf_limit_table_entries": {
+          "key": "pf_limit_table_entries",
+          "type": "int",
+          "widget": "pf_limit_table_entries",
+          "widget_class": "QSpinBox"
+        },
+        "pf_limit_tables": {
+          "key": "pf_limit_tables",
+          "type": "int",
+          "widget": "pf_limit_tables",
+          "widget_class": "QSpinBox"
+        },
+        "pf_modulate_state": {
+          "key": "pf_modulate_state",
+          "type": "bool",
+          "widget": "pf_modulate_state",
+          "widget_class": "QCheckBox"
+        },
+        "pf_optimization": {
+          "key": "pf_optimization",
+          "type": "string",
+          "widget": "pf_optimization",
+          "widget_class": "QComboBox"
+        },
+        "pf_other_first": {
+          "key": "pf_other_first",
+          "type": "int",
+          "widget": "pf_other_first",
+          "widget_class": "QSpinBox"
+        },
+        "pf_other_multiple": {
+          "key": "pf_other_multiple",
+          "type": "int",
+          "widget": "pf_other_multiple",
+          "widget_class": "QSpinBox"
+        },
+        "pf_other_single": {
+          "key": "pf_other_single",
+          "type": "int",
+          "widget": "pf_other_single",
+          "widget_class": "QSpinBox"
+        },
+        "pf_scrub_fragm_crop": {
+          "key": "pf_scrub_fragm_crop",
+          "type": "string",
+          "widget": "pf_scrub_fragm_crop",
+          "widget_class": "QRadioButton"
+        },
+        "pf_scrub_fragm_drop_ovl": {
+          "key": "pf_scrub_fragm_drop_ovl",
+          "type": "string",
+          "widget": "pf_scrub_fragm_drop_ovl",
+          "widget_class": "QRadioButton"
+        },
+        "pf_scrub_maxmss": {
+          "key": "pf_scrub_maxmss",
+          "type": "int",
+          "widget": "pf_scrub_maxmss",
+          "widget_class": "QSpinBox"
+        },
+        "pf_scrub_minttl": {
+          "key": "pf_scrub_minttl",
+          "type": "int",
+          "widget": "pf_scrub_minttl",
+          "widget_class": "QSpinBox"
+        },
+        "pf_scrub_no_df": {
+          "key": "pf_scrub_no_df",
+          "type": "bool",
+          "widget": "pf_scrub_no_df",
+          "widget_class": "QCheckBox"
+        },
+        "pf_scrub_random_id": {
+          "key": "pf_scrub_random_id",
+          "type": "bool",
+          "widget": "pf_scrub_random_id",
+          "widget_class": "QCheckBox"
+        },
+        "pf_scrub_reassemble": {
+          "key": "pf_scrub_reassemble",
+          "type": "string",
+          "widget": "pf_scrub_reassemble",
+          "widget_class": "QRadioButton"
+        },
+        "pf_scrub_reassemble_tcp": {
+          "key": "pf_scrub_reassemble_tcp",
+          "type": "string",
+          "widget": "pf_scrub_reassemble_tcp",
+          "widget_class": "QRadioButton"
+        },
+        "pf_scrub_use_maxmss": {
+          "key": "pf_scrub_use_maxmss",
+          "type": "bool",
+          "widget": "pf_scrub_use_maxmss",
+          "widget_class": "QCheckBox"
+        },
+        "pf_scrub_use_minttl": {
+          "key": "pf_scrub_use_minttl",
+          "type": "bool",
+          "widget": "pf_scrub_use_minttl",
+          "widget_class": "QCheckBox"
+        },
+        "pf_set_adaptive": {
+          "key": "pf_set_adaptive",
+          "type": "bool",
+          "widget": "pf_set_adaptive",
+          "widget_class": "QCheckBox"
+        },
+        "pf_set_debug": {
+          "key": "pf_set_debug",
+          "type": "string",
+          "widget": "pf_set_debug",
+          "widget_class": "QComboBox"
+        },
+        "pf_set_icmp_error": {
+          "key": "pf_set_icmp_error",
+          "type": "bool",
+          "widget": "pf_set_icmp_error",
+          "widget_class": "QCheckBox"
+        },
+        "pf_set_icmp_first": {
+          "key": "pf_set_icmp_first",
+          "type": "bool",
+          "widget": "pf_set_icmp_first",
+          "widget_class": "QCheckBox"
+        },
+        "pf_set_other_first": {
+          "key": "pf_set_other_first",
+          "type": "bool",
+          "widget": "pf_set_other_first",
+          "widget_class": "QCheckBox"
+        },
+        "pf_set_other_multiple": {
+          "key": "pf_set_other_multiple",
+          "type": "bool",
+          "widget": "pf_set_other_multiple",
+          "widget_class": "QCheckBox"
+        },
+        "pf_set_other_single": {
+          "key": "pf_set_other_single",
+          "type": "bool",
+          "widget": "pf_set_other_single",
+          "widget_class": "QCheckBox"
+        },
+        "pf_set_tcp_closed": {
+          "key": "pf_set_tcp_closed",
+          "type": "bool",
+          "widget": "pf_set_tcp_closed",
+          "widget_class": "QCheckBox"
+        },
+        "pf_set_tcp_closing": {
+          "key": "pf_set_tcp_closing",
+          "type": "bool",
+          "widget": "pf_set_tcp_closing",
+          "widget_class": "QCheckBox"
+        },
+        "pf_set_tcp_established": {
+          "key": "pf_set_tcp_established",
+          "type": "bool",
+          "widget": "pf_set_tcp_established",
+          "widget_class": "QCheckBox"
+        },
+        "pf_set_tcp_finwait": {
+          "key": "pf_set_tcp_finwait",
+          "type": "bool",
+          "widget": "pf_set_tcp_finwait",
+          "widget_class": "QCheckBox"
+        },
+        "pf_set_tcp_first": {
+          "key": "pf_set_tcp_first",
+          "type": "bool",
+          "widget": "pf_set_tcp_first",
+          "widget_class": "QCheckBox"
+        },
+        "pf_set_tcp_opening": {
+          "key": "pf_set_tcp_opening",
+          "type": "bool",
+          "widget": "pf_set_tcp_opening",
+          "widget_class": "QCheckBox"
+        },
+        "pf_set_udp_first": {
+          "key": "pf_set_udp_first",
+          "type": "bool",
+          "widget": "pf_set_udp_first",
+          "widget_class": "QCheckBox"
+        },
+        "pf_set_udp_multiple": {
+          "key": "pf_set_udp_multiple",
+          "type": "bool",
+          "widget": "pf_set_udp_multiple",
+          "widget_class": "QCheckBox"
+        },
+        "pf_set_udp_single": {
+          "key": "pf_set_udp_single",
+          "type": "bool",
+          "widget": "pf_set_udp_single",
+          "widget_class": "QCheckBox"
+        },
+        "pf_state_policy": {
+          "key": "pf_state_policy",
+          "type": "string",
+          "widget": "pf_state_policy",
+          "widget_class": "QComboBox"
+        },
+        "pf_tcp_closed": {
+          "key": "pf_tcp_closed",
+          "type": "int",
+          "widget": "pf_tcp_closed",
+          "widget_class": "QSpinBox"
+        },
+        "pf_tcp_closing": {
+          "key": "pf_tcp_closing",
+          "type": "int",
+          "widget": "pf_tcp_closing",
+          "widget_class": "QSpinBox"
+        },
+        "pf_tcp_established": {
+          "key": "pf_tcp_established",
+          "type": "int",
+          "widget": "pf_tcp_established",
+          "widget_class": "QSpinBox"
+        },
+        "pf_tcp_finwait": {
+          "key": "pf_tcp_finwait",
+          "type": "int",
+          "widget": "pf_tcp_finwait",
+          "widget_class": "QSpinBox"
+        },
+        "pf_tcp_first": {
+          "key": "pf_tcp_first",
+          "type": "int",
+          "widget": "pf_tcp_first",
+          "widget_class": "QSpinBox"
+        },
+        "pf_tcp_opening": {
+          "key": "pf_tcp_opening",
+          "type": "int",
+          "widget": "pf_tcp_opening",
+          "widget_class": "QSpinBox"
+        },
+        "pf_timeout_frag": {
+          "key": "pf_timeout_frag",
+          "type": "int",
+          "widget": "pf_timeout_frag",
+          "widget_class": "QSpinBox"
+        },
+        "pf_timeout_interval": {
+          "key": "pf_timeout_interval",
+          "type": "int",
+          "widget": "pf_timeout_interval",
+          "widget_class": "QSpinBox"
+        },
+        "pf_udp_first": {
+          "key": "pf_udp_first",
+          "type": "int",
+          "widget": "pf_udp_first",
+          "widget_class": "QSpinBox"
+        },
+        "pf_udp_multiple": {
+          "key": "pf_udp_multiple",
+          "type": "int",
+          "widget": "pf_udp_multiple",
+          "widget_class": "QSpinBox"
+        },
+        "pf_udp_single": {
+          "key": "pf_udp_single",
+          "type": "int",
+          "widget": "pf_udp_single",
+          "widget_class": "QSpinBox"
+        },
+        "preserve_group_names": {
+          "key": "preserve_group_names",
+          "type": "bool",
+          "widget": "pf_preserve_group_names",
+          "widget_class": "QCheckBox"
+        },
+        "prolog_place": {
+          "choices": [
+            "in the activation shell script (.fw file)",
+            "in the pf rule file (.conf file)"
+          ],
+          "key": "prolog_place",
+          "type": "enum",
+          "widget": "prologPlace",
+          "widget_class": "QComboBox"
+        },
+        "prolog_script": {
+          "key": "prolog_script",
+          "type": "text",
+          "widget": "prolog_script",
+          "widget_class": "QTextEdit"
+        },
+        "scpArgs": {
+          "key": "scpArgs",
+          "type": "string",
+          "widget": "scpArgs",
+          "widget_class": "QLineEdit"
+        },
+        "script_name_on_firewall": {
+          "key": "script_name_on_firewall",
+          "type": "string",
+          "widget": "fileNameOnFw",
+          "widget_class": "QLineEdit"
+        },
+        "sshArgs": {
+          "key": "sshArgs",
+          "type": "string",
+          "widget": "sshArgs",
+          "widget_class": "QLineEdit"
+        }
+      },
+      "ui": "pfadvanceddialog_q.ui"
+    },
+    "pixAdvancedDialog": {
+      "field_count": 85,
+      "fields": {
+        "admUser": {
+          "key": "admUser",
+          "type": "string",
+          "widget": "user",
+          "widget_class": "QLineEdit"
+        },
+        "altAddress": {
+          "key": "altAddress",
+          "type": "string",
+          "widget": "altAddress",
+          "widget_class": "QLineEdit"
+        },
+        "check_shading": {
+          "key": "check_shading",
+          "type": "bool",
+          "widget": "pix_check_shadowing",
+          "widget_class": "QCheckBox"
+        },
+        "conn_hh": {
+          "key": "conn_hh",
+          "type": "int",
+          "widget": "conn_hh",
+          "widget_class": "QSpinBox"
+        },
+        "conn_mm": {
+          "key": "conn_mm",
+          "type": "int",
+          "widget": "conn_mm",
+          "widget_class": "QSpinBox"
+        },
+        "conn_ss": {
+          "key": "conn_ss",
+          "type": "int",
+          "widget": "conn_ss",
+          "widget_class": "QSpinBox"
+        },
+        "filesystem": {
+          "key": "filesystem",
+          "type": "string",
+          "widget": "filesystem",
+          "widget_class": "QLineEdit"
+        },
+        "firewall_dir": {
+          "key": "firewall_dir",
+          "type": "string",
+          "widget": "filesystem",
+          "widget_class": "QLineEdit"
+        },
+        "h323_hh": {
+          "key": "h323_hh",
+          "type": "int",
+          "widget": "h323_hh",
+          "widget_class": "QSpinBox"
+        },
+        "h323_mm": {
+          "key": "h323_mm",
+          "type": "int",
+          "widget": "h323_mm",
+          "widget_class": "QSpinBox"
+        },
+        "h323_ss": {
+          "key": "h323_ss",
+          "type": "int",
+          "widget": "h323_ss",
+          "widget_class": "QSpinBox"
+        },
+        "half-closed_hh": {
+          "key": "half-closed_hh",
+          "type": "int",
+          "widget": "half_closed_hh",
+          "widget_class": "QSpinBox"
+        },
+        "half-closed_mm": {
+          "key": "half-closed_mm",
+          "type": "int",
+          "widget": "half_closed_mm",
+          "widget_class": "QSpinBox"
+        },
+        "half-closed_ss": {
+          "key": "half-closed_ss",
+          "type": "int",
+          "widget": "half_closed_ss",
+          "widget_class": "QSpinBox"
+        },
+        "ignore_empty_groups": {
+          "key": "ignore_empty_groups",
+          "type": "bool",
+          "widget": "pix_ignore_empty_groups",
+          "widget_class": "QCheckBox"
+        },
+        "mgmt_addr": {
+          "key": "mgmt_addr",
+          "type": "string",
+          "widget": "mgmt_addr",
+          "widget_class": "QLineEdit"
+        },
+        "mgmt_ssh": {
+          "key": "mgmt_ssh",
+          "type": "bool",
+          "widget": "mgmt_ssh",
+          "widget_class": "QCheckBox"
+        },
+        "output_file": {
+          "key": "output_file",
+          "type": "string",
+          "widget": "outputFileName",
+          "widget_class": "QLineEdit"
+        },
+        "pix_acl_always_new": {
+          "key": "pix_acl_always_new",
+          "type": "string",
+          "widget": "pix_acl_alwaysNew",
+          "widget_class": null
+        },
+        "pix_acl_basic": {
+          "key": "pix_acl_basic",
+          "type": "string",
+          "widget": "pix_acl_basic",
+          "widget_class": "QRadioButton"
+        },
+        "pix_acl_no_clear": {
+          "key": "pix_acl_no_clear",
+          "type": "string",
+          "widget": "pix_acl_no_clear",
+          "widget_class": "QRadioButton"
+        },
+        "pix_acl_substitution": {
+          "key": "pix_acl_substitution",
+          "type": "string",
+          "widget": "pix_acl_substitution",
+          "widget_class": "QRadioButton"
+        },
+        "pix_acl_temp_addr": {
+          "key": "pix_acl_temp_addr",
+          "type": "string",
+          "widget": "pix_acl_temp_addr",
+          "widget_class": "QLineEdit"
+        },
+        "pix_add_clear_statements": {
+          "key": "pix_add_clear_statements",
+          "type": "string",
+          "widget": "pix_add_clear_statements",
+          "widget_class": null
+        },
+        "pix_assume_fw_part_of_any": {
+          "key": "pix_assume_fw_part_of_any",
+          "type": "bool",
+          "widget": "pix_assume_fw_part_of_any",
+          "widget_class": "QCheckBox"
+        },
+        "pix_check_duplicate_nat": {
+          "key": "pix_check_duplicate_nat",
+          "type": "bool",
+          "widget": "pix_check_duplicate_nat",
+          "widget_class": "QCheckBox"
+        },
+        "pix_check_overlapping_global_pools": {
+          "key": "pix_check_overlapping_global_pools",
+          "type": "bool",
+          "widget": "pix_check_overlapping_global_pools",
+          "widget_class": "QCheckBox"
+        },
+        "pix_check_overlapping_global_statics": {
+          "key": "pix_check_overlapping_global_statics",
+          "type": "bool",
+          "widget": "pix_check_overlapping_global_statics",
+          "widget_class": "QCheckBox"
+        },
+        "pix_check_overlapping_statics": {
+          "key": "pix_check_overlapping_statics",
+          "type": "bool",
+          "widget": "pix_check_overlapping_statics",
+          "widget_class": "QCheckBox"
+        },
+        "pix_connection_timewait": {
+          "key": "pix_connection_timewait",
+          "type": "bool",
+          "widget": "connection_timewait",
+          "widget_class": "QCheckBox"
+        },
+        "pix_emb_limit": {
+          "key": "pix_emb_limit",
+          "type": "int",
+          "widget": "emb_limit",
+          "widget_class": "QSpinBox"
+        },
+        "pix_emblem_log_format": {
+          "key": "pix_emblem_log_format",
+          "type": "bool",
+          "widget": "emblem_log_format",
+          "widget_class": "QCheckBox"
+        },
+        "pix_emulate_out_acl": {
+          "key": "pix_emulate_out_acl",
+          "type": "bool",
+          "widget": "pix_emulate_out_acl",
+          "widget_class": "QCheckBox"
+        },
+        "pix_epilog_script": {
+          "key": "pix_epilog_script",
+          "type": "text",
+          "widget": "pix_epilog_script",
+          "widget_class": "QTextEdit"
+        },
+        "pix_floodguard": {
+          "key": "pix_floodguard",
+          "type": "bool",
+          "widget": "floodguard",
+          "widget_class": "QCheckBox"
+        },
+        "pix_fragguard": {
+          "key": "pix_fragguard",
+          "type": "bool",
+          "widget": "fragguard",
+          "widget_class": "QCheckBox"
+        },
+        "pix_generate_out_acl": {
+          "key": "pix_generate_out_acl",
+          "type": "bool",
+          "widget": "pix_generate_out_acl",
+          "widget_class": "QCheckBox"
+        },
+        "pix_include_comments": {
+          "key": "pix_include_comments",
+          "type": "bool",
+          "widget": "pix_include_comments",
+          "widget_class": "QCheckBox"
+        },
+        "pix_logging_buffered": {
+          "key": "pix_logging_buffered",
+          "type": "bool",
+          "widget": "logging_buffered",
+          "widget_class": "QCheckBox"
+        },
+        "pix_logging_buffered_level": {
+          "key": "pix_logging_buffered_level",
+          "type": "string",
+          "widget": "logging_buffered_level",
+          "widget_class": "QComboBox"
+        },
+        "pix_logging_console": {
+          "key": "pix_logging_console",
+          "type": "bool",
+          "widget": "logging_console",
+          "widget_class": "QCheckBox"
+        },
+        "pix_logging_console_level": {
+          "key": "pix_logging_console_level",
+          "type": "string",
+          "widget": "logging_console_level",
+          "widget_class": "QComboBox"
+        },
+        "pix_logging_timestamp": {
+          "key": "pix_logging_timestamp",
+          "type": "bool",
+          "widget": "logging_timestamp",
+          "widget_class": "QCheckBox"
+        },
+        "pix_logging_trap_level": {
+          "key": "pix_logging_trap_level",
+          "type": "string",
+          "widget": "logging_trap_level",
+          "widget_class": "QComboBox"
+        },
+        "pix_max_conns": {
+          "key": "pix_max_conns",
+          "type": "int",
+          "widget": "max_conns",
+          "widget_class": "QSpinBox"
+        },
+        "pix_nodnsalias_inbound": {
+          "key": "pix_nodnsalias_inbound",
+          "type": "bool",
+          "widget": "nodnsalias_inbound",
+          "widget_class": "QCheckBox"
+        },
+        "pix_nodnsalias_outbound": {
+          "key": "pix_nodnsalias_outbound",
+          "type": "bool",
+          "widget": "nodnsalias_outbound",
+          "widget_class": "QCheckBox"
+        },
+        "pix_optimize_default_nat": {
+          "key": "pix_optimize_default_nat",
+          "type": "bool",
+          "widget": "pix_optimize_default_nat",
+          "widget_class": "QCheckBox"
+        },
+        "pix_prolog_script": {
+          "key": "pix_prolog_script",
+          "type": "text",
+          "widget": "pix_prolog_script",
+          "widget_class": "QTextEdit"
+        },
+        "pix_regroup_commands": {
+          "key": "pix_regroup_commands",
+          "type": "bool",
+          "widget": "pix_regroup_commands",
+          "widget_class": "QCheckBox"
+        },
+        "pix_replace_natted_objects": {
+          "key": "pix_replace_natted_objects",
+          "type": "bool",
+          "widget": "pix_replace_natted_objects",
+          "widget_class": "QCheckBox"
+        },
+        "pix_resetinbound": {
+          "key": "pix_resetinbound",
+          "type": "bool",
+          "widget": "resetinbound",
+          "widget_class": "QCheckBox"
+        },
+        "pix_resetoutside": {
+          "key": "pix_resetoutside",
+          "type": "bool",
+          "widget": "resetoutside",
+          "widget_class": "QCheckBox"
+        },
+        "pix_route_dnat": {
+          "key": "pix_route_dnat",
+          "type": "bool",
+          "widget": "route_dnat",
+          "widget_class": "QCheckBox"
+        },
+        "pix_ssh_timeout": {
+          "key": "pix_ssh_timeout",
+          "type": "int",
+          "widget": "ssh_timeout",
+          "widget_class": "QSpinBox"
+        },
+        "pix_syslog_facility": {
+          "key": "pix_syslog_facility",
+          "type": "string",
+          "widget": "syslog_facility",
+          "widget_class": "QComboBox"
+        },
+        "pix_syslog_host": {
+          "key": "pix_syslog_host",
+          "type": "string",
+          "widget": "syslog_host",
+          "widget_class": "QLineEdit"
+        },
+        "pix_syslog_queue_size": {
+          "key": "pix_syslog_queue_size",
+          "type": "int",
+          "widget": "syslog_queue_size",
+          "widget_class": "QSpinBox"
+        },
+        "pix_telnet_timeout": {
+          "key": "pix_telnet_timeout",
+          "type": "int",
+          "widget": "telnet_timeout",
+          "widget_class": "QSpinBox"
+        },
+        "pix_use_acl_remarks": {
+          "key": "pix_use_acl_remarks",
+          "type": "bool",
+          "widget": "pix_use_acl_remarks",
+          "widget_class": "QCheckBox"
+        },
+        "pix_use_manual_commit": {
+          "key": "pix_use_manual_commit",
+          "type": "bool",
+          "widget": "pix_use_manual_commit",
+          "widget_class": "QCheckBox"
+        },
+        "rpc_hh": {
+          "key": "rpc_hh",
+          "type": "int",
+          "widget": "rpc_hh",
+          "widget_class": "QSpinBox"
+        },
+        "rpc_mm": {
+          "key": "rpc_mm",
+          "type": "int",
+          "widget": "rpc_mm",
+          "widget_class": "QSpinBox"
+        },
+        "rpc_ss": {
+          "key": "rpc_ss",
+          "type": "int",
+          "widget": "rpc_ss",
+          "widget_class": "QSpinBox"
+        },
+        "scpArgs": {
+          "key": "scpArgs",
+          "type": "string",
+          "widget": "scpArgs",
+          "widget_class": "QLineEdit"
+        },
+        "short_script": {
+          "key": "short_script",
+          "type": "bool",
+          "widget": "short_script",
+          "widget_class": "QCheckBox"
+        },
+        "sip_hh": {
+          "key": "sip_hh",
+          "type": "int",
+          "widget": "sip_hh",
+          "widget_class": "QSpinBox"
+        },
+        "sip_media_hh": {
+          "key": "sip_media_hh",
+          "type": "int",
+          "widget": "sip_media_hh",
+          "widget_class": "QSpinBox"
+        },
+        "sip_media_mm": {
+          "key": "sip_media_mm",
+          "type": "int",
+          "widget": "sip_media_mm",
+          "widget_class": "QSpinBox"
+        },
+        "sip_media_ss": {
+          "key": "sip_media_ss",
+          "type": "int",
+          "widget": "sip_media_ss",
+          "widget_class": "QSpinBox"
+        },
+        "sip_mm": {
+          "key": "sip_mm",
+          "type": "int",
+          "widget": "sip_mm",
+          "widget_class": "QSpinBox"
+        },
+        "sip_ss": {
+          "key": "sip_ss",
+          "type": "int",
+          "widget": "sip_ss",
+          "widget_class": "QSpinBox"
+        },
+        "sshArgs": {
+          "key": "sshArgs",
+          "type": "string",
+          "widget": "sshArgs",
+          "widget_class": "QLineEdit"
+        },
+        "uauth_abs": {
+          "key": "uauth_abs",
+          "type": "string",
+          "widget": "uauth_abs",
+          "widget_class": "QRadioButton"
+        },
+        "uauth_hh": {
+          "key": "uauth_hh",
+          "type": "int",
+          "widget": "uauth_hh",
+          "widget_class": "QSpinBox"
+        },
+        "uauth_inact": {
+          "key": "uauth_inact",
+          "type": "string",
+          "widget": "uauth_inact",
+          "widget_class": "QRadioButton"
+        },
+        "uauth_mm": {
+          "key": "uauth_mm",
+          "type": "int",
+          "widget": "uauth_mm",
+          "widget_class": "QSpinBox"
+        },
+        "uauth_ss": {
+          "key": "uauth_ss",
+          "type": "int",
+          "widget": "uauth_ss",
+          "widget_class": "QSpinBox"
+        },
+        "udp_hh": {
+          "key": "udp_hh",
+          "type": "int",
+          "widget": "udp_hh",
+          "widget_class": "QSpinBox"
+        },
+        "udp_mm": {
+          "key": "udp_mm",
+          "type": "int",
+          "widget": "udp_mm",
+          "widget_class": "QSpinBox"
+        },
+        "udp_ss": {
+          "key": "udp_ss",
+          "type": "int",
+          "widget": "udp_ss",
+          "widget_class": "QSpinBox"
+        },
+        "use_scp": {
+          "key": "use_scp",
+          "type": "bool",
+          "widget": "use_scp",
+          "widget_class": "QCheckBox"
+        },
+        "xlate_hh": {
+          "key": "xlate_hh",
+          "type": "int",
+          "widget": "xlate_hh",
+          "widget_class": "QSpinBox"
+        },
+        "xlate_mm": {
+          "key": "xlate_mm",
+          "type": "int",
+          "widget": "xlate_mm",
+          "widget_class": "QSpinBox"
+        },
+        "xlate_ss": {
+          "key": "xlate_ss",
+          "type": "int",
+          "widget": "xlate_ss",
+          "widget_class": "QSpinBox"
+        }
+      },
+      "ui": "pixadvanceddialog_q.ui"
+    },
+    "pixosAdvancedDialog": {
+      "field_count": 17,
+      "fields": {
+        "pix_disable_snmp_agent": {
+          "key": "pix_disable_snmp_agent",
+          "type": "bool",
+          "widget": "disable_snmp_agent",
+          "widget_class": "QCheckBox"
+        },
+        "pix_enable_snmp_traps": {
+          "key": "pix_enable_snmp_traps",
+          "type": "bool",
+          "widget": "enable_traps",
+          "widget_class": "QCheckBox"
+        },
+        "pix_ip_address": {
+          "key": "pix_ip_address",
+          "type": "bool",
+          "widget": "pix_ip_address",
+          "widget_class": "QCheckBox"
+        },
+        "pix_ntp1": {
+          "key": "pix_ntp1",
+          "type": "string",
+          "widget": "ntp1",
+          "widget_class": "QLineEdit"
+        },
+        "pix_ntp1_pref": {
+          "key": "pix_ntp1_pref",
+          "type": "string",
+          "widget": "ntp1_pref",
+          "widget_class": "QRadioButton"
+        },
+        "pix_ntp2": {
+          "key": "pix_ntp2",
+          "type": "string",
+          "widget": "ntp2",
+          "widget_class": "QLineEdit"
+        },
+        "pix_ntp2_pref": {
+          "key": "pix_ntp2_pref",
+          "type": "string",
+          "widget": "ntp2_pref",
+          "widget_class": "QRadioButton"
+        },
+        "pix_ntp3": {
+          "key": "pix_ntp3",
+          "type": "string",
+          "widget": "ntp3",
+          "widget_class": "QLineEdit"
+        },
+        "pix_ntp3_pref": {
+          "key": "pix_ntp3_pref",
+          "type": "string",
+          "widget": "ntp3_pref",
+          "widget_class": "QRadioButton"
+        },
+        "pix_set_communities_from_object_data": {
+          "key": "pix_set_communities_from_object_data",
+          "type": "bool",
+          "widget": "set_communities",
+          "widget_class": "QCheckBox"
+        },
+        "pix_set_host_name": {
+          "key": "pix_set_host_name",
+          "type": "bool",
+          "widget": "pix_set_host_name",
+          "widget_class": "QCheckBox"
+        },
+        "pix_snmp_poll_traps_1": {
+          "choices": [
+            "Poll",
+            "Poll and Traps",
+            "Traps"
+          ],
+          "key": "pix_snmp_poll_traps_1",
+          "type": "enum",
+          "widget": "snmp_poll_traps_1",
+          "widget_class": "QComboBox"
+        },
+        "pix_snmp_poll_traps_2": {
+          "choices": [
+            "Poll",
+            "Poll and Traps",
+            "Traps"
+          ],
+          "key": "pix_snmp_poll_traps_2",
+          "type": "enum",
+          "widget": "snmp_poll_traps_2",
+          "widget_class": "QComboBox"
+        },
+        "pix_snmp_server1": {
+          "key": "pix_snmp_server1",
+          "type": "string",
+          "widget": "snmp_server1",
+          "widget_class": "QLineEdit"
+        },
+        "pix_snmp_server2": {
+          "key": "pix_snmp_server2",
+          "type": "string",
+          "widget": "snmp_server2",
+          "widget_class": "QLineEdit"
+        },
+        "pix_tcpmss": {
+          "key": "pix_tcpmss",
+          "type": "bool",
+          "widget": "tcpmss",
+          "widget_class": "QCheckBox"
+        },
+        "pix_tcpmss_value": {
+          "key": "pix_tcpmss_value",
+          "type": "int",
+          "widget": "tcpmss_value",
+          "widget_class": "QSpinBox"
+        }
+      },
+      "ui": "pixosadvanceddialog_q.ui"
+    },
+    "procurveaclAdvancedDialog": {
+      "field_count": 30,
+      "fields": {
+        "admUser": {
+          "key": "admUser",
+          "type": "string",
+          "widget": "user",
+          "widget_class": "QLineEdit"
+        },
+        "altAddress": {
+          "key": "altAddress",
+          "type": "string",
+          "widget": "altAddress",
+          "widget_class": "QLineEdit"
+        },
+        "check_shading": {
+          "key": "check_shading",
+          "type": "bool",
+          "widget": "procurve_acl_check_shadowing",
+          "widget_class": "QCheckBox"
+        },
+        "filesystem": {
+          "key": "filesystem",
+          "type": "string",
+          "widget": "filesystem",
+          "widget_class": "QLineEdit"
+        },
+        "firewall_dir": {
+          "key": "firewall_dir",
+          "type": "string",
+          "widget": "filesystem",
+          "widget_class": "QLineEdit"
+        },
+        "ignore_empty_groups": {
+          "key": "ignore_empty_groups",
+          "type": "bool",
+          "widget": "procurve_acl_ignore_empty_groups",
+          "widget_class": "QCheckBox"
+        },
+        "mgmt_addr": {
+          "key": "mgmt_addr",
+          "type": "string",
+          "widget": "mgmt_addr",
+          "widget_class": "QLineEdit"
+        },
+        "mgmt_ssh": {
+          "key": "mgmt_ssh",
+          "type": "bool",
+          "widget": "mgmt_ssh",
+          "widget_class": "QCheckBox"
+        },
+        "output_file": {
+          "key": "output_file",
+          "type": "string",
+          "widget": "outputFileName",
+          "widget_class": "QLineEdit"
+        },
+        "procurve_acl_acl_always_new": {
+          "key": "procurve_acl_acl_always_new",
+          "type": "string",
+          "widget": "procurve_acl_acl_alwaysNew",
+          "widget_class": null
+        },
+        "procurve_acl_acl_basic": {
+          "key": "procurve_acl_acl_basic",
+          "type": "string",
+          "widget": "procurve_acl_acl_basic",
+          "widget_class": "QRadioButton"
+        },
+        "procurve_acl_acl_no_clear": {
+          "key": "procurve_acl_acl_no_clear",
+          "type": "string",
+          "widget": "procurve_acl_acl_no_clear",
+          "widget_class": "QRadioButton"
+        },
+        "procurve_acl_acl_substitution": {
+          "key": "procurve_acl_acl_substitution",
+          "type": "string",
+          "widget": "procurve_acl_acl_substitution",
+          "widget_class": "QRadioButton"
+        },
+        "procurve_acl_acl_temp_addr": {
+          "key": "procurve_acl_acl_temp_addr",
+          "type": "string",
+          "widget": "procurve_acl_acl_temp_addr",
+          "widget_class": "QLineEdit"
+        },
+        "procurve_acl_epilog_script": {
+          "key": "procurve_acl_epilog_script",
+          "type": "text",
+          "widget": "procurve_acl_epilog_script",
+          "widget_class": "QTextEdit"
+        },
+        "procurve_acl_generate_logging_commands": {
+          "key": "procurve_acl_generate_logging_commands",
+          "type": "bool",
+          "widget": "generate_logging_commands",
+          "widget_class": "QCheckBox"
+        },
+        "procurve_acl_include_comments": {
+          "key": "procurve_acl_include_comments",
+          "type": "bool",
+          "widget": "procurve_acl_include_comments",
+          "widget_class": "QCheckBox"
+        },
+        "procurve_acl_logging_buffered": {
+          "key": "procurve_acl_logging_buffered",
+          "type": "bool",
+          "widget": "logging_buffered",
+          "widget_class": "QCheckBox"
+        },
+        "procurve_acl_logging_buffered_level": {
+          "key": "procurve_acl_logging_buffered_level",
+          "type": "string",
+          "widget": "logging_buffered_level",
+          "widget_class": "QComboBox"
+        },
+        "procurve_acl_logging_console": {
+          "key": "procurve_acl_logging_console",
+          "type": "bool",
+          "widget": "logging_console",
+          "widget_class": "QCheckBox"
+        },
+        "procurve_acl_logging_console_level": {
+          "key": "procurve_acl_logging_console_level",
+          "type": "string",
+          "widget": "logging_console_level",
+          "widget_class": "QComboBox"
+        },
+        "procurve_acl_logging_timestamp": {
+          "key": "procurve_acl_logging_timestamp",
+          "type": "bool",
+          "widget": "logging_timestamp",
+          "widget_class": "QCheckBox"
+        },
+        "procurve_acl_logging_trap_level": {
+          "key": "procurve_acl_logging_trap_level",
+          "type": "string",
+          "widget": "logging_trap_level",
+          "widget_class": "QComboBox"
+        },
+        "procurve_acl_prolog_script": {
+          "key": "procurve_acl_prolog_script",
+          "type": "text",
+          "widget": "procurve_acl_prolog_script",
+          "widget_class": "QTextEdit"
+        },
+        "procurve_acl_syslog_facility": {
+          "key": "procurve_acl_syslog_facility",
+          "type": "string",
+          "widget": "syslog_facility",
+          "widget_class": "QComboBox"
+        },
+        "procurve_acl_syslog_host": {
+          "key": "procurve_acl_syslog_host",
+          "type": "string",
+          "widget": "syslog_host",
+          "widget_class": "QLineEdit"
+        },
+        "procurve_acl_use_acl_remarks": {
+          "key": "procurve_acl_use_acl_remarks",
+          "type": "bool",
+          "widget": "procurve_acl_use_acl_remarks",
+          "widget_class": "QCheckBox"
+        },
+        "scpArgs": {
+          "key": "scpArgs",
+          "type": "string",
+          "widget": "scpArgs",
+          "widget_class": "QLineEdit"
+        },
+        "sshArgs": {
+          "key": "sshArgs",
+          "type": "string",
+          "widget": "sshArgs",
+          "widget_class": "QLineEdit"
+        },
+        "use_scp": {
+          "key": "use_scp",
+          "type": "bool",
+          "widget": "use_scp",
+          "widget_class": "QCheckBox"
+        }
+      },
+      "ui": "procurveacladvanceddialog_q.ui"
+    },
+    "secuwallAdvancedDialog": {
+      "field_count": 42,
+      "fields": {
+        "accept_established": {
+          "key": "accept_established",
+          "type": "bool",
+          "widget": "acceptESTBeforeFirst",
+          "widget_class": "QCheckBox"
+        },
+        "accept_new_tcp_with_no_syn": {
+          "key": "accept_new_tcp_with_no_syn",
+          "type": "bool",
+          "widget": "acceptSessions",
+          "widget_class": "QCheckBox"
+        },
+        "action_on_reject": {
+          "key": "action_on_reject",
+          "type": "string",
+          "widget": "actionOnReject",
+          "widget_class": "QComboBox"
+        },
+        "activationCmd": {
+          "key": "activationCmd",
+          "type": "string",
+          "widget": "activationCmd",
+          "widget_class": "QLineEdit"
+        },
+        "add_mgmt_ssh_rule_when_stoped": {
+          "key": "add_mgmt_ssh_rule_when_stoped",
+          "type": "bool",
+          "widget": "add_mgmt_ssh_rule_when_stoped",
+          "widget_class": "QCheckBox"
+        },
+        "allow_reboot": {
+          "key": "allow_reboot",
+          "type": "bool",
+          "widget": "allowReboot",
+          "widget_class": "QCheckBox"
+        },
+        "altAddress": {
+          "key": "altAddress",
+          "type": "string",
+          "widget": "altAddress",
+          "widget_class": "QLineEdit"
+        },
+        "bridging_fw": {
+          "key": "bridging_fw",
+          "type": "bool",
+          "widget": "bridge",
+          "widget_class": "QCheckBox"
+        },
+        "check_shading": {
+          "key": "check_shading",
+          "type": "bool",
+          "widget": "shadowing",
+          "widget_class": "QCheckBox"
+        },
+        "clamp_mss_to_mtu": {
+          "key": "clamp_mss_to_mtu",
+          "type": "bool",
+          "widget": "clampMSStoMTU",
+          "widget_class": "QCheckBox"
+        },
+        "cmdline": {
+          "key": "cmdline",
+          "type": "string",
+          "widget": "compilerArgs",
+          "widget_class": "QLineEdit"
+        },
+        "compiler": {
+          "key": "compiler",
+          "type": "string",
+          "widget": "compiler",
+          "widget_class": "QLineEdit"
+        },
+        "configure_interfaces": {
+          "key": "configure_interfaces",
+          "type": "bool",
+          "widget": "configureInterfaces",
+          "widget_class": "QCheckBox"
+        },
+        "debug": {
+          "key": "debug",
+          "type": "bool",
+          "widget": "iptDebug",
+          "widget_class": "QCheckBox"
+        },
+        "drop_invalid": {
+          "key": "drop_invalid",
+          "type": "bool",
+          "widget": "dropInvalid",
+          "widget_class": "QCheckBox"
+        },
+        "epilog_script": {
+          "key": "epilog_script",
+          "type": "text",
+          "widget": "epilog_script",
+          "widget_class": "QTextEdit"
+        },
+        "firewall_is_part_of_any_and_networks": {
+          "key": "firewall_is_part_of_any_and_networks",
+          "type": "bool",
+          "widget": "assumeFwIsPartOfAny",
+          "widget_class": "QCheckBox"
+        },
+        "ignore_empty_groups": {
+          "key": "ignore_empty_groups",
+          "type": "bool",
+          "widget": "emptyGroups",
+          "widget_class": "QCheckBox"
+        },
+        "limit_suffix": {
+          "key": "limit_suffix",
+          "type": "string",
+          "widget": "logLimitSuffix",
+          "widget_class": "QComboBox"
+        },
+        "limit_value": {
+          "key": "limit_value",
+          "type": "int",
+          "widget": "logLimitVal",
+          "widget_class": "QSpinBox"
+        },
+        "local_nat": {
+          "key": "local_nat",
+          "type": "bool",
+          "widget": "localNAT",
+          "widget_class": "QCheckBox"
+        },
+        "log_all": {
+          "key": "log_all",
+          "type": "bool",
+          "widget": "logAll",
+          "widget_class": "QCheckBox"
+        },
+        "log_invalid": {
+          "key": "log_invalid",
+          "type": "bool",
+          "widget": "logInvalid",
+          "widget_class": "QCheckBox"
+        },
+        "log_ip_opt": {
+          "key": "log_ip_opt",
+          "type": "bool",
+          "widget": "logIPopt",
+          "widget_class": "QCheckBox"
+        },
+        "log_level": {
+          "choices": [
+            "emerg",
+            "alert",
+            "crit",
+            "error",
+            "warning",
+            "notice",
+            "info",
+            "debug"
+          ],
+          "key": "log_level",
+          "type": "enum",
+          "widget": "logLevel",
+          "widget_class": "QComboBox"
+        },
+        "log_prefix": {
+          "key": "log_prefix",
+          "type": "string",
+          "widget": "logprefix",
+          "widget_class": "QLineEdit"
+        },
+        "log_tcp_opt": {
+          "key": "log_tcp_opt",
+          "type": "bool",
+          "widget": "logTCPopt",
+          "widget_class": "QCheckBox"
+        },
+        "log_tcp_seq": {
+          "key": "log_tcp_seq",
+          "type": "bool",
+          "widget": "logTCPseq",
+          "widget_class": "QCheckBox"
+        },
+        "manage_virtual_addr": {
+          "key": "manage_virtual_addr",
+          "type": "bool",
+          "widget": "addVirtualsforNAT",
+          "widget_class": "QCheckBox"
+        },
+        "mgmt_addr": {
+          "key": "mgmt_addr",
+          "type": "string",
+          "widget": "mgmt_addr",
+          "widget_class": "QLineEdit"
+        },
+        "mgmt_ssh": {
+          "key": "mgmt_ssh",
+          "type": "bool",
+          "widget": "mgmt_ssh",
+          "widget_class": "QCheckBox"
+        },
+        "prolog_place": {
+          "choices": [
+            "on top of the script",
+            "after interface configuration",
+            "after policy reset"
+          ],
+          "key": "prolog_place",
+          "type": "enum",
+          "widget": "prologPlace",
+          "widget_class": "QComboBox"
+        },
+        "prolog_script": {
+          "key": "prolog_script",
+          "type": "text",
+          "widget": "prolog_script",
+          "widget_class": "QTextEdit"
+        },
+        "scpArgs": {
+          "key": "scpArgs",
+          "type": "string",
+          "widget": "scpArgs",
+          "widget_class": "QLineEdit"
+        },
+        "sshArgs": {
+          "key": "sshArgs",
+          "type": "string",
+          "widget": "sshArgs",
+          "widget_class": "QLineEdit"
+        },
+        "ulog_cprange": {
+          "key": "ulog_cprange",
+          "type": "int",
+          "widget": "cprange",
+          "widget_class": "QSpinBox"
+        },
+        "ulog_nlgroup": {
+          "key": "ulog_nlgroup",
+          "type": "int",
+          "widget": "nlgroup",
+          "widget_class": "QSpinBox"
+        },
+        "ulog_qthreshold": {
+          "key": "ulog_qthreshold",
+          "type": "int",
+          "widget": "qthreshold",
+          "widget_class": "QSpinBox"
+        },
+        "use_ULOG": {
+          "key": "use_ULOG",
+          "type": "string",
+          "widget": "useULOG",
+          "widget_class": "QRadioButton"
+        },
+        "use_iptables_restore": {
+          "key": "use_iptables_restore",
+          "type": "bool",
+          "widget": "iptablesRestoreActivation",
+          "widget_class": "QCheckBox"
+        },
+        "use_numeric_log_levels": {
+          "key": "use_numeric_log_levels",
+          "type": "bool",
+          "widget": "logNumsyslog",
+          "widget_class": "QCheckBox"
+        },
+        "verify_interfaces": {
+          "key": "verify_interfaces",
+          "type": "bool",
+          "widget": "verifyInterfaces",
+          "widget_class": "QCheckBox"
+        }
+      },
+      "ui": "secuwalladvanceddialog_q.ui"
+    },
+    "secuwallosAdvancedDialog": {
+      "field_count": 39,
+      "fields": {
+        "linux24_accept_redirects": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "linux24_accept_redirects",
+          "type": "enum",
+          "widget": "linux24_accept_redirects",
+          "widget_class": "QComboBox"
+        },
+        "linux24_accept_source_route": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "linux24_accept_source_route",
+          "type": "enum",
+          "widget": "linux24_accept_source_route",
+          "widget_class": "QComboBox"
+        },
+        "linux24_icmp_echo_ignore_all": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "linux24_icmp_echo_ignore_all",
+          "type": "enum",
+          "widget": "linux24_icmp_echo_ignore_all",
+          "widget_class": "QComboBox"
+        },
+        "linux24_icmp_echo_ignore_broadcasts": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "linux24_icmp_echo_ignore_broadcasts",
+          "type": "enum",
+          "widget": "linux24_icmp_echo_ignore_broadcasts",
+          "widget_class": "QComboBox"
+        },
+        "linux24_icmp_ignore_bogus_error_responses": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "linux24_icmp_ignore_bogus_error_responses",
+          "type": "enum",
+          "widget": "linux24_icmp_ignore_bogus_error_responses",
+          "widget_class": "QComboBox"
+        },
+        "linux24_ip_dynaddr": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "linux24_ip_dynaddr",
+          "type": "enum",
+          "widget": "linux24_ip_dynaddr",
+          "widget_class": "QComboBox"
+        },
+        "linux24_ip_forward": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "linux24_ip_forward",
+          "type": "enum",
+          "widget": "linux24_ip_forward",
+          "widget_class": "QComboBox"
+        },
+        "linux24_ipv6_forward": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "linux24_ipv6_forward",
+          "type": "enum",
+          "widget": "linux24_ipv6_forward",
+          "widget_class": "QComboBox"
+        },
+        "linux24_log_martians": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "linux24_log_martians",
+          "type": "enum",
+          "widget": "linux24_log_martians",
+          "widget_class": "QComboBox"
+        },
+        "linux24_rp_filter": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "linux24_rp_filter",
+          "type": "enum",
+          "widget": "linux24_rp_filter",
+          "widget_class": "QComboBox"
+        },
+        "linux24_tcp_ecn": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "linux24_tcp_ecn",
+          "type": "enum",
+          "widget": "linux24_tcp_ecn",
+          "widget_class": "QComboBox"
+        },
+        "linux24_tcp_fack": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "linux24_tcp_fack",
+          "type": "enum",
+          "widget": "linux24_tcp_fack",
+          "widget_class": "QComboBox"
+        },
+        "linux24_tcp_fin_timeout": {
+          "key": "linux24_tcp_fin_timeout",
+          "type": "int",
+          "widget": "linux24_tcp_fin_timeout",
+          "widget_class": "QSpinBox"
+        },
+        "linux24_tcp_keepalive_interval": {
+          "key": "linux24_tcp_keepalive_interval",
+          "type": "int",
+          "widget": "linux24_tcp_keepalive_interval",
+          "widget_class": "QSpinBox"
+        },
+        "linux24_tcp_sack": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "linux24_tcp_sack",
+          "type": "enum",
+          "widget": "linux24_tcp_sack",
+          "widget_class": "QComboBox"
+        },
+        "linux24_tcp_syncookies": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "linux24_tcp_syncookies",
+          "type": "enum",
+          "widget": "linux24_tcp_syncookies",
+          "widget_class": "QComboBox"
+        },
+        "linux24_tcp_timestamps": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "linux24_tcp_timestamps",
+          "type": "enum",
+          "widget": "linux24_tcp_timestamps",
+          "widget_class": "QComboBox"
+        },
+        "linux24_tcp_window_scaling": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "linux24_tcp_window_scaling",
+          "type": "enum",
+          "widget": "linux24_tcp_window_scaling",
+          "widget_class": "QComboBox"
+        },
+        "secuwall_add_files": {
+          "key": "secuwall_add_files",
+          "type": "bool",
+          "widget": "additional_files_enabled",
+          "widget_class": "QCheckBox"
+        },
+        "secuwall_add_files_dir": {
+          "key": "secuwall_add_files_dir",
+          "type": "string",
+          "widget": "additional_files_dir",
+          "widget_class": "QLineEdit"
+        },
+        "secuwall_dns_domains": {
+          "key": "secuwall_dns_domains",
+          "type": "text",
+          "widget": "secuwall_dns_domains",
+          "widget_class": "QTextEdit"
+        },
+        "secuwall_dns_hosts": {
+          "key": "secuwall_dns_hosts",
+          "type": "text",
+          "widget": "secuwall_dns_hosts",
+          "widget_class": "QTextEdit"
+        },
+        "secuwall_dns_reso1": {
+          "choices": [
+            "Hosts",
+            "DNS",
+            "NIS",
+            "NIS+",
+            "DB"
+          ],
+          "key": "secuwall_dns_reso1",
+          "type": "enum",
+          "widget": "secuwall_dns_reso1",
+          "widget_class": "QComboBox"
+        },
+        "secuwall_dns_reso2": {
+          "choices": [
+            "Hosts",
+            "DNS",
+            "NIS",
+            "NIS+",
+            "DB"
+          ],
+          "key": "secuwall_dns_reso2",
+          "type": "enum",
+          "widget": "secuwall_dns_reso2",
+          "widget_class": "QComboBox"
+        },
+        "secuwall_dns_reso3": {
+          "choices": [
+            "Hosts",
+            "DNS",
+            "NIS",
+            "NIS+",
+            "DB"
+          ],
+          "key": "secuwall_dns_reso3",
+          "type": "enum",
+          "widget": "secuwall_dns_reso3",
+          "widget_class": "QComboBox"
+        },
+        "secuwall_dns_reso4": {
+          "choices": [
+            "Hosts",
+            "DNS",
+            "NIS",
+            "NIS+",
+            "DB"
+          ],
+          "key": "secuwall_dns_reso4",
+          "type": "enum",
+          "widget": "secuwall_dns_reso4",
+          "widget_class": "QComboBox"
+        },
+        "secuwall_dns_reso5": {
+          "choices": [
+            "Hosts",
+            "DNS",
+            "NIS",
+            "NIS+",
+            "DB"
+          ],
+          "key": "secuwall_dns_reso5",
+          "type": "enum",
+          "widget": "secuwall_dns_reso5",
+          "widget_class": "QComboBox"
+        },
+        "secuwall_dns_srv1": {
+          "key": "secuwall_dns_srv1",
+          "type": "string",
+          "widget": "secuwall_dns_srv1",
+          "widget_class": "QLineEdit"
+        },
+        "secuwall_dns_srv2": {
+          "key": "secuwall_dns_srv2",
+          "type": "string",
+          "widget": "secuwall_dns_srv2",
+          "widget_class": "QLineEdit"
+        },
+        "secuwall_dns_srv3": {
+          "key": "secuwall_dns_srv3",
+          "type": "string",
+          "widget": "secuwall_dns_srv3",
+          "widget_class": "QLineEdit"
+        },
+        "secuwall_mgmt_confpart": {
+          "key": "secuwall_mgmt_confpart",
+          "type": "string",
+          "widget": "secuwall_mgmt_confpart",
+          "widget_class": "QLineEdit"
+        },
+        "secuwall_mgmt_loggingaddr": {
+          "key": "secuwall_mgmt_loggingaddr",
+          "type": "string",
+          "widget": "secuwall_mgmt_loggingaddr",
+          "widget_class": "QLineEdit"
+        },
+        "secuwall_mgmt_mgmtaddr": {
+          "key": "secuwall_mgmt_mgmtaddr",
+          "type": "string",
+          "widget": "secuwall_mgmt_mgmtaddr",
+          "widget_class": "QLineEdit"
+        },
+        "secuwall_mgmt_nagiosaddr": {
+          "key": "secuwall_mgmt_nagiosaddr",
+          "type": "string",
+          "widget": "secuwall_mgmt_nagiosaddr",
+          "widget_class": "QLineEdit"
+        },
+        "secuwall_mgmt_ntpaddr": {
+          "key": "secuwall_mgmt_ntpaddr",
+          "type": "string",
+          "widget": "secuwall_mgmt_ntpaddr",
+          "widget_class": "QLineEdit"
+        },
+        "secuwall_mgmt_rosnmp": {
+          "key": "secuwall_mgmt_rosnmp",
+          "type": "string",
+          "widget": "secuwall_mgmt_rosnmp",
+          "widget_class": "QLineEdit"
+        },
+        "secuwall_mgmt_rules_disable": {
+          "key": "secuwall_mgmt_rules_disable",
+          "type": "bool",
+          "widget": "secuwall_mgmt_rules_disable",
+          "widget_class": "QCheckBox"
+        },
+        "secuwall_mgmt_snmpaddr": {
+          "key": "secuwall_mgmt_snmpaddr",
+          "type": "string",
+          "widget": "secuwall_mgmt_snmpaddr",
+          "widget_class": "QLineEdit"
+        },
+        "secuwall_mgmt_varpart": {
+          "key": "secuwall_mgmt_varpart",
+          "type": "string",
+          "widget": "secuwall_mgmt_varpart",
+          "widget_class": "QLineEdit"
+        }
+      },
+      "ui": "secuwallosadvanceddialog_q.ui"
+    },
+    "solarisAdvancedDialog": {
+      "field_count": 7,
+      "fields": {
+        "solaris_ip_forward": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "solaris_ip_forward",
+          "type": "enum",
+          "widget": "solaris_ip_forward",
+          "widget_class": "QComboBox"
+        },
+        "solaris_ip_forward_directed_broadcasts": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "solaris_ip_forward_directed_broadcasts",
+          "type": "enum",
+          "widget": "solaris_ip_forward_directed_broadcasts",
+          "widget_class": "QComboBox"
+        },
+        "solaris_ip_forward_src_routed": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "solaris_ip_forward_src_routed",
+          "type": "enum",
+          "widget": "solaris_ip_forward_src_routed",
+          "widget_class": "QComboBox"
+        },
+        "solaris_ip_ignore_redirect": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "solaris_ip_ignore_redirect",
+          "type": "enum",
+          "widget": "solaris_ip_ignore_redirect",
+          "widget_class": "QComboBox"
+        },
+        "solaris_ip_respond_to_echo_broadcast": {
+          "choices": [
+            "No change",
+            "On",
+            "Off"
+          ],
+          "key": "solaris_ip_respond_to_echo_broadcast",
+          "type": "enum",
+          "widget": "solaris_ip_respond_to_echo_broadcast",
+          "widget_class": "QComboBox"
+        },
+        "solaris_path_ipf": {
+          "key": "solaris_path_ipf",
+          "type": "string",
+          "widget": "solaris_path_ipf",
+          "widget_class": "QLineEdit"
+        },
+        "solaris_path_ipnat": {
+          "key": "solaris_path_ipnat",
+          "type": "string",
+          "widget": "solaris_path_ipnat",
+          "widget_class": "QLineEdit"
+        }
+      },
+      "ui": "solarisadvanceddialog_q.ui"
+    }
+  }
+}

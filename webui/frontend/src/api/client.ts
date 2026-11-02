@@ -237,19 +237,33 @@ export function fetchPlatforms() {
   }>("/api/v1/platforms");
 }
 
+export type OptionFieldMeta = {
+  type?: string;
+  choices?: string[];
+  widget?: string;
+  widget_class?: string;
+};
+
 export function fetchOptionSchema(platform: string, hostOs = "") {
   const qs = new URLSearchParams({ platform, host_os: hostOs });
   return api<{
     platform: string;
     host_os?: string | null;
     compiler?: string;
+    dialog?: string;
     description?: string;
     supported_os?: string[];
     capabilities?: Record<string, string>;
     defaults: Record<string, string>;
     groups: Array<{ id: string; title: string; keys: string[] }>;
     featured_keys: string[];
+    fields?: Record<string, OptionFieldMeta>;
+    dialog_field_count?: number;
   }>(`/api/v1/option-schema?${qs.toString()}`);
+}
+
+export function fetchObjectOptions(sessionId: string, objectId: string) {
+  return fetchOptions(sessionId, objectId);
 }
 
 export function fetchOptions(sessionId: string, objectId: string) {

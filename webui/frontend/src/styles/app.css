@@ -430,6 +430,27 @@ button.ghost {
   padding: 0 0 0.5rem;
 }
 
+.check-field {
+  justify-content: center;
+}
+
+.rule-options {
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--line);
+}
+
+.rule-options h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.options-grid select,
+.options-grid textarea {
+  font: inherit;
+  width: 100%;
+}
+
 @media (max-width: 900px) {
   .workspace {
     grid-template-columns: 1fr;

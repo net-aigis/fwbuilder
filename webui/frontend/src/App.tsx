@@ -27,6 +27,7 @@ import { ObjectDetail } from "./components/ObjectDetail";
 import { ObjectPicker } from "./components/ObjectPicker";
 import { ObjectTree } from "./components/ObjectTree";
 import { RuleGrid } from "./components/RuleGrid";
+import { RuleOptions } from "./components/RuleOptions";
 
 type Theme = "light" | "dark";
 type MainTab = "object" | "rules";
@@ -533,6 +534,16 @@ export function App() {
                 onEditCell={(rule, element) => setPicker({ ruleId: rule.id, element })}
                 onDropObject={onDropObject}
               />
+              {sessionId && selectedRuleId ? (
+                <RuleOptions
+                  sessionId={sessionId}
+                  ruleId={selectedRuleId}
+                  busy={busy}
+                  onBusy={setBusy}
+                  onStatus={setStatus}
+                  onError={setError}
+                />
+              ) : null}
               {compileOutputs.length ? (
                 <div className="btn-row pad">
                   <span className="muted">Outputs:</span>

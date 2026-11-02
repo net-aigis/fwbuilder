@@ -62,7 +62,10 @@ assert d["compiler"]=="fwb_nft", d
 assert d["defaults"].get("configure_interfaces"), d["defaults"]
 ids={g["id"] for g in d["groups"]}
 assert {"installer","platform","os","scripts"} <= ids, ids
-print("featured", len(d["featured_keys"]), "groups", ids)
+fields=d.get("fields") or {}
+assert fields.get("configure_interfaces",{}).get("type")=="bool", fields.get("configure_interfaces")
+assert d.get("dialog_field_count",0) >= 20, d.get("dialog_field_count")
+print("featured", len(d["featured_keys"]), "groups", ids, "dialog_fields", d.get("dialog_field_count"))
 PY
 
 echo "== schema guides firewall options UI =="
