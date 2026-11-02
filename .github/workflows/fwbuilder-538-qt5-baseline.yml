@@ -3,10 +3,10 @@ name: FWB 6.0 Qt5 baseline - openSUSE Leap 16.0
 on:
   pull_request:
     branches:
-      - modernization/start
+      - main
   push:
     branches:
-      - modernization/start
+      - main
   workflow_dispatch:
 
 permissions:
@@ -39,7 +39,7 @@ jobs:
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
           git --version
 
-      - name: Check out the modernization branch
+      - name: Check out the main branch
         uses: actions/checkout@v4
         with:
           fetch-depth: 0

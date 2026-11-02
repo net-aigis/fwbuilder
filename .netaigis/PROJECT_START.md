@@ -6,7 +6,8 @@ Baseline decision, 2026-10-17. This file records project provenance, not a featu
 - Starting source: `computersalat/fwbuilder`, branch `5.3.x`.
 - Starting commit: `46d2f67e9d7929c10791bb6747627066a3ea5c26`.
 - Preserve the source branches `5.3.x`, `5.3`, and `master` unchanged.
-- Development branch: `modernization/start`, initially at the same commit as `5.3.x`.
+- Former development branch `modernization/start` is now `main` (product line 6.0).
+- Initial tip matched `5.3.x`; upstream CMake history lives under `archive/upstream-cmake-master`.
 - Original upstream: `fwbuilder/fwbuilder`, branch `master`.
 - Existing GPL license and author notices remain in force. No proprietary relicensing of derivative GPL code.
 

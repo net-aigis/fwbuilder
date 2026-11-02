@@ -3,10 +3,10 @@ name: FWB 6.0 Qt6 - openSUSE Leap 16.0
 on:
   pull_request:
     branches:
-      - modernization/start
+      - main
   push:
     branches:
-      - modernization/start
+      - main
   workflow_dispatch:
 
 permissions:

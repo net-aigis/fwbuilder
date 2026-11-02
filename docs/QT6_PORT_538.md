@@ -1,6 +1,6 @@
 # Qt6 port of preserved FWB 5.3.8
 
-Merged into `modernization/start` (PR #9). Product version: **6.0.0**.
+Merged via PR #9; product line is **`main`** / tag **v6.0.0**.
 Qt5 remains the supported CI path until this branch is green.
 
 ## Not in scope here

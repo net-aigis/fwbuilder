@@ -6,7 +6,7 @@ Done on branch `feature/central-hooks-on-nft` (PR #6 tip + this feature).
 `prolog_script` / `epilog_script` the same way as iptables. Platform
 name `nftables` is already accepted by `CentralHooks`.
 
-When merging into `modernization/start`:
+When merging into `main`:
 
 1. Land PR #6 (or this combined branch).
 2. Land `feature/central-prolog-epilog` if #6 was merged alone, then

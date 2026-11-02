@@ -3,10 +3,10 @@ name: FWB 5.3.8 legacy compatibility guard
 on:
   pull_request:
     branches:
-      - modernization/start
+      - main
   push:
     branches:
-      - modernization/start
+      - main
   workflow_dispatch:
 
 permissions:
