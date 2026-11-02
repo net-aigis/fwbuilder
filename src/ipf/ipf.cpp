@@ -64,7 +64,9 @@
 
 #include <QCoreApplication>
 #include <QStringList>
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QTextCodec>
+#endif
 
 #include "../common/init.cpp"
 
@@ -83,17 +85,17 @@ class UpgradePredicate: public XMLTools::UpgradePredicate
     virtual bool operator()(const string&) const 
     { 
 	cout << "Data file has been created in the old version of ";
-        cout << "Firewall Builder. Use fwbuilder GUI to convert it." << endl;
+        cout << "Firewall Builder. Use fwbuilder GUI to convert it." << std::endl;
 	return false;
     }
 };
     
 void usage(const char *name)
 {
-    cout << "Firewall Builder:  policy compiler for ipfilter" << endl;
-    cout << "Version " << VERSION << endl;
+    cout << "Firewall Builder:  policy compiler for ipfilter" << std::endl;
+    cout << "Version " << VERSION << std::endl;
     cout << "Usage: " << name
-         << " [-x] [-v] [-V] [-f filename.xml] [-o output.fw] [-d destdir] [-m] firewall_object_name" << endl;
+         << " [-x] [-v] [-V] [-f filename.xml] [-o output.fw] [-d destdir] [-m] firewall_object_name" << std::endl;
 }
 
 int main(int argc, char **argv)
@@ -104,7 +106,9 @@ int main(int argc, char **argv)
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
     QTextCodec::setCodecForCStrings(QTextCodec::codecForName("Utf8"));
 #endif
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("Utf8"));
+#endif
     
     QStringList args = app.arguments();
 
@@ -185,13 +189,13 @@ int main(int argc, char **argv)
         return ret;
 
     } catch(const FWException &ex)  {
-	cerr << ex.toString() << endl;
+	cerr << ex.toString() << std::endl;
         return 1;
 #if __GNUC__ >= 3
 /* need to check version because std::ios::failure does not seem to be
  * supported in gcc 2.9.5 on FreeBSD 4.10 */
     } catch (const std::ios::failure &e) {
-        cerr << "Error while opening or writing to the output file" << endl;
+        cerr << "Error while opening or writing to the output file" << std::endl;
         return 1;
 #endif
     } catch (const std::string &s) {

@@ -24,6 +24,7 @@
 */
 
 #include "config.h"
+#include <QObject>
 #include "global.h"
 #include "platforms.h"
 
@@ -48,7 +49,6 @@
 #include <qradiobutton.h>
 #include <qlineedit.h>
 #include <qstackedwidget.h>
-#include <qregexp.h>
 #include <qtextedit.h>
 #include <QUndoStack>
 #include <QFileInfo>

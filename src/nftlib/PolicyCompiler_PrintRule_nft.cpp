@@ -369,15 +369,15 @@ string PolicyCompiler_nft::PrintRule::_printRuleLabel(PolicyRule *rule)
         {
             if (!nocomm)
             {
-                res << "# " << endl;
-                res << "# Rule " << rl << endl;
-                res << "# " << endl;
+                res << "# " << "\n";
+                res << "# Rule " << rl << "\n";
+                res << "# " << "\n";
             }
             if (useNftablesAtomic(compiler->getCachedFwOpt()))
-                res << "# Rule " << rl << endl;
+                res << "# Rule " << rl << "\n";
             else
-                res << "echo " << _quote(string("Rule ")+rl) << endl;
-            res << "# " << endl;
+                res << "echo " << _quote(string("Rule ")+rl) << "\n";
+            res << "# " << "\n";
         }
 
 /* do not put comment in the script if it is intended for linksys */
@@ -386,23 +386,23 @@ string PolicyCompiler_nft::PrintRule::_printRuleLabel(PolicyRule *rule)
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 15, 0))
             QStringList comm = QString(rule->getComment().c_str()).split("\n", Qt::SkipEmptyParts);
 #else
-            QStringList comm = QString(rule->getComment().c_str()).split("\n", QString::SkipEmptyParts);
+            QStringList comm = QString(rule->getComment().c_str()).split("\n", Qt::SkipEmptyParts);
 #endif
             foreach(QString line, comm)
             {
-                res << "# " << line.toStdString() << endl;
+                res << "# " << line.toStdString() << "\n";
             }
-            //res << "# " << endl;
+            //res << "# " << "\n";
 
             string err = compiler->getErrorsForRule(rule, "# ");
-            if (!err.empty()) res << err << endl;
+            if (!err.empty()) res << err << "\n";
         }
     }
 
     current_rule_label = rl;
 
 //    string err = rule->getCompilerMessage();
-//    if (!err.empty()) res << "# " << err << endl;
+//    if (!err.empty()) res << "# " << err << "\n";
 
     return res.str();
 }
@@ -1667,7 +1667,7 @@ string PolicyCompiler_nft::PrintRule::PolicyRuleToString(PolicyRule *rule)
 
     command_line << _endRuleLine();
 
-//    command_line << endl;
+//    command_line << "\n";
 
     return command_line.str();
 }
@@ -1718,7 +1718,7 @@ string PolicyCompiler_nft::PrintRule::_clampTcpToMssRule()
             res << _startRuleLine()
                 << "FORWARD tcp flags syn tcp option maxseg size set rt mtu"
                 << _endRuleLine();
-            res << endl;
+            res << "\n";
         }
     }
     return res.str();

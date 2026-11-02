@@ -36,7 +36,6 @@
 #include "FWWindow.h"
 
 #include <qtextbrowser.h>
-#include <qtextcodec.h>
 #include <qglobal.h>
 #include <qpixmapcache.h>
 #include <qlocale.h>
@@ -89,7 +88,7 @@ debugDialog::debugDialog(QWidget *parent) : QDialog(parent)
     m_dialog->debugText->append( "\n" );
     m_dialog->debugText->append( "RCS environment:" );
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-    m_dialog->debugText->append( RCS::getEnv()->join("\n").toAscii() );
+    m_dialog->debugText->append( RCS::getEnv()->join("\n").toLatin1() );
 #else
     m_dialog->debugText->append( RCS::getEnv()->join("\n").toLatin1() );
 #endif

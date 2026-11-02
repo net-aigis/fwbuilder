@@ -70,9 +70,6 @@
 #include <climits>
 
 #include <QString>
-#include <QRegExp>
-
-
 using namespace libfwbuilder;
 using namespace fwcompiler;
 using namespace std;
@@ -1097,7 +1094,7 @@ bool PolicyCompiler_ipt::printRuleElements::processNext()
          << "  src: " << printRE(srcrel)
          << "  dst: " << printRE(dstrel)
          << "  srv: " << printRE(srvrel)
-         << endl;
+         << std::endl;
 
     tmp_queue.push_back(rule);
     return true;
@@ -3093,10 +3090,10 @@ bool PolicyCompiler_ipt::decideOnChainIfSrcFW::processNext()
     }
 
 #ifdef DEBUG_FOR_DMZ
-    cerr << endl;
+    cerr << std::endl;
     cerr << "PolicyCompiler_ipt::decideOnChainIfSrcFW "
          << " rule " << rule->getLabel()
-         << endl;
+         << std::endl;
 #endif
 
     Address *src = compiler->correctForCluster(compiler->getFirstSrc(rule));
@@ -4722,7 +4719,7 @@ string PolicyCompiler_ipt::debugPrintRule(Rule *r)
             i5!=itfrel->end()) 
     {
 
-        str << endl;
+        str << "\n";
 
         ostringstream src;
         ostringstream dst;
@@ -4857,7 +4854,7 @@ void PolicyCompiler_ipt::epilog()
         getCompiledScriptLength()>0 &&
         ! inSingleRuleCompileMode())
     {
-        output << "#" << endl;
+        output << "#" << "\n";
     }
 }
 

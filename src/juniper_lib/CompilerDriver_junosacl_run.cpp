@@ -28,6 +28,7 @@
 #include <QFileInfo>
 #include <QFile>
 #include <QTextStream>
+#include <QIODevice>
 
 using namespace std;
 using namespace libfwbuilder;
@@ -40,7 +41,7 @@ QString CompilerDriver_junosacl::assembleManifest(Cluster*, Firewall*, bool)
     QTextStream script(&script_buffer, QIODevice::WriteOnly);
 
     script << "/* " << manifestMarker()
-           << " * " << this->escapeFileName(file_names[FW_FILE]) << " */" << endl;
+           << " * " << this->escapeFileName(file_names[FW_FILE]) << " */" << "\n";
     return script_buffer;
 }
 

@@ -25,6 +25,7 @@
 
 
 #include "config.h"
+#include <QObject>
 #include "global.h"
 #include "utils.h"
 #include "platforms.h"
@@ -195,7 +196,7 @@ int PrintingController::addObjectsToTable(list<FWObject*> &objects,
 
         QString icn = (":/Icons/"+type_name+"/icon").c_str();
         QPixmap pm;
-        if ( ! QPixmapCache::find( icn, pm) )
+        if ( ! QPixmapCache::find(icn, &pm) )
         {
             pm.load( icn );
             QPixmapCache::insert( icn, pm);
@@ -380,8 +381,8 @@ void PrintingController::printLegend(bool newPageForSection)
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
         if (fwbdebug)
             qDebug("Legend table: row=%d col=%d %s %s",
-                   row, col, type_name.toAscii().constData(),
-                   objName.toAscii().constData());
+                   row, col, type_name.toLatin1().constData(),
+                   objName.toLatin1().constData());
 #else
         if (fwbdebug)
             qDebug("Legend table: row=%d col=%d %s %s",
@@ -391,7 +392,7 @@ void PrintingController::printLegend(bool newPageForSection)
 
         QString icn = ":/Icons/"+type_name+"/icon";
         QPixmap pm;
-        if ( ! QPixmapCache::find( icn, pm) )
+        if ( ! QPixmapCache::find(icn, &pm) )
         {
             pm.load( icn );
             QPixmapCache::insert( icn, pm);

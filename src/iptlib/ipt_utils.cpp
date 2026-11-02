@@ -35,7 +35,7 @@
 
 #include "combinedAddress.h"
 
-#include <QRegExp>
+#include <QRegularExpression>
 
 
 using namespace libfwbuilder;
@@ -86,7 +86,7 @@ void build_interface_groups(
              */
 
             QString iname = QString(iface->getName().c_str());
-            iname.replace(QRegExp("[0-9]{1,}$"), "+");
+            iname.replace(QRegularExpression("[0-9]{1,}$"), "+");
             iname.replace("*", "+");
                 
             if (regular_interfaces.count(iname) == 0)

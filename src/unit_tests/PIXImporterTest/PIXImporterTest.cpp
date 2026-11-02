@@ -47,7 +47,7 @@
 #include <QFile>
 #include <QStringList>
 #include <QString>
-#include <QRegExp>
+#include <QRegularExpression>
 
 
 using namespace std;
@@ -116,7 +116,7 @@ void PIXImporterTest::compareResults(QueueLogger* logger,
     QFile rw(obtained_result_file_name);
     rw.open(QFile::WriteOnly);
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-    rw.write(result.toAscii());
+    rw.write(result.toLatin1());
 #else
     rw.write(result.toLatin1());
 #endif
@@ -179,7 +179,7 @@ void PIXImporterTest::compareFwbFiles(QString expected_result_file_name,
         .toStdString(),
         expected_result.size() == obtained_result.size());
 
-    QRegExp last_mod_re("lastModified=\"\\d+\"");
+    QRegularExpression last_mod_re("lastModified=\"\\d+\"");
     int max_idx = max(expected_result.size(), obtained_result.size());
     for (int i=0; i < max_idx; ++i)
     {

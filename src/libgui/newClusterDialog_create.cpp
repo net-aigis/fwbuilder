@@ -181,7 +181,7 @@ void newClusterDialog::createNewCluster()
         QString failover_protocol_name = data.protocol.toLower();
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
         failover_grp->setStr("type",
-                             failover_protocol_name.toAscii().constData());
+                             failover_protocol_name.toLatin1().constData());
 #else
         failover_grp->setStr("type",
                              failover_protocol_name.toLatin1().constData());

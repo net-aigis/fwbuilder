@@ -27,9 +27,10 @@
 
 #include "PIXImporter.h"
 
+#include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QtDebug>
 
 #include <ios>
@@ -97,7 +98,7 @@ void PIXImporter::run()
             for (it=named_addresses.begin(); it!=named_addresses.end(); ++it)
             {
                 QString re("\\b%1\\b");
-                str.replace(QRegExp(re.arg(it.key())), it.value());
+                str.replace(QRegularExpression(re.arg(it.key())), it.value());
             }
         }
 

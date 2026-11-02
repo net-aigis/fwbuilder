@@ -88,12 +88,12 @@ void importConfig(const string &import_config,
             "and it includes packet counters. Please save configuration "
             "using command \"iptables-save\" without option \"-c\" and "
             "try to import it again."
-             << endl;
+             << std::endl;
         exit(1);
 
     default:
         cerr << "Can not import configuration file: unrecognized firewall platform"
-             << endl;
+             << std::endl;
         exit(1);
     }
 

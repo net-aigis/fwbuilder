@@ -26,6 +26,10 @@
 
 
 #include "config.h"
+#include <QtGlobal>
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#include <QTextCodec>
+#endif
 #include "global.h"
 #include "utils.h"
 
@@ -34,14 +38,13 @@
 
 #include <qobject.h>
 #include <qtimer.h>
-#include <qregexp.h>
 #include <qmessagebox.h>
 #include <qapplication.h>
 #include <qeventloop.h>
-#include <qtextcodec.h>
 #include <qapplication.h>
 #include <qdatetime.h>
 #include <QtDebug>
+#include <QRegularExpression>
 #include <QTime>
 
 #include <iostream>
@@ -197,7 +200,7 @@ void SSHSession::startSession()
     if (fwbdebug)
     {
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-        qDebug("Launch external ssh client %s", program.toAscii().constData());
+        qDebug("Launch external ssh client %s", program.toLatin1().constData());
 #else
         qDebug("Launch external ssh client %s", program.toLatin1().constData());
 #endif
@@ -205,7 +208,7 @@ void SSHSession::startSession()
         QStringList::const_iterator i;
         for (i=arguments.begin(); i!=arguments.end(); ++i)
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-            qDebug("    %s", (*i).toAscii().constData());
+            qDebug("    %s", (*i).toLatin1().constData());
 #else
             qDebug("    %s", (*i).toLatin1().constData());
 #endif
@@ -315,15 +318,23 @@ void SSHSession::terminate()
             return;
         }
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+        if (proc->processId() != 0)
+#else
 #ifdef _WIN32
         if (proc->pid() != NULL)
 #else
         if (proc->pid() != -1)
 #endif
+#endif
         {
             if (proc->state() == QProcess::Running)
             {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+                qint64 pid = proc->processId();
+#else
                 Q_PID pid = proc->pid();
+#endif
                 if (fwbdebug)
                     qDebug() << "SSHSession::terminate   "
                              << "terminating child process pid="  << pid;
@@ -561,9 +572,9 @@ void SSHSession::readFromStdout()
          * Matches ESC [ n ; m H (move cursor to position), ESC ? 25 l and ESC ? 25 h
          * (hide and show cursor) and a few others
          */
-        QRegExp suppress_ansi_codes(
+        QRegularExpression suppress_ansi_codes(
             "\x1B\\[((\\d*A)|(\\d*B)|(\\d*C)|(\\d*D)|(\\d*G)|(\\?\\d+l)|(\\d*J)|(2K)|(\\d*;\\d*[fHmr])|(\\?25h)|(\\?25l))");
-        QRegExp cursor_next_line("\x1B\\d*E");
+        QRegularExpression cursor_next_line("\x1B\\d*E");
 
         while (buf.indexOf(suppress_ansi_codes) != -1)
             buf.replace(suppress_ansi_codes, "");
@@ -573,7 +584,7 @@ void SSHSession::readFromStdout()
         stdoutBuffer.append(buf);
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-        if (fwbdebug) qDebug() << buf.toAscii().constData() << "\n";
+        if (fwbdebug) qDebug() << buf.toLatin1().constData() << "\n";
 #else
         if (fwbdebug) qDebug() << buf.toLatin1().constData() << "\n";
 #endif
@@ -582,7 +593,7 @@ void SSHSession::readFromStdout()
         QString lastLine = "";
 
         // split on LF
-        QStringList bufLines = buf.split("\n", QString::KeepEmptyParts);
+        QStringList bufLines = buf.split("\n", Qt::KeepEmptyParts);
 
         // if buf ends with a LF character, the last element in the list is
         // an empty string
@@ -649,7 +660,7 @@ void SSHSession::readFromStderr()
             QString s=QString(ba);
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
             if (fwbdebug) qDebug("SSHSession::readFromStderr  buf=%s",
-                                 s.toAscii().constData());
+                                 s.toLatin1().constData());
 #else
             if (fwbdebug) qDebug("SSHSession::readFromStderr  buf=%s",
                                  s.toLatin1().constData());
@@ -735,7 +746,7 @@ bool SSHSession::cmpPrompt(const QString &str, const QString &prompt)
     if (fwbdebug)
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
         qDebug("SSHSession::cmpPrompt: str='%s' prompt='%s'",
-               str.toAscii().constData(),prompt.toAscii().constData());
+               str.toLatin1().constData(),prompt.toLatin1().constData());
 #else
         qDebug("SSHSession::cmpPrompt: str='%s' prompt='%s'",
                str.toLatin1().constData(),prompt.toLatin1().constData());
@@ -759,13 +770,13 @@ bool SSHSession::cmpPrompt(const QString &str, const QString &prompt)
     return res;
 }
 
-bool SSHSession::cmpPrompt(const QString &str,const QRegExp &prompt)
+bool SSHSession::cmpPrompt(const QString &str,const QRegularExpression &prompt)
 {
 #if STATE_MACHINE_DEBUG
     if (fwbdebug)
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
         qDebug("SSHSession::cmpPrompt: str='%s' prompt='%s' (regexp)",
-               str.toAscii().constData(),prompt.pattern().toAscii().constData());
+               str.toLatin1().constData(),prompt.pattern().toLatin1().constData());
 #else
         qDebug("SSHSession::cmpPrompt: str='%s' prompt='%s' (regexp)",
                str.toLatin1().constData(),prompt.pattern().toLatin1().constData());
@@ -789,7 +800,7 @@ void SSHSession::sendCommand(const QString &cmd)
     if (!dry_run)
     {
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-        proc->write((cmd + "\n").toAscii());
+        proc->write((cmd + "\n").toLatin1());
 #else
         proc->write((cmd + "\n").toLatin1());
 #endif

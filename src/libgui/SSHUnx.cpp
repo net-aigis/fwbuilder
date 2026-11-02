@@ -33,12 +33,12 @@
 
 #include <qobject.h>
 #include <qtimer.h>
-#include <qregexp.h>
 #include <qmessagebox.h>
 #include <qapplication.h>
 #include <qeventloop.h>
 #include <QtDebug>
 
+#include <QRegularExpression>
 #include <iostream>
 
 using namespace std;
@@ -125,7 +125,7 @@ bool SSHUnx::checkForErrors(QStringList *errptr)
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
         qDebug(
             QString("SSHUnx::stateMachine:  Checking for errors. Buffer='%1'").
-            arg(stdoutBuffer).toAscii().constData());
+            arg(stdoutBuffer).toLatin1().constData());
 #else
         qDebug(
             QString("SSHUnx::stateMachine:  Checking for errors. Buffer='%1'").
@@ -136,7 +136,7 @@ bool SSHUnx::checkForErrors(QStringList *errptr)
 
     foreach (QString err, *errptr)
     {
-        if (stdoutBuffer.lastIndexOf(QRegExp(err), -1) != -1)
+        if (stdoutBuffer.lastIndexOf(QRegularExpression(err), -1) != -1)
         {
             if (fwbdebug)
                 qDebug("SSHUnx::stateMachine: MATCH. Error detected.");
@@ -197,7 +197,7 @@ void SSHUnx::stateMachine()
         {
             stdoutBuffer="";
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-            proc->write( pwd.toAscii() );
+            proc->write( pwd.toLatin1() );
 #else
             proc->write( pwd.toLatin1() );
 #endif
@@ -290,7 +290,7 @@ void SSHUnx::stateMachine()
         {
             stdoutBuffer="";
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-            proc->write( pwd.toAscii() );
+            proc->write( pwd.toLatin1() );
 #else
             proc->write( pwd.toLatin1() );
 #endif

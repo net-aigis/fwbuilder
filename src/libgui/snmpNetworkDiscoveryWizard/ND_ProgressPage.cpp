@@ -29,6 +29,7 @@
 
 #include <QFileDialog>
 #include <QFile>
+#include <QIODevice>
 #include <QTextCharFormat>
 #include <QTextCursor>
 #include <QtDebug>
@@ -395,11 +396,11 @@ void ND_ProgressPage::saveLog()
             }
             QTextStream strm(&f);
             QString txt = m_dialog->discoveryLog->toPlainText();
-            strm << txt << endl;
+            strm << txt << "\n";
             if (fwbdebug)
             {
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-                qDebug("%s",txt.toAscii().constData());
+                qDebug("%s",txt.toLatin1().constData());
 #else
                 qDebug("%s",txt.toLatin1().constData());
 #endif

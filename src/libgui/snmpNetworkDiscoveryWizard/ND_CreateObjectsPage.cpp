@@ -395,7 +395,7 @@ FWObject* ND_CreateObjectsPage::addInterface(FWObject *parent, InterfaceData *in
                     ipv4->setNetmask(*netm);
                 } catch (FWException &ex)
                 {
-                    cerr << "FWException: " << ex.toString() << endl;
+                    cerr << "FWException: " << ex.toString() << std::endl;
                 }
             }
 
@@ -413,7 +413,7 @@ FWObject* ND_CreateObjectsPage::addInterface(FWObject *parent, InterfaceData *in
                     ipv6->setNetmask(*netm);
                 } catch (FWException &ex)
                 {
-                    cerr << "FWException: " << ex.toString() << endl;
+                    cerr << "FWException: " << ex.toString() << std::endl;
                 }
             }
         }

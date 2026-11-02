@@ -27,6 +27,7 @@
 #include "global.h"
 #include "utils.h"
 #include "utils_no_qt.h"
+#include <algorithm>
 
 #include "FWBApplication.h"
 #include "RCS.h"
@@ -38,13 +39,13 @@
 //#include "FWWindow.h"
 
 #include <qdir.h>
-#include <qregexp.h>
 #include <qmessagebox.h>
 #include <qapplication.h>
 #include <qeventloop.h>
-#include <qtextcodec.h>
+#include <QObject>
 #include <QtDebug>
 
+#include <QRegularExpression>
 #include <stdlib.h>
 
 #if defined(_WIN32)
@@ -199,12 +200,12 @@ RCSEnvFix::RCSEnvFix()
 
 #endif
 
-    TZOffset.sprintf("%02d:%02d",tzoffset/60,tzoffset%60);
+    TZOffset.asprintf("%02d:%02d",tzoffset/60,tzoffset%60);
     TZOffset = tzsign + TZOffset;
 
     if (fwbdebug)
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-    qDebug("tzoffset: %d TZOffset: '%s'",tzoffset,TZOffset.toAscii().constData());
+    qDebug("tzoffset: %d TZOffset: '%s'",tzoffset,TZOffset.toLatin1().constData());
 #else
     qDebug("tzoffset: %d TZOffset: '%s'",tzoffset,TZOffset.toLatin1().constData());
 #endif
@@ -363,13 +364,13 @@ RCS::RCS(const QString &file)
  * not have env. var LANG so it always runs in english
  */
         QString rl = rlog();
-        QStringList split_log = rl.split(QRegExp("------|======"));
+        QStringList split_log = rl.split(QRegularExpression("------|======"));
 
         QString head_section = split_log[0];
 
-        QRegExp head_rx("head:\\s+([0-9\\.]+)\\s*\\n");
-        int pos = head_rx.indexIn( head_section );
-        if (pos>-1) head = head_rx.cap(1);
+        QRegularExpression head_rx("head:\\s+([0-9\\.]+)\\s*\\n");
+        QRegularExpressionMatch _head_rx_m = head_rx.match( head_section );
+        if (_head_rx_m.hasMatch()) head = _head_rx_m.captured(1);
 
         QStringList::iterator i;
         for (i=split_log.begin(),++i; i!=split_log.end(); ++i)
@@ -377,55 +378,49 @@ RCS::RCS(const QString &file)
             QString section = *i;
             if (section.length()==0) continue;
 
-            int match = -1;
-
             Revision r(filename);
             r.rev = "";
             r.log = "";
 
-            QRegExp rev_rx("revision\\s+([0-9\\.]+)");
-            match = rev_rx.indexIn( section );
-            if (match>-1)
+            QRegularExpression rev_rx("revision\\s+([0-9\\.]+)");
+            QRegularExpressionMatch _rev_rx_m = rev_rx.match( section );
+            if (_rev_rx_m.hasMatch())
             {
-                r.rev = rev_rx.cap(1);
+                r.rev = _rev_rx_m.captured(1);
             }
 
-            QRegExp lock_rx("revision\\s+([0-9\\.]+)\\s+locked by:\\s+(\\S+);");
-            lock_rx.setMinimal(true);
-            match = lock_rx.indexIn( section );
-            if (match>-1)
+            QRegularExpression lock_rx("revision\\s+([0-9\\.]+)\\s+locked by:\\s+(\\S+);");
+            QRegularExpressionMatch _lock_rx_m = lock_rx.match( section );
+            if (_lock_rx_m.hasMatch())
             {
-                r.locked_by = lock_rx.cap(2);
+                r.locked_by = _lock_rx_m.captured(2);
                 locked      = true;
-                locked_by   = lock_rx.cap(2);
+                locked_by   = _lock_rx_m.captured(2);
                 locked_rev  = r.rev;
             }
 
 // older implementation copied revision and "locked by" to r.log
 // we'll do the same here to maintain compatibility
-            QRegExp rev2_rx("(revision.+)\\n");
-            rev2_rx.setMinimal(true);
-            match = rev2_rx.indexIn( section );
-            if (match>-1)
+            QRegularExpression rev2_rx("(revision.+)\\n", QRegularExpression::InvertedGreedinessOption);
+            QRegularExpressionMatch _rev2_rx_m = rev2_rx.match( section );
+            if (_rev2_rx_m.hasMatch())
             {
-                r.log += rev2_rx.cap(1) + "\n";
+                r.log += _rev2_rx_m.captured(1) + "\n";
             }
 
 
-            QRegExp date_rx("date:\\s+([^;]+);\\s+author:\\s+(\\S+);");
-            date_rx.setMinimal(true);
-            match = date_rx.indexIn( section );
-            if (match>-1)
+            QRegularExpression date_rx("date:\\s+([^;]+);\\s+author:\\s+(\\S+);");
+            QRegularExpressionMatch _date_rx_m = date_rx.match( section );
+            if (_date_rx_m.hasMatch())
             {
-                r.date   = date_rx.cap(1);
-                r.author = date_rx.cap(2);
+                r.date   = _date_rx_m.captured(1);
+                r.author = _date_rx_m.captured(2);
             }
 
-            QRegExp log_rx("date:.*\\n(.*)$");
-            log_rx.setMinimal(true);
-            match = log_rx.indexIn( section );
-            if (match>-1)
-                r.log += log_rx.cap(1);
+            QRegularExpression log_rx("date:.*\\n(.*)$", QRegularExpression::InvertedGreedinessOption);
+            QRegularExpressionMatch _log_rx_m = log_rx.match( section );
+            if (_log_rx_m.hasMatch())
+                r.log += _log_rx_m.captured(1);
 
             r.log.replace('\r',"");
 
@@ -436,8 +431,8 @@ RCS::RCS(const QString &file)
                 if (fwbdebug)
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
                     qDebug("revision %s: '%s'",
-                           r.rev.toAscii().constData(),
-                           r.log.toAscii().constData());
+                           r.rev.toLatin1().constData(),
+                           r.log.toLatin1().constData());
 #else
                     qDebug("revision %s: '%s'",
                            r.rev.toLatin1().constData(),
@@ -447,7 +442,7 @@ RCS::RCS(const QString &file)
         }
         // sort list revisions; its defined like this:
         // QList<Revision> revisions
-        qSort(revisions);
+        std::sort(revisions.begin(), revisions.end());
 
         inrcs         = true;
         tracking_file = true;
@@ -483,7 +478,7 @@ void RCS::readFromStdout()
 {
     QString s = QString(proc->readAllStandardOutput());
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-    //qDebug("RCS::readFromStdout() reads: %s",s.toAscii().constData());
+    //qDebug("RCS::readFromStdout() reads: %s",s.toLatin1().constData());
 #else
     //qDebug("RCS::readFromStdout() reads: %s",s.toLatin1().constData());
 #endif
@@ -494,7 +489,7 @@ void RCS::readFromStderr()
 {
     QString s = QString(proc->readAllStandardError());
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-    //qDebug("RCS::readFromStderr() reads: %s", s.toAscii().constData());
+    //qDebug("RCS::readFromStderr() reads: %s", s.toLatin1().constData());
 #else
     //qDebug("RCS::readFromStderr() reads: %s", s.toLatin1().constData());
 #endif
@@ -528,10 +523,10 @@ void RCS::abandon()
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
     if (fwbdebug) qDebug("starting co with environment '%s'",
-                         rcsenvfix->getEnv()->join(" ").toAscii().constData());
+                         rcsenvfix->getEnv()->join(" ").toLatin1().constData());
     if (fwbdebug) qDebug("executing command '%s %s'",
-                         co_file_name.toAscii().constData(),
-                         arglist.join(" ").toAscii().constData());
+                         co_file_name.toLatin1().constData(),
+                         arglist.join(" ").toLatin1().constData());
 #else
     if (fwbdebug) qDebug("starting co with environment '%s'",
                          rcsenvfix->getEnv()->join(" ").toLatin1().constData());
@@ -735,10 +730,10 @@ bool RCS::co(const QString &rev,bool force)
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
         if (fwbdebug) qDebug("starting co with environment '%s'",
-                             rcsenvfix->getEnv()->join("\n").toAscii().constData());
+                             rcsenvfix->getEnv()->join("\n").toLatin1().constData());
         if (fwbdebug) qDebug("executing command '%s %s'",
-                         co_file_name.toAscii().constData(),
-                         arglist.join(" ").toAscii().constData());
+                         co_file_name.toLatin1().constData(),
+                         arglist.join(" ").toLatin1().constData());
 #else
         if (fwbdebug) qDebug("starting co with environment '%s'",
                              rcsenvfix->getEnv()->join("\n").toLatin1().constData());
@@ -822,7 +817,7 @@ bool RCS::co(const QString &rev,bool force)
                             app->activeWindow(),"Firewall Builder",
                             tr("File is opened and locked by %1.\nYou can only open it read-only.")
                             .arg(locked_by),
-                            "Open &read-only", "&Cancel", QString::null,
+                            "Open &read-only", "&Cancel", QString(),
                             0, 1 ) )
                 {
                 case 0:  ro=true;   return false;
@@ -870,10 +865,10 @@ after the program crashed.").arg(locked_rev),
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
         if (fwbdebug) qDebug("starting co with environment '%s'",
-                             rcsenvfix->getEnv()->join("\n").toAscii().constData());
+                             rcsenvfix->getEnv()->join("\n").toLatin1().constData());
         if (fwbdebug) qDebug("executing command '%s %s'",
-                             co_file_name.toAscii().constData(),
-                             arglist.join(" ").toAscii().constData());
+                             co_file_name.toLatin1().constData(),
+                             arglist.join(" ").toLatin1().constData());
 
 #else
         if (fwbdebug) qDebug("starting co with environment '%s'",
@@ -927,7 +922,7 @@ bool RCS::ci( const QString &_lm,
     if (fwbdebug)
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
         qDebug("RCS::ci  log message (%d characters): '%s'",
-               logmsg.length(), logmsg.toAscii().constData());
+               logmsg.length(), logmsg.toLatin1().constData());
 #else
         qDebug("RCS::ci  log message (%d characters): '%s'",
                logmsg.length(), logmsg.toLatin1().constData());
@@ -945,7 +940,7 @@ bool RCS::ci( const QString &_lm,
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
     if (fwbdebug) qDebug("starting ci with environment '%s'",
-                         rcsenvfix->getEnv()->join("\n").toAscii().constData());
+                         rcsenvfix->getEnv()->join("\n").toLatin1().constData());
 #else
     if (fwbdebug) qDebug("starting ci with environment '%s'",
                          rcsenvfix->getEnv()->join("\n").toLatin1().constData());
@@ -980,7 +975,7 @@ bool RCS::ci( const QString &_lm,
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
         throw( FWException( (obuf+"\n"+
                              arglist.join(" ")+"\n"+
-                             rcsenvfix->getEnv()->join("\n")).toAscii().constData() ) );
+                             rcsenvfix->getEnv()->join("\n")).toLatin1().constData() ) );
 #else
         throw( FWException( (obuf+"\n"+
                              arglist.join(" ")+"\n"+
@@ -1068,7 +1063,7 @@ QString RCS::rlog()
     // Note: we convert rlog comments to Utf8. Local8Bit does not seem
     // to work on windows, produces '????'
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-    QString rlogTxt = QString::fromUtf8(stdoutBuffer.toAscii().constData());
+    QString rlogTxt = QString::fromUtf8(stdoutBuffer.toLatin1().constData());
 #else
     QString rlogTxt = QString::fromUtf8(stdoutBuffer.toLatin1().constData());
 #endif

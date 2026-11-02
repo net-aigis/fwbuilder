@@ -57,7 +57,6 @@
 #include "config.h"
 
 #include <QString>
-#include <QRegExp>
 #include <QtDebug>
 
 #include <algorithm>
@@ -2647,7 +2646,7 @@ void NATCompiler_ipt::epilog()
         getCompiledScriptLength()>0 &&
         ! inSingleRuleCompileMode())
     {
-        output << "#" << endl;
+        output << "#" << "\n";
     }
 }
 

@@ -42,8 +42,11 @@
 
 #include <QCoreApplication>
 #include <QStringList>
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QTextCodec>
+#endif
 #include <QTime>
+#include <QElapsedTimer>
 
 
 #include "../common/init.cpp"
@@ -67,25 +70,27 @@ class UpgradePredicate: public XMLTools::UpgradePredicate
 void usage(const char *name)
 {
     cout << "Firewall Builder:  policy compiler for "
-            "Linux 2.4.x and 2.6.x iptables" << endl;
-    cout << "Version " << VERSION << endl;
+            "Linux 2.4.x and 2.6.x iptables" << std::endl;
+    cout << "Version " << VERSION << std::endl;
     cout << "Usage: " << name
          << " [-x level] [-v] [-V] [-q] [-f filename.xml] [-d destdir] "
-            "[-D datadir ] [-m] [-4|-6] firewall_object_name" << endl;
+            "[-D datadir ] [-m] [-4|-6] firewall_object_name" << std::endl;
 }
 
 int main(int argc, char **argv)
 {   
     QCoreApplication app(argc, argv, false);
 
-    QTime total_time_timer;
+    QElapsedTimer total_time_timer;
     total_time_timer.start();
 
     // compilers always write file names into manifest in Utf8
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
     QTextCodec::setCodecForCStrings(QTextCodec::codecForName("Utf8"));
 #endif
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("Utf8"));
+#endif
 
     QStringList args = app.arguments();
 
@@ -163,7 +168,7 @@ int main(int argc, char **argv)
 
 	QTime time_spent = QTime().addMSecs(total_time_timer.elapsed());
 	cerr << "Compile time: "
-	     << time_spent.toString("hh:mm:ss").toStdString() << endl;
+	     << time_spent.toString("hh:mm:ss").toStdString() << std::endl;
 
         delete driver;
         delete objdb;

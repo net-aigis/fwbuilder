@@ -57,9 +57,10 @@
 #include "fwbuilder/TagService.h"
 #include "fwbuilder/UDPService.h"
 
+#include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QtDebug>
 
 
@@ -359,9 +360,10 @@ void Importer::setInterfaceParametes(const std::string &phys_intf_or_label,
         // "nameif ethernet0 outside security0"
         Interface *intf = all_interfaces[phys_intf_or_label];
         intf->setLabel(label);
-        QRegExp pix6_sec_level("security(\\d+)");
-        if (pix6_sec_level.indexIn(sec_level.c_str()) > -1)
-            intf->setSecurityLevel(pix6_sec_level.cap(1).toInt());
+        QRegularExpression pix6_sec_level("security(\\d+)");
+        QRegularExpressionMatch pix6_sec_level_m = pix6_sec_level.match(sec_level.c_str());
+        if (pix6_sec_level_m.hasMatch())
+            intf->setSecurityLevel(pix6_sec_level_m.captured(1).toInt());
     } else
     {
         // since first arg is not physical interface name, it must be a label

@@ -42,7 +42,7 @@
 #include <QDebug>
 #include <QObject>
 #include <QStringList>
-#include <QRegExp>
+#include <QRegularExpression>
 
 
 using namespace std;
@@ -72,8 +72,8 @@ bool interfaceProperties::looksLikeVlanInterface(const QString &int_name)
  */
 bool interfaceProperties::looksLikeInterface(const QString &name)
 {
-    QRegExp basic_interface_name_pattern("^[a-zA-Z]+\\d{1,}(\\.\\d{1,})?(:\\d{1,})?$");
-    return (basic_interface_name_pattern.indexIn(name) != -1);
+    QRegularExpression basic_interface_name_pattern("^[a-zA-Z]+\\d{1,}(\\.\\d{1,})?(:\\d{1,})?$");
+    return basic_interface_name_pattern.match(name).hasMatch();
 }
 
 // simple name validation: does not allow space and "-"

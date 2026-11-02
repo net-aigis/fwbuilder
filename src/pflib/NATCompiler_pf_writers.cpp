@@ -161,7 +161,7 @@ bool NATCompiler_pf::PrintRule::processNext()
             compiler->output  << "to ";
             _printREAddr(odstrel);
             _printPort(osrv, true);
-            compiler->output  << endl;
+            compiler->output  << "\n";
         } else
         {
             compiler->output  << "no nat ";
@@ -173,7 +173,7 @@ bool NATCompiler_pf::PrintRule::processNext()
             _printREAddr(osrcrel);
             compiler->output  << "to ";
             _printREAddr(odstrel);
-            compiler->output  << endl;
+            compiler->output  << "\n";
 
             compiler->output  << "no rdr ";
 
@@ -184,7 +184,7 @@ bool NATCompiler_pf::PrintRule::processNext()
             _printREAddr( osrcrel );
             compiler->output  << "to ";
             _printREAddr( odstrel );
-            compiler->output  << endl;
+            compiler->output  << "\n";
         }
         break;
     }
@@ -209,7 +209,7 @@ bool NATCompiler_pf::PrintRule::processNext()
             _printSrcPort(tsrv, false);
             _printNATRuleOptions(rule);
 
-            compiler->output  << endl;
+            compiler->output  << "\n";
 
         } else
         {
@@ -230,7 +230,7 @@ bool NATCompiler_pf::PrintRule::processNext()
             _printSrcPort(tsrv, false);
             _printNATRuleOptions(rule);
 
-            compiler->output  << endl;
+            compiler->output  << "\n";
         }
         break;
     }
@@ -255,7 +255,7 @@ bool NATCompiler_pf::PrintRule::processNext()
             _printREAddr( tdstrel );
             _printPort(tsrv, false);
             _printNATRuleOptions(rule);
-            compiler->output  << endl;
+            compiler->output  << "\n";
         } else
         {
             compiler->output  << "rdr ";
@@ -273,7 +273,7 @@ bool NATCompiler_pf::PrintRule::processNext()
             _printREAddr( tdstrel );
             _printPort(tsrv, false);
             _printNATRuleOptions(rule);
-            compiler->output  << endl;
+            compiler->output  << "\n";
         }
         break;
     }
@@ -296,7 +296,7 @@ bool NATCompiler_pf::PrintRule::processNext()
             _printREAddr( tdstrel );
             _printPort(tsrv, false);
             _printNATRuleOptions(rule);
-            compiler->output  << endl;
+            compiler->output  << "\n";
         } else
         {
             compiler->output  << "rdr ";
@@ -313,7 +313,7 @@ bool NATCompiler_pf::PrintRule::processNext()
             _printREAddr( tdstrel );
             _printPort(tsrv, false);
             _printNATRuleOptions(rule);
-            compiler->output  << endl;
+            compiler->output  << "\n";
         }
         break;
     }
@@ -374,7 +374,7 @@ void NATCompiler_pf::PrintRule::_printAnchorRule(const string &anchor_command,
         _printREAddr( odstrel );
         _printPort(osrv, true);
     }
-    compiler->output  << endl;
+    compiler->output  << "\n";
 }
 
 void NATCompiler_pf::PrintRule::_printProtocol(Service *srv)

@@ -26,6 +26,7 @@
 #include "global.h"
 #include "fakeWizard.h"
 
+#include <QObject>
 #include <QtDebug>
 
 FakeWizard::FakeWizard()

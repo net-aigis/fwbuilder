@@ -26,6 +26,8 @@
 
 
 #include "config.h"
+#include <QObject>
+#include <QRegularExpression>
 #include "global.h"
 
 #include "CompilerOutputPanel.h"
@@ -85,14 +87,14 @@ void CompilerOutputPanel::loadFWObject(FWObject *obj)
     BaseCompiler::errorRegExp(&err_re);
     foreach(string re, err_re)
     {
-        error_re.push_back(QRegExp(re.c_str()));
+        error_re.push_back(QRegularExpression(re.c_str()));
     }
 
     list<string> warn_re;
     BaseCompiler::warningRegExp(&warn_re);
     foreach(string re, warn_re)
     {
-        warning_re.push_back(QRegExp(re.c_str()));
+        warning_re.push_back(QRegularExpression(re.c_str()));
     }
 
     QApplication::setOverrideCursor( QCursor( Qt::WaitCursor) );
@@ -178,10 +180,10 @@ void CompilerOutputPanel::loadFWObject(FWObject *obj)
             {
                 format = normal_format;
 
-                list<QRegExp>::const_iterator it;
+                list<QRegularExpression>::const_iterator it;
                 for (it=error_re.begin(); it!=error_re.end(); ++it)
                 {
-                    if ((*it).indexIn(line) != -1)
+                    if ((*it).match(line).hasMatch())
                     {
                         format = error_format;
                         break;
@@ -190,7 +192,7 @@ void CompilerOutputPanel::loadFWObject(FWObject *obj)
 
                 for (it=warning_re.begin(); it!=warning_re.end(); ++it)
                 {
-                    if ((*it).indexIn(line) != -1)
+                    if ((*it).match(line).hasMatch())
                     {
                         format = warning_format;
                         break;

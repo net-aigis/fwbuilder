@@ -260,8 +260,8 @@ void RoutingCompiler_openbsd::epilog()
     {
         // function restore_script_output may not be defined if we
         // have no rules or all rules are disabled
-        output << endl;
-        output << "restore_script_output" << endl;
-        output << "echo \"...done.\"" << endl;
+        output << "\n";
+        output << "restore_script_output" << "\n";
+        output << "echo \"...done.\"" << "\n";
     }
 }

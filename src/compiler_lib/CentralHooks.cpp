@@ -17,9 +17,10 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QSettings>
 #include <QTextStream>
+#include <QIODevice>
 #include <QSet>
 
 #include <cstdlib>
@@ -95,7 +96,7 @@ QString readProfilesMap(const QString &base_dir,
         ++line_no;
         QString line = in.readLine().trimmed();
         if (line.isEmpty() || line.startsWith('#')) continue;
-        const QStringList parts = line.split(QRegExp("\\s+"), QString::SkipEmptyParts);
+        const QStringList parts = line.split(QRegularExpression("\\s+"), Qt::SkipEmptyParts);
         if (parts.size() != 2)
         {
             *error = QString("Invalid profiles.map line %1 in %2")

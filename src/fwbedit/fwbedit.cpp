@@ -127,95 +127,95 @@ int fwbdebug = 0;
 
 void list_attributes()
 {
-    cout << "Attributes for the new objects, by type:" << endl;
-    cout << endl;
+    cout << "Attributes for the new objects, by type:" << std::endl;
+    cout << std::endl;
     cout << "      "
          << " -t " <<Firewall::TYPENAME
-         << " -a platform, host OS" << endl;
+         << " -a platform, host OS" << std::endl;
     cout << "      "
          << " -t " <<Cluster::TYPENAME
-         << " -a platform, host OS" << endl;
+         << " -a platform, host OS" << std::endl;
     cout << "      "
          << " -t " <<IPv4::TYPENAME
-         << " -a IP address [,netmask]" << endl;
+         << " -a IP address [,netmask]" << std::endl;
     cout << "      "
          << " -t " <<IPv6::TYPENAME
-         << " -a IPv6 address [,masklen]" << endl;
+         << " -a IPv6 address [,masklen]" << std::endl;
     cout << "      "
          << " -t " <<DNSName::TYPENAME
-         << " -a DNS record,run time" << endl;
+         << " -a DNS record,run time" << std::endl;
     cout << "      "
          << " -t " <<AddressRange::TYPENAME
-         << " -a start address, end address" << endl;
+         << " -a start address, end address" << std::endl;
     cout << "      "
          << " -t " <<ObjectGroup::TYPENAME
-         <<  endl;
+         << std::endl;
     cout << "      "
          << " -t " <<Network::TYPENAME
-         << " -a address,netmask" << endl;
+         << " -a address,netmask" << std::endl;
     cout << "      "
          << " -t " <<NetworkIPv6::TYPENAME
-         << " -a ipv6_address,netmask_length" << endl;
+         << " -a ipv6_address,netmask_length" << std::endl;
     cout << "      "
          << " -t " <<Interval::TYPENAME
-         << " -a start time,start date,start day,end time, end date, end day" << endl;
+         << " -a start time,start date,start day,end time, end date, end day" << std::endl;
     cout << "      "
          << " -t " <<Interface::TYPENAME
          << " -a security level,address type "
-        "(dynamic or unnumbered),management" << endl;
+        "(dynamic or unnumbered),management" << std::endl;
     cout << "      "
          << " -t " <<Host::TYPENAME
-         <<  endl;
+         << std::endl;
     cout << "      "
          << " -t " <<ServiceGroup::TYPENAME
-         <<  endl;
+         << std::endl;
     cout << "      "
          << " -t " <<TCPService::TYPENAME
-         << " -a source port range start,end,destination port range start,end,UAPRSF,UAPRSF" << endl;
+         << " -a source port range start,end,destination port range start,end,UAPRSF,UAPRSF" << std::endl;
     cout << "      "
          << " -t " <<UDPService::TYPENAME
-         << " -a source port range start,end,Destination port range start,end" << endl;
+         << " -a source port range start,end,Destination port range start,end" << std::endl;
     cout << "      "
          << " -t " <<ICMPService::TYPENAME
-         << " -a ICMP type,ICMP code" << endl;
+         << " -a ICMP type,ICMP code" << std::endl;
     cout << "      "
          << " -t " <<IPService::TYPENAME
          << " -a protocol "
-        "number,lsrr/ssrr/rr/ts/fragm/short_fragm" << endl;
+        "number,lsrr/ssrr/rr/ts/fragm/short_fragm" << std::endl;
 }
 
 
 void usage()
 {
     cout << "Firewall Builder:  general purpose object tree editing tool"
-         << endl;
-    cout << "Version " << VERSION << endl;
-    cout << endl;
-    cout << "Usage: fwbedit command [options]" << endl;
-    cout << endl;
+         << std::endl;
+    cout << "Version " << VERSION << std::endl;
+    cout << std::endl;
+    cout << "Usage: fwbedit command [options]" << std::endl;
+    cout << std::endl;
 
-    cout << "Command is one of:" << endl;
-    cout << "      new         create new object" << endl;
-    cout << "      delete      delete object" << endl;
-    cout << "      modify      modify object" << endl;
-    cout << "      list        print object" << endl;
-    cout << "      add         add object to a group" << endl;
-    cout << "      remove      remove object from a group" << endl;
-    cout << "      upgrade     upgrade data file" << endl;
-    cout << "      checktree   check object tree and repair if necessary" << endl;
-    cout << "      merge       merge one data file into another" << endl;
-    cout << "      import      import firewall configuration (iptables, CIsco IOS," << endl;
-    cout << "                  Cisco PIX, ASA and FWSM)" << endl;
-    cout << endl;
+    cout << "Command is one of:" << std::endl;
+    cout << "      new         create new object" << std::endl;
+    cout << "      delete      delete object" << std::endl;
+    cout << "      modify      modify object" << std::endl;
+    cout << "      list        print object" << std::endl;
+    cout << "      add         add object to a group" << std::endl;
+    cout << "      remove      remove object from a group" << std::endl;
+    cout << "      upgrade     upgrade data file" << std::endl;
+    cout << "      checktree   check object tree and repair if necessary" << std::endl;
+    cout << "      merge       merge one data file into another" << std::endl;
+    cout << "      import      import firewall configuration (iptables, CIsco IOS," << std::endl;
+    cout << "                  Cisco PIX, ASA and FWSM)" << std::endl;
+    cout << std::endl;
     cout << "Type   'fwbedit command' to get summary of options for the command"
-         << endl;
-    cout << endl;
+         << std::endl;
+    cout << std::endl;
 }
 
 void usage_new()
 {
-    cout << "Options:" << endl;
-    cout << endl;
+    cout << "Options:" << std::endl;
+    cout << std::endl;
     cout <<
         "       new -f file.fwb -t objtype -n name -c comment "
         "-p parent [-a attrs]\n"
@@ -226,7 +226,7 @@ void usage_new()
         "           -c txt:  specify comment for the new object\n"
         "           -a attribute1[,attribute2...]  :  specify attributes that\n"
         "              define parameters of the new object (see below)\n";
-    cout << endl;
+    cout << std::endl;
 
     list_attributes();
 }
@@ -238,7 +238,7 @@ void usage_delete()
         "\n"
         "           -f file.fwb: data file\n"
         "           -o object: object to be deleted, full path or ID\n";
-    cout << endl;
+    cout << std::endl;
 }
 
 void usage_modify()
@@ -251,7 +251,7 @@ void usage_modify()
         "           -c txt:  specify comment for the new object\n"
         "           -a attribute1[,attribute2...]  :  specify attributes that\n"
         "              define parameters of the new object (see below)\n";
-    cout << endl;
+    cout << std::endl;
 }
 
 void usage_list()
@@ -268,7 +268,7 @@ void usage_list()
         "              internal debugging information if available\n"
         "           -F format_string print according to the format; see\n"
         "              man fwbedit(1) for the list of macros and examples\n";
-    cout << endl;
+    cout << std::endl;
 }
 
 void usage_add()
@@ -280,7 +280,7 @@ void usage_add()
         "           -g group: group the object should be added to, \n"
         "              full path or ID\n"
         "           -o object: object to be added, full path or ID\n";
-    cout << endl;
+    cout << std::endl;
 }
 
 void usage_remove()
@@ -292,7 +292,7 @@ void usage_remove()
         "          -g group: group the object should be removed from,\n"
         "             full path or ID\n"
         "          -o object: object to be removed, full path or ID\n";
-    cout << endl;
+    cout << std::endl;
 }
 
 void usage_upgrade()
@@ -301,7 +301,7 @@ void usage_upgrade()
         "   upgrade -f file.fwb\n"
         "\n"
         "          -f file.fwb: data file\n";
-    cout << endl;
+    cout << std::endl;
 }
 
 void usage_checktree()
@@ -310,7 +310,7 @@ void usage_checktree()
         "   checktree -f file.fwb\n"
         "\n"
         "          -f file.fwb: data file\n";
-    cout << endl;
+    cout << std::endl;
 }
 
 void usage_merge()
@@ -325,7 +325,7 @@ void usage_merge()
         "           Default is '1'.\n"
         "           Objects from the file2.fwb are merged with objects in file1\n"
         "           and combined object tree saved in file1.fwb\n";
-    cout << endl;
+    cout << std::endl;
 }
 
 void usage_import()
@@ -341,7 +341,7 @@ void usage_import()
         "             Note that path must start with the library name\n"
         "          -d reuse address and service objects created in the process\n"
         "             of import\n";
-    cout << endl;
+    cout << std::endl;
 }
 
 
@@ -720,7 +720,7 @@ int main(int argc, char * const *argv)
             if (filemerge.empty())
             {
                 cerr << "The name of the file that should be merged is missing"
-                     << endl;
+                     << std::endl;
                 usage_merge();
                 exit(1);
             }
@@ -732,13 +732,13 @@ int main(int argc, char * const *argv)
             if (import_config.empty() || object.empty())
             {
                 cerr << "Configuration file name and path to the new firewall "
-                    "object are mandatory options for import" << endl;
+                    "object are mandatory options for import" << std::endl;
                 usage_import();
                 exit(1);
             }
 
             QStringList components = QString::fromUtf8(object.c_str())
-                .split("/", QString::SkipEmptyParts);
+                .split("/", Qt::SkipEmptyParts);
             string fw_name = components.last().toUtf8().constData();
             
             Library *library = NULL;
@@ -753,7 +753,7 @@ int main(int argc, char * const *argv)
                 if (objects.size() == 0)
                 {
                     cerr << "Library or folder '"
-                         << library_path << "' not found" << endl;
+                         << library_path << "' not found" << std::endl;
                     usage_import();
                     exit(1);
                 }
@@ -763,14 +763,14 @@ int main(int argc, char * const *argv)
 
             cout << "Import firewall configuration from file "
                  << import_config
-                 << endl;
+                 << std::endl;
 
             cout << "New firewall object '"
                  << fw_name
                  << "' will be created in library '"
                  << library->getName()
                  << "'"
-                 << endl;
+                 << std::endl;
 
             importConfig(import_config, library, fw_name, deduplicate);
         }
@@ -790,7 +790,7 @@ int main(int argc, char * const *argv)
         else if (cmd == UPGRADE)
         {
             cout << "File upgraded; current data format version: "
-                 << libfwbuilder::Constants::getDataFormatVersion() << endl;
+                 << libfwbuilder::Constants::getDataFormatVersion() << std::endl;
         }
 
         else  if (cmd == NEWOBJECT)
@@ -815,7 +815,7 @@ int main(int argc, char * const *argv)
             findObjects(object, objdb, objects);
             if (objects.size()==0)
             {
-                cout << "Object " << object << " not found" << endl;
+                cout << "Object " << object << " not found" << std::endl;
                 exit(-1);
             }
 
@@ -830,13 +830,13 @@ int main(int argc, char * const *argv)
                     findObjects(group, objdb, groups);
                     if (groups.size()==0)
                     {
-                        cout << "Group " << group << " not found" << endl;
+                        cout << "Group " << group << " not found" << std::endl;
                         exit(-1);
                     }
                     FWObject *grp = groups.front();
                     cout << "Adding object '" << obj->getName()
                          << "' to the group '" << grp->getName()
-                         << "'" << endl;
+                         << "'" << std::endl;
                     grp->addRef(obj);
                 }
                 if (cmd==REMGRP)
@@ -845,13 +845,13 @@ int main(int argc, char * const *argv)
                     findObjects(group, objdb, groups);
                     if (groups.size()==0)
                     {
-                        cout << "Group " << group << " not found" << endl;
+                        cout << "Group " << group << " not found" << std::endl;
                         exit(-1);
                     }
                     FWObject *grp = groups.front();
                     cout << "Removing object '" << obj->getName()
                          << "' from the group '" << grp->getName()
-                         << "'" << endl;
+                         << "'" << std::endl;
                     grp->removeRef(obj);
                 }
             }
@@ -869,13 +869,13 @@ int main(int argc, char * const *argv)
             objdb->saveFile(filename);
         } else
         {
-            cout << "Could not rename data file, abroting operation" << endl;
-            cout << dataf.errorString().toStdString() << endl;
+            cout << "Could not rename data file, abroting operation" << std::endl;
+            cout << dataf.errorString().toStdString() << std::endl;
             exit(-1);
         }
 
     } catch(FWException &ex)  {
-        cerr << ex.toString() << endl;
+        cerr << ex.toString() << std::endl;
         exit(1);
     } catch (std::string s) {
         cerr << s;

@@ -65,13 +65,14 @@
 
 #include <memory>
 
+#include <QObject>
 #include <QtDebug>
 #include <QMouseEvent>
-#include <QtAlgorithms>
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QHeaderView>
 #include <QTime>
+#include <QElapsedTimer>
 
 using namespace libfwbuilder;
 using namespace std;
@@ -177,7 +178,7 @@ void RuleSetView::init()
 
 
     setUpdatesEnabled(false);
-    QTime t; t.start();
+    QElapsedTimer t; t.start();
     configureGroups();
     if (fwbdebug)
         qDebug("RuleSetView configureGroups: %d ms", t.restart());
@@ -526,8 +527,13 @@ void RuleSetView::mouseMoveEvent( QMouseEvent* ev )
     if (startingDrag)
     {
         QDrag* drag = dragObject();
-        if (drag)
+        if (drag) {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+            drag->exec(Qt::CopyAction | Qt::MoveAction);
+#else
             drag->start(Qt::CopyAction | Qt::MoveAction); //just start dragging
+#endif
+        }
         startingDrag = false;
         return;
     }
@@ -815,7 +821,7 @@ void RuleSetView::addColumnRelatedMenu(QMenu *menu, const QModelIndex &index,
                 {
                     QMessageBox::critical( NULL , "Firewall Builder",
                                            ex.toString().c_str(),
-                                           QString::null,QString::null);
+                                           QString(),QString());
                 }
                 negID->setEnabled(supports_neg &&  !re->isAny());
                 fndID->setEnabled(!re->isAny());
@@ -1149,7 +1155,7 @@ void RuleSetView::removeRule()
         {
             foreach(QModelIndex group, groups)
             {
-                qSort(itemsInGroups[group]);
+                std::sort(itemsInGroups[group].begin(), itemsInGroups[group].end());
 
                 Rule* first = md->nodeFromIndex(md->index(itemsInGroups[group].at(0), 0, group))->rule;
                 Rule* last = md->nodeFromIndex(md->index(itemsInGroups[group].at(itemsInGroups[group].size() - 1), 0, group))->rule;
@@ -1593,9 +1599,9 @@ FWObject* RuleSetView::createInsertTemplate(ProjectPanel* proj_p, int id)
              << "co=" << co
              << " " 
              << "co->getRoot()=" << co->getRoot()
-             << endl;
+             << "\n";
 
-        cerr << "Validating database index" << endl;
+        cerr << "Validating database index" << std::endl;
         proj_p->db()->getRoot()->validateIndex();
     }
 
@@ -1697,14 +1703,14 @@ void RuleSetView::removeFromGroup()
     // Remove groups from the end to the begin
 
     QList<QModelIndex> groups = itemsInGroups.keys();
-    qSort(groups);
+    std::sort(groups.begin(), groups.end());
 
     QListIterator<QModelIndex> i(groups);
     i.toBack();
     while (i.hasPrevious())
     {
         QModelIndex group = i.previous();
-        qSort(itemsInGroups[group]);
+        std::sort(itemsInGroups[group].begin(), itemsInGroups[group].end());
         QModelIndex first = md->index(itemsInGroups[group].first(), 0, group);
         QModelIndex last = md->index(itemsInGroups[group].last(), 0, group);
 
@@ -2399,7 +2405,7 @@ bool RuleSetView::validateForInsertion(RuleElement *re, FWObject *obj, bool quie
                     QObject::tr(
                         "A single interface belonging to this firewall is "
                         "expected in this field."),
-                    QString::null,QString::null);
+                    QString(),QString());
             }
             else if (RuleElementRGtw::cast(re))
             {
@@ -2409,7 +2415,7 @@ bool RuleSetView::validateForInsertion(RuleElement *re, FWObject *obj, bool quie
                         "A single ip adress is expected here. You may also "
                         "insert a host or a network adapter leading to a single "
                         "ip adress."),
-                    QString::null,QString::null);
+                    QString(),QString());
             }
         }
         return false;
@@ -2624,7 +2630,7 @@ void RuleSetView::restoreCollapsedGroups()
 {
     if (project)
     {
-        QTime t;
+        QElapsedTimer t;
         t.start();
         RuleSetModel* md = ((RuleSetModel*)model());
         QStringList collapsed_groups;

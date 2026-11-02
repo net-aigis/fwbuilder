@@ -1,4 +1,5 @@
 #include "MDIEventFilter.h"
+#include <QObject>
 #include <QDebug>
 #include <QWheelEvent>
 #include <QApplication>

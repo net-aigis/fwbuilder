@@ -25,18 +25,18 @@
 
 #include "fwbuilder/Interface.h"
 
-#include <QRegExp>
+#include <QRegularExpression>
 
 using namespace libfwbuilder;
 
 
 bool openbsdInterfaces::parseVlan(const QString &name, QString *base_name, int *vlan_id)
 {
-    QRegExp vlan_name_pattern(QRegExp("(vlan)(\\d{1,})"));
-    if (vlan_name_pattern.indexIn(name) != -1)
-    {
-        if (base_name!=NULL) *base_name = vlan_name_pattern.cap(1);
-        if (vlan_id!=NULL) *vlan_id = vlan_name_pattern.cap(2).toInt();
+    QRegularExpression vlan_name_pattern(QRegularExpression("(vlan)(\\d{1,})"));
+    QRegularExpressionMatch _vlan_name_pattern_m = vlan_name_pattern.match(name);
+    if (_vlan_name_pattern_m.hasMatch()) {
+        if (base_name!=NULL) *base_name = _vlan_name_pattern_m.captured(1);
+        if (vlan_id!=NULL) *vlan_id = _vlan_name_pattern_m.captured(2).toInt();
         return true;
     }
     return false;

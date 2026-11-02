@@ -171,12 +171,12 @@ bool RoutingCompiler_ipt::PrintRule::processNext()
     
     if (!compiler->inSingleRuleCompileMode() && rl!=current_rule_label)
     {
-        compiler->output << "# " << endl;
-        compiler->output << "# Rule " << rl << endl;
-        //compiler->output << "# " << rule->getRuleTypeAsString() << endl;
-        compiler->output << "# " << endl;
-        compiler->output << "echo \"Routing rule " << rl << "\"" << endl;
-        compiler->output << "# " << endl;
+        compiler->output << "# " << "\n";
+        compiler->output << "# Rule " << rl << "\n";
+        //compiler->output << "# " << rule->getRuleTypeAsString() << "\n";
+        compiler->output << "# " << "\n";
+        compiler->output << "echo \"Routing rule " << rl << "\"" << "\n";
+        compiler->output << "# " << "\n";
     }
     
     if( rule->getRuleType() != RoutingRule::MultiPath )
@@ -185,20 +185,20 @@ bool RoutingCompiler_ipt::PrintRule::processNext()
         {
             while ( (c2=comm.find('\n',c1))!=string::npos )
             {
-                compiler->output << "# " << comm.substr(c1,c2-c1) << endl;
+                compiler->output << "# " << comm.substr(c1,c2-c1) << "\n";
                 c1=c2+1;
             }
-            compiler->output << "# " << comm.substr(c1) << endl;
-            compiler->output << "# " << endl;
+            compiler->output << "# " << comm.substr(c1) << "\n";
+            compiler->output << "# " << "\n";
 
             string err = compiler->getErrorsForRule(rule, "# ");
-            if (!err.empty()) compiler->output << err << endl;
+            if (!err.empty()) compiler->output << err << "\n";
 
             current_rule_label = rl;
         }
         
 //        string err = rule->getCompilerMessage();
-//        if (!err.empty()) compiler->output << "# " << err << endl;
+//        if (!err.empty()) compiler->output << "# " << err << "\n";
 
         string  command_line = RoutingRuleToString(rule);
         compiler->output << command_line;
@@ -211,7 +211,7 @@ bool RoutingCompiler_ipt::PrintRule::processNext()
                     
         if (rl!=current_rule_label)
         {
-            compiler->output << "# Some sub rules belonging to an ECMP (Equal Cost Multi Path) rule were placed in the ECMP section below." << endl;
+            compiler->output << "# Some sub rules belonging to an ECMP (Equal Cost Multi Path) rule were placed in the ECMP section below." << "\n";
             current_rule_label=rl;
         }
         
@@ -303,10 +303,10 @@ string RoutingCompiler_ipt::PrintRule::RoutingRuleToString(RoutingRule *rule)
         } else
         {
             command_line << "route_command_error "
-                         << "\"" << rule->getLabel() << "\"" << endl;;
+                         << "\"" << rule->getLabel() << "\"" << "\n";;
         }
     }
-    command_line << endl;
+    command_line << "\n";
 
     return command_line.str();
 }

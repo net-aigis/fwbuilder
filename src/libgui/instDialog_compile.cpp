@@ -52,11 +52,14 @@
 #include <errno.h>
 #include <iostream>
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QTextCodec>
+#endif
 #include <QTimer>
 #include <QMessageBox>
 #include <QFile>
 #include <QDir>
+#include <QObject>
 #include <QtDebug>
 
 using namespace std;
@@ -107,7 +110,9 @@ bool instDialog::runCompiler(Firewall *fw)
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
     QTextCodec::setCodecForCStrings(QTextCodec::codecForName("Utf8"));
 #endif
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("Utf8"));
+#endif
 
     // Launch compiler in the background
     QString path = args.at(0);
@@ -173,7 +178,7 @@ QStringList instDialog::prepareArgForCompiler(Firewall *fw)
             this,"Firewall Builder",
             tr("Firewall platform is not specified in this object.\n\
 Can't compile firewall policy."),
-            tr("&Continue"), QString::null,QString::null,
+            tr("&Continue"), QString(),QString(),
             0, 1 );
         return args; // still empty list
     }
@@ -214,7 +219,7 @@ Can't compile firewall policy."),
     args.push_back(compiler.c_str());
 
     QString qs = fwopt->getStr("cmdline").c_str();
-    args += qs.split(" ", QString::SkipEmptyParts);
+    args += qs.split(" ", Qt::SkipEmptyParts);
 
     args.push_back("-v");
     args.push_back("-f");

@@ -36,8 +36,12 @@
 #include "ND_SNMPParametersPage.h"
 #include "FWWindow.h"
 
-#include <QDesktopWidget>
+#include <QGuiApplication>
+#include <QScreen>
 #include <QtDebug>
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+#include <QDesktopWidget>
+#endif
 
 using namespace std;
 //using namespace libfwbuilder;
@@ -61,7 +65,12 @@ SNMPNetworkDiscoveryWizard::SNMPNetworkDiscoveryWizard(QWidget *parent) : QWizar
     addPage(new ND_SelectLibraryPage(this));
     addPage(new ND_CreateObjectsPage(this));
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
+    QScreen *scr = (mw && mw->screen()) ? mw->screen() : QGuiApplication::primaryScreen();
+    QRect sg = scr ? scr->geometry() : QRect(0, 0, 1024, 768);
+#else
     QRect sg = QApplication::desktop()->screenGeometry(mw);
+#endif
     QSize screen_size = sg.size();
 
 #if defined(Q_OS_MACX)

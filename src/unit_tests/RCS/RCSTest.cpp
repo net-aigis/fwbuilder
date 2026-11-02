@@ -36,7 +36,7 @@
 #include <iostream>
 
 #include <QProcess>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QDebug>
 
 using namespace std;
@@ -68,9 +68,8 @@ void RCSTest::verifyRevisions()
     rlog.waitForFinished();
 
     QList<Revision> realrevs;
-    QRegExp revlock("revision\\s+([\\.\\d]+)(\\s+locked by: (\\w+);)?\\n");
-    revlock.setPatternSyntax(QRegExp::RegExp2);
-    QRegExp dateauth("date: (\\d\\d\\d\\d/\\d\\d/\\d\\d \\d\\d\\:\\d\\d\\:\\d\\d);\\s+author\\: (\\w+);\\s+state\\: (\\w+);(\\s+lines: \\+(\\d+) \\-(\\d+))?\\n");
+    QRegularExpression revlock("revision\\s+([\\.\\d]+)(\\s+locked by: (\\w+);)?\\n");
+    QRegularExpression dateauth("date: (\\d\\d\\d\\d/\\d\\d/\\d\\d \\d\\d\\:\\d\\d\\:\\d\\d);\\s+author\\: (\\w+);\\s+state\\: (\\w+);(\\s+lines: \\+(\\d+) \\-(\\d+))?\\n");
 
     QMap <QString, Revision> realrevsmap;
 
@@ -95,12 +94,12 @@ void RCSTest::verifyRevisions()
             comment.append(lines.at(i));
         Revision rev;
         rev.log = comment.join("");
-        revlock.indexIn(lines[0]);
-        rev.locked_by = revlock.capturedTexts()[3];
-        rev.rev = revlock.capturedTexts()[1];
-        dateauth.indexIn(lines[1]);
-        rev.date = dateauth.capturedTexts()[1].replace("/", "-");
-        rev.author = dateauth.capturedTexts()[2];
+        QRegularExpressionMatch revlock_m = revlock.match(lines[0]);
+        rev.locked_by = revlock_m.capturedTexts()[3];
+        rev.rev = revlock_m.capturedTexts()[1];
+        QRegularExpressionMatch dateauth_m = dateauth.match(lines[1]);
+        rev.date = dateauth_m.capturedTexts()[1].replace("/", "-");
+        rev.author = dateauth_m.capturedTexts()[2];
         rev.filename = test_file;
 
         realrevs.insert(0, rev);

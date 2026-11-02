@@ -39,6 +39,7 @@
 #include "interfacePropertiesObjectFactory.h"
 
 #include <QTextStream>
+#include <QIODevice>
 #include <QString>
 
 #include <algorithm>

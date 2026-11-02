@@ -55,8 +55,8 @@
 #include <qpushbutton.h>
 #include <qapplication.h>
 #include <QStackedWidget>
+#include <QRegularExpression>
 #include <qcursor.h>
-#include <qregexp.h>
 #include <QtDebug>
 
 #include <iostream>
@@ -141,12 +141,12 @@ void ActionsDialog::applyChanges()
 /* rule name for accounting may contain only alphanumeric characters
  * and no white spaces or spec. characters
  */
-        if (rn.contains(QRegExp("[^a-zA-Z0-9_]"))!=0)
+        if (rn.contains(QRegularExpression("[^a-zA-Z0-9_]"))!=0)
         {
             QMessageBox::information(
                 this,"Firewall Builder",
                 tr("Rule name for accounting is converted to the iptables\nchain name and therefore may not contain white space\nand special characters."),
-                tr("&Continue"), QString::null,QString::null,
+                tr("&Continue"), QString(),QString(),
                 0, 1 );
 
             return;

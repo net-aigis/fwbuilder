@@ -27,9 +27,10 @@
 
 #include "IPTImporter.h"
 
+#include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QtDebug>
 
 #include <ios>
@@ -84,8 +85,8 @@ void IPTImporter::run()
     string normalized_input_buffer;
     normalized_input_buffer.reserve(input_size);
 
-    QRegExp old_negation_short("(-[^- ])\\s!");
-    QRegExp old_negation_long("(--[^- ]+)\\s!");
+    QRegularExpression old_negation_short("(-[^- ])\\s!");
+    QRegularExpression old_negation_long("(--[^- ]+)\\s!");
 
     input.seekg (0, ios::beg);
     char buf[8192];
@@ -111,18 +112,20 @@ void IPTImporter::run()
             int match_length = 0;
             int old_pos = 0;
 
-            old_pos = old_negation_short.indexIn(str, pos);
+            QRegularExpressionMatch short_m = old_negation_short.match(str, pos);
+            old_pos = short_m.capturedStart();
             if (old_pos != -1)
             {
-                option = old_negation_short.cap(1);
-                match_length = old_negation_short.matchedLength();
+                option = short_m.captured(1);
+                match_length = short_m.capturedLength();
             } else
             {
-                old_pos = old_negation_long.indexIn(str, pos);
+                QRegularExpressionMatch long_m = old_negation_long.match(str, pos);
+                old_pos = long_m.capturedStart();
                 if (old_pos != -1)
                 {
-                    option = old_negation_long.cap(1);
-                    match_length = old_negation_long.matchedLength();
+                    option = long_m.captured(1);
+                    match_length = long_m.capturedLength();
                 }
             }
 

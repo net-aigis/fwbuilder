@@ -24,6 +24,7 @@
 */
 
 #include "config.h"
+#include <QObject>
 #include "global.h"
 #include "platforms.h"
 
@@ -42,7 +43,6 @@
 #include <qcombobox.h>
 #include <qradiobutton.h>
 #include <qlineedit.h>
-#include <qregexp.h>
 #include <qtabwidget.h>
 
 using namespace std;

@@ -559,12 +559,12 @@ string PolicyCompiler_junosacl::printAccessGroupCmd(ciscoACL *acl, bool neg)
         str << "}\n";
         /*
 
-        str << "interface " << acl->getInterface()->getName() << endl;
+        str << "interface " << acl->getInterface()->getName() << "\n";
         if (neg) str << "  no";
         str << "  " << addr_family_prefix << " ";
         str << getAccessGroupCommandForAddressFamily(ipv6);
-        str << " " << acl->workName() << " " << dir << endl;
-        str << "exit" << endl;
+        str << " " << acl->workName() << " " << dir << "\n";
+        str << "exit" << "\n";
         */
     }
     return str.str();
@@ -572,16 +572,16 @@ string PolicyCompiler_junosacl::printAccessGroupCmd(ciscoACL *acl, bool neg)
 
 void PolicyCompiler_junosacl::epilog()
 {
-    output << endl;
+    output << "\n";
 
-    // output << "Epilog, acls size: " << acls.size() << endl;
+    // output << "Epilog, acls size: " << acls.size() << "\n";
 
     for (map<string,ciscoACL*>::iterator i=acls.begin(); i!=acls.end(); ++i) 
     {
         ciscoACL *acl=(*i).second;
         if (acl->size()!=0) output << printAccessGroupCmd(acl, false);
     }
-    output << endl;
+    output << "\n";
 
     if ( fw->getOptionsObject()->getBool("iosacl_regroup_commands") ) 
     {
@@ -619,7 +619,7 @@ string PolicyCompiler_junosacl::printClearCommands()
         for (map<string,ciscoACL*>::iterator i=acls.begin(); i!=acls.end(); ++i)
         {
             ciscoACL *acl = (*i).second;
-            output << clearACLCmd << " " << acl->workName() << endl;
+            output << clearACLCmd << " " << acl->workName() << "\n";
         }
     }
 

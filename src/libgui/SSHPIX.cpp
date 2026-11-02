@@ -1,3 +1,4 @@
+#include <QRegularExpression>
 /*
 
                           Firewall Builder
@@ -33,7 +34,6 @@
 
 #include <qobject.h>
 #include <qtimer.h>
-#include <qregexp.h>
 #include <qmessagebox.h>
 #include <qapplication.h>
 #include <qeventloop.h>
@@ -70,7 +70,7 @@ void SSHPIX::stateMachine()
     switch (state)
     {
     case ENABLE:
-        if ( cmpPrompt(stdoutBuffer, QRegExp(enable_prompt)) )
+        if ( cmpPrompt(stdoutBuffer, QRegularExpression(enable_prompt)) )
         {
             if (pre_config_commands.size()>0)
             {
@@ -107,7 +107,7 @@ void SSHPIX::stateMachine()
         break;
 
     case EXECUTING_COMMAND:
-        if ( cmpPrompt(stdoutBuffer, QRegExp(enable_prompt)) )
+        if ( cmpPrompt(stdoutBuffer, QRegularExpression(enable_prompt)) )
         {
             //QCoreApplication::exit();
             state = COMMAND_DONE;
@@ -118,14 +118,14 @@ void SSHPIX::stateMachine()
         break;
 
     case GET_ACLS:
-        if ( cmpPrompt(stdoutBuffer,QRegExp(enable_prompt)) )
+        if ( cmpPrompt(stdoutBuffer,QRegularExpression(enable_prompt)) )
         {
             QTimer::singleShot( 0, this, SLOT(getACLs()) );
         }
         break;
 
     case GET_OG:
-        if ( cmpPrompt(stdoutBuffer,QRegExp(enable_prompt)) )
+        if ( cmpPrompt(stdoutBuffer,QRegularExpression(enable_prompt)) )
         {
             QTimer::singleShot( 0, this, SLOT(getObjectGroups()) );
         }
@@ -133,14 +133,14 @@ void SSHPIX::stateMachine()
 
 
     case CLEAR_ACLS:
-        if ( cmpPrompt(stdoutBuffer,QRegExp(enable_prompt)) )
+        if ( cmpPrompt(stdoutBuffer,QRegularExpression(enable_prompt)) )
         {
             QTimer::singleShot( 0, this, SLOT(clearACLs()) );
         }
         break;
 
     case CLEAR_OG:
-        if ( cmpPrompt(stdoutBuffer,QRegExp(enable_prompt)) )
+        if ( cmpPrompt(stdoutBuffer,QRegularExpression(enable_prompt)) )
         {
             QTimer::singleShot( 0, this, SLOT(clearObjectGroups()) );
         }
@@ -188,7 +188,7 @@ void SSHPIX::PIXbackup()
     {
         ofstream ofs(backupFile.toLatin1().constData());
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-        ofs << cfg.toAscii().constData();
+        ofs << cfg.toLatin1().constData();
 #else
         ofs << cfg.toLatin1().constData();
 #endif
@@ -256,7 +256,7 @@ void SSHPIX::clearACLs()
         {
             if (fwbdebug)
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-                qDebug("clear access-list %s",ca.toAscii().constData());
+                qDebug("clear access-list %s",ca.toLatin1().constData());
 #else
                 qDebug("clear access-list %s",ca.toLatin1().constData());
 #endif
@@ -327,7 +327,7 @@ void SSHPIX::clearObjectGroups()
         {
             if (fwbdebug)
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-                qDebug("clear object-group %s",ca.toAscii().constData());
+                qDebug("clear object-group %s",ca.toLatin1().constData());
 #else
                 qDebug("clear object-group %s",ca.toLatin1().constData());
 #endif

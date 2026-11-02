@@ -1396,16 +1396,16 @@ string NATCompiler_pix::printClearCommands()
     {
         output << Resources::platform_res[platform]->getResourceStr(
             string("/FWBuilderResources/Target/options/") + 
-            "version_" + version + "/pix_commands/clear_xlate") << endl;
+            "version_" + version + "/pix_commands/clear_xlate") << "\n";
         output << Resources::platform_res[platform]->getResourceStr(
             string("/FWBuilderResources/Target/options/") + 
-            "version_" + version + "/pix_commands/clear_static") << endl;
+            "version_" + version + "/pix_commands/clear_static") << "\n";
         output << Resources::platform_res[platform]->getResourceStr(
             string("/FWBuilderResources/Target/options/") + 
-            "version_" + version + "/pix_commands/clear_global") << endl;
+            "version_" + version + "/pix_commands/clear_global") << "\n";
         output << Resources::platform_res[platform]->getResourceStr(
             string("/FWBuilderResources/Target/options/") + 
-            "version_" + version + "/pix_commands/clear_nat") << endl;
+            "version_" + version + "/pix_commands/clear_nat") << "\n";
     }
 
     return output.str();

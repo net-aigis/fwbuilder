@@ -129,7 +129,7 @@ string NATCompiler_ipt::PrintRule::_createChain(const string &chain)
             opt_wait = "";
 
         string ipt_cmd = (ipt_comp->ipv6) ? "$IP6TABLES " : "$IPTABLES ";
-	res << ipt_cmd << opt_wait << "-t nat -N " << chain << endl;
+	res << ipt_cmd << opt_wait << "-t nat -N " << chain << "\n";
 	(*(ipt_comp->minus_n_commands))[chain] = true;
     }
     return res.str();
@@ -168,31 +168,31 @@ string NATCompiler_ipt::PrintRule::_printRuleLabel(NATRule *rule)
     {
         if (!compiler->inSingleRuleCompileMode() && !nocomm)
         {
-            res << "# " << endl;
-            res << "# Rule " << rl << endl;
-            res << "# " << endl;
+            res << "# " << "\n";
+            res << "# Rule " << rl << "\n";
+            res << "# " << "\n";
         }
-        res << "echo " << _quote(string("Rule ")+rl) << endl;
-        res << "# " << endl;
+        res << "echo " << _quote(string("Rule ")+rl) << "\n";
+        res << "# " << "\n";
 
 /* do not put comment in the script if it is intended for linksys */
         if (!nocomm || compiler->inSingleRuleCompileMode())
         {
-            QStringList comm = QString(rule->getComment().c_str()).split("\n", QString::SkipEmptyParts);
+            QStringList comm = QString(rule->getComment().c_str()).split("\n", Qt::SkipEmptyParts);
             foreach(QString line, comm)
             {
-                res << "# " << line.toStdString() << endl;
+                res << "# " << line.toStdString() << "\n";
             }
-            //res << "# " << endl;
+            //res << "# " << "\n";
 
             string err = compiler->getErrorsForRule(rule, "# ");
-            if (!err.empty()) res << err << endl;
+            if (!err.empty()) res << err << "\n";
         }
         current_rule_label=rl;
     }
 
 //    string err = rule->getCompilerMessage();
-//    if (!err.empty()) res << "# " << err << endl;
+//    if (!err.empty()) res << "# " << err << "\n";
 
     return res.str();
 }
@@ -825,7 +825,7 @@ bool NATCompiler_ipt::PrintRule::processNext()
 
     cmdout << _endRuleLine();
 
-//    cmdout  << endl;
+//    cmdout  << "\n";
 
     compiler->output
         << dynamic_cast<OSConfigurator_linux24*>(compiler->osconfigurator)->

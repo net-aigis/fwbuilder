@@ -62,6 +62,7 @@
 #include <qtimer.h>
 #include <QDateTime>
 #include <QUndoStack>
+#include <QObject>
 #include <QtDebug>
 
 #include <iostream>
@@ -157,15 +158,15 @@ void FirewallDialog::updateTimeStamps()
     time_t t;
             
     t = obj->getInt("lastModified");
-    dt.setTime_t(t);
+    dt.setSecsSinceEpoch(t);
     m_dialog->last_modified->setText((t)? dt.toString():"-");
             
     t = obj->getInt("lastCompiled");
-    dt.setTime_t(t);
+    dt.setSecsSinceEpoch(t);
     m_dialog->last_compiled->setText((t)? dt.toString():"-");
             
     t = obj->getInt("lastInstalled");
-    dt.setTime_t(t);
+    dt.setSecsSinceEpoch(t);
     m_dialog->last_installed->setText((t)? dt.toString():"-");
 }
 
@@ -248,7 +249,7 @@ void FirewallDialog::validate(bool *res)
             QMessageBox::critical(
                 this,"Firewall Builder",
                 tr("Character \"/\" is not allowed in firewall object name"),
-                tr("&Continue"), QString::null,QString::null,
+                tr("&Continue"), QString(),QString(),
                 0, 1 );
             blockSignals(false);
         }
@@ -295,7 +296,7 @@ void FirewallDialog::applyChanges()
         blockSignals(true);
         autorename_chidren = (QMessageBox::warning(
                                   this,"Firewall Builder", dialog_txt,
-                                  tr("&Yes"), tr("&No"), QString::null,
+                                  tr("&Yes"), tr("&No"), QString(),
                                   0, 1 )==0 );
         blockSignals(false);
     }
@@ -420,7 +421,7 @@ void FirewallDialog::openFWDialog()
         QMessageBox::critical(
             this,"Firewall Builder",
             tr("FWBuilder API error: %1").arg(ex.toString().c_str()),
-            tr("&Continue"), QString::null,QString::null,
+            tr("&Continue"), QString(),QString(),
             0, 1 );
         return;
     }
@@ -443,7 +444,7 @@ void FirewallDialog::openOSDialog()
         QMessageBox::critical(
             this,"Firewall Builder",
             tr("FWBuilder API error: %1").arg(ex.toString().c_str()),
-            tr("&Continue"), QString::null,QString::null,
+            tr("&Continue"), QString(),QString(),
             0, 1 );
         return;
     }

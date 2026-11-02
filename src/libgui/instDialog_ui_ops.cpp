@@ -1,3 +1,4 @@
+#include <QIODevice>
 /*
 
                           Firewall Builder
@@ -60,7 +61,6 @@
 #include <qgroupbox.h>
 #include <qcolor.h>
 #include <qtablewidget.h>
-#include <qtextcodec.h>
 #include <qfileinfo.h>
 #include <qtextstream.h>
 #include <qpixmapcache.h>
@@ -73,6 +73,8 @@
 #include <QTextBlockFormat>
 #include <QBrush>
 #include <QTextFormat>
+#include <QObject>
+#include <QRegularExpression>
 #include <QtDebug>
 #include <QTime>
 
@@ -133,7 +135,7 @@ QTreeWidgetItem* instDialog::createTreeItem(QTreeWidgetItem* parent,
 
     QString icn_filename = (":/Icons/" + fw->getTypeName() + "/icon").c_str();
     QPixmap pm;
-    if ( ! QPixmapCache::find(icn_filename, pm))
+    if ( ! QPixmapCache::find(icn_filename, &pm))
     {
         pm.load(icn_filename);
         QPixmapCache::insert(icn_filename, pm);
@@ -263,7 +265,7 @@ void instDialog::setFlags(QTreeWidgetItem* item)
                     // Standby
                     item->setText(0, QString("%1 (standby)").arg(txt));
                     item->setCheckState(INSTALL_CHECKBOX_COLUMN, Qt::Unchecked);
-                    item->setFlags(0);
+                    item->setFlags(Qt::ItemFlags());
                 }
             }
         }
@@ -293,13 +295,13 @@ void instDialog::setFlags(QTreeWidgetItem* item)
         }
     }
 
-    dt.setTime_t(lm);
+    dt.setSecsSinceEpoch(lm);
     item->setText(LAST_MODIFIED_COLUMN, (lm)?dt.toString():QString("Never"));
 
-    dt.setTime_t(lc);
+    dt.setSecsSinceEpoch(lc);
     item->setText(LAST_COMPILED_COLUMN, (lc)?dt.toString():QString("Never"));
 
-    dt.setTime_t(li);
+    dt.setSecsSinceEpoch(li);
     item->setText(LAST_INSTALLED_COLUMN, (li)?dt.toString():QString("Never"));
 }
 
@@ -755,7 +757,7 @@ void instDialog::saveLog()
     if (!s.endsWith(".txt")) s += ".txt";
     if (fwbdebug)
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-        qDebug( "Saving log to file %s", s.toAscii().constData() );
+        qDebug( "Saving log to file %s", s.toLatin1().constData() );
 #else
         qDebug( "Saving log to file %s", s.toLatin1().constData() );
 #endif
@@ -781,10 +783,10 @@ void instDialog::addToLog(const QString &buf)
     {
         QTextCharFormat format = normal_format;
 
-        list<QRegExp>::const_iterator it;
+        list<QRegularExpression>::const_iterator it;
         for (it=error_re.begin(); it!=error_re.end(); ++it)
         {
-            if ((*it).indexIn(line) != -1)
+            if ((*it).match(line).hasMatch())
             {
                 format = error_format;
                 break;
@@ -793,7 +795,7 @@ void instDialog::addToLog(const QString &buf)
 
         for (it=warning_re.begin(); it!=warning_re.end(); ++it)
         {
-            if ((*it).indexIn(line) != -1)
+            if ((*it).match(line).hasMatch())
             {
                 format = warning_format;
                 break;
@@ -834,7 +836,7 @@ void instDialog::interpretLogLine(const QString &line)
 {
     if (fwbdebug)
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-        qDebug("instDialog::interpretLogLine %s", line.toAscii().constData() );
+        qDebug("instDialog::interpretLogLine %s", line.toLatin1().constData() );
 #else
         qDebug("instDialog::interpretLogLine %s", line.toLatin1().constData() );
 #endif
@@ -846,7 +848,7 @@ void instDialog::interpretLogLine(const QString &line)
         for (int i=0; i<words.size(); ++i)
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
             qDebug("instDialog::interpretLogLine words[%d]='%s'",
-                   i, words[i].toAscii().constData());
+                   i, words[i].toLatin1().constData());
 #else
             qDebug("instDialog::interpretLogLine words[%d]='%s'",
                    i, words[i].toLatin1().constData());
@@ -1279,7 +1281,7 @@ void instDialog::readInstallerOptionsFromFirewallObject(Firewall *fw)
             getResourceStr("/FWBuilderResources/Target/diff").c_str();
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
         cnf.diff_pgm = getPathToBinary(
-            cnf.diff_pgm.toAscii().constData()).c_str();
+            cnf.diff_pgm.toLatin1().constData()).c_str();
 #else
         cnf.diff_pgm = getPathToBinary(
             cnf.diff_pgm.toLatin1().constData()).c_str();
@@ -1302,9 +1304,9 @@ void instDialog::readInstallerOptionsFromFirewallObject(Firewall *fw)
             qDebug("user_can_change_install_dir=%d", uccid);
             qDebug("firewall_dir='%s'", fwopt->getStr("firewall_dir").c_str());
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-            qDebug("management address: %s", cnf.maddr.toAscii().constData());
-            qDebug("cnf.fwdir='%s'", cnf.fwdir.toAscii().constData());
-            qDebug("activationCmd='%s'", cnf.activationCmd.toAscii().constData());
+            qDebug("management address: %s", cnf.maddr.toLatin1().constData());
+            qDebug("cnf.fwdir='%s'", cnf.fwdir.toLatin1().constData());
+            qDebug("activationCmd='%s'", cnf.activationCmd.toLatin1().constData());
 #else
             qDebug("management address: %s", cnf.maddr.toLatin1().constData());
             qDebug("cnf.fwdir='%s'", cnf.fwdir.toLatin1().constData());
@@ -1449,7 +1451,7 @@ void instDialog::logItemClicked(QUrl data)
     if (parts.size()<3)
     {
         if(fwbdebug)
-            cout << "Wrong error message clicked" << endl;
+            cout << "Wrong error message clicked" << std::endl;
         return;
     }
     emit activateRule(project, parts[0], parts[1], parts[2].toInt());

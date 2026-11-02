@@ -80,7 +80,7 @@ bool PolicyCompiler_nxosacl::ClearACLs::processNext()
 
     if ( compiler->fw->getOptionsObject()->getBool("nxosacl_acl_basic") )
     {
-        compiler->output << clearACLcmd << endl;
+        compiler->output << clearACLcmd << "\n";
     }
 
     if (compiler->fw->getOptionsObject()->getBool("nxosacl_acl_substitution"))
@@ -89,9 +89,9 @@ bool PolicyCompiler_nxosacl::ClearACLs::processNext()
              i!=nxosacl_comp->acls.end(); ++i) 
         {
             ciscoACL *acl=(*i).second;
-            compiler->output << clearACLcmd << " " << acl->workName() << endl;
+            compiler->output << clearACLcmd << " " << acl->workName() << "\n";
         }
-        compiler->output << endl;
+        compiler->output << "\n";
     }
 
     if ( !compiler->fw->getOptionsObject()->getBool("nxosacl_acl_no_clear") )
@@ -105,9 +105,9 @@ bool PolicyCompiler_nxosacl::ClearACLs::processNext()
         string clearSSHcmd = Resources::platform_res[platform]->getResourceStr(
             string("/FWBuilderResources/Target/options/")+
             "version_"+vers+"/nxosacl_commands/clear_ssh");
-        //compiler->output << clearICMPcmd    << endl;
-        //compiler->output << clearTelnetcmd  << endl;
-        //compiler->output << clearSSHcmd     << endl;
+        //compiler->output << clearICMPcmd    << "\n";
+        //compiler->output << clearTelnetcmd  << "\n";
+        //compiler->output << clearSSHcmd     << "\n";
     }
 
     return true;
@@ -151,12 +151,12 @@ bool PolicyCompiler_nxosacl::PrintCompleteACLs::processNext()
 
 //        if (!nxosacl_comp->ipv6) compiler->output << "extended ";
 
-        compiler->output<< acl->workName() << endl;
+        compiler->output<< acl->workName() << "\n";
         std::for_each(tmp_queue.begin(), tmp_queue.end(),
                       printRulesForACL(nxosacl_comp,
                                        this, acl, &(compiler->output)));
-        compiler->output << "exit" << endl;
-        compiler->output << endl;
+        compiler->output << "exit" << "\n";
+        compiler->output << "\n";
     }
 
     return true;
@@ -524,7 +524,7 @@ string PolicyCompiler_nxosacl::PrintRule::_printAddr(Address  *o)
                  << o->getName()
                  << " (" << o->getTypeName() << ") "
                  << " has no netmask"
-                 << endl;
+                 << std::endl;
             srcmask = InetAddr(InetAddr::getAllOnes(srcaddr->addressFamily()));
         }
 

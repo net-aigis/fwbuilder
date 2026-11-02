@@ -300,7 +300,7 @@ void CompilerDriver::chDir()
         chdir(wdir.c_str())
 #endif
     ) {
-	cerr << "Can't change to: " << wdir << endl;
+	cerr << "Can't change to: " << wdir << std::endl;
 	exit(1);
     }
 }
@@ -470,7 +470,7 @@ void CompilerDriver::commonChecks2(Cluster *cluster, Firewall *fw)
   if (!iface->isDyn())
   {
   QString errstr;
-  errstr.sprintf(_("Wildcard interface '%s' must be dynamic."),
+  errstr.asprintf(_("Wildcard interface '%s' must be dynamic."),
   iface->getName().c_str() );
   throw FWException(errstr);
   }
@@ -664,7 +664,7 @@ Firewall* CompilerDriver::locateObject()
         obj = Firewall::cast(
             objdb->findInIndex(
                 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-                objdb->getIntId(fwobjectname.toAscii().constData())));
+                objdb->getIntId(fwobjectname.toLatin1().constData())));
                 #else
                 objdb->getIntId(fwobjectname.toLatin1().constData())));
                 #endif
@@ -993,16 +993,16 @@ void CompilerDriver::populateClusterElements(Cluster *cluster, Firewall *fw)
     if (cluster==NULL) return;
 
 #ifdef DEBUG_CLUSTER_INTERFACES
-    cerr << "CompilerDriver::populateClusterElements " << endl;
+    cerr << "CompilerDriver::populateClusterElements " << std::endl;
 
-    cerr << cluster->getPath(false, true) << endl;
+    cerr << cluster->getPath(false, true) << std::endl;
     list<FWObject*> cl_interfaces = cluster->getByTypeDeep(Interface::TYPENAME);
-    cerr << cl_interfaces.size() << " interface" << endl;
+    cerr << cl_interfaces.size() << " interface" << std::endl;
     cluster->dump(false, true);
 
-    cerr << fw->getPath(false, true) << endl;
+    cerr << fw->getPath(false, true) << std::endl;
     list<FWObject*> fw_interfaces = fw->getByTypeDeep(Interface::TYPENAME);
-    cerr << fw_interfaces.size() << " interface" << endl;
+    cerr << fw_interfaces.size() << " interface" << std::endl;
     fw->dump(false, true);
 #endif
 
@@ -1261,7 +1261,7 @@ QString CompilerDriver::formSingleRuleCompileOutput(const QString &generated_cod
     // compilers we assemble here may consist of a bunch of
     // empty lines separated by LF. Need to account for that.
     QString res = generated_code;
-    QString res2 = res.split("\n", QString::SkipEmptyParts).join("").replace(" ", "");
+    QString res2 = res.split("\n", Qt::SkipEmptyParts).join("").replace(" ", "");
     if (res2.isEmpty()) res = all_errors.join("\n");
     return res;
 }

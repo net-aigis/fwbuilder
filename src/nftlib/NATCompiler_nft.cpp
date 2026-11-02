@@ -2609,7 +2609,7 @@ void NATCompiler_nft::epilog()
         getCompiledScriptLength()>0 &&
         ! inSingleRuleCompileMode())
     {
-        output << "#" << endl;
+        output << "#" << "\n";
     }
 }
 

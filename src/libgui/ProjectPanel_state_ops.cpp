@@ -107,7 +107,7 @@ void ProjectPanel::loadState(bool)
     if (!mdiWindow->isMaximized() && mdiWindow)
     {
         if (fwbdebug) qDebug("ProjectPanel::loadState  show normal");
-        setWindowState(0);
+        setWindowState(Qt::WindowNoState);
         int x = st->getInt("Window/"+filename+"/x");
         int y = st->getInt("Window/"+filename+"/y");
         int width = st->getInt("Window/"+filename+"/width");
@@ -316,8 +316,8 @@ void ProjectPanel::loadLastOpenedLib()
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
             qDebug("ProjectPanel::loadLastOpenedLib(): filename=%s "
                    "opening lib id=%s",
-                   filename.toAscii().constData(),
-                   sid.toAscii().constData());
+                   filename.toLatin1().constData(),
+                   sid.toLatin1().constData());
 #else
             qDebug("ProjectPanel::loadLastOpenedLib(): filename=%s "
                    "opening lib id=%s",

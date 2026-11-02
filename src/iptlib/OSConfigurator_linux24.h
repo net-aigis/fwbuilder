@@ -32,8 +32,9 @@
 
 #include "OSData_ipt.h"
  
+#include <QStringList>
+
 class QString;
-class QStringList;
 
 namespace libfwbuilder {
     class FWObject;

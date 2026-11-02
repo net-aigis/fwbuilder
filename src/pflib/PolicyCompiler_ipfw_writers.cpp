@@ -562,7 +562,7 @@ bool PolicyCompiler_ipfw::PrintRule::processNext()
             compiler->output << "keep-state ";
         }
 
-        compiler->output << endl;
+        compiler->output << "\n";
     }
 
     compiler->output <<  quote << "$IPFW" << quote
@@ -607,8 +607,8 @@ bool PolicyCompiler_ipfw::PrintRule::processNext()
 	compiler->output << "keep-state ";
     }
 
-    compiler->output << " || exit 1" << endl;
-    //compiler->output << endl;
+    compiler->output << " || exit 1" << "\n";
+    //compiler->output << "\n";
 
     return true;
 }
@@ -620,7 +620,7 @@ string PolicyCompiler_ipfw::defaultRules()
     ostringstream res;
 
     res << quote << "$IPFW" << quote
-        << " set disable 1" << endl;
+        << " set disable 1" << "\n";
 
     /* checking if option add_check_state_rule is absent to
      * provide for backward compatibility: before 2.1.6 build 131
@@ -631,10 +631,10 @@ string PolicyCompiler_ipfw::defaultRules()
         options->getBool("add_check_state_rule"))
     {
         res << quote << "$IPFW" << quote
-            << " add 1 set 1 check-state ip from any to any"  << endl;
+            << " add 1 set 1 check-state ip from any to any"  << "\n";
     }
 
-    res << endl;
+    res << "\n";
 
     return res.str();
 }

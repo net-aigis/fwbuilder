@@ -72,6 +72,7 @@
 #include <QFileInfo>
 #include <QFile>
 #include <QTextStream>
+#include <QIODevice>
 #include <QtDebug>
 
 
@@ -106,7 +107,7 @@ QString CompilerDriver_pix::assembleManifest(Cluster*, Firewall*, bool)
     QTextStream script(&script_buffer, QIODevice::WriteOnly);
 
     script << "!" << manifestMarker()
-           << "* " << this->escapeFileName(file_names[FW_FILE]) << endl;
+           << "* " << this->escapeFileName(file_names[FW_FILE]) << "\n";
 
     return script_buffer;
 }

@@ -1,3 +1,4 @@
+#include <QIODevice>
 /*
 
                           Firewall Builder
@@ -26,6 +27,7 @@
 
 #include "config.h"
 #include "global.h"
+#include <QRegularExpression>
 #include "utils.h"
 #include "events.h"
 
@@ -35,7 +37,6 @@
 #include <qcombobox.h>
 #include <qspinbox.h>
 #include <qtimer.h>
-#include <qregexp.h>
 #include <qlabel.h>
 #include <qtextbrowser.h>
 #include <qtextedit.h>
@@ -51,6 +52,7 @@
 #include <qhostinfo.h>
 #include <qgroupbox.h>
 #include <qmessagebox.h>
+#include <QObject>
 #include <QtDebug>
 
 #include "DiscoveryDruid.h"
@@ -1036,15 +1038,15 @@ void DiscoveryDruid::typedCustomNS()
 
 bool DiscoveryDruid::isInetAddr(const QString s)
 {
-    QRegExp r=QRegExp("^(\\d|\\.)+$",Qt::CaseInsensitive); //non wildcard
-    return r.exactMatch(s);
+    QRegularExpression r("^(\\d|\\.)+$", QRegularExpression::CaseInsensitiveOption); //non wildcard
+    return QRegularExpression(QRegularExpression::anchoredPattern(r.pattern()), r.patternOptions()).match(s).hasMatch();
 }
 
 QString DiscoveryDruid::testInetAddr(const QString s)
 {
     QString res;
-    QRegExp r=QRegExp("^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$",Qt::CaseInsensitive); //non wildcard
-    if (r.exactMatch(s))
+    QRegularExpression r("^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$",QRegularExpression::CaseInsensitiveOption); //non wildcard
+    if (QRegularExpression(QRegularExpression::anchoredPattern(r.pattern()), r.patternOptions()).match(s).hasMatch())
     {
         try
         {
@@ -1502,9 +1504,9 @@ void DiscoveryDruid::saveScanLog()
 
         QTextStream strm(&f);
         QString txt = m_dialog->discoverylog->toPlainText();
-        strm << txt << endl;
+        strm << txt << "\n";
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-        if (fwbdebug) qDebug("%s",txt.toAscii().constData());
+        if (fwbdebug) qDebug("%s",txt.toLatin1().constData());
 #else
         if (fwbdebug) qDebug("%s",txt.toLatin1().constData());
 #endif
@@ -1986,10 +1988,9 @@ void DiscoveryDruid::changedSeedHost()
         { // seems to be an IP Address
             m_dialog->DNSprogress->hide();
             timer->stop();
-            QRegExp r = QRegExp(
-                "^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$",
-                Qt::CaseInsensitive); //non wildcard
-            if (r.exactMatch(HostName))
+            QRegularExpression r("^\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$",
+                QRegularExpression::CaseInsensitiveOption); //non wildcard
+            if (QRegularExpression(QRegularExpression::anchoredPattern(r.pattern()), r.patternOptions()).match(HostName).hasMatch())
             {
                 try
                 {
@@ -2116,7 +2117,7 @@ int DiscoveryDruid::monitorOperation()
 
         /*if (fwbdebug) qDebug("monitorOperation  appending the following buf: (1)");
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-        if (fwbdebug) qDebug(buf.toAscii().constData());
+        if (fwbdebug) qDebug(buf.toLatin1().constData());
 #else
         if (fwbdebug) qDebug(buf.toLatin1().constData());
 #endif
@@ -2152,7 +2153,7 @@ int DiscoveryDruid::monitorOperation()
 
         /*if (fwbdebug) qDebug("monitorOperation  appending the following buf: (2)");
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-        if (fwbdebug) qDebug(buf.toAscii().constData());
+        if (fwbdebug) qDebug(buf.toLatin1().constData());
 #else
         if (fwbdebug) qDebug(buf.toLatin1().constData());
 #endif
@@ -2346,7 +2347,7 @@ FWObject* DiscoveryDruid::addInterface(FWObject *parent, InterfaceData *in,
                     ipv4->setNetmask(*netm);
                 } catch (FWException &ex)
                 {
-                    cerr << "FWException: " << ex.toString() << endl;
+                    cerr << "FWException: " << ex.toString() << std::endl;
                 }
             }
 
@@ -2364,7 +2365,7 @@ FWObject* DiscoveryDruid::addInterface(FWObject *parent, InterfaceData *in,
                     ipv6->setNetmask(*netm);
                 } catch (FWException &ex)
                 {
-                    cerr << "FWException: " << ex.toString() << endl;
+                    cerr << "FWException: " << ex.toString() << std::endl;
                 }
             }
         }
@@ -2769,7 +2770,7 @@ void HostsFileImport::run()
         try
         {
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-            hf->parse( file_name.toAscii().constData() );
+            hf->parse( file_name.toLatin1().constData() );
 #else
             hf->parse( file_name.toLatin1().constData() );
 #endif
@@ -2777,7 +2778,7 @@ void HostsFileImport::run()
         {
             last_error = ex.toString().c_str();
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-            *Log << "Exception: " << last_error.toAscii().constData() << "\n";
+            *Log << "Exception: " << last_error.toLatin1().constData() << "\n";
 #else
             *Log << "Exception: " << last_error.toLatin1().constData() << "\n";
 #endif

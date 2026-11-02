@@ -632,14 +632,14 @@ string PolicyCompiler_pix::printAccessGroupCmd(ciscoACL *acl)
 
 void PolicyCompiler_pix::epilog()
 {
-    output << endl;
-    if (resetinbound) output << "service resetinbound" << endl;
+    output << "\n";
+    if (resetinbound) output << "service resetinbound" << "\n";
 
-    output << endl;
+    output << "\n";
     if (fw->getStr("platform")=="fwsm" && fw->getOptionsObject()->getBool("pix_use_manual_commit"))
     {
-        output << "access-list commit" << endl;
-        output << endl;
+        output << "access-list commit" << "\n";
+        output << "\n";
     }
 
     for (map<string,ciscoACL*>::iterator i=acls.begin(); i!=acls.end(); ++i) 
@@ -647,7 +647,7 @@ void PolicyCompiler_pix::epilog()
         ciscoACL *acl=(*i).second;
         if (acl->size()!=0) output << printAccessGroupCmd(acl);
     }
-    output << endl;
+    output << "\n";
 
     if ( fw->getOptionsObject()->getBool("pix_regroup_commands")) 
     {
@@ -681,8 +681,8 @@ string PolicyCompiler_pix::printClearCommands()
 
     if ( fw->getOptionsObject()->getBool("pix_acl_basic") )
     {
-        output << clearACLcmd << endl;
-        //output << clearOGcmd  << endl;
+        output << clearACLcmd << "\n";
+        //output << clearOGcmd  << "\n";
     }
 
     if (fw->getOptionsObject()->getBool("pix_acl_substitution"))
@@ -691,15 +691,15 @@ string PolicyCompiler_pix::printClearCommands()
              i!=acls.end(); ++i) 
         {
             ciscoACL *acl = (*i).second;
-            output << clearACLcmd << " " << acl->workName() << endl;
+            output << clearACLcmd << " " << acl->workName() << "\n";
         }
-        //output << clearOGcmd << endl;
+        //output << clearOGcmd << "\n";
     }
 
     if ( !fw->getOptionsObject()->getBool("pix_acl_no_clear") )
     {
-        output << clearICMPcmd    << endl;
-        output << clearTelnetcmd  << endl;
+        output << clearICMPcmd    << "\n";
+        output << clearTelnetcmd  << "\n";
     }
 
     // see #2322 If this is FWSM and if manual commit mode is used, we
@@ -708,7 +708,7 @@ string PolicyCompiler_pix::printClearCommands()
     if (fw->getStr("platform")=="fwsm" && 
         fw->getOptionsObject()->getBool("pix_use_manual_commit") )
     {
-        output << "access-list commit" << endl;
+        output << "access-list commit" << "\n";
     }
 
     return output.str();
@@ -725,14 +725,14 @@ string PolicyCompiler_pix::printPreambleCommands()
 
     ostringstream output;
 
-    output << "!################"  << endl;
+    output << "!################"  << "\n";
 
     if (platform=="fwsm")
     {
         if (fw->getOptionsObject()->getBool("pix_use_manual_commit") )
-            output << "access-list mode manual" << endl;
+            output << "access-list mode manual" << "\n";
         else
-            output << "access-list mode auto" << endl;
+            output << "access-list mode auto" << "\n";
     }
 
     if ( fw->getOptionsObject()->getBool("pix_acl_substitution") )
@@ -792,29 +792,29 @@ string PolicyCompiler_pix::printPreambleCommands()
             string("/FWBuilderResources/Target/options/")+
             "version_"+version+"/pix_commands/clear_acl");
 
-        output << endl;
+        output << "\n";
 
-        output << clearACLcmd << " " << temp_acl << endl;
+        output << clearACLcmd << " " << temp_acl << "\n";
 
         if (fw->getStr("platform")=="fwsm" && 
             fw->getOptionsObject()->getBool("pix_use_manual_commit") )
         {
-            output << "access-list commit" << endl;
+            output << "access-list commit" << "\n";
         }
 
         output << "access-list " << temp_acl
                << " permit ip "
                << addr << " " << netmask
                << " any "
-               << endl;
+               << "\n";
         output << "access-list " << temp_acl
                << " deny ip any any "
-               << endl;
+               << "\n";
         if (platform=="fwsm" &&
             fw->getOptionsObject()->getBool("pix_use_manual_commit") )
-            output << "access-list commit" << endl;
+            output << "access-list commit" << "\n";
 
-        output << endl;
+        output << "\n";
 
         // see #2347  attach temporary acl to all interfaces
 
@@ -829,10 +829,10 @@ string PolicyCompiler_pix::printPreambleCommands()
                    << temp_acl
                    << " in interface "
                    << iface->getLabel()
-                   << endl;
+                   << "\n";
         }
 
-        output << endl;
+        output << "\n";
     }
 
     return output.str();

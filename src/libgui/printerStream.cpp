@@ -34,6 +34,7 @@
 #include "RuleSetView.h"
 
 #include <QHeaderView>
+#include <QObject>
 #include <QtDebug>
 #include <QScrollBar>
 

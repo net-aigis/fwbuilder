@@ -1,3 +1,4 @@
+#include <QMultiMap>
 /*
 
                           Firewall Builder
@@ -79,8 +80,8 @@ void newFirewallDialog::createFirewallFromTemplate()
     assert (template_fw!=NULL);
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-    string platform = readPlatform(m_dialog->platform).toAscii().constData();
-    string host_os = readHostOS(m_dialog->hostOS).toAscii().constData();
+    string platform = readPlatform(m_dialog->platform).toLatin1().constData();
+    string host_os = readHostOS(m_dialog->hostOS).toLatin1().constData();
 #else
     string platform = readPlatform(m_dialog->platform).toLatin1().constData();
     string host_os = readHostOS(m_dialog->hostOS).toLatin1().constData();
@@ -137,7 +138,7 @@ void newFirewallDialog::changedAddressesInNewFirewall()
                 this, "Firewall Builder",
                 tr("Can not find interface %1 in the interface editor data")
                 .arg(intf->getName().c_str()),
-                "&Continue", QString::null, QString::null, 0, 1 );
+                "&Continue", QString(), QString(), 0, 1 );
         } else
         {
             EditedInterfaceData new_data = new_configuration[intf];
@@ -159,7 +160,7 @@ void newFirewallDialog::changedAddressesInNewFirewall()
                  * If user created more addresses than there used to
                  * be, extra addresses are not added to rules.
                  */
-                QMap<libfwbuilder::Address*, AddressInfo >::iterator addrit;
+                QMultiMap<libfwbuilder::Address*, AddressInfo >::iterator addrit;
                 for (addrit=new_data.addresses.begin(); addrit!=new_data.addresses.end(); ++addrit)
                 {
                     Address *old_addr_obj = addrit.key();

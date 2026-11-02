@@ -32,11 +32,13 @@
 
 #include <string>
 
+#include <QObject>
 #include <QtDebug>
 #include <QHash>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QMessageBox>
 #include <QTime>
+#include <QElapsedTimer>
 #include <QtAlgorithms>
 
 #include "fwbuilder/FWObjectDatabase.h"
@@ -177,7 +179,7 @@ void RuleSetModel::initModel()
     RuleNode* node;
     RuleNode* group;
 
-    QTime t; t.start();
+    QElapsedTimer t; t.start();
     for (FWObject::iterator i=ruleset->begin(); i!=ruleset->end(); i++, row++)
     {
 
@@ -913,7 +915,7 @@ QString RuleSetModel::findUniqueNameForGroup(const QString &groupName)
 
     bool exactNameExists = false;
 
-    QRegExp rx("^(.*)-(\\d+)$");
+    QRegularExpression rx("^(.*)-(\\d+)$");
 
     foreach (RuleNode *node, root->children)
     {
@@ -923,10 +925,10 @@ QString RuleSetModel::findUniqueNameForGroup(const QString &groupName)
 
         exactNameExists = exactNameExists || (name == groupName);
 
-        if (rx.exactMatch(name))
-        {
-            QString nameSection = rx.capturedTexts().at(1);
-            QString countSection = rx.capturedTexts().at(2);
+        QRegularExpressionMatch _rx_m = QRegularExpression(QRegularExpression::anchoredPattern(rx.pattern()), rx.patternOptions()).match(name);
+        if (_rx_m.hasMatch()) {
+            QString nameSection = _rx_m.capturedTexts().at(1);
+            QString countSection = _rx_m.capturedTexts().at(2);
 
             int curCnt = countSection.toInt();
 
@@ -1147,7 +1149,7 @@ bool RuleSetModel::insertObject(QModelIndex &index, FWObject *obj)
                 QObject::tr(
                     "A single interface belonging to "
                     "this firewall is expected in this field."),
-                QString::null,QString::null);
+                QString(),QString());
         }
         else if (RuleElementRGtw::cast(re))
         {
@@ -1158,7 +1160,7 @@ bool RuleSetModel::insertObject(QModelIndex &index, FWObject *obj)
                     "here. You may also insert a host "
                     "or a network adapter leading to "
                     "a single ip adress."),
-                QString::null,QString::null);
+                QString(),QString());
         }
         return false;
     }
@@ -1425,7 +1427,7 @@ QVariant PolicyModel::getRuleDataForDisplayRole(const QModelIndex &index, RuleNo
 {
     QVariant res;
 
-    QTime t;
+    QElapsedTimer t;
 
     if (index.column() == 0)
     {

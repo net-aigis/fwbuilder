@@ -34,8 +34,8 @@
 #include "fwbuilder/Resources.h"
 #include <qvector.h>
 #include <QDialog>
+#include <QRegularExpression>
 
-class QRegExp;
 class ObjectDescriptor;
 
 enum {FWF_ANY = 0, FWF_ALL = 1}; 
@@ -47,14 +47,20 @@ enum {FWF_CONTAINS = 0,
       FWF_MATCHES_WILDCARD = 4,
       FWF_MATCHES_REGEXP = 5};
 
+struct FilterPattern
+{
+    QRegularExpression re;
+    bool wildcard = false;
+};
+
 class Filter
 {
     private:
     
     bool CaseSensitive;
     bool MatchAny;
-    QVector<QRegExp> addr_patterns;
-    QVector<QRegExp> name_patterns; 
+    QVector<FilterPattern> addr_patterns;
+    QVector<FilterPattern> name_patterns; 
 
 
 public:
@@ -63,9 +69,9 @@ public:
     ~Filter();
     
     void addNamePattern(const QString &s,bool wc);
-    void addNameRegExp(const QRegExp &r);
+    void addNameRegExp(const FilterPattern &r);
     void addAddrPattern(const QString &s,bool wc);
-    void addAddrRegExp(const QRegExp &r);
+    void addAddrRegExp(const FilterPattern &r);
     
     void setCaseSens(bool b);
     bool isCaseSens ();
@@ -102,7 +108,7 @@ class FilterDialog : public QDialog
     bool validate();
     void update();
     QString LastFile;
-    QRegExp constructRegExp(int p);
+    FilterPattern constructRegExp(int p);
  public:
     FilterDialog(QWidget *parent);
     ~FilterDialog();

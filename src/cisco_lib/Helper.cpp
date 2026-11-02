@@ -118,7 +118,7 @@ int  Helper::findInterfaceByAddress(const InetAddr *addr,
     cerr << "Helper::findInterfaceByAddress";
     cerr << " addr=" << addr->toString();
     cerr << " nm=" << nm->toString();
-    cerr << endl;
+    cerr << std::endl;
 #endif
 
     Firewall *fw = compiler->fw;
@@ -132,7 +132,7 @@ int  Helper::findInterfaceByAddress(const InetAddr *addr,
 #if DEBUG_NETZONE_OPS
         cerr << "Helper::findInterfaceByAddress";
         cerr << " intf=" << iface->getName();
-        cerr << endl;
+        cerr << std::endl;
 #endif
 
         FWObjectTypedChildIterator j =
@@ -144,10 +144,10 @@ int  Helper::findInterfaceByAddress(const InetAddr *addr,
 #if DEBUG_NETZONE_OPS
             cerr << "Helper::findInterfaceByAddress";
             cerr << " i_addr=" << i_addr->getName();
-            cerr << endl;
+            cerr << std::endl;
             cerr << "    " << i_addr->getAddressPtr()->toString();
             cerr << "    " << i_addr->getNetmaskPtr()->toString();
-            cerr << endl;
+            cerr << std::endl;
 #endif
 
             if (nm != NULL)
@@ -161,7 +161,7 @@ int  Helper::findInterfaceByAddress(const InetAddr *addr,
                 cerr << " addr=" << other_subnet.toString();
                 cerr << " intf=" << iface->getName()
                      << "  " << interface_subnet.toString();
-                cerr << endl;
+                cerr << std::endl;
 #endif
 
                 vector<InetAddrMask> ovr =
@@ -173,7 +173,7 @@ int  Helper::findInterfaceByAddress(const InetAddr *addr,
                 cerr << " ovr.size()=" << ovr.size();
                 if (ovr.size() > 0)
                     cerr << " ovr.front()=" << ovr.front().toString();
-                cerr << endl;
+                cerr << std::endl;
 #endif
                 if (ovr.size()==0) continue;
 
@@ -220,7 +220,7 @@ int  Helper::findInterfaceByNetzone(const InetAddr *addr, const InetAddr *nm)
     if (addr) cerr << " " << addr->toString();
     cerr << " nm=" << nm;
     if (nm) cerr << " " << nm->toString();
-    cerr << endl;
+    cerr << std::endl;
 #endif
 
     Firewall *fw = compiler->fw;
@@ -247,7 +247,7 @@ int  Helper::findInterfaceByNetzone(const InetAddr *addr, const InetAddr *nm)
             cerr << "  netzone_id=" << netzone_id
                  << "  " << iface->getStr("network_zone")
                  << "  " << netzone->getName()
-                 << endl;
+                 << std::endl;
 #endif
 
             for (list<FWObject*>::iterator j=nz.begin(); j!=nz.end(); ++j)
@@ -260,7 +260,7 @@ int  Helper::findInterfaceByNetzone(const InetAddr *addr, const InetAddr *nm)
                 cerr << "Helper::findInterfaceByNetzone";
                 cerr << "    " << netzone_addr->getName()
                      << "  " << netzone_addr->getAddressPtr()->toString()
-                     << endl;
+                     << std::endl;
 #endif
 
                 // if addr==NULL, return id of the interfacce that has
@@ -293,7 +293,7 @@ int  Helper::findInterfaceByNetzone(const InetAddr *addr, const InetAddr *nm)
                         cerr << " ovr.size()=" << ovr.size();
                         if (ovr.size() > 0)
                             cerr << " ovr.front()=" << ovr.front().toString();
-                        cerr << endl;
+                        cerr << std::endl;
 #endif
                         if (ovr.size()==0) continue;
                         // if nz_subnet is equal or wider than other_subnet,
@@ -307,7 +307,7 @@ int  Helper::findInterfaceByNetzone(const InetAddr *addr, const InetAddr *nm)
                             zones[iface->getId()] = netzone_addr;
 #if DEBUG_NETZONE_OPS
                             cerr << "Helper::findInterfaceByNetzone";
-                            cerr << "    match" << endl;
+                            cerr << "    match" << std::endl;
 #endif
                         }
                     } else
@@ -318,7 +318,7 @@ int  Helper::findInterfaceByNetzone(const InetAddr *addr, const InetAddr *nm)
 
 #if DEBUG_NETZONE_OPS
                             cerr << "Helper::findInterfaceByNetzone";
-                            cerr << "    match" << endl;
+                            cerr << "    match" << std::endl;
 #endif
                         }
                     }
@@ -344,7 +344,7 @@ int  Helper::findInterfaceByNetzone(const InetAddr *addr, const InetAddr *nm)
         cerr << "    netzone=" << netzone->getName()
              << "  dim=" << dim
              << "  res_dim=" << res_dim
-             << endl;
+             << std::endl;
 #endif
 
         if (dim<=res_dim) 
@@ -356,7 +356,7 @@ int  Helper::findInterfaceByNetzone(const InetAddr *addr, const InetAddr *nm)
 
 #if DEBUG_NETZONE_OPS
     cerr << "Helper::findInterfaceByNetzone";
-    cerr << " Result after scanning network zones: " << res_id << endl;
+    cerr << " Result after scanning network zones: " << res_id << std::endl;
 #endif
 
 /*
@@ -378,7 +378,7 @@ int  Helper::findInterfaceByNetzone(const InetAddr *addr, const InetAddr *nm)
 
 #if DEBUG_NETZONE_OPS
     cerr << "Helper::findInterfaceByNetzone";
-    cerr << " returning " << res_id << endl;
+    cerr << " returning " << res_id << std::endl;
 #endif
 
     return res_id;

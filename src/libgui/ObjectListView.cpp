@@ -142,7 +142,7 @@ QDrag* ObjectListView::dragObject()
     //QPixmap          pm   = QPixmap::fromMimeSource( icn_filename );
 
     QPixmap pm;
-    if ( ! QPixmapCache::find( icn, pm) )
+    if ( ! QPixmapCache::find(icn, &pm) )
     {
         pm.load( icn );
         QPixmapCache::insert( icn, pm);
@@ -240,7 +240,13 @@ void ObjectListView::mouseMoveEvent(QMouseEvent *event)
     if (startingDrag)
     {
         QDrag *dr = dragObject();
-        if (dr) dr->start();
+        if (dr) {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+            dr->exec();
+#else
+            dr->start();
+#endif
+        }
         startingDrag = false;
     }
     QTreeWidget::mouseMoveEvent(event);

@@ -94,7 +94,7 @@ bool  NATCompiler_ipt::PrintRuleIptRst::processNext()
 string NATCompiler_ipt::PrintRuleIptRst::_declareTable()
 {
     ostringstream res;
-    res << "*nat" << endl;
+    res << "*nat" << "\n";
     return res.str();
 }
 

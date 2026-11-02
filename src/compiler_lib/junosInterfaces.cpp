@@ -29,7 +29,7 @@
 
 #include <QDebug>
 #include <QObject>
-#include <QRegExp>
+#include <QRegularExpression>
 
 using namespace std;
 using namespace libfwbuilder;
@@ -37,11 +37,11 @@ using namespace libfwbuilder;
 
 bool junosInterfaces::parseVlan(const QString &name, QString *base_name, int *vlan_id)
 {
-    QRegExp vlan_name_pattern("unit (\\d{1,})");
-    if (vlan_name_pattern.indexIn(name) != -1)
-    {
+    QRegularExpression vlan_name_pattern("unit (\\d{1,})");
+    QRegularExpressionMatch _vlan_name_pattern_m = vlan_name_pattern.match(name);
+    if (_vlan_name_pattern_m.hasMatch()) {
         if (base_name!=NULL) *base_name = QString("unit");
-        if (vlan_id!=NULL) *vlan_id = vlan_name_pattern.cap(1).toInt();
+        if (vlan_id!=NULL) *vlan_id = _vlan_name_pattern_m.captured(1).toInt();
         return true;
     }
     return false;

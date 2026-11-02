@@ -94,7 +94,7 @@ bool  NATCompiler_nft::PrintRuleIptRst::processNext()
 string NATCompiler_nft::PrintRuleIptRst::_declareTable()
 {
     ostringstream res;
-    res << "*nat" << endl;
+    res << "*nat" << "\n";
     return res.str();
 }
 

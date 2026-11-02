@@ -52,7 +52,9 @@
 #include <iostream>
 #include <fcntl.h>
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QTextCodec>
+#endif
 #include <QTextStream>
 #include <QTimer>
 #include <QMessageBox>
@@ -94,7 +96,7 @@ bool FirewallInstallerUnx::packInstallJobsList(Firewall* fw)
     if (fwbdebug)
         qDebug("FirewallInstaller::packInstallJobsList read manifest from %s",
        #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-               cnf->script.toAscii().constData());
+               cnf->script.toLatin1().constData());
        #else
                cnf->script.toLatin1().constData());
        #endif
@@ -112,7 +114,9 @@ bool FirewallInstallerUnx::packInstallJobsList(Firewall* fw)
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
     QTextCodec::setCodecForCStrings(QTextCodec::codecForName("Utf8"));
 #endif
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("Utf8"));
+#endif
 
     //key: local_file_name  val: remote_file_name
     QMap<QString,QString> all_files;
@@ -130,7 +134,7 @@ bool FirewallInstallerUnx::packInstallJobsList(Firewall* fw)
             inst_dlg->addToLog(QString("Copy file: %1 --> %2\n")
                                .arg(local_name)
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-                                .arg(remote_name).toAscii().constData());
+                                .arg(remote_name).toLatin1().constData());
 #else
                                 .arg(remote_name).toLatin1().constData());
 #endif
@@ -148,7 +152,7 @@ bool FirewallInstallerUnx::packInstallJobsList(Firewall* fw)
             tr("Incorrect manifest format in generated script. "
                "Line with \"*\" is missing, can not find any files "
                "to copy to the firewall.\n%1").arg(cnf->script),
-            tr("&Continue"), QString::null,QString::null,
+            tr("&Continue"), QString(),QString(),
             0, 1 );
         return false;
     }
@@ -164,7 +168,7 @@ bool FirewallInstallerUnx::packInstallJobsList(Firewall* fw)
         inst_dlg->addToLog(QString("Copy data file: %1 --> %2\n")
                            .arg(fwbfile_base.fileName())
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-                           .arg(dest_dir).toAscii().constData());
+                           .arg(dest_dir).toLatin1().constData());
 #else
                            .arg(dest_dir).toLatin1().constData());
 #endif

@@ -38,7 +38,6 @@
 #include <iostream>
 
 #include <qobject.h>
-#include <qregexp.h>
 #include <qsettings.h>
 #include <QtDebug>
 

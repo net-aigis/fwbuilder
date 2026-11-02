@@ -61,7 +61,7 @@ bool CompilerDriver::prepare(const QStringList &_args)
         Firewall *fw = locateObject();
         if (fw == NULL)
         {
-            cerr << "Firewall or cluster object not found" << endl;
+            cerr << "Firewall or cluster object not found" << std::endl;
             return false;
         }
     }

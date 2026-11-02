@@ -200,7 +200,7 @@ void NATCompiler_asa8::PrintRule::printSDNAT(NATRule *rule)
 
     cmd << QString("description \"%1\"").arg(rule->getLabel().c_str());
 
-    compiler->output << cmd.join(" ").toStdString() << endl;
+    compiler->output << cmd.join(" ").toStdString() << "\n";
 }
 
 

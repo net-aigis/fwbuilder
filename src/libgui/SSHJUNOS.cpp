@@ -33,7 +33,7 @@
 
 #include <QObject>
 #include <QTimer>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QMessageBox>
 #include <QApplication>
 #include <QEventLoop>
@@ -207,12 +207,12 @@ void SSHJunos::stateMachine()
     {
     case NONE:
     {
-        if ( cmpPrompt(stdoutBuffer, QRegExp(pwd_prompt_1)) ||
-             cmpPrompt(stdoutBuffer, QRegExp(pwd_prompt_2)) )
+        if ( cmpPrompt(stdoutBuffer, QRegularExpression(pwd_prompt_1)) ||
+             cmpPrompt(stdoutBuffer, QRegularExpression(pwd_prompt_2)) )
         {
             stdoutBuffer="";
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-            proc->write( (pwd + "\n").toAscii() );
+            proc->write( (pwd + "\n").toLatin1() );
 #else
             proc->write( (pwd + "\n").toLatin1() );
 #endif
@@ -223,7 +223,7 @@ void SSHJunos::stateMachine()
  * password is supplied on command line to plink.exe.
  * This only happens with the root user
  */
-        if (cmpPrompt(stdoutBuffer, QRegExp(normal_prompt)))
+        if (cmpPrompt(stdoutBuffer, QRegularExpression(normal_prompt)))
         {
             stdoutBuffer="";
             state=LOGGEDIN;
@@ -236,7 +236,7 @@ void SSHJunos::stateMachine()
 
 /* we get straight to operational prompt as a normal user
  */
-        if (cmpPrompt(stdoutBuffer, QRegExp(enable_prompt)))
+        if (cmpPrompt(stdoutBuffer, QRegularExpression(enable_prompt)))
         {
             state = WAITING_FOR_ENABLE;
             stateMachine();
@@ -294,7 +294,7 @@ void SSHJunos::stateMachine()
     break;
 
     case LOGGEDIN:
-        if (cmpPrompt(stdoutBuffer, QRegExp(normal_prompt)))
+        if (cmpPrompt(stdoutBuffer, QRegularExpression(normal_prompt)))
         {
             stdoutBuffer="";
             proc->write("cli\n");
@@ -304,7 +304,7 @@ void SSHJunos::stateMachine()
         }
     /* FALLTHRU */
     case WAITING_FOR_ENABLE:
-        if (cmpPrompt(stdoutBuffer,QRegExp(enable_prompt)))
+        if (cmpPrompt(stdoutBuffer,QRegularExpression(enable_prompt)))
         {
             emit printStdout_sign( tr("In operational prompt."));
             emit printStdout_sign("\n");
@@ -314,7 +314,7 @@ void SSHJunos::stateMachine()
         }
     /* FALLTHRU */
     case ENABLE:
-        if (cmpPrompt(stdoutBuffer, QRegExp(enable_prompt)))
+        if (cmpPrompt(stdoutBuffer, QRegularExpression(enable_prompt)))
         {
             if (pre_config_commands.size() > 0)
             {
@@ -337,7 +337,7 @@ void SSHJunos::stateMachine()
         break;
 
     case WAITING_FOR_CONFIG_PROMPT:
-        if (cmpPrompt(stdoutBuffer, QRegExp(config_prompt)))
+        if (cmpPrompt(stdoutBuffer, QRegularExpression(config_prompt)))
         {
             /* install full policy */
             state = PUSHING_CONFIG;
@@ -351,7 +351,7 @@ void SSHJunos::stateMachine()
         break;
 
     case PUSHING_CONFIG:
-        if (cmpPrompt(stdoutBuffer, QRegExp(config_prompt)))
+        if (cmpPrompt(stdoutBuffer, QRegularExpression(config_prompt)))
         {
             // see SF bug 2973136 , fwbuilder bug #1347
             // looks like if user hits Cancel to cancel install at just right
@@ -395,7 +395,7 @@ void SSHJunos::stateMachine()
         break;
 
     case EXIT_FROM_CONFIG:
-        if (cmpPrompt(stdoutBuffer, QRegExp(enable_prompt)))
+        if (cmpPrompt(stdoutBuffer, QRegularExpression(enable_prompt)))
         {
             /*
              * Execute post_config_commands
@@ -416,8 +416,8 @@ void SSHJunos::stateMachine()
         break;
 
     case EXIT:
-        if (cmpPrompt(stdoutBuffer, QRegExp(enable_prompt)) ||
-                cmpPrompt(stdoutBuffer, QRegExp(normal_prompt)) )
+        if (cmpPrompt(stdoutBuffer, QRegularExpression(enable_prompt)) ||
+                cmpPrompt(stdoutBuffer, QRegularExpression(normal_prompt)) )
         {
             stdoutBuffer="";
             proc->write("exit\n");

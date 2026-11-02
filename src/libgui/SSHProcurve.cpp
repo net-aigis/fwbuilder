@@ -1,3 +1,4 @@
+#include <QRegularExpression>
 /*
 
                           Firewall Builder
@@ -30,6 +31,7 @@
 
 #include "SSHProcurve.h"
 
+#include <QObject>
 #include <QtDebug>
 
 
@@ -92,7 +94,7 @@ void SSHProcurve::stateMachine()
  * and provides prompt "Press any key to continue". Press "any key" to
  * proceed.
  */
-        if (cmpPrompt(stdoutBuffer, QRegExp(hp_greeting_prompt)))
+        if (cmpPrompt(stdoutBuffer, QRegularExpression(hp_greeting_prompt)))
         {
             stdoutBuffer="";
             proc->write("\n");
@@ -104,7 +106,7 @@ void SSHProcurve::stateMachine()
 
     case SCHEDULE_RELOAD_DIALOG:
         if ( cmpPrompt(stdoutBuffer,
-                       QRegExp("Do you want to save current configuration [y/n]?")) )
+                       QRegularExpression("Do you want to save current configuration [y/n]?")) )
         {
             stdoutBuffer="";
             proc->write( "no\n" );
@@ -112,7 +114,7 @@ void SSHProcurve::stateMachine()
         }
         if ( cmpPrompt(
                  stdoutBuffer,
-                 QRegExp("System will be rebooted at the scheduled time .*Do you want to continue [y/n]? ")) )
+                 QRegularExpression("System will be rebooted at the scheduled time .*Do you want to continue [y/n]? ")) )
         {
             stdoutBuffer="";
             proc->write( "y\n" );
@@ -122,7 +124,7 @@ void SSHProcurve::stateMachine()
         break;
 
     case PUSHING_CONFIG:
-        if ( cmpPrompt(stdoutBuffer, QRegExp("Destination filename [.*]?")) )
+        if ( cmpPrompt(stdoutBuffer, QRegularExpression("Destination filename [.*]?")) )
         {
             stdoutBuffer="";
             proc->write("\n"); // accept default file name
@@ -131,7 +133,7 @@ void SSHProcurve::stateMachine()
         break;
 
     case EXIT_FROM_CONFIG:
-        if ( cmpPrompt(stdoutBuffer,QRegExp(enable_prompt)) )
+        if ( cmpPrompt(stdoutBuffer,QRegularExpression(enable_prompt)) )
         {
             /*
              * Execute post_config_commands
@@ -154,7 +156,7 @@ void SSHProcurve::stateMachine()
         break;
 
     case EXIT:
-        if ( cmpPrompt(stdoutBuffer,QRegExp("Do you want to log out [y/n]?")) )
+        if ( cmpPrompt(stdoutBuffer,QRegularExpression("Do you want to log out [y/n]?")) )
         {
             stdoutBuffer="";
             proc->write("y\n"); // accept default file name

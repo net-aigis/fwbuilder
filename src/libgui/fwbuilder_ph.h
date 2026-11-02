@@ -125,7 +125,6 @@
 #include <qpushbutton.h>
 #include <qradiobutton.h>
 #include <qrect.h>
-#include <qregexp.h>
 #include <qsettings.h>
 #include <qspinbox.h>
 #include <qsplitter.h>
@@ -138,7 +137,6 @@
 #include <qtablewidget.h>
 #include <qtabwidget.h>
 #include <qtextbrowser.h>
-#include <qtextcodec.h>
 #include <qtextedit.h>
 #include <qtextstream.h>
 #include <qtimer.h>

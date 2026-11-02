@@ -165,12 +165,12 @@ bool RoutingCompiler_openbsd::PrintRule::processNext()
     
         if (!compiler->inSingleRuleCompileMode() && rl!=current_rule_label)
         {
-            compiler->output << "# " << endl;
-            compiler->output << "# Rule " << rl << endl;
-            //compiler->output << "# " << rule->getRuleTypeAsString() << endl;
-            compiler->output << "# " << endl;
-            compiler->output << "echo \"Routing rule " << rl << "\"" << endl;
-            compiler->output << "# " << endl;
+            compiler->output << "# " << "\n";
+            compiler->output << "# Rule " << rl << "\n";
+            //compiler->output << "# " << rule->getRuleTypeAsString() << "\n";
+            compiler->output << "# " << "\n";
+            compiler->output << "echo \"Routing rule " << rl << "\"" << "\n";
+            compiler->output << "# " << "\n";
         }
     
         if (rule->getRuleType() != RoutingRule::MultiPath )
@@ -184,20 +184,20 @@ bool RoutingCompiler_openbsd::PrintRule::processNext()
                 {
                     if (!str.isEmpty())
                     {
-                        compiler->output << "# " << str.toUtf8().data() << endl;
+                        compiler->output << "# " << str.toUtf8().data() << "\n";
                         ++comment_lines;
                     }
                 }
-                if (comment_lines) compiler->output << "#" << endl;
+                if (comment_lines) compiler->output << "#" << "\n";
 
                 string err = compiler->getErrorsForRule(rule, "# ");
-                if (!err.empty()) compiler->output << err << endl;
+                if (!err.empty()) compiler->output << err << "\n";
 
                 current_rule_label = rl;
             }
         
 //            string err = rule->getCompilerMessage();
-//            if (!err.empty()) compiler->output << "# " << err << endl;
+//            if (!err.empty()) compiler->output << "# " << err << "\n";
 
             string  command_line = RoutingRuleToString(rule);
             compiler->output << command_line;
@@ -236,9 +236,9 @@ string RoutingCompiler_openbsd::PrintRule::RoutingRuleToString(RoutingRule *rule
     if (!compiler->inSingleRuleCompileMode() && add_decorations)
     {
         command_line << "|| route_command_error "
-                     << "\"" << rule->getLabel() << "\"" << endl;;
+                     << "\"" << rule->getLabel() << "\"" << "\n";;
     }
-    command_line << endl;
+    command_line << "\n";
 
     return command_line.str();
 }

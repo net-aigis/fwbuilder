@@ -87,6 +87,8 @@
 
 #include <QMessageBox>
 #include <QTime>
+#include <QObject>
+#include <QRegularExpression>
 #include <QtDebug>
 #include <QHeaderView>
 #include <QUndoStack>
@@ -312,11 +314,11 @@ QString ObjectManipulator::makeNameUnique(FWObject* parent,
 
     if (obj_type == Interface::TYPENAME)
     {
-        QRegExp rx("([a-zA-Z-]+)(\\d{1,})");
-        if (rx.indexIn(obj_name) != -1)
-        {
-            basename = rx.cap(1);
-            suffix = rx.cap(2).toInt();
+        QRegularExpression rx("([a-zA-Z-]+)(\\d{1,})");
+        QRegularExpressionMatch _rx_m = rx.match(obj_name);
+        if (_rx_m.hasMatch()) {
+            basename = _rx_m.captured(1);
+            suffix = _rx_m.captured(2).toInt();
         }
     }
 
@@ -390,7 +392,7 @@ static void addKeywordsMenu(ObjectManipulator *om, QMenu *menu)
         removeKeywords->setDisabled(true);
     } else {
         data[0] = "remove";
-        foreach (QString str, sortStrings(toRemove.toList())) {
+        foreach (QString str, sortStrings(toRemove.values())) {
             QAction *act =
                 removeKeywords->addAction(str, om, SLOT(processKeywordSlot()));
             data[1] = str;
@@ -1196,7 +1198,7 @@ void ObjectManipulator::filterFirewallsFromSelection(vector<FWObject*> &so,
                 QMessageBox::warning(this, "Firewall Builder",
                         QObject::tr("No firewalls assigned to cluster '%1'").
                                      arg(cl->getName().c_str()),
-                        "&Continue", QString::null, QString::null, 0, 1 );
+                        "&Continue", QString(), QString(), 0, 1 );
                 continue;
             }
             fo.insert(cl);
@@ -1246,7 +1248,7 @@ FWObject* ObjectManipulator::prepareForInsertion(FWObject *target, FWObject *obj
         QMessageBox::critical(
             this,"Firewall Builder",
             err,
-            "&Continue", QString::null, QString::null,
+            "&Continue", QString(), QString(),
             0, 1 );
 
         return NULL;

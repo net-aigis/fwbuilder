@@ -41,7 +41,7 @@
 
 #include <QList>
 #include <QStringList>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QPixmap>
 #include <QApplication>
 #include <QFileInfo>
@@ -98,7 +98,7 @@ QAction* addPopupMenuItem(QObject *res,
     if(icn!="")
     {
 //        pm = QPixmap::fromMimeSource( icn.c_str() );
-        if ( ! QPixmapCache::find( icn.c_str(), pm) )
+        if ( ! QPixmapCache::find(icn.c_str(), &pm) )
         {
             pm.load( (":/"+icn).c_str() );//fromMimeSource( icn.c_str() );
             QPixmapCache::insert( icn.c_str(), pm);
@@ -327,7 +327,7 @@ QString getAddrByName(const QString &name, int af_type)
     try
     {
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-        results = DNS::getHostByName(name.toAscii().constData(), af_type);
+        results = DNS::getHostByName(name.toLatin1().constData(), af_type);
 #else
         results = DNS::getHostByName(name.toLatin1().constData(), af_type);
 #endif
@@ -449,7 +449,7 @@ void loadIcon(QPixmap &pm, FWObject *obj)
     QString icn_file = (":/Icons/" + obj->getTypeName()+"/icon-tree").c_str();
     LoadPixmap(icn_file, pm);
 
-    // if ( ! QPixmapCache::find( icn_file, pm) )
+    // if ( ! QPixmapCache::find(icn_file, &pm) )
     // {
     //     pm.load( icn_file );
     //     QPixmapCache::insert( icn_file, pm);
@@ -458,12 +458,12 @@ void loadIcon(QPixmap &pm, FWObject *obj)
 
 void LoadPixmap(const QString &path, QPixmap &pm)
 {
-    if ( ! QPixmapCache::find( path, pm ) )
+    if ( ! QPixmapCache::find(path, &pm) )
     {
         pm.load( path );
         if (pm.width() == 0)
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-            qDebug("pixmap load failed: %s", path.toAscii().constData());
+            qDebug("pixmap load failed: %s", path.toLatin1().constData());
 #else
             qDebug("pixmap load failed: %s", path.toLatin1().constData());
 #endif
@@ -587,7 +587,7 @@ QString _parseTokens(QStringList &args, const QChar closing_quote='\0')
  */
 void parseCommandLine(const QString &cmd, QStringList &argv)
 {
-    int first_arg = cmd.indexOf(QRegExp(" *-"));
+    int first_arg = cmd.indexOf(QRegularExpression(" *-"));
     if (first_arg == -1)
     {
         // no arguments
@@ -597,8 +597,8 @@ void parseCommandLine(const QString &cmd, QStringList &argv)
     QString program = cmd.mid(0, first_arg).trimmed();
     if (!program.isEmpty()) argv.append(program);
 
-    QStringList args = cmd.mid(first_arg).split(QRegExp("\\s+"));
-//                                                QString::SkipEmptyParts);
+    QStringList args = cmd.mid(first_arg).split(QRegularExpression("\\s+"));
+//                                                Qt::SkipEmptyParts);
     // splits like this:
     // ["", "-arg1", "val1", "-arg2", "\"value", "2", "\""]
 
@@ -633,6 +633,6 @@ static bool stringsCompare(const QString &a, const QString &b)
 QStringList sortStrings(const QStringList &list)
 {
     QStringList ret = list;
-    qSort(ret.begin(), ret.end(), stringsCompare);
+    std::sort(ret.begin(), ret.end(), stringsCompare);
     return ret;
 }

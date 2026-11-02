@@ -26,6 +26,7 @@
 
 
 #include "config.h"
+#include <QObject>
 #include "global.h"
 #include "utils.h"
 #include "utils_no_qt.h"
@@ -50,7 +51,6 @@
 #include <qradiobutton.h>
 #include <qlineedit.h>
 #include <qstackedwidget.h>
-#include <qregexp.h>
 #include <qtextedit.h>
 #include <qtabwidget.h>
 #include <qlistwidget.h>

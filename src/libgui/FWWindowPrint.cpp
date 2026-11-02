@@ -156,7 +156,11 @@ void FWWindow::filePrint()
         pdialog.setWindowTitle(tr("Print configuration of %1")
                                .arg(firewall_to_print->getName().c_str()));
 #ifndef Q_OS_MACX
-        pdialog.addEnabledOption(QAbstractPrintDialog::PrintPageRange);
+        #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    pdialog.setOption(QAbstractPrintDialog::PrintPageRange);
+#else
+    pdialog.addEnabledOption(QAbstractPrintDialog::PrintPageRange);
+#endif
         pdialog.setMinMax(1,9999);
         pdialog.setPrintRange(QAbstractPrintDialog::AllPages);
 #endif
@@ -215,7 +219,7 @@ void FWWindow::filePrint()
                 QMessageBox::information(
                     this,"Firewall Builder",
                     tr("Printing aborted"),
-                    tr("&Continue"), QString::null,QString::null,
+                    tr("&Continue"), QString(),QString(),
                     0, 1 );
             } else
                 showStatusBarMessage(tr("Printing completed"));
@@ -247,7 +251,7 @@ class UpgradePredicate: public XMLTools::UpgradePredicate
     public:
     virtual bool operator()(const string&) const
     {
-        cout << "Data file has been created in the old version of Firewall Builder. Use fwbuilder GUI to convert it." << endl;
+        cout << "Data file has been created in the old version of Firewall Builder. Use fwbuilder GUI to convert it." << std::endl;
         return false;
     }
 };
@@ -291,7 +295,7 @@ void FWWindow::printFirewallFromFile(QString fileName,
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
     FWObject* obj = objdb->findObjectByName(Firewall::TYPENAME,
-                                            firewallName.toAscii().data());
+                                            firewallName.toLatin1().data());
 #else
     FWObject* obj = objdb->findObjectByName(Firewall::TYPENAME,
                                             firewallName.toLatin1().data());

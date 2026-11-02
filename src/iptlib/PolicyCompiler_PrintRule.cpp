@@ -57,7 +57,6 @@
 #include "Configlet.h"
 
 #include <QStringList>
-#include <QRegExp>
 #include <QtDebug>
 
 #include <iostream>
@@ -192,33 +191,33 @@ string PolicyCompiler_ipt::PrintRule::_printRuleLabel(PolicyRule *rule)
         {
             if (!nocomm)
             {
-                res << "# " << endl;
-                res << "# Rule " << rl << endl;
-                res << "# " << endl;
+                res << "# " << "\n";
+                res << "# Rule " << rl << "\n";
+                res << "# " << "\n";
             }
-            res << "echo " << _quote(string("Rule ")+rl) << endl;
-            res << "# " << endl;
+            res << "echo " << _quote(string("Rule ")+rl) << "\n";
+            res << "# " << "\n";
         }
 
 /* do not put comment in the script if it is intended for linksys */
         if (!nocomm || compiler->inSingleRuleCompileMode())
         {
-            QStringList comm = QString(rule->getComment().c_str()).split("\n", QString::SkipEmptyParts);
+            QStringList comm = QString(rule->getComment().c_str()).split("\n", Qt::SkipEmptyParts);
             foreach(QString line, comm)
             {
-                res << "# " << line.toStdString() << endl;
+                res << "# " << line.toStdString() << "\n";
             }
-            //res << "# " << endl;
+            //res << "# " << "\n";
 
             string err = compiler->getErrorsForRule(rule, "# ");
-            if (!err.empty()) res << err << endl;
+            if (!err.empty()) res << err << "\n";
         }
     }
 
     current_rule_label = rl;
 
 //    string err = rule->getCompilerMessage();
-//    if (!err.empty()) res << "# " << err << endl;
+//    if (!err.empty()) res << "# " << err << "\n";
 
     return res.str();
 }
@@ -1696,7 +1695,7 @@ string PolicyCompiler_ipt::PrintRule::PolicyRuleToString(PolicyRule *rule)
 
     command_line << _endRuleLine();
 
-//    command_line << endl;
+//    command_line << "\n";
 
     return command_line.str();
 }
@@ -1747,7 +1746,7 @@ string PolicyCompiler_ipt::PrintRule::_clampTcpToMssRule()
             res << _startRuleLine()
                 << "FORWARD -p tcp -m tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu"
                 << _endRuleLine();
-            res << endl;
+            res << "\n";
         }
     }
     return res.str();

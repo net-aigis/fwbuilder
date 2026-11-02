@@ -29,6 +29,7 @@
 */
 
 #include "global.h"
+#include <QObject>
 
 #include "FWWindow.h"
 #include "FWCmdRule.h"

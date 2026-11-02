@@ -57,7 +57,9 @@
 
 #include <QCoreApplication>
 #include <QStringList>
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QTextCodec>
+#endif
 
 #include "../common/init.cpp"
 
@@ -75,7 +77,7 @@ class UpgradePredicate: public XMLTools::UpgradePredicate
     virtual bool operator()(const string &msg) const 
     { 
         msg.size();  // to make compiler happy about unused parameter
-	cout << "Data file has been created in the old version of Firewall Builder.\nLoad it in the GUI to convert it to the new version." << endl;
+	cout << "Data file has been created in the old version of Firewall Builder.\nLoad it in the GUI to convert it to the new version." << std::endl;
 	return false;
     }
 };
@@ -83,10 +85,10 @@ class UpgradePredicate: public XMLTools::UpgradePredicate
     
 void usage(const char *name)
 {
-    cout << "Firewall Builder:  policy compiler for Cisco PIX firewall (with support for FWSM)" << endl;
-    cout << "Copyright 2002-2009 NetCitadel, LLC" << endl;
-    cout << "Version " << VERSION << endl;
-    cout << "Usage: " << name << " [-tvV] [-f filename.xml] [-d destdir] [-o output.fw] firewall_object_name" << endl;
+    cout << "Firewall Builder:  policy compiler for Cisco PIX firewall (with support for FWSM)" << std::endl;
+    cout << "Copyright 2002-2009 NetCitadel, LLC" << std::endl;
+    cout << "Version " << VERSION << std::endl;
+    cout << "Usage: " << name << " [-tvV] [-f filename.xml] [-d destdir] [-o output.fw] firewall_object_name" << std::endl;
 }
 
 
@@ -98,7 +100,9 @@ int main(int argc, char **argv)
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
     QTextCodec::setCodecForCStrings(QTextCodec::codecForName("Utf8"));
 #endif
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("Utf8"));
+#endif
     
     QStringList args = app.arguments();
 
@@ -185,11 +189,11 @@ int main(int argc, char **argv)
 
     } catch(libfwbuilder::FWException &ex)
     {
-        cerr << ex.toString() << endl;
+        cerr << ex.toString() << std::endl;
         return 1;
     } catch (std::string s)
     {
-        cerr << s << endl;
+        cerr << s << std::endl;
         return 1;
     }
 

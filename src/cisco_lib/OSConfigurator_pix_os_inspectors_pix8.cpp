@@ -77,7 +77,7 @@ string OSConfigurator_pix_os::_printPolicyMapTypeInspect()
     foreach (QString fixup_xml_element, allowed_fixups)
     {
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-        string f = options->getStr(fixup_xml_element.toAscii().constData());
+        string f = options->getStr(fixup_xml_element.toLatin1().constData());
 #else
         string f = options->getStr(fixup_xml_element.toLatin1().constData());
 #endif
@@ -98,7 +98,7 @@ string OSConfigurator_pix_os::_printPolicyMapTypeInspect()
             if (fixup_name.startsWith("ip_options") && status != FIXUP_SKIP)
             {
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-                InspectionClassMap cm(fixup_name.toAscii().constData(),
+                InspectionClassMap cm(fixup_name.toLatin1().constData(),
 #else
                 InspectionClassMap cm(fixup_name.toLatin1().constData(),
 #endif
@@ -110,8 +110,8 @@ string OSConfigurator_pix_os::_printPolicyMapTypeInspect()
 
     if (ip_options_matches.size() > 0)
     {
-        res << "policy-map type inspect ip-options ip-options-map" << endl;
-        res << "parameters" << endl;
+        res << "policy-map type inspect ip-options ip-options-map" << "\n";
+        res << "parameters" << "\n";
         
         for(list<InspectionClassMap>::iterator i=ip_options_matches.begin();
             i!=ip_options_matches.end(); ++i)
@@ -121,11 +121,11 @@ string OSConfigurator_pix_os::_printPolicyMapTypeInspect()
             {
             case FIXUP_ENABLE:
                 res << "  " << i->getPrintableName() << " action ";
-                res << "allow" << endl;
+                res << "allow" << "\n";
                 break;
             case FIXUP_CLEAR:
                 res << "  "  << i->getPrintableName() << " action ";
-                res << "clear" << endl;
+                res << "clear" << "\n";
                 break;
             default:
                 break;
@@ -133,7 +133,7 @@ string OSConfigurator_pix_os::_printPolicyMapTypeInspect()
         }
     }
 
-    res << endl;
+    res << "\n";
 
     return res.str();
 }

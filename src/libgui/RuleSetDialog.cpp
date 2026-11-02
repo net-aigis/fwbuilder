@@ -1,3 +1,4 @@
+#include <QRegularExpression>
 /*
 
                           Firewall Builder
@@ -189,9 +190,9 @@ void RuleSetDialog::validate(bool *res)
     if (platform == "pf")
         pattern = "([a-zA-Z0-9_-+=@%^]+)(/\\*)?";
 
-    QRegExp rx(pattern);
+    QRegularExpression rx(pattern);
 
-    if (!rx.exactMatch(m_dialog->obj_name->text()))
+    if (!QRegularExpression(QRegularExpression::anchoredPattern(rx.pattern()), rx.patternOptions()).match(m_dialog->obj_name->text()).hasMatch())
     {
         *res = false ;
         if (QApplication::focusWidget() != NULL)
