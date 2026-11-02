@@ -57,6 +57,29 @@ export function WhereUsed({
         <button type="button" className="ghost" disabled={busy} onClick={() => void reload()}>
           Reload
         </button>
+        {uses.length ? (
+          <button
+            type="button"
+            className="ghost"
+            disabled={busy}
+            title="Download where-used list as JSON"
+            onClick={() => {
+              const blob = new Blob(
+                [JSON.stringify({ object_id: objectId, count: uses.length, uses }, null, 2)],
+                { type: "application/json" },
+              );
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement("a");
+              a.href = url;
+              a.download = "fwbweb-where-used.json";
+              a.click();
+              URL.revokeObjectURL(url);
+              onStatus?.(`Downloaded ${uses.length} where-used hit(s)`);
+            }}
+          >
+            JSON
+          </button>
+        ) : null}
       </header>
       {uses.length ? (
         <ul className="picker-list">

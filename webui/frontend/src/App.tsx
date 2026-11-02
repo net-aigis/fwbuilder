@@ -5,6 +5,7 @@ import {
   closeProject,
   compileAllFirewalls,
   compileFirewall,
+  createObject,
   deleteObject,
   emptyDeletedObjects,
   findUnusedObjects,
@@ -1076,6 +1077,49 @@ export function App() {
       setDirty(true);
       setStatus(`Ruleset renamed → ${name}`);
       await loadRules(rulesFwId, rulesWhich, rulesetId);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function onDuplicateRuleset() {
+    if (!sessionId || !rulesFwId) return;
+    const wantType =
+      rulesWhich === "nat" ? "NAT" : rulesWhich === "routing" ? "Routing" : "Policy";
+    if (wantType === "Routing") {
+      setError("Cannot duplicate Routing: Firewall allows only one Routing ruleset");
+      return;
+    }
+    const suggested = `${rulesetName || wantType} Copy`;
+    const next = window.prompt(`Duplicate ${wantType} as`, suggested);
+    if (next === null) return;
+    const name = next.trim();
+    if (!name) return;
+    if (
+      !window.confirm(
+        `Create secondary ${wantType} “${name}” and copy ${rules.length} rule(s)?`,
+      )
+    )
+      return;
+    setBusy(true);
+    setError(null);
+    try {
+      const created = await createObject(sessionId, {
+        parent_id: rulesFwId,
+        type: wantType,
+        name,
+      });
+      const sourceRules = [...rules].sort(
+        (a, b) => (a.position ?? 0) - (b.position ?? 0),
+      );
+      for (const rule of sourceRules) {
+        await duplicateRule(sessionId, rule.id, created.id);
+      }
+      setDirty(true);
+      setStatus(`Duplicated ruleset → ${name} (${sourceRules.length} rules)`);
+      await loadRules(rulesFwId, rulesWhich, created.id);
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
@@ -2470,6 +2514,17 @@ export function App() {
                       title="Rename the current ruleset"
                     >
                       Rename…
+                    </button>
+                  ) : null}
+                  {rulesFwId && rulesWhich !== "routing" ? (
+                    <button
+                      type="button"
+                      className="ghost"
+                      disabled={!canOperate || !rules.length}
+                      onClick={() => void onDuplicateRuleset()}
+                      title="Create a secondary Policy/NAT and copy all rules into it"
+                    >
+                      Duplicate ruleset…
                     </button>
                   ) : null}
                   {rulesetId ? (

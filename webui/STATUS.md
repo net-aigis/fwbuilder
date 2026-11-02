@@ -177,6 +177,8 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Rule action filter | done | rules toolbar; E2E phase55 |
 | Delete visible rules | done | rules toolbar; E2E phase55 |
 | Copy firewall id | done | rules toolbar |
+| Duplicate Policy/NAT ruleset | done | toolbar; E2E phase56 |
+| Where-used JSON download | done | WhereUsed panel |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Phase 3 — compile / deploy
@@ -243,6 +245,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase53 (Routing reject + Policy) | done | `e2e-phase53.sh` **OK** |
 | Local E2E phase54 (Host + only-disabled) | done | `e2e-phase54.sh` **OK** |
 | Local E2E phase55 (action filter + bulk del) | done | `e2e-phase55.sh` **OK** |
+| Local E2E phase56 (dup ruleset + where-used) | done | `e2e-phase56.sh` **OK** |
 
 ## Local commands
 
@@ -307,6 +310,7 @@ bash webui/scripts/e2e-phase52.sh
 bash webui/scripts/e2e-phase53.sh
 bash webui/scripts/e2e-phase54.sh
 bash webui/scripts/e2e-phase55.sh
+bash webui/scripts/e2e-phase56.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```
