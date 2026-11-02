@@ -71,6 +71,13 @@ export function CreateObject({
   const [dnsName, setDnsName] = useState("");
   const [runTime, setRunTime] = useState(true);
   const [filename, setFilename] = useState("");
+  const [tagCode, setTagCode] = useState("");
+  const [userId, setUserId] = useState("");
+  const [fromHour, setFromHour] = useState("9");
+  const [fromMinute, setFromMinute] = useState("0");
+  const [toHour, setToHour] = useState("17");
+  const [toMinute, setToMinute] = useState("0");
+  const [daysOfWeek, setDaysOfWeek] = useState("1,2,3,4,5");
   const [platform, setPlatform] = useState("nftables");
   const [hostOs, setHostOs] = useState("linux24");
 
@@ -78,9 +85,18 @@ export function CreateObject({
   const isRange = type === "AddressRange";
   const isDns = type === "DNSName";
   const isAddrTable = type === "AddressTable";
+  const isTag = type === "TagService";
+  const isUser = type === "UserService";
+  const isInterval = type === "Interval";
   const needsNetmask = type === "Network" || type === "IPv4" || type === "NetworkIPv6" || type === "IPv6";
   const isFwLike = type === "Firewall" || type === "Host" || type === "Cluster";
-  const showAddress = !isDns && !isAddrTable && (isRange || needsNetmask || type === "Host");
+  const showAddress =
+    !isDns &&
+    !isAddrTable &&
+    !isTag &&
+    !isUser &&
+    !isInterval &&
+    (isRange || needsNetmask || type === "Host");
 
   async function submit() {
     if (!name.trim()) {
@@ -100,6 +116,16 @@ export function CreateObject({
       } else if (isAddrTable) {
         if (filename.trim()) attrs.filename = filename.trim();
         attrs.run_time = runTime ? "True" : "False";
+      } else if (isTag) {
+        if (tagCode.trim()) attrs.tagcode = tagCode.trim();
+      } else if (isUser) {
+        if (userId.trim()) attrs.userid = userId.trim();
+      } else if (isInterval) {
+        attrs.from_hour = Number(fromHour) || 0;
+        attrs.from_minute = Number(fromMinute) || 0;
+        attrs.to_hour = Number(toHour) || 0;
+        attrs.to_minute = Number(toMinute) || 0;
+        if (daysOfWeek.trim()) attrs.days_of_week = daysOfWeek.trim();
       } else {
         if (address.trim()) attrs.address = address.trim();
         if (netmask.trim() && needsNetmask) attrs.netmask = netmask.trim();
@@ -199,6 +225,45 @@ export function CreateObject({
             Destination port
             <input value={dstPort} disabled={busy} onChange={(e) => setDstPort(e.target.value)} />
           </label>
+        ) : null}
+        {isTag ? (
+          <label className="field block">
+            Tag code
+            <input value={tagCode} disabled={busy} onChange={(e) => setTagCode(e.target.value)} />
+          </label>
+        ) : null}
+        {isUser ? (
+          <label className="field block">
+            User id
+            <input value={userId} disabled={busy} onChange={(e) => setUserId(e.target.value)} />
+          </label>
+        ) : null}
+        {isInterval ? (
+          <>
+            <label className="field block">
+              From (hour:min)
+              <div className="inline-pair">
+                <input value={fromHour} disabled={busy} onChange={(e) => setFromHour(e.target.value)} />
+                <input value={fromMinute} disabled={busy} onChange={(e) => setFromMinute(e.target.value)} />
+              </div>
+            </label>
+            <label className="field block">
+              To (hour:min)
+              <div className="inline-pair">
+                <input value={toHour} disabled={busy} onChange={(e) => setToHour(e.target.value)} />
+                <input value={toMinute} disabled={busy} onChange={(e) => setToMinute(e.target.value)} />
+              </div>
+            </label>
+            <label className="field block">
+              Days of week
+              <input
+                value={daysOfWeek}
+                disabled={busy}
+                onChange={(e) => setDaysOfWeek(e.target.value)}
+                placeholder="0=Sun … 6=Sat"
+              />
+            </label>
+          </>
         ) : null}
         {isFwLike ? (
           <>

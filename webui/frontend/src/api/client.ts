@@ -528,6 +528,28 @@ export function compileFirewall(
   });
 }
 
+export function compileAllFirewalls(sessionId: string, ipv?: "4" | "6") {
+  return api<{
+    ok: boolean;
+    count: number;
+    succeeded: number;
+    failed: number;
+    results: Array<{
+      firewall_id: string;
+      name?: string;
+      ok: boolean;
+      platform?: string;
+      outputs?: string[];
+      destdir?: string;
+      log?: string;
+      error?: string;
+    }>;
+  }>(`/api/v1/projects/${sessionId}/compile-all`, {
+    method: "POST",
+    body: JSON.stringify({ ipv, continue_on_error: true }),
+  });
+}
+
 export function compileOutputUrl(sessionId: string, filename: string): string {
   const qs = new URLSearchParams();
   // Auth is header-based; for <a download> we append token as query for convenience

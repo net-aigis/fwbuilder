@@ -518,6 +518,15 @@ button.ghost {
   border-top: 1px solid var(--line);
 }
 
+.create-object .inline-pair {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.create-object .inline-pair input {
+  width: 4rem;
+}
+
 .options-grid select,
 .options-grid textarea {
   font: inherit;

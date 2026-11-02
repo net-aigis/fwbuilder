@@ -85,6 +85,9 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | DNSName / AddressRange create fields | done | CreateObject dnsname/filename + range; E2E phase26 |
 | Bulk enable/disable visible rules | done | Rules toolbar; E2E phase26 |
 | Recent project paths | done | localStorage datalist |
+| Compile all firewalls | done | `POST …/compile-all` + UI; E2E phase27 |
+| Rule filter matches object names | done | src/dst/srv/… via formatRuleObjects |
+| Tag/User/Interval create fields | done | CreateObject; E2E phase27 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Phase 3 — compile / deploy
@@ -122,6 +125,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase24 (multi ruleset list) | done | `e2e-phase24.sh` **OK** |
 | Local E2E phase25 (timestamps + NetworkIPv6) | done | `e2e-phase25.sh` **OK** |
 | Local E2E phase26 (new/save-as/DNS/range/bulk) | done | `e2e-phase26.sh` **OK** |
+| Local E2E phase27 (compile-all + Tag/User/Interval) | done | `e2e-phase27.sh` **OK** |
 
 ## Local commands
 
@@ -157,6 +161,7 @@ bash webui/scripts/e2e-phase23.sh
 bash webui/scripts/e2e-phase24.sh
 bash webui/scripts/e2e-phase25.sh
 bash webui/scripts/e2e-phase26.sh
+bash webui/scripts/e2e-phase27.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

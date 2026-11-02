@@ -3,8 +3,10 @@ import {
   addRule,
   addRuleRef,
   closeProject,
+  compileAllFirewalls,
   compileFirewall,
   deleteObject,
+  formatRuleObjects,
   duplicateObject,
   duplicateRule,
   downloadCompileOutput,
@@ -29,6 +31,7 @@ import {
   type AnyRule,
   type NatRule,
   type PolicyRule,
+  type RuleElement,
   type RoutingRuleRow,
   type RulesetListEntry,
   type TreeNode,
@@ -111,7 +114,14 @@ export function App() {
       const q = ruleTextFilter.trim().toLowerCase();
       list = list.filter((r) => {
         const action = "action" in r ? String((r as PolicyRule).action ?? "") : "";
-        const blob = `${r.comment ?? ""} ${r.group ?? ""} ${action}`.toLowerCase();
+        const els: string[] = [];
+        for (const key of Object.keys(r) as (keyof typeof r)[]) {
+          const val = r[key];
+          if (val && typeof val === "object" && "objects" in (val as object)) {
+            els.push(formatRuleObjects(val as RuleElement));
+          }
+        }
+        const blob = `${r.comment ?? ""} ${r.group ?? ""} ${action} ${els.join(" ")}`.toLowerCase();
         return blob.includes(q);
       });
     }
@@ -696,6 +706,31 @@ export function App() {
     }
   }
 
+  async function onCompileAll() {
+    if (!sessionId) return;
+    setBusy(true);
+    setError(null);
+    setCompileLog(null);
+    setCompileOutputs([]);
+    try {
+      const res = await compileAllFirewalls(sessionId);
+      const lines = res.results.map((r) =>
+        r.ok
+          ? `OK ${r.name} (${r.platform}) → ${(r.outputs || []).join(", ") || "(none)"}`
+          : `FAIL ${r.name}: ${r.error || "error"}`,
+      );
+      setCompileLog(`Compile all: ${res.succeeded}/${res.count} ok\n${lines.join("\n")}`);
+      const lastOk = [...res.results].reverse().find((r) => r.ok);
+      if (lastOk?.outputs?.length) setCompileOutputs(lastOk.outputs);
+      setStatus(`Compiled all: ${res.succeeded}/${res.count} succeeded`);
+      if (res.failed) setError(`${res.failed} firewall(s) failed to compile`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function onDownloadOutput(filename: string) {
     if (!sessionId) return;
     setBusy(true);
@@ -1178,7 +1213,7 @@ export function App() {
                     <input
                       value={ruleTextFilter}
                       disabled={busy}
-                      placeholder="comment/action…"
+                      placeholder="comment/action/objects…"
                       onChange={(e) => setRuleTextFilter(e.target.value)}
                     />
                   </label>
@@ -1218,6 +1253,15 @@ export function App() {
                   </button>
                   <button type="button" disabled={!canOperate} onClick={() => void onCompile()}>
                     Compile
+                  </button>
+                  <button
+                    type="button"
+                    className="ghost"
+                    disabled={!canOperate}
+                    onClick={() => void onCompileAll()}
+                    title="Compile every firewall in this project"
+                  >
+                    Compile all
                   </button>
                 </div>
               </header>

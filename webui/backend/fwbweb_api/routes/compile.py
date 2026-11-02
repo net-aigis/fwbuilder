@@ -20,19 +20,14 @@ class CompileRequest(BaseModel):
     ipv: Literal["4", "6"] | None = None
 
 
-@router.post("/{session_id}/compile")
-def compile_firewall(
-    session_id: str,
-    body: CompileRequest,
-    _: str = Depends(require_token),
-) -> dict[str, Any]:
-    try:
-        session = store.get(session_id)
-    except KeyError as exc:
-        raise HTTPException(status_code=404, detail="session not found") from exc
+class CompileAllRequest(BaseModel):
+    ipv: Literal["4", "6"] | None = None
+    continue_on_error: bool = True
 
+
+def _compile_one(session, firewall_id: str, ipv: Literal["4", "6"] | None) -> dict[str, Any]:
     try:
-        obj = session.bridge.request("get", id=body.firewall_id)
+        obj = session.bridge.request("get", id=firewall_id)
     except BridgeError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 
@@ -47,12 +42,6 @@ def compile_firewall(
             detail=f"firewall missing name/platform (name={name!r} platform={platform!r})",
         )
 
-    # Persist current session state so the compiler reads the same XML.
-    try:
-        session.bridge.request("save")
-    except BridgeError as exc:
-        raise HTTPException(status_code=500, detail=f"save before compile failed: {exc}") from exc
-
     out_dir = Path(session.work_path).parent / "compile-out" / name
     try:
         result = run_compiler(
@@ -60,7 +49,7 @@ def compile_firewall(
             fwb_path=Path(session.work_path),
             firewall_name=name,
             destdir=out_dir,
-            ipv=body.ipv,
+            ipv=ipv,
         )
     except CompileError as exc:
         raise HTTPException(
@@ -69,18 +58,110 @@ def compile_firewall(
         ) from exc
 
     session.meta["last_compile"] = {
-        "firewall_id": body.firewall_id,
+        "firewall_id": firewall_id,
         "firewall": name,
         "platform": platform,
         "destdir": result["destdir"],
         "outputs": result["outputs"],
     }
     try:
-        session.bridge.request("touch_compiled", id=body.firewall_id)
+        session.bridge.request("touch_compiled", id=firewall_id)
         session.bridge.request("save")
     except BridgeError:
         pass
     return result
+
+
+@router.post("/{session_id}/compile")
+def compile_firewall(
+    session_id: str,
+    body: CompileRequest,
+    _: str = Depends(require_token),
+) -> dict[str, Any]:
+    try:
+        session = store.get(session_id)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail="session not found") from exc
+
+    # Persist current session state so the compiler reads the same XML.
+    try:
+        session.bridge.request("save")
+    except BridgeError as exc:
+        raise HTTPException(status_code=500, detail=f"save before compile failed: {exc}") from exc
+
+    return _compile_one(session, body.firewall_id, body.ipv)
+
+
+@router.post("/{session_id}/compile-all")
+def compile_all_firewalls(
+    session_id: str,
+    body: CompileAllRequest | None = None,
+    _: str = Depends(require_token),
+) -> dict[str, Any]:
+    """Compile every non-standard Firewall in the open project."""
+    body = body or CompileAllRequest()
+    try:
+        session = store.get(session_id)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail="session not found") from exc
+
+    try:
+        session.bridge.request("save")
+    except BridgeError as exc:
+        raise HTTPException(status_code=500, detail=f"save before compile failed: {exc}") from exc
+
+    try:
+        found = session.bridge.request("search", q="", type="Firewall", limit=200)
+    except BridgeError as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+    results: list[dict[str, Any]] = []
+    firewalls = [
+        r
+        for r in (found.get("results") or [])
+        if r.get("type") == "Firewall" and not str(r.get("id", "")).startswith("std")
+    ]
+    for fw in firewalls:
+        fid = str(fw.get("id") or "")
+        entry: dict[str, Any] = {
+            "firewall_id": fid,
+            "name": fw.get("name"),
+            "ok": False,
+        }
+        try:
+            result = _compile_one(session, fid, body.ipv)
+            entry["ok"] = True
+            entry["platform"] = result.get("platform")
+            entry["outputs"] = result.get("outputs") or []
+            entry["destdir"] = result.get("destdir")
+            entry["log"] = result.get("log") or ""
+        except HTTPException as exc:
+            detail = exc.detail
+            if isinstance(detail, dict):
+                entry["error"] = detail.get("message") or str(detail)
+                entry["exit_code"] = detail.get("exit_code")
+                entry["log"] = detail.get("log") or ""
+            else:
+                entry["error"] = str(detail)
+            if not body.continue_on_error:
+                return {
+                    "ok": False,
+                    "count": len(results) + 1,
+                    "succeeded": sum(1 for r in results if r.get("ok")),
+                    "failed": sum(1 for r in results if not r.get("ok")) + 1,
+                    "results": results + [entry],
+                }
+        results.append(entry)
+
+    succeeded = sum(1 for r in results if r.get("ok"))
+    failed = len(results) - succeeded
+    return {
+        "ok": failed == 0,
+        "count": len(results),
+        "succeeded": succeeded,
+        "failed": failed,
+        "results": results,
+    }
 
 
 @router.get("/{session_id}/compile/outputs")
