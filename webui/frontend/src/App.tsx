@@ -1021,6 +1021,36 @@ export function App() {
     }
   }
 
+  async function onRenameRuleset() {
+    if (!sessionId || !rulesetId || !rulesFwId) return;
+    const next = window.prompt("Rename ruleset", rulesetName || "");
+    if (next === null) return;
+    const name = next.trim();
+    if (!name || name === rulesetName) return;
+    setBusy(true);
+    setError(null);
+    try {
+      await updateObject(sessionId, rulesetId, { name });
+      setDirty(true);
+      setStatus(`Ruleset renamed → ${name}`);
+      await loadRules(rulesFwId, rulesWhich, rulesetId);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  function onCopySelectedRuleJson() {
+    const rule = visibleRules.find((r) => r.id === selectedRuleId);
+    if (!rule) return;
+    const text = JSON.stringify(rule, null, 2);
+    void navigator.clipboard.writeText(text).then(
+      () => setStatus("Copied rule JSON"),
+      () => setError("Clipboard write failed"),
+    );
+  }
+
   function rulesToTsv(): string {
     const cols = [
       "pos",
@@ -1602,7 +1632,12 @@ export function App() {
     setError(null);
     try {
       const res = await searchObjects(sessionId, searchQ, searchType);
-      setSearchHits(res.results ?? []);
+      const sorted = [...(res.results ?? [])].sort((a, b) => {
+        const t = (a.type || "").localeCompare(b.type || "");
+        if (t !== 0) return t;
+        return (a.name || "").localeCompare(b.name || "");
+      });
+      setSearchHits(sorted);
       setStatus(`Search: ${res.count} hits${searchType ? ` · ${searchType}` : ""}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
@@ -2237,6 +2272,17 @@ export function App() {
                       </select>
                     </label>
                   ) : null}
+                  {rulesetId ? (
+                    <button
+                      type="button"
+                      className="ghost"
+                      disabled={!canOperate}
+                      onClick={() => void onRenameRuleset()}
+                      title="Rename the current ruleset"
+                    >
+                      Rename…
+                    </button>
+                  ) : null}
                   {rulesetId &&
                   !rulesetList.find((r) => r.id === rulesetId)?.top ? (
                     <button
@@ -2423,6 +2469,15 @@ export function App() {
                     onClick={() => void onDuplicateRule()}
                   >
                     Duplicate
+                  </button>
+                  <button
+                    type="button"
+                    className="ghost"
+                    disabled={!selectedRuleId}
+                    onClick={onCopySelectedRuleJson}
+                    title="Copy selected rule as JSON"
+                  >
+                    Copy rule JSON
                   </button>
                   <button
                     type="button"
