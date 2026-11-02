@@ -37,6 +37,7 @@ import { ObjectDetail } from "./components/ObjectDetail";
 import { ObjectPicker } from "./components/ObjectPicker";
 import { ObjectTree } from "./components/ObjectTree";
 import { RuleGrid } from "./components/RuleGrid";
+import { RuleMeta } from "./components/RuleMeta";
 import { RuleOptions } from "./components/RuleOptions";
 
 type Theme = "light" | "dark";
@@ -139,13 +140,13 @@ export function App() {
     setStatus(`${rulesWhich} · ${data.rules?.length ?? 0} rules`);
   }
 
-  async function onSave() {
+  async function onSave(writeThrough = false) {
     if (!sessionId) return;
     setBusy(true);
     setError(null);
     try {
-      const res = await saveProject(sessionId, false);
-      setStatus(`Saved: ${res.path}`);
+      const res = await saveProject(sessionId, writeThrough);
+      setStatus(writeThrough ? `Saved + write-through: ${res.path}` : `Saved: ${res.path}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
@@ -460,8 +461,17 @@ export function App() {
           <button type="button" onClick={onOpen} disabled={busy}>
             Open
           </button>
-          <button type="button" onClick={onSave} disabled={!canOperate}>
+          <button type="button" onClick={() => void onSave(false)} disabled={!canOperate}>
             Save
+          </button>
+          <button
+            type="button"
+            className="ghost"
+            onClick={() => void onSave(true)}
+            disabled={!canOperate}
+            title="Also copy workspace file back to the original path"
+          >
+            Save through
           </button>
           <button type="button" onClick={onClose} disabled={!canOperate}>
             Close
@@ -728,15 +738,28 @@ export function App() {
                 onDropObject={onDropObject}
               />
               {sessionId && selectedRuleId ? (
-                <RuleOptions
-                  sessionId={sessionId}
-                  ruleId={selectedRuleId}
-                  ruleKind={rulesWhich}
-                  busy={busy}
-                  onBusy={setBusy}
-                  onStatus={setStatus}
-                  onError={setError}
-                />
+                <>
+                  {rules.find((r) => r.id === selectedRuleId) ? (
+                    <RuleMeta
+                      sessionId={sessionId}
+                      rule={rules.find((r) => r.id === selectedRuleId)!}
+                      busy={busy}
+                      onBusy={setBusy}
+                      onStatus={setStatus}
+                      onError={setError}
+                      onSaved={() => void refreshRules()}
+                    />
+                  ) : null}
+                  <RuleOptions
+                    sessionId={sessionId}
+                    ruleId={selectedRuleId}
+                    ruleKind={rulesWhich}
+                    busy={busy}
+                    onBusy={setBusy}
+                    onStatus={setStatus}
+                    onError={setError}
+                  />
+                </>
               ) : null}
               {compileOutputs.length ? (
                 <div className="btn-row pad">

@@ -44,6 +44,7 @@ export type NatRule = {
   action: string;
   rule_type?: string;
   comment: string;
+  group?: string;
   osrc?: RuleElement;
   odst?: RuleElement;
   osrv?: RuleElement;
@@ -60,6 +61,7 @@ export type RoutingRuleRow = {
   metric: number;
   rule_type?: string;
   comment: string;
+  group?: string;
   rdst?: RuleElement;
   rgtw?: RuleElement;
   ritf?: RuleElement;
@@ -225,6 +227,7 @@ export function updateRule(
   body: {
     disabled?: boolean;
     comment?: string;
+    group?: string;
     action?: string;
     direction?: string;
     logging?: boolean;

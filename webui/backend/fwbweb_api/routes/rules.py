@@ -15,6 +15,7 @@ router = APIRouter(prefix="/api/v1/projects", tags=["rules"])
 class UpdateRuleRequest(BaseModel):
     disabled: bool | None = None
     comment: str | None = None
+    group: str | None = None
     action: str | None = None
     direction: str | None = None
     logging: bool | None = None

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Phase-12: duplicate_rule.
+# Phase-12: duplicate_rule + negate + rule meta (group/comment).
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$ROOT"
@@ -35,49 +35,60 @@ curl -sf "${auth[@]}" -d "{\"path\":\"$FIX\",\"copy_to_workspace\":true}" \
 SID=$(python3 -c 'import json; print(json.load(open("'"$TMP"'/open.json"))["session_id"])')
 FW=id2679X30989
 
-curl -sf "${auth[@]}" \
-  "http://127.0.0.1:$PORT/api/v1/projects/$SID/rulesets/$FW?which=policy" >"$TMP/rules.json"
-COUNT_BEFORE=$(python3 -c 'import json; print(len(json.load(open("'"$TMP"'/rules.json"))["rules"]))')
-RID=$(python3 -c 'import json; print(json.load(open("'"$TMP"'/rules.json"))["rules"][0]["id"])')
-echo "rule=$RID count=$COUNT_BEFORE"
-
-COPY=$(curl -sf "${auth[@]}" -X POST -d '{}' \
-  "http://127.0.0.1:$PORT/api/v1/projects/$SID/rules/$RID/duplicate" \
-  | python3 -c 'import sys,json;print(json.load(sys.stdin)["id"])')
-echo "copy=$COPY"
-test "$COPY" != "$RID"
-
-curl -sf "${auth[@]}" \
-  "http://127.0.0.1:$PORT/api/v1/projects/$SID/rulesets/$FW?which=policy" >"$TMP/rules2.json"
 python3 - <<PY
-import json
-d=json.load(open("$TMP/rules2.json"))
-ids=[r["id"] for r in d["rules"]]
-assert "$COPY" in ids, ids
-assert len(d["rules"]) == $COUNT_BEFORE + 1, (len(d["rules"]), $COUNT_BEFORE)
-# copy should sit after source
-src_pos=next(r["position"] for r in d["rules"] if r["id"]=="$RID")
-cpy_pos=next(r["position"] for r in d["rules"] if r["id"]=="$COPY")
+import json, urllib.request
+H={"Authorization":"Bearer $TOKEN","Content-Type":"application/json"}
+base=f"http://127.0.0.1:$PORT/api/v1/projects/$SID"
+
+def get(path):
+    return json.load(urllib.request.urlopen(urllib.request.Request(base+path, headers=H)))
+
+def post(path, body=None):
+    data=b"{}" if body is None else json.dumps(body).encode()
+    req=urllib.request.Request(base+path, data=data, method="POST", headers=H)
+    return json.load(urllib.request.urlopen(req))
+
+def patch(path, body):
+    data=json.dumps(body).encode()
+    req=urllib.request.Request(base+path, data=data, method="PATCH", headers=H)
+    return json.load(urllib.request.urlopen(req))
+
+def delete(path):
+    req=urllib.request.Request(base+path, method="DELETE", headers=H)
+    return json.load(urllib.request.urlopen(req))
+
+rules=get(f"/rulesets/$FW?which=policy")["rules"]
+count_before=len(rules)
+rid=rules[0]["id"]
+print("rule", rid, "count", count_before)
+
+copy=post(f"/rules/{rid}/duplicate")
+cid=copy["id"]
+assert cid != rid, copy
+print("copy", cid)
+
+rules2=get(f"/rulesets/$FW?which=policy")["rules"]
+ids=[r["id"] for r in rules2]
+assert cid in ids, ids
+assert len(rules2)==count_before+1, (len(rules2), count_before)
+src_pos=next(r["position"] for r in rules2 if r["id"]==rid)
+cpy_pos=next(r["position"] for r in rules2 if r["id"]==cid)
 print("positions", src_pos, cpy_pos)
 assert cpy_pos == src_pos + 1, (src_pos, cpy_pos)
-# negate on source rule src element, then restore
-import urllib.request
-H={"Authorization":"Bearer $TOKEN","Content-Type":"application/json"}
-def post(path, body):
-    data=json.dumps(body).encode()
-    req=urllib.request.Request(
-      f"http://127.0.0.1:$PORT/api/v1/projects/$SID"+path,
-      data=data, method="POST", headers=H)
-    return json.load(urllib.request.urlopen(req))
-negged=post(f"/rules/$RID/neg", {"element":"src","neg":True})
+
+negged=post(f"/rules/{rid}/neg", {"element":"src","neg":True})
 assert (negged.get("src") or {}).get("neg") is True, negged
-restored=post(f"/rules/$RID/neg", {"element":"src","neg":False})
+restored=post(f"/rules/{rid}/neg", {"element":"src","neg":False})
 assert (restored.get("src") or {}).get("neg") is False, restored
 print("negate ok")
-req=urllib.request.Request(
-  f"http://127.0.0.1:$PORT/api/v1/projects/$SID/rules/$COPY",
-  method="DELETE", headers={"Authorization":"Bearer $TOKEN"})
-urllib.request.urlopen(req).read()
+
+meta=patch(f"/rules/{rid}", {"group":"webui-e2e-group","comment":"e2e meta"})
+assert meta.get("group")=="webui-e2e-group", meta
+assert meta.get("comment")=="e2e meta", meta
+print("meta ok")
+patch(f"/rules/{rid}", {"group":"","comment":""})
+
+delete(f"/rules/{cid}")
 print("cleaned")
 PY
 

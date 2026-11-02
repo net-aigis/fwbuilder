@@ -585,6 +585,10 @@ static QJsonObject handle(const QJsonObject &req)
                 rule->setComment(
                     req.value(QStringLiteral("comment")).toString().toUtf8().constData());
             }
+            if (req.contains(QStringLiteral("group"))) {
+                rule->setRuleGroupName(
+                    req.value(QStringLiteral("group")).toString().toUtf8().constData());
+            }
             if (PolicyRule *pr = PolicyRule::cast(rule)) {
                 if (req.contains(QStringLiteral("action")))
                     pr->setAction(

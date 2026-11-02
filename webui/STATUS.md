@@ -41,6 +41,8 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Where-used references | done | bridge `where_used` + panel; E2E phase10 |
 | Group members add/remove | done | bridge `members`/`add_member`/`remove_member`; E2E phase11 |
 | Duplicate rule + negate cell | done | `duplicate_rule` + picker Toggle negate; E2E phase12 |
+| Rule meta (group/comment/direction/logging) | done | RuleMeta panel + `update_rule` group; E2E phase12 |
+| Save write-through | done | Save through button → `write_through` |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Phase 3 — compile / deploy
