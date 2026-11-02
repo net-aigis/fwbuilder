@@ -18,6 +18,7 @@ import {
   saveProject,
   searchObjects,
   removeRuleRef,
+  setObjectRo,
   setRuleAny,
   setRuleNeg,
   setToken,
@@ -72,6 +73,7 @@ export function App() {
   const [picker, setPicker] = useState<PickerTarget | null>(null);
   const [compileLog, setCompileLog] = useState<string | null>(null);
   const [compileOutputs, setCompileOutputs] = useState<string[]>([]);
+  const [dirty, setDirty] = useState(false);
 
   const canOperate = useMemo(() => Boolean(sessionId) && !busy, [sessionId, busy]);
 
@@ -89,6 +91,7 @@ export function App() {
       setTab("object");
       setCompileLog(null);
       setCompileOutputs([]);
+      setDirty(Boolean(t.dirty));
       setStatus(`Open: ${t.path}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
@@ -149,6 +152,7 @@ export function App() {
     setError(null);
     try {
       const res = await saveProject(sessionId, writeThrough);
+      setDirty(false);
       setStatus(writeThrough ? `Saved + write-through: ${res.path}` : `Saved: ${res.path}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
@@ -168,9 +172,28 @@ export function App() {
     try {
       const updated = await updateObject(sessionId, selected.id, patch);
       setSelected(updated);
+      setDirty(true);
       const t = await fetchTree(sessionId, 5);
       setTree(t.root);
       setStatus(`Updated ${updated.name}`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function onToggleRo() {
+    if (!sessionId || !selected) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const updated = await setObjectRo(sessionId, selected.id, !selected.ro);
+      setSelected(updated);
+      setDirty(true);
+      const t = await fetchTree(sessionId, 5);
+      setTree(t.root);
+      setStatus(`${updated.ro ? "Locked" : "Unlocked"} ${updated.name}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
@@ -186,6 +209,7 @@ export function App() {
     try {
       await deleteObject(sessionId, selected.id);
       setSelected(null);
+      setDirty(true);
       const t = await fetchTree(sessionId, 5);
       setTree(t.root);
       setStatus("Object deleted");
@@ -225,6 +249,7 @@ export function App() {
     setError(null);
     try {
       await updateRule(sessionId, rule.id, { disabled: !rule.disabled });
+      setDirty(true);
       await refreshRules();
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
@@ -239,6 +264,7 @@ export function App() {
     setError(null);
     try {
       await updateRule(sessionId, rule.id, { action });
+      setDirty(true);
       await refreshRules();
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
@@ -275,6 +301,7 @@ export function App() {
         position: selected?.position,
       });
       setSelectedRuleId(created.id);
+      setDirty(true);
       await refreshRules();
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
@@ -611,6 +638,14 @@ export function App() {
                       <button
                         type="button"
                         className="ghost"
+                        disabled={busy || selected.type === "FWObjectDatabase"}
+                        onClick={() => void onToggleRo()}
+                      >
+                        {selected.ro ? "Unlock" : "Lock"}
+                      </button>
+                      <button
+                        type="button"
+                        className="ghost"
                         disabled={busy || selected.ro}
                         onClick={() => void onDuplicateObject()}
                       >
@@ -855,6 +890,7 @@ export function App() {
 
       <footer className="statusbar">
         <span>{status}</span>
+        {dirty ? <span className="dirty-flag">Unsaved</span> : null}
         {busy ? <span className="muted">Working…</span> : null}
         {error ? <span className="error">{error}</span> : null}
       </footer>

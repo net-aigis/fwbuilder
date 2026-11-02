@@ -27,6 +27,7 @@ const TYPE_FIELDS: Record<string, string[]> = {
   CustomService: ["protocol", "address_family", "code"],
   TCPService: ["src_range_start", "src_range_end", "dst_range_start", "dst_range_end"],
   UDPService: ["src_range_start", "src_range_end", "dst_range_start", "dst_range_end"],
+  TCPUDPService: ["src_range_start", "src_range_end", "dst_range_start", "dst_range_end"],
   ICMPService: ["type", "code"],
   ICMP6Service: ["type", "code"],
   IPService: ["protocol_num"],

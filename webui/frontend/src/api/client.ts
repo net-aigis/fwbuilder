@@ -133,6 +133,13 @@ export function updateObject(
   });
 }
 
+export function setObjectRo(sessionId: string, objectId: string, ro: boolean) {
+  return api<TreeNode>(
+    `/api/v1/projects/${sessionId}/objects/${encodeURIComponent(objectId)}/ro`,
+    { method: "POST", body: JSON.stringify({ ro }) },
+  );
+}
+
 export function createObject(
   sessionId: string,
   body: {

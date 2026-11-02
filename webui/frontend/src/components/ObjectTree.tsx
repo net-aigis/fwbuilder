@@ -17,6 +17,14 @@ export function ObjectTree({ node, selectedId, onSelect, depth = 0 }: Props) {
     typeof node.attrs?.color === "string" && node.attrs.color.trim()
       ? node.attrs.color.trim()
       : null;
+  const hint = (() => {
+    const a = node.attrs ?? {};
+    for (const key of ["address", "dnsname", "filename", "tagcode", "userid", "phys_address"]) {
+      const v = a[key];
+      if (v !== undefined && v !== null && String(v).trim()) return String(v);
+    }
+    return null;
+  })();
 
   return (
     <div className="tree-node" style={{ paddingLeft: depth === 0 ? 0 : 12 }}>
@@ -50,6 +58,7 @@ export function ObjectTree({ node, selectedId, onSelect, depth = 0 }: Props) {
           ) : null}
           <span className="tree-type">{node.type}</span>
           <span className="tree-name">{node.name || "(unnamed)"}</span>
+          {hint ? <span className="tree-hint">{hint}</span> : null}
         </button>
       </div>
       {open

@@ -1137,6 +1137,44 @@ static QJsonObject handle(const QJsonObject &req)
         return o;
     }
 
+    if (cmd == QStringLiteral("set_ro")) {
+        if (!g_db)
+            return errObj(QStringLiteral("no project open"));
+        const string sid =
+            req.value(QStringLiteral("id")).toString().toUtf8().constData();
+        FWObject *obj = findByIdString(g_db, sid);
+        if (!obj)
+            return errObj(QStringLiteral("object not found"));
+        if (obj == g_db)
+            return errObj(QStringLiteral("cannot lock database root"));
+        if (!req.contains(QStringLiteral("ro")))
+            return errObj(QStringLiteral("ro required"));
+        // System standard library stays locked.
+        FWObject *lib = obj;
+        while (lib && !Library::cast(lib))
+            lib = lib->getParent();
+        const bool unlocking = !req.value(QStringLiteral("ro")).toBool();
+        if (unlocking && Library::cast(lib)) {
+            const string lid = FWObjectDatabase::getStringId(lib->getId());
+            const string lname = lib->getName();
+            if (lname == "Standard" || lid.find("syslib") == 0 || lid.find("std") == 0)
+                return errObj(QStringLiteral("cannot unlock Standard library objects"));
+            if (lib->isReadOnly() && obj != lib)
+                return errObj(QStringLiteral("cannot unlock object in read-only library"));
+        }
+        try {
+            obj->setReadOnly(req.value(QStringLiteral("ro")).toBool());
+            g_dirty = true;
+            g_db->setDirty(true);
+            QJsonObject o = okObj();
+            o.insert(QStringLiteral("dirty"), true);
+            o.insert(QStringLiteral("object"), objectToJson(obj, 0, 1));
+            return o;
+        } catch (FWException &ex) {
+            return errObj(u8(ex.toString()));
+        }
+    }
+
     if (cmd == QStringLiteral("update")) {
         if (!g_db)
             return errObj(QStringLiteral("no project open"));

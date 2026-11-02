@@ -316,6 +316,28 @@ def update_object(
     return data.get("object") or {}
 
 
+class SetRoRequest(BaseModel):
+    ro: bool
+
+
+@router.post("/{session_id}/objects/{object_id}/ro")
+def set_object_ro(
+    session_id: str,
+    object_id: str,
+    body: SetRoRequest,
+    _: str = Depends(require_token),
+) -> dict[str, Any]:
+    try:
+        session = store.get(session_id)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail="session not found") from exc
+    try:
+        data = session.bridge.request("set_ro", id=object_id, ro=body.ro)
+    except BridgeError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    return data.get("object") or {}
+
+
 @router.post("/{session_id}/save")
 def save_project(
     session_id: str,

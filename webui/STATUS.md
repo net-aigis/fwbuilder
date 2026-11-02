@@ -56,6 +56,10 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Insert rule before/after | done | toolbar + `add_rule` where; E2E phase17 |
 | IPv6 / AttachedNetworks create | done | CreateObject under iface/host; E2E phase17 |
 | Tree color swatch + collapse | done | ObjectTree swatch/twisties |
+| Object lock/unlock (RO) | done | `set_ro` + Lock/Unlock; E2E phase18 |
+| Unsaved dirty flag | done | statusbar after mutations |
+| ICMP6Service create | done | CreateObject + typed fields; E2E phase18 |
+| Tree address/hint | done | ObjectTree hint from attrs |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Phase 3 — compile / deploy
@@ -84,6 +88,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase15 (remove ref + MAC + color) | done | `e2e-phase15.sh` **OK** |
 | Local E2E phase16 (AT/Tag/User/When/NAT/metric) | done | `e2e-phase16.sh` **OK** |
 | Local E2E phase17 (insert + IPv6 + AttachedNetworks) | done | `e2e-phase17.sh` **OK** |
+| Local E2E phase18 (lock/unlock + ICMP6) | done | `e2e-phase18.sh` **OK** |
 
 ## Local commands
 
@@ -110,6 +115,7 @@ bash webui/scripts/e2e-phase14.sh
 bash webui/scripts/e2e-phase15.sh
 bash webui/scripts/e2e-phase16.sh
 bash webui/scripts/e2e-phase17.sh
+bash webui/scripts/e2e-phase18.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```
