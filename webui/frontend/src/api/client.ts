@@ -311,10 +311,13 @@ export function moveRule(
   );
 }
 
-export function duplicateRule(sessionId: string, ruleId: string) {
+export function duplicateRule(sessionId: string, ruleId: string, rulesetId?: string) {
   return api<AnyRule>(
     `/api/v1/projects/${sessionId}/rules/${encodeURIComponent(ruleId)}/duplicate`,
-    { method: "POST", body: "{}" },
+    {
+      method: "POST",
+      body: JSON.stringify(rulesetId ? { ruleset_id: rulesetId } : {}),
+    },
   );
 }
 

@@ -144,18 +144,30 @@ def move_rule(
     return data.get("rule") or {}
 
 
+class DuplicateRuleRequest(BaseModel):
+    ruleset_id: str | None = Field(
+        default=None,
+        description="Copy into this ruleset (same kind). Default: duplicate in place.",
+    )
+
+
 @router.post("/{session_id}/rules/{rule_id}/duplicate")
 def duplicate_rule(
     session_id: str,
     rule_id: str,
+    body: DuplicateRuleRequest | None = None,
     _: str = Depends(require_token),
 ) -> dict[str, Any]:
+    body = body or DuplicateRuleRequest()
     try:
         session = store.get(session_id)
     except KeyError as exc:
         raise HTTPException(status_code=404, detail="session not found") from exc
+    payload: dict[str, Any] = {"id": rule_id}
+    if body.ruleset_id:
+        payload["ruleset_id"] = body.ruleset_id
     try:
-        data = session.bridge.request("duplicate_rule", id=rule_id)
+        data = session.bridge.request("duplicate_rule", **payload)
     except BridgeError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     return data.get("rule") or {}

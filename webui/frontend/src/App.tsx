@@ -578,8 +578,43 @@ export function App() {
     try {
       const copy = await duplicateRule(sessionId, selectedRuleId);
       setSelectedRuleId(copy.id);
+      setDirty(true);
       setStatus(`Rule duplicated → ${copy.id}`);
       await refreshRules();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function onCopyRuleToRuleset() {
+    if (!sessionId || !selectedRuleId || !rulesFwId) return;
+    const wantType = rulesWhich === "nat" ? "NAT" : rulesWhich === "routing" ? "Routing" : "Policy";
+    const candidates = rulesetList.filter(
+      (r) => r.type === wantType && r.id !== rulesetId,
+    );
+    if (!candidates.length) {
+      setError(`No other ${wantType} ruleset on this firewall`);
+      return;
+    }
+    const labels = candidates.map((c, i) => `${i + 1}. ${c.name}${c.top ? " (top)" : ""}`).join("\n");
+    const raw = window.prompt(`Copy selected rule to which ${wantType}?\n${labels}\nEnter number:`, "1");
+    if (raw === null) return;
+    const idx = Number(raw) - 1;
+    if (!Number.isFinite(idx) || idx < 0 || idx >= candidates.length) {
+      setError("invalid ruleset choice");
+      return;
+    }
+    const target = candidates[idx];
+    setBusy(true);
+    setError(null);
+    try {
+      const copy = await duplicateRule(sessionId, selectedRuleId, target.id);
+      setDirty(true);
+      setStatus(`Copied rule → ${target.name} (${copy.id})`);
+      await loadRules(rulesFwId, rulesWhich, target.id);
+      setSelectedRuleId(copy.id);
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
@@ -1304,6 +1339,15 @@ export function App() {
                     onClick={() => void onDuplicateRule()}
                   >
                     Duplicate
+                  </button>
+                  <button
+                    type="button"
+                    className="ghost"
+                    disabled={!canOperate || !selectedRuleId}
+                    onClick={() => void onCopyRuleToRuleset()}
+                    title="Copy into another Policy/NAT/Routing on this firewall"
+                  >
+                    Copy to ruleset…
                   </button>
                   <button
                     type="button"

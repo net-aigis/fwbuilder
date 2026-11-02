@@ -99,6 +99,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Tree name/type filter | done | ObjectTree filter prop |
 | Alt+Up/Down move rule | done | rules tab keyboard |
 | List open sessions | done | `GET /api/v1/sessions`; E2E phase30 |
+| Copy rule to other ruleset | done | `duplicate_rule` + `ruleset_id`; E2E phase31 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Phase 3 — compile / deploy
@@ -140,6 +141,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase28 (IP/Custom create + compile zip) | done | `e2e-phase28.sh` **OK** |
 | Local E2E phase29 (ICMP/color/platforms/dup) | done | `e2e-phase29.sh` **OK** |
 | Local E2E phase30 (sessions + rule move) | done | `e2e-phase30.sh` **OK** |
+| Local E2E phase31 (copy rule to ruleset) | done | `e2e-phase31.sh` **OK** |
 
 ## Local commands
 
@@ -179,6 +181,7 @@ bash webui/scripts/e2e-phase27.sh
 bash webui/scripts/e2e-phase28.sh
 bash webui/scripts/e2e-phase29.sh
 bash webui/scripts/e2e-phase30.sh
+bash webui/scripts/e2e-phase31.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

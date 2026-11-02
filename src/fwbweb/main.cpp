@@ -1107,19 +1107,36 @@ static QJsonObject handle(const QJsonObject &req)
         Rule *src = Rule::cast(obj);
         if (!src)
             return errObj(QStringLiteral("not a rule"));
-        RuleSet *rs = RuleSet::cast(src->getParent());
-        if (!rs)
+        RuleSet *src_rs = RuleSet::cast(src->getParent());
+        if (!src_rs)
             return errObj(QStringLiteral("rule has no ruleset parent"));
+        RuleSet *rs = src_rs;
+        const string target_sid =
+            req.value(QStringLiteral("ruleset_id")).toString().toUtf8().constData();
+        if (!target_sid.empty()) {
+            FWObject *t = findByIdString(g_db, target_sid);
+            rs = RuleSet::cast(t);
+            if (!rs)
+                return errObj(QStringLiteral("target ruleset not found"));
+            // Same concrete ruleset kind only (Policy↔Policy, NAT↔NAT, …).
+            if (string(rs->getTypeName()) != string(src_rs->getTypeName()))
+                return errObj(QStringLiteral("target ruleset type mismatch"));
+        }
         if (rs->isReadOnly())
             return errObj(QStringLiteral("object is read-only"));
         try {
-            Rule *created = rs->appendRuleAfter(src->getPosition());
+            Rule *created = nullptr;
+            if (rs == src_rs)
+                created = rs->appendRuleAfter(src->getPosition());
+            else
+                created = rs->appendRuleAtBottom();
             if (!created)
                 return errObj(QStringLiteral("failed to create rule"));
             const int pos = created->getPosition();
             // Keep the new rule's id; copy content from source (desktop GUI pattern).
             created->duplicate(src);
             created->setPosition(pos);
+            bumpFirewallModified(created);
             g_dirty = true;
             g_db->setDirty(true);
             QJsonObject o = okObj();
