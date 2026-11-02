@@ -29,6 +29,7 @@ import { FirewallExtras } from "./components/FirewallExtras";
 import { HostOptions } from "./components/HostOptions";
 import { InterfaceOptions } from "./components/InterfaceOptions";
 import { MoveObject } from "./components/MoveObject";
+import { WhereUsed } from "./components/WhereUsed";
 import { ObjectDetail } from "./components/ObjectDetail";
 import { ObjectPicker } from "./components/ObjectPicker";
 import { ObjectTree } from "./components/ObjectTree";
@@ -573,6 +574,17 @@ export function App() {
                         onStatus={setStatus}
                         onError={setError}
                         onMoved={(id) => void refreshTreeSelect(id)}
+                      />
+                    ) : null}
+                    {!["FWObjectDatabase"].includes(selected.type) ? (
+                      <WhereUsed
+                        sessionId={sessionId}
+                        objectId={selected.id}
+                        busy={busy}
+                        onBusy={setBusy}
+                        onStatus={setStatus}
+                        onError={setError}
+                        onSelect={(id) => void refreshTreeSelect(id)}
                       />
                     ) : null}
                     {["ObjectGroup", "Library", "ServiceGroup", "FWObjectDatabase", "Firewall", "Host", "Cluster"].includes(

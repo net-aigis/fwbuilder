@@ -217,6 +217,22 @@ def duplicate_object(
     return data.get("object") or data
 
 
+@router.get("/{session_id}/objects/{object_id}/where-used")
+def where_used(
+    session_id: str,
+    object_id: str,
+    _: str = Depends(require_token),
+) -> dict[str, Any]:
+    try:
+        session = store.get(session_id)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail="session not found") from exc
+    try:
+        return session.bridge.request("where_used", id=object_id)
+    except BridgeError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
 @router.patch("/{session_id}/objects/{object_id}")
 def update_object(
     session_id: str,

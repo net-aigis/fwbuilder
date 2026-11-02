@@ -172,6 +172,21 @@ export function duplicateObject(
   );
 }
 
+export function fetchWhereUsed(sessionId: string, objectId: string) {
+  return api<{
+    object_id: string;
+    count: number;
+    uses: Array<{
+      id: string;
+      name: string;
+      type: string;
+      parent_id?: string;
+      parent_name?: string;
+      parent_type?: string;
+    }>;
+  }>(`/api/v1/projects/${sessionId}/objects/${encodeURIComponent(objectId)}/where-used`);
+}
+
 export function fetchRuleset(
   sessionId: string,
   objectId: string,

@@ -39,6 +39,7 @@
 
 #include <iostream>
 #include <list>
+#include <set>
 #include <string>
 #include <cctype>
 
@@ -1133,6 +1134,59 @@ static QJsonObject handle(const QJsonObject &req)
         } catch (FWException &ex) {
             return errObj(u8(ex.toString()));
         }
+    }
+
+    if (cmd == QStringLiteral("where_used")) {
+        if (!g_db)
+            return errObj(QStringLiteral("no project open"));
+        const string sid =
+            req.value(QStringLiteral("id")).toString().toUtf8().constData();
+        FWObject *obj = findByIdString(g_db, sid);
+        if (!obj)
+            return errObj(QStringLiteral("object not found"));
+        set<FWObject *> refs;
+        try {
+            g_db->findWhereObjectIsUsed(obj, g_db, refs);
+        } catch (FWException &ex) {
+            return errObj(u8(ex.toString()));
+        }
+        QJsonArray uses;
+        for (set<FWObject *>::const_iterator it = refs.begin();
+             it != refs.end(); ++it) {
+            FWObject *hit = *it;
+            if (!hit)
+                continue;
+            FWObject *display = hit;
+            if (FWReference::cast(hit) && hit->getParent())
+                display = hit->getParent();
+            // Walk up from rule elements to the rule for clearer UI.
+            FWObject *ctx = display;
+            while (ctx && RuleElement::cast(ctx))
+                ctx = ctx->getParent();
+            if (ctx)
+                display = ctx;
+            QJsonObject row;
+            row.insert(QStringLiteral("id"),
+                       u8(FWObjectDatabase::getStringId(display->getId())));
+            row.insert(QStringLiteral("name"), u8(display->getName()));
+            row.insert(QStringLiteral("type"), u8(display->getTypeName()));
+            if (display->getParent()) {
+                row.insert(QStringLiteral("parent_id"),
+                           u8(FWObjectDatabase::getStringId(
+                               display->getParent()->getId())));
+                row.insert(QStringLiteral("parent_name"),
+                           u8(display->getParent()->getName()));
+                row.insert(QStringLiteral("parent_type"),
+                           u8(display->getParent()->getTypeName()));
+            }
+            uses.append(row);
+        }
+        QJsonObject o = okObj();
+        o.insert(QStringLiteral("object_id"),
+                 u8(FWObjectDatabase::getStringId(obj->getId())));
+        o.insert(QStringLiteral("count"), uses.size());
+        o.insert(QStringLiteral("uses"), uses);
+        return o;
     }
 
     if (cmd == QStringLiteral("save")) {
