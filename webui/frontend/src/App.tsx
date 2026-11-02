@@ -1712,6 +1712,7 @@ export function App() {
               <option value="NetworkIPv6">NetworkIPv6</option>
               <option value="Host">Host</option>
               <option value="Firewall">Firewall</option>
+              <option value="Cluster">Cluster</option>
               <option value="Interface">Interface</option>
               <option value="AddressRange">AddressRange</option>
               <option value="DNSName">DNSName</option>
