@@ -11,7 +11,7 @@ This fork tracks **Qt6** builds and an optional **WebUI** that edits the same
 | Track | State |
 | --- | --- |
 | Desktop GUI (Qt6) | Builds on Linux; Win/Mac smoke via MinGW/local Podman (see `docker/`) |
-| WebUI (`feature/webui`) | Local-only: object tree, rules, compile/deploy, FirewallOptions grouped from `src/res`, compilers nft/ipt/pf/ipf/ipfw |
+| WebUI (`feature/webui`) | Local-only: object tree, rules, compile/deploy, option schema from `src/res`, compilers including nft/ipt/BSD/Cisco/Juniper/Procurve |
 | Full GUI parity | **Not** claimed — see [`webui/STATUS.md`](webui/STATUS.md) |
 
 ## WebUI (local, no GitHub Actions required)

@@ -43,7 +43,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase4 | done | `e2e-phase4.sh` **OK** |
 | Platform catalog from resources XML | done | `GET /api/v1/platforms` |
 | Compilers `fwb_pf` / `fwb_ipf` / `fwb_ipfw` | done | local Podman build; compile via XML `<compiler>` |
-| Cisco/Juniper compilers in WebUI image | open | dirs exist; not in default linux WebUI build yet |
+| Cisco/Juniper/Procurve compilers | done | `fwb_pix`, `fwb_iosacl`, `fwb_nxosacl`, `fwb_junosacl`, `fwb_procurve_acl` |
 | Local E2E phase5 | done | `e2e-phase5.sh` **OK** |
 
 ## Local commands

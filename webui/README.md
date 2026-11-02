@@ -14,7 +14,8 @@ See [ARCHITECTURE.md](ARCHITECTURE.md) and [STATUS.md](STATUS.md).
 - Compile (`fwb_nft` / `fwb_ipt`) through the same CLIs as the desktop GUI
 - Firewall platform/installer options + management address
 - Deploy dry-run / real `scp`+`ssh` (simplified; not the full Qt installer)
-- Platform/OS catalog and option groups from `src/res` (nft/ipt/pf/ipf/ipfw compilers)
+- Platform/OS catalog and option groups from `src/res`
+- Compilers: nft, ipt, pf, ipf, ipfw, pix, iosacl, nxosacl, junosacl, procurve_acl
 
 ## Local workflow (no GitHub Actions)
 

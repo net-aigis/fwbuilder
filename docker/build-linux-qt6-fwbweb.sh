@@ -78,6 +78,15 @@ if [[ "${SKIP_COMPILERS:-0}" != "1" ]]; then
     make -j"$JOBS" -C src/ipf 2>&1 | tee ci-logs-linux/ipf.log
     make -j"$JOBS" -C src/ipfw 2>&1 | tee ci-logs-linux/ipfw.log
   fi
+  if [[ "${CISCO_COMPILERS:-1}" != "0" ]]; then
+    make -j"$JOBS" -C src/cisco_lib 2>&1 | tee ci-logs-linux/cisco_lib.log
+    make -j"$JOBS" -C src/pix 2>&1 | tee ci-logs-linux/pix.log
+    make -j"$JOBS" -C src/iosacl 2>&1 | tee ci-logs-linux/iosacl.log
+    make -j"$JOBS" -C src/nxosacl 2>&1 | tee ci-logs-linux/nxosacl.log
+    make -j"$JOBS" -C src/juniper_lib 2>&1 | tee ci-logs-linux/juniper_lib.log
+    make -j"$JOBS" -C src/junosacl 2>&1 | tee ci-logs-linux/junosacl.log
+    make -j"$JOBS" -C src/procurve_acl 2>&1 | tee ci-logs-linux/procurve_acl.log
+  fi
 fi
 
 # Local resource tree for unpackaged runs (host wrapper / API).
@@ -91,8 +100,8 @@ cp -a src/libfwbuilder/migration webui/.res/
   echo "OK: $BIN"
   for c in \
     src/nft/fwb_nft src/ipt/fwb_ipt src/pf/fwb_pf src/ipf/fwb_ipf src/ipfw/fwb_ipfw \
-    src/nft/release/fwb_nft src/ipt/release/fwb_ipt src/pf/release/fwb_pf \
-    src/ipf/release/fwb_ipf src/ipfw/release/fwb_ipfw
+    src/pix/fwb_pix src/iosacl/fwb_iosacl src/nxosacl/fwb_nxosacl \
+    src/junosacl/fwb_junosacl src/procurve_acl/fwb_procurve_acl
   do
     [[ -x "$c" ]] && echo "OK: $c"
   done
