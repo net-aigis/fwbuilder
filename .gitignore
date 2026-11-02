@@ -35,6 +35,7 @@ fwbedit
 fwbweb
 !src/fwbweb/
 !src/fwbweb/**
+!webui/bin/fwbweb
 qrc_MainRes.cpp
 fwb_iosacl
 fwb_nxosacl
@@ -74,3 +75,5 @@ webui/backend/.venv/
 webui/backend/**/__pycache__/
 webui/backend/*.egg-info/
 webui/.workspace/
+webui/.res/
+ci-logs-linux/

@@ -1,10 +1,22 @@
+import { useEffect, useState } from "react";
 import type { TreeNode } from "../api/client";
 
 type Props = {
   object?: TreeNode | null;
+  readOnly?: boolean;
+  busy?: boolean;
+  onSave?: (patch: { name: string; comment: string }) => void;
 };
 
-export function ObjectDetail({ object }: Props) {
+export function ObjectDetail({ object, readOnly, busy, onSave }: Props) {
+  const [name, setName] = useState("");
+  const [comment, setComment] = useState("");
+
+  useEffect(() => {
+    setName(object?.name ?? "");
+    setComment(object?.comment ?? "");
+  }, [object?.id, object?.name, object?.comment]);
+
   if (!object) {
     return (
       <div className="panel empty">
@@ -14,6 +26,7 @@ export function ObjectDetail({ object }: Props) {
   }
 
   const attrs = object.attrs ?? {};
+  const locked = Boolean(readOnly || object.ro || !onSave);
 
   return (
     <div className="panel">
@@ -24,7 +37,34 @@ export function ObjectDetail({ object }: Props) {
           {object.ro ? " · read-only" : ""}
         </p>
       </header>
-      {object.comment ? <p className="comment">{object.comment}</p> : null}
+
+      <label className="field block">
+        Name
+        <input
+          value={name}
+          disabled={locked || busy}
+          onChange={(e) => setName(e.target.value)}
+        />
+      </label>
+      <label className="field block">
+        Comment
+        <textarea
+          value={comment}
+          disabled={locked || busy}
+          rows={4}
+          onChange={(e) => setComment(e.target.value)}
+        />
+      </label>
+      {!locked ? (
+        <button
+          type="button"
+          disabled={busy}
+          onClick={() => onSave?.({ name, comment })}
+        >
+          Apply object changes
+        </button>
+      ) : null}
+
       <dl className="attr-grid">
         {Object.entries(attrs).map(([k, v]) => (
           <div key={k} className="attr-row">

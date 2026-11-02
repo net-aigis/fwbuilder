@@ -102,12 +102,43 @@ def get_object(
     return data.get("object") or {}
 
 
+class UpdateRequest(BaseModel):
+    name: str | None = None
+    comment: str | None = None
+    attrs: dict[str, str] | None = None
+
+
 class SaveRequest(BaseModel):
     path: str | None = None
     write_through: bool = Field(
         default=False,
         description="Also copy saved workspace file back to the original path",
     )
+
+
+@router.patch("/{session_id}/objects/{object_id}")
+def update_object(
+    session_id: str,
+    object_id: str,
+    body: UpdateRequest,
+    _: str = Depends(require_token),
+) -> dict[str, Any]:
+    try:
+        session = store.get(session_id)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail="session not found") from exc
+    payload: dict[str, Any] = {"id": object_id}
+    if body.name is not None:
+        payload["name"] = body.name
+    if body.comment is not None:
+        payload["comment"] = body.comment
+    if body.attrs is not None:
+        payload["attrs"] = body.attrs
+    try:
+        data = session.bridge.request("update", **payload)
+    except BridgeError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    return data.get("object") or {}
 
 
 @router.post("/{session_id}/save")

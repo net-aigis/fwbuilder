@@ -7,6 +7,7 @@ import {
   openProject,
   saveProject,
   setToken,
+  updateObject,
   type TreeNode,
 } from "./api/client";
 import { ObjectDetail } from "./components/ObjectDetail";
@@ -19,7 +20,7 @@ export function App() {
     window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light",
   );
   const [token, setTokenState] = useState(getToken());
-  const [path, setPath] = useState("../fixtures/sample.fwb");
+  const [path, setPath] = useState("../fixtures/sample-v24.fwb");
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [tree, setTree] = useState<TreeNode | null>(null);
   const [selected, setSelected] = useState<TreeNode | null>(null);
@@ -72,6 +73,23 @@ export function App() {
     try {
       const res = await saveProject(sessionId, false);
       setStatus(`Saved: ${res.path}`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function onApplyObject(patch: { name: string; comment: string }) {
+    if (!sessionId || !selected) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const updated = await updateObject(sessionId, selected.id, patch);
+      setSelected(updated);
+      const t = await fetchTree(sessionId, 4);
+      setTree(t.root);
+      setStatus(`Updated ${updated.name}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
@@ -141,7 +159,11 @@ export function App() {
           )}
         </aside>
         <main className="main">
-          <ObjectDetail object={selected} />
+          <ObjectDetail
+            object={selected}
+            busy={busy}
+            onSave={sessionId ? onApplyObject : undefined}
+          />
         </main>
       </div>
 

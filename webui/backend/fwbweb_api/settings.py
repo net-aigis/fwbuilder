@@ -7,10 +7,11 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_prefix="FWBWEB_", env_file=".env", extra="ignore")
 
     api_token: str = "dev-token"
-    bridge: Path = Path("fwbweb")
-    workspace: Path = Path("./.workspace")
+    bridge: Path = Path("../bin/fwbweb")
+    workspace: Path = Path("../.workspace")
     bridge_timeout_sec: float = 120.0
     cors_origins: str = "http://127.0.0.1:5173,http://localhost:5173"
+    res_dir: Path | None = None
 
     @property
     def cors_origin_list(self) -> list[str]:

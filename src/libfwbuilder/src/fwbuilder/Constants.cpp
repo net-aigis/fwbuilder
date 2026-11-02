@@ -31,6 +31,8 @@
 #   include <sys/stat.h>
 #endif
 
+#include <stdlib.h>
+
 using namespace std;
 using namespace libfwbuilder;
 
@@ -38,6 +40,12 @@ string Constants::res_dir;
 
 void Constants::init(const std::string &app_root_dir)
 {
+    /* Optional override for unpackaged/dev runs (WebUI bridge, local trees). */
+    const char *env = getenv("FWBUILDER_RES_DIR");
+    if (env != nullptr && env[0] != '\0') {
+        res_dir = string(env);
+        return;
+    }
     if (app_root_dir.empty()) res_dir = string(RES_DIR);
     else res_dir = app_root_dir + FS_SEPARATOR + string(RES_DIR);
 }

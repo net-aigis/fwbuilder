@@ -54,6 +54,17 @@ export function fetchObject(sessionId: string, objectId: string) {
   return api<TreeNode>(`/api/v1/projects/${sessionId}/objects/${encodeURIComponent(objectId)}`);
 }
 
+export function updateObject(
+  sessionId: string,
+  objectId: string,
+  body: { name?: string; comment?: string; attrs?: Record<string, string> },
+) {
+  return api<TreeNode>(`/api/v1/projects/${sessionId}/objects/${encodeURIComponent(objectId)}`, {
+    method: "PATCH",
+    body: JSON.stringify(body),
+  });
+}
+
 export function saveProject(sessionId: string, writeThrough = false) {
   return api<{ ok: boolean; path: string }>(`/api/v1/projects/${sessionId}/save`, {
     method: "POST",

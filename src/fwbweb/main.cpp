@@ -191,6 +191,46 @@ static QJsonObject handle(const QJsonObject &req)
         return o;
     }
 
+    if (cmd == QStringLiteral("update")) {
+        if (!g_db)
+            return errObj(QStringLiteral("no project open"));
+        const string sid =
+            req.value(QStringLiteral("id")).toString().toUtf8().constData();
+        FWObject *obj = findByIdString(g_db, sid);
+        if (!obj)
+            return errObj(QStringLiteral("object not found"));
+        if (obj->isReadOnly())
+            return errObj(QStringLiteral("object is read-only"));
+
+        try {
+            if (req.contains(QStringLiteral("name"))) {
+                obj->setName(
+                    req.value(QStringLiteral("name")).toString().toUtf8().constData());
+            }
+            if (req.contains(QStringLiteral("comment"))) {
+                obj->setComment(
+                    req.value(QStringLiteral("comment")).toString().toUtf8().constData());
+            }
+            if (req.contains(QStringLiteral("attrs")) &&
+                req.value(QStringLiteral("attrs")).isObject()) {
+                QJsonObject attrs = req.value(QStringLiteral("attrs")).toObject();
+                for (auto it = attrs.begin(); it != attrs.end(); ++it) {
+                    const string key = it.key().toUtf8().constData();
+                    const string val = it.value().toString().toUtf8().constData();
+                    obj->setStr(key, val);
+                }
+            }
+            g_dirty = true;
+            g_db->setDirty(true);
+            QJsonObject o = okObj();
+            o.insert(QStringLiteral("dirty"), true);
+            o.insert(QStringLiteral("object"), objectToJson(obj, 0, 1));
+            return o;
+        } catch (FWException &ex) {
+            return errObj(u8(ex.toString()));
+        }
+    }
+
     if (cmd == QStringLiteral("save")) {
         if (!g_db)
             return errObj(QStringLiteral("no project open"));

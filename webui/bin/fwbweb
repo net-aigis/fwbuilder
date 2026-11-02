@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# Host wrapper: run the Linux fwbweb binary inside fwbuilder-linux-qt6.
+# openSUSE hosts often ship libxml2.so.16 while the Fedora build needs .so.2.
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+IMAGE="${FWBWEB_IMAGE:-fwbuilder-linux-qt6}"
+RES_DIR="${FWBUILDER_RES_DIR:-/src/webui/.res}"
+
+exec podman run --rm -i \
+  -v "$ROOT":/src:Z \
+  -w /src \
+  -e "FWBUILDER_RES_DIR=$RES_DIR" \
+  "$IMAGE" \
+  /src/src/fwbweb/fwbweb "$@"

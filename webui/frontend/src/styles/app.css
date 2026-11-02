@@ -97,6 +97,26 @@ body {
   min-width: min(28rem, 60vw);
 }
 
+.field.block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin: 0.85rem 0;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+textarea {
+  font: inherit;
+  color: var(--ink);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.55rem 0.65rem;
+  resize: vertical;
+  width: 100%;
+}
+
 input {
   font: inherit;
   color: var(--ink);
