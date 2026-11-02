@@ -15,6 +15,7 @@ import {
   fetchTree,
   getToken,
   moveRule,
+  newProject,
   openProject,
   saveProject,
   searchObjects,
@@ -57,7 +58,21 @@ export function App() {
     window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light",
   );
   const [token, setTokenState] = useState(getToken());
-  const [path, setPath] = useState("../fixtures/sample-v24.fwb");
+  const [path, setPath] = useState(() => {
+    try {
+      const recent = JSON.parse(localStorage.getItem("fwbweb.recent") || "[]") as string[];
+      return recent[0] || "../fixtures/sample-v24.fwb";
+    } catch {
+      return "../fixtures/sample-v24.fwb";
+    }
+  });
+  const [recentPaths, setRecentPaths] = useState<string[]>(() => {
+    try {
+      return JSON.parse(localStorage.getItem("fwbweb.recent") || "[]") as string[];
+    } catch {
+      return [];
+    }
+  });
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [tree, setTree] = useState<TreeNode | null>(null);
   const [selected, setSelected] = useState<TreeNode | null>(null);
@@ -121,6 +136,38 @@ export function App() {
     return () => window.removeEventListener("beforeunload", onBeforeUnload);
   }, [dirty]);
 
+  function rememberPath(p: string) {
+    const next = [p, ...recentPaths.filter((x) => x !== p)].slice(0, 8);
+    setRecentPaths(next);
+    try {
+      localStorage.setItem("fwbweb.recent", JSON.stringify(next));
+    } catch {
+      /* ignore quota */
+    }
+  }
+
+  async function applyOpened(opened: {
+    session_id: string;
+    path: string;
+    work_path: string;
+  }, label: string) {
+    setSessionId(opened.session_id);
+    setPath(opened.path || opened.work_path);
+    rememberPath(opened.path || opened.work_path);
+    const t = await fetchTree(opened.session_id, 2);
+    setTree(t.root);
+    setSelected(null);
+    setRules([]);
+    setRulesFwId(null);
+    setRulesetId(null);
+    setRulesetList([]);
+    setTab("object");
+    setCompileLog(null);
+    setCompileOutputs([]);
+    setDirty(Boolean(t.dirty));
+    setStatus(`${label}: ${t.path}`);
+  }
+
   async function onOpen() {
     if (sessionId && dirty && !window.confirm("Discard unsaved changes and open another project?"))
       return;
@@ -136,16 +183,32 @@ export function App() {
     try {
       setToken(token);
       const opened = await openProject(path);
-      setSessionId(opened.session_id);
-      const t = await fetchTree(opened.session_id, 2);
-      setTree(t.root);
-      setSelected(null);
-      setRules([]);
-      setTab("object");
-      setCompileLog(null);
-      setCompileOutputs([]);
-      setDirty(Boolean(t.dirty));
-      setStatus(`Open: ${t.path}`);
+      await applyOpened(opened, "Open");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function onNewProject() {
+    if (sessionId && dirty && !window.confirm("Discard unsaved changes and create a new project?"))
+      return;
+    const name = window.prompt("New project file name", "untitled.fwb");
+    if (name === null) return;
+    if (sessionId) {
+      try {
+        await closeProject(sessionId);
+      } catch {
+        /* best-effort */
+      }
+    }
+    setBusy(true);
+    setError(null);
+    try {
+      setToken(token);
+      const opened = await newProject(name.trim() || "untitled.fwb");
+      await applyOpened(opened, "New");
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
@@ -245,6 +308,46 @@ export function App() {
       const res = await saveProject(sessionId, writeThrough);
       setDirty(false);
       setStatus(writeThrough ? `Saved + write-through: ${res.path}` : `Saved: ${res.path}`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function onSaveAs() {
+    if (!sessionId) return;
+    const dest = window.prompt("Save as path", path.replace(/\.fwb$/i, "") + "-copy.fwb");
+    if (!dest?.trim()) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const res = await saveProject(sessionId, false, dest.trim());
+      setDirty(false);
+      if (res.source_path) {
+        setPath(res.source_path);
+        rememberPath(res.source_path);
+      }
+      setStatus(`Saved as: ${res.source_path || dest}`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function onBulkDisable(disabled: boolean) {
+    if (!sessionId || !visibleRules.length) return;
+    setBusy(true);
+    setError(null);
+    try {
+      for (const rule of visibleRules) {
+        if (Boolean(rule.disabled) === disabled) continue;
+        await updateRule(sessionId, rule.id, { disabled });
+      }
+      setDirty(true);
+      await refreshRules();
+      setStatus(disabled ? `Disabled ${visibleRules.length} visible rules` : `Enabled ${visibleRules.length} visible rules`);
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
@@ -684,13 +787,28 @@ export function App() {
           </label>
           <label className="field grow">
             Project path
-            <input value={path} onChange={(e) => setPath(e.target.value)} />
+            <input
+              value={path}
+              list="fwbweb-recent"
+              onChange={(e) => setPath(e.target.value)}
+            />
+            <datalist id="fwbweb-recent">
+              {recentPaths.map((p) => (
+                <option key={p} value={p} />
+              ))}
+            </datalist>
           </label>
           <button type="button" onClick={onOpen} disabled={busy}>
             Open
           </button>
+          <button type="button" className="ghost" onClick={() => void onNewProject()} disabled={busy}>
+            New
+          </button>
           <button type="button" onClick={() => void onSave(false)} disabled={!canOperate}>
             Save
+          </button>
+          <button type="button" className="ghost" onClick={() => void onSaveAs()} disabled={!canOperate}>
+            Save as…
           </button>
           <button type="button" className="ghost" onClick={() => void onDownloadFwb()} disabled={!canOperate}>
             Download .fwb
@@ -1064,6 +1182,24 @@ export function App() {
                       onChange={(e) => setRuleTextFilter(e.target.value)}
                     />
                   </label>
+                  <button
+                    type="button"
+                    className="ghost"
+                    disabled={!canOperate || !visibleRules.length}
+                    onClick={() => void onBulkDisable(true)}
+                    title="Disable all currently visible rules"
+                  >
+                    Disable visible
+                  </button>
+                  <button
+                    type="button"
+                    className="ghost"
+                    disabled={!canOperate || !visibleRules.length}
+                    onClick={() => void onBulkDisable(false)}
+                    title="Enable all currently visible rules"
+                  >
+                    Enable visible
+                  </button>
                   <button
                     type="button"
                     className="ghost"

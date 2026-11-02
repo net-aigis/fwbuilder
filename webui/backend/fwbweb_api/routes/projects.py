@@ -20,6 +20,11 @@ class OpenRequest(BaseModel):
     allow_upgrade: bool = False
 
 
+class NewProjectRequest(BaseModel):
+    name: str = "untitled.fwb"
+    library_name: str = "User"
+
+
 class OpenResponse(BaseModel):
     session_id: str
     path: str
@@ -31,6 +36,14 @@ class TreeResponse(BaseModel):
     dirty: bool = False
     path: str
     root: dict[str, Any]
+
+
+def _root_id(session) -> str | None:
+    try:
+        tree = session.bridge.request("tree", depth=0)
+        return tree.get("root", {}).get("id")
+    except BridgeError:
+        return None
 
 
 @router.post("/open", response_model=OpenResponse)
@@ -48,19 +61,32 @@ def open_project(body: OpenRequest, _: str = Depends(require_token)) -> OpenResp
     except BridgeError as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
-    root_id = None
+    return OpenResponse(
+        session_id=session.id,
+        path=str(session.source_path),
+        work_path=str(session.work_path),
+        root_id=_root_id(session),
+    )
+
+
+@router.post("/new", response_model=OpenResponse)
+def new_project(body: NewProjectRequest | None = None, _: str = Depends(require_token)) -> OpenResponse:
+    """Create a blank .fwb from objects_init.xml with a User library."""
+    body = body or NewProjectRequest()
     try:
-        # open response already had root_id; re-fetch via ping/tree light
-        tree = session.bridge.request("tree", depth=0)
-        root_id = tree.get("root", {}).get("id")
-    except BridgeError:
-        pass
+        session = store.create_new(name=body.name, library_name=body.library_name)
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    except LockError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
+    except BridgeError as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
 
     return OpenResponse(
         session_id=session.id,
         path=str(session.source_path),
         work_path=str(session.work_path),
-        root_id=root_id,
+        root_id=_root_id(session),
     )
 
 
@@ -121,6 +147,10 @@ class SaveRequest(BaseModel):
     write_through: bool = Field(
         default=False,
         description="Also copy saved workspace file back to the original path",
+    )
+    save_as: str | None = Field(
+        default=None,
+        description="Copy saved workspace to this path and treat it as the new source",
     )
 
 
@@ -344,6 +374,8 @@ def save_project(
     body: SaveRequest | None = None,
     _: str = Depends(require_token),
 ) -> dict[str, Any]:
+    import shutil
+
     body = body or SaveRequest()
     try:
         session = store.get(session_id)
@@ -354,11 +386,22 @@ def save_project(
     except BridgeError as exc:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
-    if body.write_through and session.meta.get("copy"):
-        import shutil
-
+    if body.save_as:
+        dest = Path(body.save_as).expanduser()
+        if dest.suffix != ".fwb":
+            dest = dest.with_suffix(".fwb") if dest.suffix == "" else dest
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(session.work_path, dest)
+        session.source_path = dest.resolve()
+        session.meta["copy"] = True
+    elif body.write_through and session.meta.get("copy"):
         shutil.copy2(session.work_path, session.source_path)
-    return {"ok": True, "path": data.get("path"), "source_path": str(session.source_path)}
+    return {
+        "ok": True,
+        "path": data.get("path"),
+        "source_path": str(session.source_path),
+        "work_path": str(session.work_path),
+    }
 
 
 @router.get("/{session_id}/download")

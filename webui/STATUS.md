@@ -80,6 +80,11 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Ctrl+S / Ctrl+Shift+S save | done | App keyboard shortcut |
 | Rule text filter | done | comment/action filter in rules toolbar |
 | NetworkIPv6 create | done | InetAddr AF_INET6; E2E phase25 |
+| New blank project | done | `POST /projects/new` from objects_init + User library; E2E phase26 |
+| Save as | done | `save_as` on `/save` + UI; E2E phase26 |
+| DNSName / AddressRange create fields | done | CreateObject dnsname/filename + range; E2E phase26 |
+| Bulk enable/disable visible rules | done | Rules toolbar; E2E phase26 |
+| Recent project paths | done | localStorage datalist |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Phase 3 — compile / deploy
@@ -116,6 +121,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase23 (Library + RuleSet top) | done | `e2e-phase23.sh` **OK** |
 | Local E2E phase24 (multi ruleset list) | done | `e2e-phase24.sh` **OK** |
 | Local E2E phase25 (timestamps + NetworkIPv6) | done | `e2e-phase25.sh` **OK** |
+| Local E2E phase26 (new/save-as/DNS/range/bulk) | done | `e2e-phase26.sh` **OK** |
 
 ## Local commands
 
@@ -150,6 +156,7 @@ bash webui/scripts/e2e-phase22.sh
 bash webui/scripts/e2e-phase23.sh
 bash webui/scripts/e2e-phase24.sh
 bash webui/scripts/e2e-phase25.sh
+bash webui/scripts/e2e-phase26.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

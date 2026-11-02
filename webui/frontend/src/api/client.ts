@@ -128,6 +128,16 @@ export function openProject(path: string) {
   );
 }
 
+export function newProject(name = "untitled.fwb", libraryName = "User") {
+  return api<{ session_id: string; path: string; work_path: string; root_id?: string }>(
+    "/api/v1/projects/new",
+    {
+      method: "POST",
+      body: JSON.stringify({ name, library_name: libraryName }),
+    },
+  );
+}
+
 export function fetchTree(sessionId: string, depth = 4) {
   return api<{ dirty: boolean; path: string; root: TreeNode }>(
     `/api/v1/projects/${sessionId}/tree?depth=${depth}`,
@@ -549,11 +559,17 @@ export function searchObjects(sessionId: string, q: string, type = "") {
   );
 }
 
-export function saveProject(sessionId: string, writeThrough = false) {
-  return api<{ ok: boolean; path: string }>(`/api/v1/projects/${sessionId}/save`, {
-    method: "POST",
-    body: JSON.stringify({ write_through: writeThrough }),
-  });
+export function saveProject(sessionId: string, writeThrough = false, saveAs?: string) {
+  return api<{ ok: boolean; path: string; source_path?: string; work_path?: string }>(
+    `/api/v1/projects/${sessionId}/save`,
+    {
+      method: "POST",
+      body: JSON.stringify({
+        write_through: writeThrough,
+        ...(saveAs ? { save_as: saveAs } : {}),
+      }),
+    },
+  );
 }
 
 export function closeProject(sessionId: string) {

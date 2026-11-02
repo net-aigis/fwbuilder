@@ -68,13 +68,19 @@ export function CreateObject({
   const [netmask, setNetmask] = useState("255.255.255.0");
   const [endAddress, setEndAddress] = useState("");
   const [dstPort, setDstPort] = useState("");
+  const [dnsName, setDnsName] = useState("");
+  const [runTime, setRunTime] = useState(true);
+  const [filename, setFilename] = useState("");
   const [platform, setPlatform] = useState("nftables");
   const [hostOs, setHostOs] = useState("linux24");
 
   const isService = type === "TCPService" || type === "UDPService" || type === "TCPUDPService";
   const isRange = type === "AddressRange";
+  const isDns = type === "DNSName";
+  const isAddrTable = type === "AddressTable";
   const needsNetmask = type === "Network" || type === "IPv4" || type === "NetworkIPv6" || type === "IPv6";
   const isFwLike = type === "Firewall" || type === "Host" || type === "Cluster";
+  const showAddress = !isDns && !isAddrTable && (isRange || needsNetmask || type === "Host");
 
   async function submit() {
     if (!name.trim()) {
@@ -88,6 +94,12 @@ export function CreateObject({
       if (isRange) {
         if (address.trim()) attrs.start_address = address.trim();
         if (endAddress.trim()) attrs.end_address = endAddress.trim();
+      } else if (isDns) {
+        if (dnsName.trim()) attrs.dnsname = dnsName.trim();
+        attrs.run_time = runTime ? "True" : "False";
+      } else if (isAddrTable) {
+        if (filename.trim()) attrs.filename = filename.trim();
+        attrs.run_time = runTime ? "True" : "False";
       } else {
         if (address.trim()) attrs.address = address.trim();
         if (netmask.trim() && needsNetmask) attrs.netmask = netmask.trim();
@@ -111,6 +123,8 @@ export function CreateObject({
       setAddress("");
       setEndAddress("");
       setDstPort("");
+      setDnsName("");
+      setFilename("");
       onCreated(obj.id);
     } catch (err) {
       onError?.(err instanceof Error ? err.message : String(err));
@@ -139,10 +153,35 @@ export function CreateObject({
           Name
           <input value={name} disabled={busy} onChange={(e) => setName(e.target.value)} />
         </label>
-        <label className="field block">
-          {isRange ? "Start address" : "Address"}
-          <input value={address} disabled={busy} onChange={(e) => setAddress(e.target.value)} />
-        </label>
+        {isDns ? (
+          <label className="field block">
+            DNS name
+            <input value={dnsName} disabled={busy} onChange={(e) => setDnsName(e.target.value)} />
+          </label>
+        ) : null}
+        {isAddrTable ? (
+          <label className="field block">
+            Filename
+            <input value={filename} disabled={busy} onChange={(e) => setFilename(e.target.value)} />
+          </label>
+        ) : null}
+        {isDns || isAddrTable ? (
+          <label className="field block inline">
+            <input
+              type="checkbox"
+              checked={runTime}
+              disabled={busy}
+              onChange={(e) => setRunTime(e.target.checked)}
+            />{" "}
+            Resolve at run time
+          </label>
+        ) : null}
+        {showAddress ? (
+          <label className="field block">
+            {isRange ? "Start address" : "Address"}
+            <input value={address} disabled={busy} onChange={(e) => setAddress(e.target.value)} />
+          </label>
+        ) : null}
         {isRange ? (
           <label className="field block">
             End address
