@@ -689,15 +689,18 @@ static void collectSearch(FWObject *root, const string &q, const string &type_fi
         return;
     string name = root->getName();
     string type = root->getTypeName();
+    const string sid = FWObjectDatabase::getStringId(root->getId());
     bool type_ok = type_filter.empty() || type == type_filter;
-    bool name_ok = q.empty() ||
-                   QString::fromUtf8(name.c_str()).contains(
-                       QString::fromUtf8(q.c_str()), Qt::CaseInsensitive);
+    const QString qq = QString::fromUtf8(q.c_str());
+    bool name_ok =
+        q.empty() ||
+        QString::fromUtf8(name.c_str()).contains(qq, Qt::CaseInsensitive) ||
+        QString::fromUtf8(sid.c_str()).contains(qq, Qt::CaseInsensitive) ||
+        QString::fromUtf8(sid.c_str()).compare(qq, Qt::CaseInsensitive) == 0;
     if (type_ok && name_ok && !FWReference::cast(root) &&
         type != "FWObjectDatabase") {
         QJsonObject hit;
-        hit.insert(QStringLiteral("id"),
-                   u8(FWObjectDatabase::getStringId(root->getId())));
+        hit.insert(QStringLiteral("id"), u8(sid));
         hit.insert(QStringLiteral("name"), u8(name));
         hit.insert(QStringLiteral("type"), u8(type));
         hit.insert(QStringLiteral("comment"), u8(root->getComment()));

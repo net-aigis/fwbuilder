@@ -659,10 +659,33 @@ export function App() {
         });
         return;
       }
+      if (!mod && !e.altKey && e.key.toLowerCase() === "f") {
+        // Cycle disabled filter: all → hide → only → all
+        e.preventDefault();
+        if (!hideDisabled && !onlyDisabled) {
+          setHideDisabled(true);
+          setOnlyDisabled(false);
+          setStatus("Filter: hide disabled");
+        } else if (hideDisabled) {
+          setHideDisabled(false);
+          setOnlyDisabled(true);
+          setStatus("Filter: only disabled");
+        } else {
+          setHideDisabled(false);
+          setOnlyDisabled(false);
+          setStatus("Filter: all rules");
+        }
+        return;
+      }
       if (e.key === " " && selectedRuleId && !mod && !e.altKey) {
         e.preventDefault();
         const rule = visibleRules.find((r) => r.id === selectedRuleId);
         if (rule) void onToggleRule(rule);
+        return;
+      }
+      if (e.key.toLowerCase() === "c" && selectedRuleId && !mod && !e.altKey) {
+        e.preventDefault();
+        void onCommentSelectedRule();
         return;
       }
       if (e.key.toLowerCase() === "l" && selectedRuleId && !mod && !e.altKey) {
@@ -1402,6 +1425,26 @@ export function App() {
       setDirty(true);
       await refreshRules();
       setStatus(`Direction → ${next}`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function onCommentSelectedRule() {
+    if (!sessionId || !selectedRuleId) return;
+    const rule = rules.find((r) => r.id === selectedRuleId);
+    if (!rule) return;
+    const text = window.prompt("Rule comment", rule.comment ?? "");
+    if (text === null) return;
+    setBusy(true);
+    setError(null);
+    try {
+      await updateRule(sessionId, rule.id, { comment: text });
+      setDirty(true);
+      await refreshRules();
+      setStatus("Rule comment updated");
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
