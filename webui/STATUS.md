@@ -151,6 +151,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Jump to firewall from rules | done | Firewall button; E2E phase45 |
 | Copy rule id + position | done | Rule meta; E2E phase46 |
 | Create Cluster | done | CreateObject + search type; E2E phase47 |
+| Unused JSON + per-item delete | done | unused panel; E2E phase48 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Phase 3 — compile / deploy
@@ -209,6 +210,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase45 (path copy + fw jump) | done | `e2e-phase45.sh` **OK** |
 | Local E2E phase46 (rule id/position) | done | `e2e-phase46.sh` **OK** |
 | Local E2E phase47 (create Cluster) | done | `e2e-phase47.sh` **OK** |
+| Local E2E phase48 (unused JSON/delete) | done | `e2e-phase48.sh` **OK** |
 
 ## Local commands
 
@@ -265,6 +267,7 @@ bash webui/scripts/e2e-phase44.sh
 bash webui/scripts/e2e-phase45.sh
 bash webui/scripts/e2e-phase46.sh
 bash webui/scripts/e2e-phase47.sh
+bash webui/scripts/e2e-phase48.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

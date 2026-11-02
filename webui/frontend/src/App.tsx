@@ -666,6 +666,26 @@ export function App() {
     }
   }
 
+  async function onDeleteOneUnused(objectId: string) {
+    if (!sessionId) return;
+    setBusy(true);
+    setError(null);
+    try {
+      await deleteObject(sessionId, objectId, false);
+      setUnusedHits((prev) => prev.filter((u) => u.id !== objectId));
+      setDirty(true);
+      if (selected?.id === objectId) setSelected(null);
+      const t = await fetchTree(sessionId, 5);
+      setTree(t.root);
+      setStatus("Moved unused object to Deleted Objects");
+      await refreshTrashCount();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function onDeleteRuleset() {
     if (!sessionId || !rulesetId || !rulesFwId) return;
     const entry = rulesetList.find((r) => r.id === rulesetId);
@@ -1749,6 +1769,27 @@ export function App() {
                   type="button"
                   className="ghost"
                   disabled={busy}
+                  onClick={() => {
+                    const blob = new Blob(
+                      [JSON.stringify({ count: unusedHits.length, objects: unusedHits }, null, 2)],
+                      { type: "application/json" },
+                    );
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = "fwbweb-unused.json";
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    setStatus(`Downloaded ${unusedHits.length} unused object(s)`);
+                  }}
+                  title="Download unused list as JSON"
+                >
+                  JSON
+                </button>
+                <button
+                  type="button"
+                  className="ghost"
+                  disabled={busy}
                   onClick={() => void onDeleteUnused()}
                   title="Soft-delete all listed unused objects"
                 >
@@ -1759,15 +1800,25 @@ export function App() {
                 </button>
               </div>
               {unusedHits.map((h) => (
-                <button
-                  key={h.id}
-                  type="button"
-                  className="tree-item"
-                  onClick={() => void onSelect(h)}
-                >
-                  <span className="tree-type">{h.type}</span>
-                  <span className="tree-name">{h.name}</span>
-                </button>
+                <div key={h.id} className="trash-row">
+                  <button
+                    type="button"
+                    className="tree-item"
+                    onClick={() => void onSelect(h)}
+                  >
+                    <span className="tree-type">{h.type}</span>
+                    <span className="tree-name">{h.name}</span>
+                  </button>
+                  <button
+                    type="button"
+                    className="ghost"
+                    disabled={busy}
+                    title="Soft-delete this unused object"
+                    onClick={() => void onDeleteOneUnused(h.id)}
+                  >
+                    Delete
+                  </button>
+                </div>
               ))}
             </div>
           ) : null}
