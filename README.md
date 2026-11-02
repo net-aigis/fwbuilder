@@ -1,36 +1,69 @@
-[![Build Status](https://travis-ci.org/fwbuilder/fwbuilder.svg?branch=master)](https://travis-ci.org/fwbuilder/fwbuilder)
+# Firewall Builder
 
-**Note**: This is the 5.3 branch of Firewall Builder. This branch will keep C++98 compatibility, while the master branch will require newer C++ standards. All development is done on the master branch, and deprecated language and library features are removed to clean up code. Fixes and new features may be backported to this branch when possible. Testing, however, will mainly be done on the master branch.
+GUI and tooling for firewall policy management (iptables, nftables, PF, Cisco
+ASA/PIX, router ACLs, and more). Configuration lives in a portable `.fwb` file.
 
-fwbuilder
-=========
+This fork tracks **Qt6** builds and an optional **WebUI** that edits the same
+`.fwb` projects through **libfwbuilder** (no second object model or compilers).
 
-Firewall Builder is a GUI firewall management application for iptables, PF, Cisco ASA/PIX/FWSM, Cisco router ACL and more. Firewall configuration data is stored in a central file that can scale to hundreds of firewalls managed from a single UI.
+## Status (honest)
 
+| Track | State |
+| --- | --- |
+| Desktop GUI (Qt6) | Builds on Linux; Win/Mac smoke via MinGW/local Podman (see `docker/`) |
+| WebUI (`feature/webui`) | Local-only: object tree, typed editors, Policy/NAT/Routing grids, rule add/delete/move, object picker + DnD, compile via `fwb_nft`/`fwb_ipt` |
+| Full GUI parity / deploy | **Not** claimed — see [`webui/STATUS.md` on `feature/webui`](https://github.com/net-aigis/fwbuilder/blob/feature/webui/webui/STATUS.md) |
 
-Installation instructions
-=========================
+## WebUI (local, no GitHub Actions required)
 
+openSUSE hosts often lack Fedora’s `libxml2.so.2`; build and run the bridge
+inside Podman, then use the host wrapper `webui/bin/fwbweb`.
 
-Ubuntu
----------
+```bash
+# Image + native fwbweb (+ nft/ipt compilers)
+podman build -t fwbuilder-linux-qt6 -f docker/Dockerfile.linux-qt6-fedora docker/
+podman run --rm -v "$PWD":/src:Z -w /src -e JOBS=4 fwbuilder-linux-qt6 \
+  bash docker/build-linux-qt6-fwbweb.sh
 
-The instructions are inspired by the well-meaning but out of date instructions available from the fwbuilder.org website: http://www.fwbuilder.org/4.0/docs/users_guide5/compile_from_source.shtml
+# API E2Es
+bash webui/scripts/e2e-local.sh
+bash webui/scripts/e2e-phase2.sh
+bash webui/scripts/e2e-phase3.sh
 
-run the following apt-get install command to install the compile requirements:
+# Dev servers
+export FWBWEB_BRIDGE="$(pwd)/webui/bin/fwbweb"
+export FWBWEB_API_TOKEN="dev-token"
+export FWBWEB_WORKSPACE="$(pwd)/webui/.workspace"
+export FWBUILDER_RES_DIR="$(pwd)/webui/.res"
 
+cd webui/backend && pip install -e '.[dev]'
+uvicorn fwbweb_api.main:app --reload --port 8088
+
+# other terminal
+cd webui/frontend && npm install && npm run dev
 ```
- sudo apt-get install git automake autoconf libtool libxml2-dev libxslt-dev libsnmp-dev qt5-default qttools5-dev-tools
- git clone https://github.com/fwbuilder/fwbuilder.git
- cd fwbuilder
- ./autogen.sh
- make
- sudo make install
-```
-Then, if you are lucky, you should be able to type
-```
- fwbuilder &
-```
-At the prompt and get it to run. There is also a GUI icon you can use to start the program. 
 
+Details: [`webui/README.md` on `feature/webui`](https://github.com/net-aigis/fwbuilder/blob/feature/webui/webui/README.md), [`webui/ARCHITECTURE.md` on `feature/webui`](https://github.com/net-aigis/fwbuilder/blob/feature/webui/webui/ARCHITECTURE.md).
 
+## Desktop build (Linux Qt6)
+
+```bash
+# Dependencies vary by distro; Fedora example is encoded in
+# docker/Dockerfile.linux-qt6-fedora. Prefer the Podman image above for a
+# known-good toolchain.
+
+./autogen.sh --with-qmake=qmake6 --without-ucdsnmp
+make -j"$(nproc)"
+```
+
+Cross Win64 MinGW Qt6 (local Podman, not CI minutes):
+
+```bash
+podman build -t fwbuilder-mingw64-qt6 -f docker/Dockerfile.mingw64-qt6-fedora docker/
+podman run --rm -v "$PWD":/src:Z -w /src fwbuilder-mingw64-qt6 bash docker/build-mingw64-qt6.sh
+```
+
+## License
+
+GNU GPL v2 (or later). See upstream Firewall Builder licensing notices in the
+source tree.
