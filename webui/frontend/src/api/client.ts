@@ -159,6 +159,89 @@ export function updateRule(
   });
 }
 
+export function addRule(
+  sessionId: string,
+  objectId: string,
+  body: {
+    which?: "policy" | "nat" | "routing";
+    where?: "top" | "bottom" | "before" | "after";
+    position?: number;
+  } = {},
+) {
+  return api<AnyRule>(
+    `/api/v1/projects/${sessionId}/rulesets/${encodeURIComponent(objectId)}/rules`,
+    { method: "POST", body: JSON.stringify(body) },
+  );
+}
+
+export function deleteRule(sessionId: string, ruleId: string) {
+  return api<{ ok?: boolean }>(
+    `/api/v1/projects/${sessionId}/rules/${encodeURIComponent(ruleId)}`,
+    { method: "DELETE" },
+  );
+}
+
+export function moveRule(
+  sessionId: string,
+  ruleId: string,
+  body: { direction?: "up" | "down"; to?: number },
+) {
+  return api<AnyRule>(
+    `/api/v1/projects/${sessionId}/rules/${encodeURIComponent(ruleId)}/move`,
+    { method: "POST", body: JSON.stringify(body) },
+  );
+}
+
+export function addRuleRef(
+  sessionId: string,
+  ruleId: string,
+  element: string,
+  objectId: string,
+) {
+  return api<AnyRule>(
+    `/api/v1/projects/${sessionId}/rules/${encodeURIComponent(ruleId)}/refs`,
+    { method: "POST", body: JSON.stringify({ element, object_id: objectId }) },
+  );
+}
+
+export function removeRuleRef(
+  sessionId: string,
+  ruleId: string,
+  element: string,
+  objectId: string,
+) {
+  return api<AnyRule>(
+    `/api/v1/projects/${sessionId}/rules/${encodeURIComponent(ruleId)}/refs/remove`,
+    { method: "POST", body: JSON.stringify({ element, object_id: objectId }) },
+  );
+}
+
+export function setRuleAny(sessionId: string, ruleId: string, element: string) {
+  return api<AnyRule>(
+    `/api/v1/projects/${sessionId}/rules/${encodeURIComponent(ruleId)}/any`,
+    { method: "POST", body: JSON.stringify({ element }) },
+  );
+}
+
+export function compileFirewall(
+  sessionId: string,
+  firewallId: string,
+  ipv?: "4" | "6",
+) {
+  return api<{
+    ok: boolean;
+    compiler: string;
+    firewall: string;
+    platform: string;
+    destdir: string;
+    outputs: string[];
+    log: string;
+  }>(`/api/v1/projects/${sessionId}/compile`, {
+    method: "POST",
+    body: JSON.stringify({ firewall_id: firewallId, ipv }),
+  });
+}
+
 export function searchObjects(sessionId: string, q: string, type = "") {
   const qs = new URLSearchParams({ q, type, limit: "80" });
   return api<{ results: TreeNode[]; count: number }>(

@@ -16,6 +16,12 @@ export function ObjectTree({ node, selectedId, onSelect, depth = 0 }: Props) {
       <button
         type="button"
         className={`tree-item${selected ? " selected" : ""}`}
+        draggable={node.type !== "FWObjectDatabase"}
+        onDragStart={(e) => {
+          e.dataTransfer.setData("application/x-fwb-object-id", node.id);
+          e.dataTransfer.setData("text/plain", node.name || node.id);
+          e.dataTransfer.effectAllowed = "copy";
+        }}
         onClick={() => onSelect(node)}
         title={node.comment || node.type}
       >

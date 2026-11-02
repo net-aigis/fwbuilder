@@ -19,7 +19,7 @@ fwbweb bridge (C++, links libfwbuilder + libcommon)
         |
 FWObjectDatabase  ↔  .fwb XML (unchanged DTD / format)
         |
-existing fwb_* compilers (subprocess, later phase)
+existing fwb_* compilers (subprocess: fwb_nft / fwb_ipt today)
 ```
 
 ### Why this split

@@ -311,6 +311,70 @@ static bool isIntKey(const string &key)
            key == "metric";
 }
 
+static QJsonObject ruleToJson(Rule *rule)
+{
+    if (PolicyRule *pr = PolicyRule::cast(rule))
+        return policyRuleJson(pr);
+    if (NATRule *nr = NATRule::cast(rule))
+        return natRuleJson(nr);
+    if (RoutingRule *rr = RoutingRule::cast(rule))
+        return routingRuleJson(rr);
+    return QJsonObject();
+}
+
+static RuleSet *resolveRuleSet(FWObject *obj, const QString &which)
+{
+    if (RuleSet *rs = RuleSet::cast(obj))
+        return rs;
+    Firewall *fw = Firewall::cast(obj);
+    if (!fw)
+        return 0;
+    if (which == QStringLiteral("nat"))
+        return fw->getNAT();
+    if (which == QStringLiteral("routing"))
+        return fw->getRouting();
+    return fw->getPolicy();
+}
+
+static RuleElement *ruleElementByName(Rule *rule, const QString &el)
+{
+    if (!rule)
+        return 0;
+    if (PolicyRule *pr = PolicyRule::cast(rule)) {
+        if (el == QStringLiteral("src"))
+            return pr->getSrc();
+        if (el == QStringLiteral("dst"))
+            return pr->getDst();
+        if (el == QStringLiteral("srv"))
+            return pr->getSrv();
+        if (el == QStringLiteral("itf"))
+            return pr->getItf();
+        if (el == QStringLiteral("when"))
+            return pr->getWhen();
+    } else if (NATRule *nr = NATRule::cast(rule)) {
+        if (el == QStringLiteral("osrc"))
+            return nr->getOSrc();
+        if (el == QStringLiteral("odst"))
+            return nr->getODst();
+        if (el == QStringLiteral("osrv"))
+            return nr->getOSrv();
+        if (el == QStringLiteral("tsrc"))
+            return nr->getTSrc();
+        if (el == QStringLiteral("tdst"))
+            return nr->getTDst();
+        if (el == QStringLiteral("tsrv"))
+            return nr->getTSrv();
+    } else if (RoutingRule *rr = RoutingRule::cast(rule)) {
+        if (el == QStringLiteral("rdst"))
+            return rr->getRDst();
+        if (el == QStringLiteral("rgtw"))
+            return rr->getRGtw();
+        if (el == QStringLiteral("ritf"))
+            return rr->getRItf();
+    }
+    return 0;
+}
+
 static QJsonObject handle(const QJsonObject &req)
 {
     const QString cmd = req.value(QStringLiteral("cmd")).toString();
@@ -416,23 +480,11 @@ static QJsonObject handle(const QJsonObject &req)
         if (!obj)
             return errObj(QStringLiteral("object not found"));
 
-        // Accept Firewall (use its Policy) or a RuleSet id directly.
-        RuleSet *rs = RuleSet::cast(obj);
-        if (!rs) {
-            Firewall *fw = Firewall::cast(obj);
-            if (!fw)
-                return errObj(QStringLiteral("not a firewall or ruleset"));
-            const QString which =
-                req.value(QStringLiteral("which")).toString(QStringLiteral("policy"));
-            if (which == QStringLiteral("nat"))
-                rs = fw->getNAT();
-            else if (which == QStringLiteral("routing"))
-                rs = fw->getRouting();
-            else
-                rs = fw->getPolicy();
-        }
+        const QString which =
+            req.value(QStringLiteral("which")).toString(QStringLiteral("policy"));
+        RuleSet *rs = resolveRuleSet(obj, which);
         if (!rs)
-            return errObj(QStringLiteral("ruleset missing"));
+            return errObj(QStringLiteral("not a firewall or ruleset"));
 
         QJsonArray rules;
         for (FWObject::iterator i = rs->begin(); i != rs->end(); ++i) {
@@ -497,12 +549,173 @@ static QJsonObject handle(const QJsonObject &req)
             g_db->setDirty(true);
             QJsonObject o = okObj();
             o.insert(QStringLiteral("dirty"), true);
-            if (PolicyRule *pr = PolicyRule::cast(rule))
-                o.insert(QStringLiteral("rule"), policyRuleJson(pr));
-            else if (NATRule *nr = NATRule::cast(rule))
-                o.insert(QStringLiteral("rule"), natRuleJson(nr));
-            else if (RoutingRule *rr = RoutingRule::cast(rule))
-                o.insert(QStringLiteral("rule"), routingRuleJson(rr));
+            o.insert(QStringLiteral("rule"), ruleToJson(rule));
+            return o;
+        } catch (FWException &ex) {
+            return errObj(u8(ex.toString()));
+        }
+    }
+
+    if (cmd == QStringLiteral("add_rule")) {
+        if (!g_db)
+            return errObj(QStringLiteral("no project open"));
+        const string sid =
+            req.value(QStringLiteral("id")).toString().toUtf8().constData();
+        FWObject *obj = findByIdString(g_db, sid);
+        if (!obj)
+            return errObj(QStringLiteral("object not found"));
+        const QString which =
+            req.value(QStringLiteral("which")).toString(QStringLiteral("policy"));
+        RuleSet *rs = resolveRuleSet(obj, which);
+        if (!rs)
+            return errObj(QStringLiteral("not a firewall or ruleset"));
+        if (rs->isReadOnly())
+            return errObj(QStringLiteral("object is read-only"));
+
+        const QString where =
+            req.value(QStringLiteral("where")).toString(QStringLiteral("bottom"));
+        const int pos = req.value(QStringLiteral("position")).toInt(-1);
+        Rule *created = 0;
+        try {
+            if (where == QStringLiteral("top"))
+                created = rs->insertRuleAtTop();
+            else if (where == QStringLiteral("before"))
+                created = rs->insertRuleBefore(pos);
+            else if (where == QStringLiteral("after"))
+                created = rs->appendRuleAfter(pos);
+            else
+                created = rs->appendRuleAtBottom();
+            if (!created)
+                return errObj(QStringLiteral("failed to create rule"));
+            g_dirty = true;
+            g_db->setDirty(true);
+            QJsonObject o = okObj();
+            o.insert(QStringLiteral("dirty"), true);
+            o.insert(QStringLiteral("rule"), ruleToJson(created));
+            o.insert(QStringLiteral("ruleset_id"),
+                     u8(FWObjectDatabase::getStringId(rs->getId())));
+            return o;
+        } catch (FWException &ex) {
+            return errObj(u8(ex.toString()));
+        }
+    }
+
+    if (cmd == QStringLiteral("delete_rule")) {
+        if (!g_db)
+            return errObj(QStringLiteral("no project open"));
+        const string sid =
+            req.value(QStringLiteral("id")).toString().toUtf8().constData();
+        FWObject *obj = findByIdString(g_db, sid);
+        Rule *rule = Rule::cast(obj);
+        if (!rule)
+            return errObj(QStringLiteral("not a rule"));
+        if (rule->isReadOnly())
+            return errObj(QStringLiteral("object is read-only"));
+        RuleSet *rs = RuleSet::cast(rule->getParent());
+        if (!rs)
+            return errObj(QStringLiteral("rule has no ruleset parent"));
+        try {
+            if (!rs->deleteRule(rule))
+                return errObj(QStringLiteral("delete failed"));
+            g_dirty = true;
+            g_db->setDirty(true);
+            QJsonObject o = okObj();
+            o.insert(QStringLiteral("dirty"), true);
+            o.insert(QStringLiteral("ruleset_id"),
+                     u8(FWObjectDatabase::getStringId(rs->getId())));
+            return o;
+        } catch (FWException &ex) {
+            return errObj(u8(ex.toString()));
+        }
+    }
+
+    if (cmd == QStringLiteral("move_rule")) {
+        if (!g_db)
+            return errObj(QStringLiteral("no project open"));
+        const string sid =
+            req.value(QStringLiteral("id")).toString().toUtf8().constData();
+        FWObject *obj = findByIdString(g_db, sid);
+        Rule *rule = Rule::cast(obj);
+        if (!rule)
+            return errObj(QStringLiteral("not a rule"));
+        if (rule->isReadOnly())
+            return errObj(QStringLiteral("object is read-only"));
+        RuleSet *rs = RuleSet::cast(rule->getParent());
+        if (!rs)
+            return errObj(QStringLiteral("rule has no ruleset parent"));
+
+        const QString dir =
+            req.value(QStringLiteral("direction")).toString();
+        const int to = req.value(QStringLiteral("to")).toInt(-1);
+        const int n = rule->getPosition();
+        bool ok = false;
+        try {
+            if (dir == QStringLiteral("up"))
+                ok = rs->moveRuleUp(n);
+            else if (dir == QStringLiteral("down"))
+                ok = rs->moveRuleDown(n);
+            else if (to >= 0)
+                ok = rs->moveRule(n, to);
+            else
+                return errObj(QStringLiteral("direction or to required"));
+            if (!ok)
+                return errObj(QStringLiteral("move failed"));
+            g_dirty = true;
+            g_db->setDirty(true);
+            // Rule object still valid; renumber updates position.
+            QJsonObject o = okObj();
+            o.insert(QStringLiteral("dirty"), true);
+            o.insert(QStringLiteral("rule"), ruleToJson(rule));
+            return o;
+        } catch (FWException &ex) {
+            return errObj(u8(ex.toString()));
+        }
+    }
+
+    if (cmd == QStringLiteral("re_add_ref") ||
+        cmd == QStringLiteral("re_remove_ref") ||
+        cmd == QStringLiteral("re_set_any") ||
+        cmd == QStringLiteral("re_set_neg")) {
+        if (!g_db)
+            return errObj(QStringLiteral("no project open"));
+        const string sid =
+            req.value(QStringLiteral("id")).toString().toUtf8().constData();
+        FWObject *obj = findByIdString(g_db, sid);
+        Rule *rule = Rule::cast(obj);
+        if (!rule)
+            return errObj(QStringLiteral("not a rule"));
+        if (rule->isReadOnly())
+            return errObj(QStringLiteral("object is read-only"));
+        const QString el = req.value(QStringLiteral("element")).toString();
+        RuleElement *re = ruleElementByName(rule, el);
+        if (!re)
+            return errObj(QStringLiteral("unknown rule element: ") + el);
+
+        try {
+            if (cmd == QStringLiteral("re_set_any")) {
+                re->setAnyElement();
+            } else if (cmd == QStringLiteral("re_set_neg")) {
+                if (!req.contains(QStringLiteral("neg")))
+                    return errObj(QStringLiteral("neg required"));
+                re->setNeg(req.value(QStringLiteral("neg")).toBool());
+            } else {
+                const string oid =
+                    req.value(QStringLiteral("object_id")).toString().toUtf8().constData();
+                FWObject *target = findByIdString(g_db, oid);
+                if (!target)
+                    return errObj(QStringLiteral("object not found"));
+                if (cmd == QStringLiteral("re_add_ref"))
+                    re->addRef(target);
+                else
+                    re->removeRef(target);
+            }
+            g_dirty = true;
+            g_db->setDirty(true);
+            QJsonObject o = okObj();
+            o.insert(QStringLiteral("dirty"), true);
+            o.insert(QStringLiteral("rule"), ruleToJson(rule));
+            o.insert(QStringLiteral("element"), el);
+            o.insert(QStringLiteral("rule_element"), ruleElementJson(re));
             return o;
         } catch (FWException &ex) {
             return errObj(u8(ex.toString()));

@@ -341,6 +341,66 @@ button.ghost {
   max-width: 7.5rem;
 }
 
+.rule-cell {
+  cursor: pointer;
+}
+
+.cell-btn {
+  all: unset;
+  cursor: pointer;
+  display: block;
+  min-width: 3rem;
+  max-width: 12rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cell-btn:hover {
+  color: var(--accent);
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: color-mix(in srgb, #000 45%, transparent);
+  display: grid;
+  place-items: center;
+  z-index: 40;
+  padding: 1rem;
+}
+
+.modal {
+  width: min(32rem, 100%);
+  max-height: min(80vh, 40rem);
+  overflow: auto;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: 0 12px 40px color-mix(in srgb, #000 25%, transparent);
+}
+
+.picker-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-top: 0.75rem;
+  max-height: 22rem;
+  overflow: auto;
+}
+
+.compile-log {
+  margin: 0.75rem 0 0;
+  padding: 0.75rem;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  white-space: pre-wrap;
+  background: var(--sidebar);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  max-height: 16rem;
+  overflow: auto;
+}
+
 @media (max-width: 900px) {
   .workspace {
     grid-template-columns: 1fr;

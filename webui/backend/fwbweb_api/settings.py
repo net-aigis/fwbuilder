@@ -12,6 +12,7 @@ class Settings(BaseSettings):
     bridge_timeout_sec: float = 120.0
     cors_origins: str = "http://127.0.0.1:5173,http://localhost:5173"
     res_dir: Path | None = None
+    compiler_dir: Path | None = None
 
     @property
     def cors_origin_list(self) -> list[str]:

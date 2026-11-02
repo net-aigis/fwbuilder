@@ -1,13 +1,19 @@
 import { useMemo, useState } from "react";
 import {
+  addRule,
+  addRuleRef,
   closeProject,
+  compileFirewall,
+  deleteRule,
   fetchObject,
   fetchRuleset,
   fetchTree,
   getToken,
+  moveRule,
   openProject,
   saveProject,
   searchObjects,
+  setRuleAny,
   setToken,
   updateObject,
   updateRule,
@@ -16,12 +22,15 @@ import {
   type TreeNode,
 } from "./api/client";
 import { ObjectDetail } from "./components/ObjectDetail";
+import { ObjectPicker } from "./components/ObjectPicker";
 import { ObjectTree } from "./components/ObjectTree";
 import { RuleGrid } from "./components/RuleGrid";
 
 type Theme = "light" | "dark";
 type MainTab = "object" | "rules";
 type RulesWhich = "policy" | "nat" | "routing";
+
+type PickerTarget = { ruleId: string; element: string };
 
 export function App() {
   const [theme, setTheme] = useState<Theme>(() =>
@@ -43,6 +52,8 @@ export function App() {
   const [selectedRuleId, setSelectedRuleId] = useState<string | undefined>();
   const [searchQ, setSearchQ] = useState("");
   const [searchHits, setSearchHits] = useState<TreeNode[]>([]);
+  const [picker, setPicker] = useState<PickerTarget | null>(null);
+  const [compileLog, setCompileLog] = useState<string | null>(null);
 
   const canOperate = useMemo(() => Boolean(sessionId) && !busy, [sessionId, busy]);
 
@@ -58,6 +69,7 @@ export function App() {
       setSelected(null);
       setRules([]);
       setTab("object");
+      setCompileLog(null);
       setStatus(`Open: ${t.path}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
@@ -104,6 +116,14 @@ export function App() {
     }
   }
 
+  async function refreshRules() {
+    if (!sessionId || !rulesFwId) return;
+    const data = await fetchRuleset(sessionId, rulesFwId, rulesWhich);
+    setRules(data.rules ?? []);
+    setRulesetName(data.name || rulesWhich);
+    setStatus(`${rulesWhich} · ${data.rules?.length ?? 0} rules`);
+  }
+
   async function onSave() {
     if (!sessionId) return;
     setBusy(true);
@@ -145,9 +165,10 @@ export function App() {
     setError(null);
     try {
       await updateRule(sessionId, rule.id, { disabled: !rule.disabled });
-      await loadRules(rulesFwId, rulesWhich);
+      await refreshRules();
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
+    } finally {
       setBusy(false);
     }
   }
@@ -158,9 +179,119 @@ export function App() {
     setError(null);
     try {
       await updateRule(sessionId, rule.id, { action });
-      await loadRules(rulesFwId, rulesWhich);
+      await refreshRules();
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function onAddRule() {
+    if (!sessionId || !rulesFwId) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const created = await addRule(sessionId, rulesFwId, {
+        which: rulesWhich,
+        where: "bottom",
+      });
+      setSelectedRuleId(created.id);
+      await refreshRules();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function onDeleteRule() {
+    if (!sessionId || !selectedRuleId) return;
+    setBusy(true);
+    setError(null);
+    try {
+      await deleteRule(sessionId, selectedRuleId);
+      setSelectedRuleId(undefined);
+      await refreshRules();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function onMoveRule(direction: "up" | "down") {
+    if (!sessionId || !selectedRuleId) return;
+    setBusy(true);
+    setError(null);
+    try {
+      await moveRule(sessionId, selectedRuleId, { direction });
+      await refreshRules();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function onDropObject(rule: AnyRule, element: string, objectId: string) {
+    if (!sessionId) return;
+    setBusy(true);
+    setError(null);
+    try {
+      await addRuleRef(sessionId, rule.id, element, objectId);
+      await refreshRules();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function onPickObject(obj: TreeNode) {
+    if (!sessionId || !picker) return;
+    setBusy(true);
+    setError(null);
+    try {
+      await addRuleRef(sessionId, picker.ruleId, picker.element, obj.id);
+      setPicker(null);
+      await refreshRules();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function onPickAny() {
+    if (!sessionId || !picker) return;
+    setBusy(true);
+    setError(null);
+    try {
+      await setRuleAny(sessionId, picker.ruleId, picker.element);
+      setPicker(null);
+      await refreshRules();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function onCompile() {
+    if (!sessionId || !rulesFwId) return;
+    setBusy(true);
+    setError(null);
+    setCompileLog(null);
+    try {
+      const res = await compileFirewall(sessionId, rulesFwId);
+      setCompileLog(
+        `${res.compiler} → ${res.destdir}\noutputs: ${res.outputs.join(", ") || "(none)"}\n\n${res.log}`,
+      );
+      setStatus(`Compiled ${res.firewall} (${res.platform})`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
       setBusy(false);
     }
   }
@@ -176,6 +307,7 @@ export function App() {
       setSelected(null);
       setRules([]);
       setSearchHits([]);
+      setCompileLog(null);
       setStatus("Closed");
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
@@ -204,7 +336,7 @@ export function App() {
       <header className="topbar">
         <div className="brand">
           <strong>Firewall Builder</strong>
-          <span className="muted">WebUI · Phase 2</span>
+          <span className="muted">WebUI · rules + compile</span>
         </div>
         <div className="top-actions">
           <label className="field">
@@ -258,6 +390,11 @@ export function App() {
                   key={h.id}
                   type="button"
                   className="tree-item"
+                  draggable
+                  onDragStart={(e) => {
+                    e.dataTransfer.setData("application/x-fwb-object-id", h.id);
+                    e.dataTransfer.effectAllowed = "copy";
+                  }}
                   onClick={() => void onSelect(h)}
                 >
                   <span className="tree-type">{h.type}</span>
@@ -318,6 +455,36 @@ export function App() {
                       {w}
                     </button>
                   ))}
+                  <button type="button" disabled={!canOperate} onClick={() => void onAddRule()}>
+                    Add
+                  </button>
+                  <button
+                    type="button"
+                    className="ghost"
+                    disabled={!canOperate || !selectedRuleId}
+                    onClick={() => void onMoveRule("up")}
+                  >
+                    Up
+                  </button>
+                  <button
+                    type="button"
+                    className="ghost"
+                    disabled={!canOperate || !selectedRuleId}
+                    onClick={() => void onMoveRule("down")}
+                  >
+                    Down
+                  </button>
+                  <button
+                    type="button"
+                    className="ghost"
+                    disabled={!canOperate || !selectedRuleId}
+                    onClick={() => void onDeleteRule()}
+                  >
+                    Delete
+                  </button>
+                  <button type="button" disabled={!canOperate} onClick={() => void onCompile()}>
+                    Compile
+                  </button>
                 </div>
               </header>
               <RuleGrid
@@ -328,7 +495,12 @@ export function App() {
                 onSelectRule={(r) => setSelectedRuleId(r.id)}
                 onToggleDisabled={onToggleRule}
                 onChangeAction={onChangeAction}
+                onEditCell={(rule, element) => setPicker({ ruleId: rule.id, element })}
+                onDropObject={onDropObject}
               />
+              {compileLog ? (
+                <pre className="compile-log pad">{compileLog}</pre>
+              ) : null}
             </div>
           )}
         </main>
@@ -339,6 +511,17 @@ export function App() {
         {busy ? <span className="muted">Working…</span> : null}
         {error ? <span className="error">{error}</span> : null}
       </footer>
+
+      {sessionId && picker ? (
+        <ObjectPicker
+          sessionId={sessionId}
+          title={`Pick object for ${picker.element}`}
+          busy={busy}
+          onPick={(obj) => void onPickObject(obj)}
+          onAny={() => void onPickAny()}
+          onCancel={() => setPicker(null)}
+        />
+      ) : null}
     </div>
   );
 }

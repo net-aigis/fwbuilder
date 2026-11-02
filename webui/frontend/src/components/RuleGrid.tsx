@@ -4,6 +4,7 @@ import {
   type NatRule,
   type PolicyRule,
   type RoutingRuleRow,
+  type RuleElement,
 } from "../api/client";
 
 type Props = {
@@ -13,6 +14,8 @@ type Props = {
   onToggleDisabled?: (rule: AnyRule) => void;
   onChangeAction?: (rule: PolicyRule, action: string) => void;
   onSelectRule?: (rule: AnyRule) => void;
+  onEditCell?: (rule: AnyRule, element: string) => void;
+  onDropObject?: (rule: AnyRule, element: string, objectId: string) => void;
   selectedId?: string;
 };
 
@@ -27,6 +30,47 @@ const POLICY_ACTIONS = [
   "Custom",
 ];
 
+function Cell({
+  rule,
+  element,
+  el,
+  busy,
+  onEditCell,
+  onDropObject,
+}: {
+  rule: AnyRule;
+  element: string;
+  el?: RuleElement;
+  busy?: boolean;
+  onEditCell?: (rule: AnyRule, element: string) => void;
+  onDropObject?: (rule: AnyRule, element: string, objectId: string) => void;
+}) {
+  return (
+    <td
+      className="rule-cell"
+      title="Click to pick · drop object from tree"
+      onClick={(e) => {
+        e.stopPropagation();
+        onEditCell?.(rule, element);
+      }}
+      onDragOver={(e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "copy";
+      }}
+      onDrop={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const objectId = e.dataTransfer.getData("application/x-fwb-object-id");
+        if (objectId) onDropObject?.(rule, element, objectId);
+      }}
+    >
+      <button type="button" className="cell-btn" disabled={busy}>
+        {formatRuleObjects(el)}
+      </button>
+    </td>
+  );
+}
+
 export function RuleGrid({
   rules,
   kind,
@@ -34,6 +78,8 @@ export function RuleGrid({
   onToggleDisabled,
   onChangeAction,
   onSelectRule,
+  onEditCell,
+  onDropObject,
   selectedId,
 }: Props) {
   if (!rules.length) {
@@ -92,10 +138,10 @@ export function RuleGrid({
                     ) : null}
                   </select>
                 </td>
-                <td>{formatRuleObjects(r.src)}</td>
-                <td>{formatRuleObjects(r.dst)}</td>
-                <td>{formatRuleObjects(r.srv)}</td>
-                <td>{formatRuleObjects(r.itf)}</td>
+                <Cell rule={r} element="src" el={r.src} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} />
+                <Cell rule={r} element="dst" el={r.dst} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} />
+                <Cell rule={r} element="srv" el={r.srv} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} />
+                <Cell rule={r} element="itf" el={r.itf} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} />
                 <td>{r.direction}</td>
                 <td>{r.logging ? "✓" : ""}</td>
                 <td className="comment-cell">{r.comment}</td>
@@ -143,12 +189,12 @@ export function RuleGrid({
                   />
                 </td>
                 <td>{r.action}</td>
-                <td>{formatRuleObjects(r.osrc)}</td>
-                <td>{formatRuleObjects(r.odst)}</td>
-                <td>{formatRuleObjects(r.osrv)}</td>
-                <td>{formatRuleObjects(r.tsrc)}</td>
-                <td>{formatRuleObjects(r.tdst)}</td>
-                <td>{formatRuleObjects(r.tsrv)}</td>
+                <Cell rule={r} element="osrc" el={r.osrc} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} />
+                <Cell rule={r} element="odst" el={r.odst} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} />
+                <Cell rule={r} element="osrv" el={r.osrv} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} />
+                <Cell rule={r} element="tsrc" el={r.tsrc} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} />
+                <Cell rule={r} element="tdst" el={r.tdst} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} />
+                <Cell rule={r} element="tsrv" el={r.tsrv} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} />
                 <td className="comment-cell">{r.comment}</td>
               </tr>
             ))}
@@ -190,9 +236,9 @@ export function RuleGrid({
                 />
               </td>
               <td>{r.metric}</td>
-              <td>{formatRuleObjects(r.rdst)}</td>
-              <td>{formatRuleObjects(r.rgtw)}</td>
-              <td>{formatRuleObjects(r.ritf)}</td>
+              <Cell rule={r} element="rdst" el={r.rdst} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} />
+              <Cell rule={r} element="rgtw" el={r.rgtw} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} />
+              <Cell rule={r} element="ritf" el={r.ritf} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} />
               <td className="comment-cell">{r.comment}</td>
             </tr>
           ))}

@@ -55,6 +55,20 @@ if [[ -z "$BIN" ]]; then
   exit 1
 fi
 
+# Optional compilers for WebUI Phase 3 (nftables + iptables).
+# Set SKIP_COMPILERS=1 to keep the bridge-only build.
+if [[ "${SKIP_COMPILERS:-0}" != "1" ]]; then
+  make -j"$JOBS" -C src/compiler_lib 2>&1 | tee ci-logs-linux/compiler_lib.log
+  # Ensure qmake-generated Makefiles exist for compiler frontends + libs.
+  if [[ ! -f src/nft/Makefile || ! -f src/ipt/Makefile || ! -f src/nftlib/Makefile || ! -f src/iptlib/Makefile ]]; then
+    ( cd src && "$QMAKE6" -o Makefile src.pro )
+  fi
+  make -j"$JOBS" -C src/iptlib 2>&1 | tee ci-logs-linux/iptlib.log
+  make -j"$JOBS" -C src/nftlib 2>&1 | tee ci-logs-linux/nftlib.log
+  make -j"$JOBS" -C src/nft 2>&1 | tee ci-logs-linux/nft.log
+  make -j"$JOBS" -C src/ipt 2>&1 | tee ci-logs-linux/ipt.log
+fi
+
 # Local resource tree for unpackaged runs (host wrapper / API).
 mkdir -p webui/.res
 cp -a src/res/resources.xml src/res/objects_init.xml src/res/templates.xml webui/.res/
@@ -62,7 +76,12 @@ cp -a src/res/os src/res/platform src/res/configlets webui/.res/
 cp -a src/libfwbuilder/etc/fwbuilder.dtd webui/.res/
 cp -a src/libfwbuilder/migration webui/.res/
 
-echo "OK: $BIN" | tee ci-logs-linux/binaries.log
+{
+  echo "OK: $BIN"
+  for c in src/nft/fwb_nft src/nft/release/fwb_nft src/ipt/fwb_ipt src/ipt/release/fwb_ipt; do
+    [[ -x "$c" ]] && echo "OK: $c"
+  done
+} | tee ci-logs-linux/binaries.log
 env FWBUILDER_RES_DIR=/src/webui/.res "$BIN" <<'EOF' | tee ci-logs-linux/bridge-smoke.log
 {"cmd":"ping"}
 {"cmd":"quit"}

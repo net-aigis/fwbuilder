@@ -4,7 +4,8 @@
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 IMAGE="${FWBWEB_IMAGE:-fwbuilder-linux-qt6}"
-RES_DIR="${FWBUILDER_RES_DIR:-/src/webui/.res}"
+# Always the in-container path; host env may point at a host absolute path.
+RES_DIR="/src/webui/.res"
 
 exec podman run --rm -i \
   -v "$ROOT":/src:Z \
