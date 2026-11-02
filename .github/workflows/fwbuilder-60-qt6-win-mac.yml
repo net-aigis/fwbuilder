@@ -1,12 +1,10 @@
 name: FWB 6.0 Qt6 smoke - Windows / macOS
 
 on:
+  # No push trigger: saves Actions minutes (push+PR doubled Win/Mac runs).
   pull_request:
     branches:
       - main
-  push:
-    branches:
-      - feature/ci-win-mac-qt6-smoke
   workflow_dispatch:
 
 permissions:
@@ -150,7 +148,8 @@ jobs:
           grep -Eq 'Qt version 6\.' ci-logs/qmake.log
           bash ./autogen.sh --prefix=/mingw64 --with-qmake=qmake6 --without-ucdsnmp \
             2>&1 | tee ci-logs/configure.log
-          make -j"$(nproc)" 2>&1 | tee ci-logs/build.log
+          # Low parallelism: MinGW 16 has ICEd/OOM'd on ANTLR parsers under -jN.
+          make -j2 2>&1 | tee ci-logs/build.log
           find src -type f \( -name 'fwb_nft.exe' -o -name 'fwb_ipt.exe' -o -name 'fwbuilder.exe' \) \
             -print | sort | tee ci-logs/binaries.log
           test -s ci-logs/binaries.log
