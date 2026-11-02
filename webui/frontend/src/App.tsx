@@ -111,6 +111,7 @@ export function App() {
   const [dirty, setDirty] = useState(false);
   const [hideDisabled, setHideDisabled] = useState(false);
   const [onlyDisabled, setOnlyDisabled] = useState(false);
+  const [ruleActionFilter, setRuleActionFilter] = useState("");
   const [ruleGroupFilter, setRuleGroupFilter] = useState("");
   const [ruleTextFilter, setRuleTextFilter] = useState("");
   const [treeFilter, setTreeFilter] = useState("");
@@ -145,6 +146,11 @@ export function App() {
     let list = rules;
     if (hideDisabled) list = list.filter((r) => !r.disabled);
     else if (onlyDisabled) list = list.filter((r) => r.disabled);
+    if (ruleActionFilter.trim()) {
+      list = list.filter(
+        (r) => "action" in r && String((r as PolicyRule).action ?? "") === ruleActionFilter,
+      );
+    }
     if (ruleGroupFilter.trim()) {
       const q = ruleGroupFilter.trim().toLowerCase();
       list = list.filter((r) => (r.group ?? "").toLowerCase().includes(q));
@@ -165,12 +171,20 @@ export function App() {
       });
     }
     return list;
-  }, [rules, hideDisabled, onlyDisabled, ruleGroupFilter, ruleTextFilter]);
+  }, [rules, hideDisabled, onlyDisabled, ruleActionFilter, ruleGroupFilter, ruleTextFilter]);
 
   const ruleGroups = useMemo(() => {
     const set = new Set<string>();
     for (const r of rules) {
       if (r.group?.trim()) set.add(r.group.trim());
+    }
+    return Array.from(set).sort();
+  }, [rules]);
+
+  const ruleActions = useMemo(() => {
+    const set = new Set<string>();
+    for (const r of rules) {
+      if ("action" in r && (r as PolicyRule).action) set.add(String((r as PolicyRule).action));
     }
     return Array.from(set).sort();
   }, [rules]);
@@ -1368,6 +1382,32 @@ export function App() {
     }
   }
 
+  async function onBulkDeleteVisible() {
+    if (!sessionId || !visibleRules.length) return;
+    if (
+      !window.confirm(
+        `Permanently delete ${visibleRules.length} visible rule(s)? This cannot be undone.`,
+      )
+    )
+      return;
+    setBusy(true);
+    setError(null);
+    try {
+      const ids = visibleRules.map((r) => r.id);
+      for (const id of ids) {
+        await deleteRule(sessionId, id);
+      }
+      setSelectedRuleId(undefined);
+      setDirty(true);
+      setStatus(`Deleted ${ids.length} visible rule(s)`);
+      await refreshRules();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function onDuplicateRule() {
     if (!sessionId || !selectedRuleId) return;
     setBusy(true);
@@ -2357,6 +2397,21 @@ export function App() {
                       Firewall
                     </button>
                   ) : null}
+                  {rulesFwId ? (
+                    <button
+                      type="button"
+                      className="ghost"
+                      title="Copy firewall object id"
+                      onClick={() => {
+                        void navigator.clipboard.writeText(rulesFwId).then(
+                          () => setStatus(`Copied firewall id ${rulesFwId}`),
+                          () => setError("Clipboard write failed"),
+                        );
+                      }}
+                    >
+                      Copy fw id
+                    </button>
+                  ) : null}
                   {(["policy", "nat", "routing"] as RulesWhich[]).map((w) => (
                     <button
                       key={w}
@@ -2533,6 +2588,24 @@ export function App() {
                     />{" "}
                     Only disabled
                   </label>
+                  {ruleActions.length ? (
+                    <label className="field inline">
+                      Action
+                      <select
+                        value={ruleActionFilter}
+                        disabled={busy}
+                        onChange={(e) => setRuleActionFilter(e.target.value)}
+                        title="Filter Policy/NAT rules by action"
+                      >
+                        <option value="">All actions</option>
+                        {ruleActions.map((a) => (
+                          <option key={a} value={a}>
+                            {a}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                  ) : null}
                   <label className="field inline">
                     Group
                     <select
@@ -2558,7 +2631,11 @@ export function App() {
                       onChange={(e) => setRuleTextFilter(e.target.value)}
                     />
                   </label>
-                  {(ruleTextFilter || ruleGroupFilter || hideDisabled || onlyDisabled) && (
+                  {(ruleTextFilter ||
+                    ruleGroupFilter ||
+                    ruleActionFilter ||
+                    hideDisabled ||
+                    onlyDisabled) && (
                     <button
                       type="button"
                       className="ghost"
@@ -2566,6 +2643,7 @@ export function App() {
                       onClick={() => {
                         setRuleTextFilter("");
                         setRuleGroupFilter("");
+                        setRuleActionFilter("");
                         setHideDisabled(false);
                         setOnlyDisabled(false);
                       }}
@@ -2609,6 +2687,15 @@ export function App() {
                     title="Set the same group on all visible rules"
                   >
                     Group visible…
+                  </button>
+                  <button
+                    type="button"
+                    className="ghost"
+                    disabled={!canOperate || !visibleRules.length}
+                    onClick={() => void onBulkDeleteVisible()}
+                    title="Permanently delete all currently visible rules"
+                  >
+                    Delete visible
                   </button>
                   <button
                     type="button"
