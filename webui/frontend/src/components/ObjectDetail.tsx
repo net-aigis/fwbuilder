@@ -41,6 +41,9 @@ const TYPE_FIELDS: Record<string, string[]> = {
     "unnumbered",
     "security_level",
   ],
+  Policy: ["top"],
+  NAT: ["top"],
+  Routing: ["top"],
   Interval: [
     "from_hour",
     "from_minute",

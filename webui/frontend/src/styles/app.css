@@ -389,6 +389,14 @@ button.ghost {
   background: var(--select);
 }
 
+.rule-table tr.rule-group-row td {
+  background: color-mix(in srgb, var(--sidebar) 85%, var(--accent) 15%);
+  font-weight: 600;
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+}
+
 .rule-table .comment-cell {
   max-width: 14rem;
   white-space: normal;

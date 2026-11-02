@@ -50,15 +50,18 @@ export function CreateObject({
   const hostLike = parentType === "Firewall" || parentType === "Host" || parentType === "Cluster";
   const ifaceLike = parentType === "Interface";
   const groupLike = parentType === "ObjectGroup" || parentType === "Library";
+  const rootLike = parentType === "FWObjectDatabase";
   const TYPES = ifaceLike
     ? ["IPv4", "IPv6", "AttachedNetworks", ...BASE_TYPES]
     : hostLike
       ? ["Interface", "IPv4", "IPv6", "Policy", "NAT", "Routing", ...BASE_TYPES]
-      : groupLike
-        ? ["Firewall", "Host", "Cluster", ...BASE_TYPES]
-        : BASE_TYPES;
+      : rootLike
+        ? ["Library"]
+        : groupLike
+          ? ["Firewall", "Host", "Cluster", ...BASE_TYPES]
+          : BASE_TYPES;
   const [type, setType] = useState(
-    hostLike ? "Interface" : groupLike ? "Firewall" : "Network",
+    rootLike ? "Library" : hostLike ? "Interface" : groupLike ? "Firewall" : "Network",
   );
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");

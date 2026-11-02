@@ -71,6 +71,9 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Interface dyn / unnumbered / security_level | done | setters + ObjectDetail; E2E phase22 |
 | Move rule to absolute position | done | Move to… toolbar; E2E phase22 |
 | Hide disabled / filter by rule group | done | rules toolbar filters |
+| Create Library with folder skeleton | done | populateLibraryFolders; E2E phase23 |
+| RuleSet `top` flag | done | secondary Policy/NAT/Routing; E2E phase23 |
+| Rule group header rows | done | RuleGrid visual groups |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Phase 3 — compile / deploy
@@ -104,6 +107,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase20 (new Firewall + management) | done | `e2e-phase20.sh` **OK** |
 | Local E2E phase21 (search type + lazy tree) | done | `e2e-phase21.sh` **OK** |
 | Local E2E phase22 (iface flags + move to) | done | `e2e-phase22.sh` **OK** |
+| Local E2E phase23 (Library + RuleSet top) | done | `e2e-phase23.sh` **OK** |
 
 ## Local commands
 
@@ -135,6 +139,7 @@ bash webui/scripts/e2e-phase19.sh
 bash webui/scripts/e2e-phase20.sh
 bash webui/scripts/e2e-phase21.sh
 bash webui/scripts/e2e-phase22.sh
+bash webui/scripts/e2e-phase23.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

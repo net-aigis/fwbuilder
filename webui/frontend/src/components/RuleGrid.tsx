@@ -33,6 +33,22 @@ const POLICY_ACTIONS = [
 
 const NAT_ACTIONS = ["Translate", "NATBranch"];
 
+function withGroupHeaders(rules: AnyRule[]): Array<{ kind: "group"; name: string } | { kind: "rule"; rule: AnyRule }> {
+  const out: Array<{ kind: "group"; name: string } | { kind: "rule"; rule: AnyRule }> = [];
+  let prev = "\0";
+  for (const r of rules) {
+    const g = (r.group ?? "").trim();
+    if (g && g !== prev) {
+      out.push({ kind: "group", name: g });
+      prev = g;
+    } else if (!g) {
+      prev = "";
+    }
+    out.push({ kind: "rule", rule: r });
+  }
+  return out;
+}
+
 function Cell({
   rule,
   element,
@@ -110,49 +126,57 @@ export function RuleGrid({
             </tr>
           </thead>
           <tbody>
-            {(rules as PolicyRule[]).map((r) => (
-              <tr
-                key={r.id}
-                className={selectedId === r.id ? "selected" : undefined}
-                onClick={() => onSelectRule?.(r)}
-              >
-                <td>{r.position}</td>
-                <td>
-                  <input
-                    type="checkbox"
-                    checked={!r.disabled}
-                    disabled={busy}
-                    onChange={() => onToggleDisabled?.(r)}
-                    onClick={(e) => e.stopPropagation()}
-                  />
-                </td>
-                <td>
-                  <select
-                    value={r.action}
-                    disabled={busy}
-                    onChange={(e) => onChangeAction?.(r, e.target.value)}
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    {POLICY_ACTIONS.map((a) => (
-                      <option key={a} value={a}>
-                        {a}
-                      </option>
-                    ))}
-                    {!POLICY_ACTIONS.includes(r.action) ? (
-                      <option value={r.action}>{r.action}</option>
-                    ) : null}
-                  </select>
-                </td>
-                <Cell rule={r} element="src" el={r.src} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} />
-                <Cell rule={r} element="dst" el={r.dst} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} />
-                <Cell rule={r} element="srv" el={r.srv} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} />
-                <Cell rule={r} element="itf" el={r.itf} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} />
-                <Cell rule={r} element="when" el={r.when} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} />
-                <td>{r.direction}</td>
-                <td>{r.logging ? "✓" : ""}</td>
-                <td className="comment-cell">{r.comment}</td>
-              </tr>
-            ))}
+            {withGroupHeaders(rules).map((row) =>
+              row.kind === "group" ? (
+                <tr key={`g-${row.name}`} className="rule-group-row">
+                  <td colSpan={11}>{row.name}</td>
+                </tr>
+              ) : (
+                <tr
+                  key={row.rule.id}
+                  className={selectedId === row.rule.id ? "selected" : undefined}
+                  onClick={() => onSelectRule?.(row.rule)}
+                >
+                  <td>{row.rule.position}</td>
+                  <td>
+                    <input
+                      type="checkbox"
+                      checked={!row.rule.disabled}
+                      disabled={busy}
+                      onChange={() => onToggleDisabled?.(row.rule)}
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                  </td>
+                  <td>
+                    <select
+                      value={(row.rule as PolicyRule).action}
+                      disabled={busy}
+                      onChange={(e) => onChangeAction?.(row.rule as PolicyRule, e.target.value)}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {POLICY_ACTIONS.map((a) => (
+                        <option key={a} value={a}>
+                          {a}
+                        </option>
+                      ))}
+                      {!POLICY_ACTIONS.includes((row.rule as PolicyRule).action) ? (
+                        <option value={(row.rule as PolicyRule).action}>
+                          {(row.rule as PolicyRule).action}
+                        </option>
+                      ) : null}
+                    </select>
+                  </td>
+                  <Cell rule={row.rule} element="src" el={(row.rule as PolicyRule).src} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} />
+                  <Cell rule={row.rule} element="dst" el={(row.rule as PolicyRule).dst} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} />
+                  <Cell rule={row.rule} element="srv" el={(row.rule as PolicyRule).srv} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} />
+                  <Cell rule={row.rule} element="itf" el={(row.rule as PolicyRule).itf} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} />
+                  <Cell rule={row.rule} element="when" el={(row.rule as PolicyRule).when} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} />
+                  <td>{(row.rule as PolicyRule).direction}</td>
+                  <td>{(row.rule as PolicyRule).logging ? "✓" : ""}</td>
+                  <td className="comment-cell">{row.rule.comment}</td>
+                </tr>
+              ),
+            )}
           </tbody>
         </table>
       </div>

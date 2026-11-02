@@ -29,6 +29,7 @@
 #include "fwbuilder/Management.h"
 #include "fwbuilder/FWOptions.h"
 #include "fwbuilder/InetAddr.h"
+#include "fwbuilder/IntervalGroup.h"
 #include "fwbuilder/Library.h"
 #include "fwbuilder/Network.h"
 #include "fwbuilder/NetworkIPv6.h"
@@ -39,6 +40,7 @@
 #include "fwbuilder/Rule.h"
 #include "fwbuilder/RuleElement.h"
 #include "fwbuilder/RuleSet.h"
+#include "fwbuilder/ServiceGroup.h"
 
 #include "commoninit.h"
 #include "upgradePredicate.h"
@@ -203,6 +205,10 @@ static QJsonObject typedAttrs(FWObject *obj)
                 putStrAttr(attrs, const_cast<FWObject *>(parent_host), "host_OS");
         }
     }
+    if (RuleSet *rs = RuleSet::cast(obj)) {
+        attrs.insert(QStringLiteral("top"),
+                     rs->isTop() ? QStringLiteral("True") : QStringLiteral("False"));
+    }
     return attrs;
 }
 
@@ -213,6 +219,73 @@ static bool parseBoolish(const string &val)
     for (size_t i = 0; i < val.size(); ++i)
         low.push_back(static_cast<char>(tolower(static_cast<unsigned char>(val[i]))));
     return low == "true" || low == "1" || low == "yes";
+}
+
+static void populateLibraryFolders(FWObjectDatabase *db, FWObject *nlib)
+{
+    FWObject *o1 = db->create(ObjectGroup::TYPENAME);
+    o1->setName("Objects");
+    nlib->add(o1);
+
+    FWObject *o2 = db->create(ObjectGroup::TYPENAME);
+    o2->setName("Addresses");
+    o1->add(o2);
+    o2 = db->create(ObjectGroup::TYPENAME);
+    o2->setName("DNS Names");
+    o1->add(o2);
+    o2 = db->create(ObjectGroup::TYPENAME);
+    o2->setName("Address Tables");
+    o1->add(o2);
+    o2 = db->create(ObjectGroup::TYPENAME);
+    o2->setName("Groups");
+    o1->add(o2);
+    o2 = db->create(ObjectGroup::TYPENAME);
+    o2->setName("Hosts");
+    o1->add(o2);
+    o2 = db->create(ObjectGroup::TYPENAME);
+    o2->setName("Networks");
+    o1->add(o2);
+    o2 = db->create(ObjectGroup::TYPENAME);
+    o2->setName("Address Ranges");
+    o1->add(o2);
+
+    o1 = db->create(ServiceGroup::TYPENAME);
+    o1->setName("Services");
+    nlib->add(o1);
+    o2 = db->create(ServiceGroup::TYPENAME);
+    o2->setName("Groups");
+    o1->add(o2);
+    o2 = db->create(ServiceGroup::TYPENAME);
+    o2->setName("ICMP");
+    o1->add(o2);
+    o2 = db->create(ServiceGroup::TYPENAME);
+    o2->setName("IP");
+    o1->add(o2);
+    o2 = db->create(ServiceGroup::TYPENAME);
+    o2->setName("TCP");
+    o1->add(o2);
+    o2 = db->create(ServiceGroup::TYPENAME);
+    o2->setName("UDP");
+    o1->add(o2);
+    o2 = db->create(ServiceGroup::TYPENAME);
+    o2->setName("Users");
+    o1->add(o2);
+    o2 = db->create(ServiceGroup::TYPENAME);
+    o2->setName("Custom");
+    o1->add(o2);
+    o2 = db->create(ServiceGroup::TYPENAME);
+    o2->setName("TagServices");
+    o1->add(o2);
+
+    o1 = db->create(ObjectGroup::TYPENAME);
+    o1->setName("Firewalls");
+    nlib->add(o1);
+    o1 = db->create(ObjectGroup::TYPENAME);
+    o1->setName("Clusters");
+    nlib->add(o1);
+    o1 = db->create(IntervalGroup::TYPENAME);
+    o1->setName("Time");
+    nlib->add(o1);
 }
 
 static void applyObjectAttrs(FWObject *obj, const QJsonObject &attrs)
@@ -331,6 +404,12 @@ static void applyObjectAttrs(FWObject *obj, const QJsonObject &attrs)
             }
             if (key == "security_level" || key == "sec_level") {
                 iface->setSecurityLevel(atoi(val.c_str()));
+                continue;
+            }
+        }
+        if (RuleSet *rs = RuleSet::cast(obj)) {
+            if (key == "top") {
+                rs->setTop(parseBoolish(val));
                 continue;
             }
         }
@@ -1297,6 +1376,13 @@ static QJsonObject handle(const QJsonObject &req)
                 fw->init(g_db);
             else if (Host *h = Host::cast(child))
                 h->init(g_db);
+            else if (Library::cast(child))
+                populateLibraryFolders(g_db, child);
+            else if (RuleSet *rs = RuleSet::cast(child)) {
+                // Secondary rulesets under a firewall are not top by default.
+                if (Firewall::cast(parent))
+                    rs->setTop(false);
+            }
             if (req.contains(QStringLiteral("comment"))) {
                 child->setComment(
                     req.value(QStringLiteral("comment")).toString().toUtf8().constData());
