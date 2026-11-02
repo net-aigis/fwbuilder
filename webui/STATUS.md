@@ -92,6 +92,10 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Compile outputs zip download | done | `GET …/compile/zip`; E2E phase28 |
 | Expanded search type filter | done | AddressRange/Tag/Custom/… |
 | Confirm bulk enable/disable | done | window.confirm before bulk |
+| ICMP/ICMP6 create type/code | done | CreateObject; E2E phase29 |
+| Object color on create | done | color picker + attrs; E2E phase29 |
+| Platform/OS dropdowns on create | done | `GET /platforms` → CreateObject |
+| Rule shortcuts Delete / Ctrl+D | done | rules tab keyboard |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Phase 3 — compile / deploy
@@ -131,6 +135,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase26 (new/save-as/DNS/range/bulk) | done | `e2e-phase26.sh` **OK** |
 | Local E2E phase27 (compile-all + Tag/User/Interval) | done | `e2e-phase27.sh` **OK** |
 | Local E2E phase28 (IP/Custom create + compile zip) | done | `e2e-phase28.sh` **OK** |
+| Local E2E phase29 (ICMP/color/platforms/dup) | done | `e2e-phase29.sh` **OK** |
 
 ## Local commands
 
@@ -168,6 +173,7 @@ bash webui/scripts/e2e-phase25.sh
 bash webui/scripts/e2e-phase26.sh
 bash webui/scripts/e2e-phase27.sh
 bash webui/scripts/e2e-phase28.sh
+bash webui/scripts/e2e-phase29.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

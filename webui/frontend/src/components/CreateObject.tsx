@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { createObject } from "../api/client";
+import { useEffect, useState } from "react";
+import { createObject, fetchPlatforms } from "../api/client";
 
 type Props = {
   sessionId: string;
@@ -82,8 +82,13 @@ export function CreateObject({
   const [customProto, setCustomProto] = useState("tcp");
   const [customFamily, setCustomFamily] = useState("inet");
   const [customCode, setCustomCode] = useState("");
+  const [icmpType, setIcmpType] = useState("8");
+  const [icmpCode, setIcmpCode] = useState("0");
+  const [color, setColor] = useState("");
   const [platform, setPlatform] = useState("nftables");
   const [hostOs, setHostOs] = useState("linux24");
+  const [platforms, setPlatforms] = useState<string[]>([]);
+  const [oses, setOses] = useState<string[]>([]);
 
   const isService = type === "TCPService" || type === "UDPService" || type === "TCPUDPService";
   const isRange = type === "AddressRange";
@@ -94,6 +99,7 @@ export function CreateObject({
   const isInterval = type === "Interval";
   const isIpService = type === "IPService";
   const isCustom = type === "CustomService";
+  const isIcmp = type === "ICMPService" || type === "ICMP6Service";
   const needsNetmask = type === "Network" || type === "IPv4" || type === "NetworkIPv6" || type === "IPv6";
   const isFwLike = type === "Firewall" || type === "Host" || type === "Cluster";
   const showAddress =
@@ -104,7 +110,33 @@ export function CreateObject({
     !isInterval &&
     !isIpService &&
     !isCustom &&
+    !isIcmp &&
     (isRange || needsNetmask || type === "Host");
+
+  useEffect(() => {
+    if (!isFwLike) return;
+    let cancelled = false;
+    void fetchPlatforms()
+      .then((res) => {
+        if (cancelled) return;
+        const plats = (res.platforms || [])
+          .filter((p) => p.status !== "disabled")
+          .map((p) => p.name)
+          .filter(Boolean);
+        const osList = (res.oses || []).map((o) => o.name).filter(Boolean);
+        setPlatforms(plats);
+        setOses(osList);
+        if (plats.length && !plats.includes(platform)) setPlatform(plats[0]);
+        if (osList.length && !osList.includes(hostOs)) setHostOs(osList[0]);
+      })
+      .catch(() => {
+        /* keep manual defaults */
+      });
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isFwLike]);
 
   async function submit() {
     if (!name.trim()) {
@@ -140,6 +172,9 @@ export function CreateObject({
         if (customProto.trim()) attrs.protocol = customProto.trim();
         if (customFamily.trim()) attrs.address_family = customFamily.trim();
         if (customCode.trim()) attrs.code = customCode.trim();
+      } else if (isIcmp) {
+        if (icmpType.trim()) attrs.type = Number(icmpType) || 0;
+        if (icmpCode.trim()) attrs.code = Number(icmpCode) || 0;
       } else {
         if (address.trim()) attrs.address = address.trim();
         if (netmask.trim() && needsNetmask) attrs.netmask = netmask.trim();
@@ -152,6 +187,7 @@ export function CreateObject({
         if (platform.trim()) attrs.platform = platform.trim();
         if (hostOs.trim()) attrs.host_OS = hostOs.trim();
       }
+      if (color.trim() && type !== "Library") attrs.color = color.trim();
       const obj = await createObject(sessionId, {
         parent_id: parentId,
         type,
@@ -304,17 +340,61 @@ export function CreateObject({
             </label>
           </>
         ) : null}
+        {isIcmp ? (
+          <>
+            <label className="field block">
+              ICMP type
+              <input value={icmpType} disabled={busy} onChange={(e) => setIcmpType(e.target.value)} />
+            </label>
+            <label className="field block">
+              ICMP code
+              <input value={icmpCode} disabled={busy} onChange={(e) => setIcmpCode(e.target.value)} />
+            </label>
+          </>
+        ) : null}
         {isFwLike ? (
           <>
             <label className="field block">
               Platform
-              <input value={platform} disabled={busy} onChange={(e) => setPlatform(e.target.value)} />
+              {platforms.length ? (
+                <select value={platform} disabled={busy} onChange={(e) => setPlatform(e.target.value)}>
+                  {platforms.map((p) => (
+                    <option key={p} value={p}>
+                      {p}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <input value={platform} disabled={busy} onChange={(e) => setPlatform(e.target.value)} />
+              )}
             </label>
             <label className="field block">
               Host OS
-              <input value={hostOs} disabled={busy} onChange={(e) => setHostOs(e.target.value)} />
+              {oses.length ? (
+                <select value={hostOs} disabled={busy} onChange={(e) => setHostOs(e.target.value)}>
+                  {oses.map((o) => (
+                    <option key={o} value={o}>
+                      {o}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <input value={hostOs} disabled={busy} onChange={(e) => setHostOs(e.target.value)} />
+              )}
             </label>
           </>
+        ) : null}
+        {type !== "Library" ? (
+          <label className="field block">
+            Color
+            <input
+              type="color"
+              value={color || "#cccccc"}
+              disabled={busy}
+              onChange={(e) => setColor(e.target.value)}
+              title="Optional object color"
+            />
+          </label>
         ) : null}
       </div>
       <button type="button" disabled={busy} onClick={() => void submit()}>

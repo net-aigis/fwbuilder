@@ -370,15 +370,34 @@ export function App() {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      const mod = e.ctrlKey || e.metaKey;
-      if (!mod || e.key.toLowerCase() !== "s") return;
       if (!sessionId || busy) return;
-      e.preventDefault();
-      void onSave(e.shiftKey);
+      const target = e.target as HTMLElement | null;
+      const typing =
+        target &&
+        (target.tagName === "INPUT" ||
+          target.tagName === "TEXTAREA" ||
+          target.tagName === "SELECT" ||
+          target.isContentEditable);
+      const mod = e.ctrlKey || e.metaKey;
+      if (mod && e.key.toLowerCase() === "s") {
+        e.preventDefault();
+        void onSave(e.shiftKey);
+        return;
+      }
+      if (tab !== "rules" || typing) return;
+      if (mod && e.key.toLowerCase() === "d" && selectedRuleId) {
+        e.preventDefault();
+        void onDuplicateRule();
+        return;
+      }
+      if ((e.key === "Delete" || e.key === "Backspace") && selectedRuleId && !mod) {
+        e.preventDefault();
+        if (window.confirm("Delete selected rule?")) void onDeleteRule();
+      }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [sessionId, busy]);
+  }, [sessionId, busy, tab, selectedRuleId]);
 
   async function onApplyObject(patch: {
     name: string;
@@ -537,6 +556,7 @@ export function App() {
     try {
       await deleteRule(sessionId, selectedRuleId);
       setSelectedRuleId(undefined);
+      setDirty(true);
       await refreshRules();
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
