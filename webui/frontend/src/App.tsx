@@ -4,6 +4,7 @@ import {
   addRuleRef,
   closeProject,
   compileFirewall,
+  deleteObject,
   downloadCompileOutput,
   deleteRule,
   fetchObject,
@@ -22,7 +23,9 @@ import {
   type PolicyRule,
   type TreeNode,
 } from "./api/client";
+import { CreateObject } from "./components/CreateObject";
 import { FirewallExtras } from "./components/FirewallExtras";
+import { InterfaceOptions } from "./components/InterfaceOptions";
 import { ObjectDetail } from "./components/ObjectDetail";
 import { ObjectPicker } from "./components/ObjectPicker";
 import { ObjectTree } from "./components/ObjectTree";
@@ -162,6 +165,32 @@ export function App() {
     } finally {
       setBusy(false);
     }
+  }
+
+  async function onDeleteObject() {
+    if (!sessionId || !selected) return;
+    if (!window.confirm(`Delete ${selected.type} “${selected.name}”?`)) return;
+    setBusy(true);
+    setError(null);
+    try {
+      await deleteObject(sessionId, selected.id);
+      setSelected(null);
+      const t = await fetchTree(sessionId, 5);
+      setTree(t.root);
+      setStatus("Object deleted");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function refreshTreeSelect(id: string) {
+    if (!sessionId) return;
+    const t = await fetchTree(sessionId, 5);
+    setTree(t.root);
+    const full = await fetchObject(sessionId, id);
+    setSelected(full);
   }
 
   async function onToggleRule(rule: AnyRule) {
@@ -461,17 +490,56 @@ export function App() {
                   : undefined
               }
               extras={
-                sessionId && selected?.type === "Firewall" ? (
-                  <FirewallExtras
-                    sessionId={sessionId}
-                    firewallId={selected.id}
-                    platform={String(selected.attrs?.platform ?? "")}
-                    hostOs={String(selected.attrs?.host_OS ?? "")}
-                    busy={busy}
-                    onBusy={setBusy}
-                    onStatus={setStatus}
-                    onError={setError}
-                  />
+                sessionId && selected ? (
+                  <>
+                    <div className="btn-row pad">
+                      <button
+                        type="button"
+                        className="ghost"
+                        disabled={busy || selected.ro}
+                        onClick={() => void onDeleteObject()}
+                      >
+                        Delete object
+                      </button>
+                    </div>
+                    {selected.type === "Firewall" ? (
+                      <FirewallExtras
+                        sessionId={sessionId}
+                        firewallId={selected.id}
+                        platform={String(selected.attrs?.platform ?? "")}
+                        hostOs={String(selected.attrs?.host_OS ?? "")}
+                        busy={busy}
+                        onBusy={setBusy}
+                        onStatus={setStatus}
+                        onError={setError}
+                      />
+                    ) : null}
+                    {selected.type === "Interface" ? (
+                      <InterfaceOptions
+                        sessionId={sessionId}
+                        interfaceId={selected.id}
+                        hostOs={String(selected.attrs?.host_OS ?? "")}
+                        busy={busy}
+                        onBusy={setBusy}
+                        onStatus={setStatus}
+                        onError={setError}
+                      />
+                    ) : null}
+                    {["ObjectGroup", "Library", "ServiceGroup", "FWObjectDatabase"].includes(
+                      selected.type,
+                    ) || selected.type.endsWith("Group") ? (
+                      <CreateObject
+                        sessionId={sessionId}
+                        parentId={selected.id}
+                        parentName={selected.name}
+                        busy={busy}
+                        onBusy={setBusy}
+                        onStatus={setStatus}
+                        onError={setError}
+                        onCreated={(id) => void refreshTreeSelect(id)}
+                      />
+                    ) : null}
+                  </>
                 ) : null
               }
             />

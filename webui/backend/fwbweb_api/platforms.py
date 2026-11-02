@@ -82,11 +82,12 @@ def _parse_target(path: Path) -> dict[str, Any] | None:
     name = target.get("name") or path.stem
     options = target.find("options")
     defaults = _child_map(options.find("default") if options is not None else None)
+    iface_defaults = _child_map(options.find("interface") if options is not None else None)
     # Also surface non-default option flags that are simple leaves under <options>
     option_flags: dict[str, str] = {}
     if options is not None:
         for child in list(options):
-            if child.tag in {"default", "activation"}:
+            if child.tag in {"default", "activation", "interface"}:
                 continue
             if list(child):
                 continue
@@ -104,8 +105,10 @@ def _parse_target(path: Path) -> dict[str, Any] | None:
         "family": _text(target.find("family")),
         "compiler": _text(target.find("compiler")),
         "dialog": _text(target.find("dialog")),
+        "interface_dialog": _text(target.find("interface_dialog")),
         "supported_os": [s.strip() for s in supported.split(",") if s.strip()],
         "defaults": defaults,
+        "interface_defaults": iface_defaults,
         "option_flags": option_flags,
         "capabilities": capabilities,
         "source": str(path),
@@ -190,17 +193,31 @@ def _dialog_catalog() -> dict[str, Any]:
     return json.loads(_DIALOG_FIELDS_PATH.read_text(encoding="utf-8"))
 
 
+def _dialog_stem(dialog_name: str | None) -> str | None:
+    if not dialog_name:
+        return None
+    cat = _dialog_catalog()
+    mapping = cat.get("by_platform_dialog") or {}
+    return mapping.get(dialog_name) or mapping.get(dialog_name.lower())
+
+
+def _iface_dialog_stem(dialog_name: str | None) -> str | None:
+    if not dialog_name:
+        return None
+    cat = _dialog_catalog()
+    mapping = cat.get("by_interface_dialog") or {}
+    key = dialog_name.strip()
+    return mapping.get(key) or mapping.get(key.lower())
+
+
 def dialog_fields_for(platform: str, host_os: str = "") -> dict[str, dict[str, Any]]:
     """Merge platform + OS AdvancedDialog field metadata (widget types)."""
     cat = _dialog_catalog()
-    mapping = cat.get("by_platform_dialog") or {}
     dialogs = cat.get("dialogs") or {}
     fields: dict[str, dict[str, Any]] = {}
 
     def merge(dialog_name: str | None) -> None:
-        if not dialog_name:
-            return
-        stem = mapping.get(dialog_name) or mapping.get(dialog_name.lower())
+        stem = _dialog_stem(dialog_name)
         if not stem:
             return
         info = dialogs.get(stem) or {}
@@ -219,6 +236,36 @@ def dialog_fields_for(platform: str, host_os: str = "") -> dict[str, dict[str, A
         except KeyError:
             merge(host_os)
     return fields
+
+
+def dialog_pages_for(platform: str, host_os: str = "") -> list[dict[str, Any]]:
+    """Qt AdvancedDialog tab pages with option keys (platform dialog preferred)."""
+    cat = _dialog_catalog()
+    dialogs = cat.get("dialogs") or {}
+    pages: list[dict[str, Any]] = []
+    try:
+        plat = get_platform(platform)
+        stem = _dialog_stem(plat.get("dialog") or platform)
+    except KeyError:
+        stem = _dialog_stem(platform)
+    if stem and stem in dialogs:
+        pages = list(dialogs[stem].get("pages") or [])
+    if host_os:
+        try:
+            os_info = get_os(host_os)
+            os_stem = _dialog_stem(os_info.get("dialog") or host_os)
+        except KeyError:
+            os_stem = _dialog_stem(host_os)
+        if os_stem and os_stem in dialogs:
+            for page in dialogs[os_stem].get("pages") or []:
+                pages.append(
+                    {
+                        "id": f"os-{page.get('id')}",
+                        "title": f"OS · {page.get('title')}",
+                        "keys": page.get("keys") or [],
+                    }
+                )
+    return pages
 
 
 def _infer_type(key: str, value: str, meta: dict[str, Any] | None) -> dict[str, Any]:
@@ -248,45 +295,46 @@ def option_schema(platform: str, host_os: str = "") -> dict[str, Any]:
             os_info = None
 
     field_meta = dialog_fields_for(platform, host_os)
+    pages = dialog_pages_for(platform, host_os)
     platform_keys = sorted(plat.get("defaults", {}).keys())
     os_keys = sorted((os_info or {}).get("defaults", {}).keys()) if os_info else []
-    dialog_keys = sorted(k for k in field_meta if k not in INSTALLER_KEYS and k not in COMMON_KEYS)
 
-    groups = [
-        {
-            "id": "installer",
-            "title": "Installer / deploy",
-            "keys": list(INSTALLER_KEYS),
-        },
-        {
-            "id": "platform",
-            "title": f"Platform defaults ({plat['name']})",
-            "keys": platform_keys,
-        },
-    ]
-    if os_keys:
+    # Prefer real Qt dialog tab pages when available; keep fallback groups otherwise.
+    if pages:
+        groups = [{"id": p["id"], "title": p["title"], "keys": p["keys"]} for p in pages]
+        # Append any installer/script keys missing from pages so deploy still editable.
+        page_keys = {k for p in pages for k in p.get("keys") or []}
+        missing_installer = [k for k in INSTALLER_KEYS if k not in page_keys]
+        if missing_installer:
+            groups.append({"id": "installer-extra", "title": "Installer (extra)", "keys": missing_installer})
+    else:
+        groups = [
+            {
+                "id": "installer",
+                "title": "Installer / deploy",
+                "keys": list(INSTALLER_KEYS),
+            },
+            {
+                "id": "platform",
+                "title": f"Platform defaults ({plat['name']})",
+                "keys": platform_keys,
+            },
+        ]
+        if os_keys:
+            groups.append(
+                {
+                    "id": "os",
+                    "title": f"OS defaults ({host_os})",
+                    "keys": os_keys,
+                }
+            )
         groups.append(
             {
-                "id": "os",
-                "title": f"OS defaults ({host_os})",
-                "keys": os_keys,
+                "id": "scripts",
+                "title": "Scripts / diagnostics",
+                "keys": list(COMMON_KEYS),
             }
         )
-    if dialog_keys:
-        groups.append(
-            {
-                "id": "dialog",
-                "title": f"Dialog fields ({plat.get('dialog') or platform})",
-                "keys": dialog_keys,
-            }
-        )
-    groups.append(
-        {
-            "id": "scripts",
-            "title": "Scripts / diagnostics",
-            "keys": list(COMMON_KEYS),
-        }
-    )
     featured: list[str] = []
     seen: set[str] = set()
     for g in groups:
@@ -316,4 +364,71 @@ def option_schema(platform: str, host_os: str = "") -> dict[str, Any]:
         "featured_keys": featured,
         "fields": fields,
         "dialog_field_count": len(field_meta),
+        "dialog_pages": pages,
+    }
+
+
+def interface_option_schema(host_os: str) -> dict[str, Any]:
+    """Grouped InterfaceOptions keys from OS interface_dialog + resource defaults."""
+    os_info = get_os(host_os)
+    iface_dialog = (os_info.get("interface_dialog") or "").strip()
+    cat = _dialog_catalog()
+    dialogs = cat.get("dialogs") or {}
+    stem = _iface_dialog_stem(iface_dialog)
+    field_meta: dict[str, dict[str, Any]] = {}
+    pages: list[dict[str, Any]] = []
+    if stem and stem in dialogs:
+        info = dialogs[stem]
+        field_meta = {k: dict(v) for k, v in (info.get("fields") or {}).items()}
+        pages = list(info.get("pages") or [])
+
+    defaults = dict(os_info.get("interface_defaults") or {})
+    # Ensure dialog keys appear even when resource XML has no <interface> defaults.
+    for key in field_meta:
+        defaults.setdefault(key, "")
+
+    if pages:
+        groups = [{"id": p["id"], "title": p["title"], "keys": list(p.get("keys") or [])} for p in pages]
+    elif field_meta:
+        groups = [{"id": "interface", "title": "Interface", "keys": sorted(field_meta.keys())}]
+    elif defaults:
+        groups = [{"id": "interface", "title": "Interface", "keys": sorted(defaults.keys())}]
+    else:
+        groups = []
+
+    featured: list[str] = []
+    seen: set[str] = set()
+    for g in groups:
+        for k in g["keys"]:
+            if k not in seen:
+                featured.append(k)
+                seen.add(k)
+    for k in defaults:
+        if k not in seen:
+            featured.append(k)
+            seen.add(k)
+            if groups:
+                groups[0]["keys"].append(k)
+            else:
+                groups = [{"id": "interface", "title": "Interface", "keys": [k]}]
+
+    fields: dict[str, Any] = {}
+    for key in seen:
+        fields[key] = _infer_type(key, defaults.get(key, ""), field_meta.get(key))
+
+    caps = os_info.get("capabilities") or {}
+    return {
+        "host_os": os_info["name"],
+        "interface_dialog": iface_dialog or None,
+        "dialog_stem": stem,
+        "supports_advanced_interface_options": str(
+            caps.get("supports_advanced_interface_options") or ""
+        ).lower()
+        in {"true", "1", "yes"},
+        "defaults": defaults,
+        "groups": groups,
+        "featured_keys": featured,
+        "fields": fields,
+        "dialog_field_count": len(field_meta),
+        "dialog_pages": pages,
     }

@@ -1,4 +1,17 @@
 {
+  "by_interface_dialog": {
+    "bsd": "bsdIfaceOptsDialog",
+    "freebsd": "bsdIfaceOptsDialog",
+    "linux24": "linux24IfaceOptsDialog",
+    "linux317": "linux24IfaceOptsDialog",
+    "macosx": "bsdIfaceOptsDialog",
+    "openbsd": "bsdIfaceOptsDialog",
+    "pix_os": "pixosIfaceOptsDialog",
+    "pixos": "pixosIfaceOptsDialog",
+    "procurve": "vlanOnlyIfaceOptsDialog",
+    "secuwall": "secuwallIfaceOptsDialog",
+    "vlan_only": "vlanOnlyIfaceOptsDialog"
+  },
   "by_platform_dialog": {
     "freebsd": "freebsdAdvancedDialog",
     "ios": "iosAdvancedDialog",
@@ -25,6 +38,55 @@
     "solaris": "solarisAdvancedDialog"
   },
   "dialogs": {
+    "bsdIfaceOptsDialog": {
+      "field_count": 5,
+      "fields": {
+        "enable_stp": {
+          "key": "enable_stp",
+          "type": "bool",
+          "widget": "enable_stp",
+          "widget_class": "QCheckBox"
+        },
+        "iface_configure_mtu": {
+          "key": "iface_configure_mtu",
+          "type": "bool",
+          "widget": "iface_configure_mtu",
+          "widget_class": "QCheckBox"
+        },
+        "iface_mtu": {
+          "key": "iface_mtu",
+          "type": "int",
+          "widget": "iface_mtu",
+          "widget_class": "QSpinBox"
+        },
+        "iface_options": {
+          "key": "iface_options",
+          "type": "string",
+          "widget": "iface_options",
+          "widget_class": "QLineEdit"
+        },
+        "vlan_id": {
+          "key": "vlan_id",
+          "type": "int",
+          "widget": "vlan_id",
+          "widget_class": "QSpinBox"
+        }
+      },
+      "pages": [
+        {
+          "id": "tab",
+          "keys": [
+            "iface_configure_mtu",
+            "iface_mtu",
+            "iface_options",
+            "vlan_id",
+            "enable_stp"
+          ],
+          "title": "Options"
+        }
+      ],
+      "ui": "bsdifaceoptsdialog_q.ui"
+    },
     "freebsdAdvancedDialog": {
       "field_count": 10,
       "fields": {
@@ -109,6 +171,36 @@
           "widget_class": "QLineEdit"
         }
       },
+      "pages": [
+        {
+          "id": "tab0",
+          "keys": [
+            "freebsd_ip_forward",
+            "freebsd_ipv6_forward",
+            "freebsd_ip_sourceroute",
+            "freebsd_ip_redirect"
+          ],
+          "title": "Options"
+        },
+        {
+          "id": "tab1",
+          "keys": [
+            "freebsd_path_ipfw",
+            "freebsd_path_pfctl",
+            "freebsd_path_ipf",
+            "freebsd_path_ipnat",
+            "freebsd_path_sysctl"
+          ],
+          "title": "Path"
+        },
+        {
+          "id": "tab",
+          "keys": [
+            "data_dir"
+          ],
+          "title": "Data"
+        }
+      ],
       "ui": "freebsdadvanceddialog_q.ui"
     },
     "iosAdvancedDialog": {
@@ -127,6 +219,16 @@
           "widget_class": "QCheckBox"
         }
       },
+      "pages": [
+        {
+          "id": "TabPage",
+          "keys": [
+            "ios_set_host_name",
+            "ios_ip_address"
+          ],
+          "title": "General"
+        }
+      ],
       "ui": "iosadvanceddialog_q.ui"
     },
     "iosaclAdvancedDialog": {
@@ -325,6 +427,66 @@
           "widget_class": "QCheckBox"
         }
       },
+      "pages": [
+        {
+          "id": "compiler_tab",
+          "keys": [
+            "output_file",
+            "ignore_empty_groups",
+            "check_shading",
+            "iosacl_use_object_groups",
+            "mgmt_ssh",
+            "mgmt_addr"
+          ],
+          "title": "Compiler Options"
+        },
+        {
+          "id": "script_options_tab",
+          "keys": [
+            "iosacl_include_comments",
+            "iosacl_use_acl_remarks",
+            "iosacl_regroup_commands",
+            "iosacl_acl_temp_addr"
+          ],
+          "title": "Script Options"
+        },
+        {
+          "id": "installer_tab",
+          "keys": [
+            "admUser",
+            "altAddress",
+            "sshArgs",
+            "scpArgs",
+            "use_scp",
+            "filesystem",
+            "firewall_dir"
+          ],
+          "title": "Installer"
+        },
+        {
+          "id": "prolog_epilog_tab",
+          "keys": [
+            "iosacl_prolog_script",
+            "iosacl_epilog_script"
+          ],
+          "title": "Prolog/Epilog"
+        },
+        {
+          "id": "logging_tab",
+          "keys": [
+            "iosacl_generate_logging_commands",
+            "iosacl_syslog_host",
+            "iosacl_syslog_facility",
+            "iosacl_logging_trap_level",
+            "iosacl_logging_timestamp",
+            "iosacl_logging_buffered",
+            "iosacl_logging_console",
+            "iosacl_logging_buffered_level",
+            "iosacl_logging_console_level"
+          ],
+          "title": "Logging"
+        }
+      ],
       "ui": "iosacladvanceddialog_q.ui"
     },
     "ipcopAdvancedDialog": {
@@ -551,6 +713,72 @@
           "widget_class": "QCheckBox"
         }
       },
+      "pages": [
+        {
+          "id": "tab0",
+          "keys": [
+            "compiler",
+            "cmdline",
+            "output_file",
+            "firewall_is_part_of_any_and_networks",
+            "accept_new_tcp_with_no_syn",
+            "bridging_fw",
+            "check_shading",
+            "ignore_empty_groups",
+            "local_nat",
+            "action_on_reject",
+            "mgmt_ssh",
+            "mgmt_addr"
+          ],
+          "title": "Compiler"
+        },
+        {
+          "id": "tab1",
+          "keys": [
+            "firewall_dir",
+            "admUser",
+            "altAddress",
+            "activationCmd",
+            "sshArgs",
+            "scpArgs"
+          ],
+          "title": "Installer"
+        },
+        {
+          "id": "tab2",
+          "keys": [
+            "epilog_script",
+            "prolog_script"
+          ],
+          "title": "Prolog/Epilog"
+        },
+        {
+          "id": "tab3",
+          "keys": [
+            "log_tcp_seq",
+            "log_ip_opt",
+            "use_numeric_log_levels",
+            "log_level",
+            "log_tcp_opt",
+            "ulog_cprange",
+            "ulog_qthreshold",
+            "ulog_nlgroup",
+            "log_prefix",
+            "limit_value",
+            "limit_suffix",
+            "log_all"
+          ],
+          "title": "Logging"
+        },
+        {
+          "id": "tab4",
+          "keys": [
+            "debug",
+            "verify_interfaces"
+          ],
+          "title": "Script"
+        }
+      ],
       "ui": "ipcopadvanceddialog_q.ui"
     },
     "ipcoposAdvancedDialog": {
@@ -811,6 +1039,55 @@
           "widget_class": "QComboBox"
         }
       },
+      "pages": [
+        {
+          "id": "tab0",
+          "keys": [
+            "linux24_ip_forward",
+            "linux24_ipv6_forward",
+            "linux24_rp_filter",
+            "linux24_icmp_echo_ignore_broadcasts",
+            "linux24_icmp_echo_ignore_all",
+            "linux24_accept_source_route",
+            "linux24_accept_redirects",
+            "linux24_icmp_ignore_bogus_error_responses",
+            "linux24_ip_dynaddr",
+            "linux24_log_martians"
+          ],
+          "title": "Options"
+        },
+        {
+          "id": "tab1",
+          "keys": [
+            "linux24_tcp_fin_timeout",
+            "linux24_tcp_keepalive_interval",
+            "linux24_tcp_window_scaling",
+            "linux24_tcp_sack",
+            "linux24_tcp_fack",
+            "linux24_tcp_ecn",
+            "linux24_tcp_syncookies",
+            "linux24_tcp_timestamps"
+          ],
+          "title": "TCP"
+        },
+        {
+          "id": "tab2",
+          "keys": [
+            "linux24_path_iptables",
+            "linux24_path_ip6tables",
+            "linux24_path_ip",
+            "linux24_path_vconfig",
+            "linux24_path_brctl",
+            "linux24_path_ifenslave",
+            "linux24_path_logger",
+            "linux24_path_modprobe",
+            "linux24_path_lsmod",
+            "linux24_path_iptables_restore",
+            "linux24_path_ip6tables_restore"
+          ],
+          "title": "Path"
+        }
+      ],
       "ui": "ipcoposadvanceddialog_q.ui"
     },
     "ipfAdvancedDialog": {
@@ -1057,6 +1334,84 @@
           "widget_class": "QLineEdit"
         }
       },
+      "pages": [
+        {
+          "id": "tab1",
+          "keys": [
+            "compiler",
+            "cmdline",
+            "output_file",
+            "script_name_on_firewall",
+            "ipf_conf_file_name_on_firewall",
+            "nat_conf_file_name_on_firewall",
+            "mgmt_ssh",
+            "mgmt_addr",
+            "eliminate_duplicates",
+            "accept_new_tcp_with_no_syn",
+            "ignore_empty_groups",
+            "check_shading",
+            "action_on_reject",
+            "ipf_return_icmp_as_dest"
+          ],
+          "title": "Compiler"
+        },
+        {
+          "id": "tab0",
+          "keys": [
+            "ipf_nat_raudio_proxy",
+            "ipf_nat_h323_proxy",
+            "ipf_nat_ipsec_proxy",
+            "ipf_nat_ftp_proxy",
+            "ipf_nat_rcmd_proxy",
+            "ipf_nat_krcmd_proxy",
+            "ipf_nat_ekshell_proxy",
+            "ipf_nat_pptp_proxy",
+            "ipf_nat_irc_proxy"
+          ],
+          "title": "Protocol Helpers"
+        },
+        {
+          "id": "tab2",
+          "keys": [
+            "firewall_dir",
+            "admUser",
+            "altAddress",
+            "activationCmd",
+            "sshArgs",
+            "scpArgs"
+          ],
+          "title": "Installer"
+        },
+        {
+          "id": "tab3",
+          "keys": [
+            "prolog_script",
+            "epilog_script"
+          ],
+          "title": "Prolog/Epilog"
+        },
+        {
+          "id": "tab4",
+          "keys": [
+            "ipf_log_facility",
+            "ipf_log_level",
+            "ipf_log_body",
+            "ipf_log_or_block"
+          ],
+          "title": "Logging"
+        },
+        {
+          "id": "tab5",
+          "keys": [
+            "manage_virtual_addr",
+            "configure_interfaces",
+            "debug",
+            "optimize",
+            "dynAddr"
+          ],
+          "title": "Script Options"
+        }
+      ],
       "ui": "ipfadvanceddialog_q.ui"
     },
     "ipfwAdvancedDialog": {
@@ -1183,6 +1538,52 @@
           "widget_class": "QLineEdit"
         }
       },
+      "pages": [
+        {
+          "id": "tab",
+          "keys": [
+            "compiler",
+            "cmdline",
+            "output_file",
+            "script_name_on_firewall",
+            "add_check_state_rule",
+            "check_shading",
+            "ignore_empty_groups",
+            "mgmt_ssh",
+            "mgmt_addr"
+          ],
+          "title": "Compiler"
+        },
+        {
+          "id": "tab1",
+          "keys": [
+            "firewall_dir",
+            "admUser",
+            "altAddress",
+            "activationCmd",
+            "sshArgs",
+            "scpArgs"
+          ],
+          "title": "Installer"
+        },
+        {
+          "id": "tab2",
+          "keys": [
+            "epilog_script",
+            "prolog_script"
+          ],
+          "title": "Prolog/Epilog"
+        },
+        {
+          "id": "tab3",
+          "keys": [
+            "manage_virtual_addr",
+            "configure_interfaces",
+            "debug"
+          ],
+          "title": "Script Options"
+        }
+      ],
       "ui": "ipfwadvanceddialog_q.ui"
     },
     "iptAdvancedDialog": {
@@ -1528,6 +1929,91 @@
           "widget_class": "QCheckBox"
         }
       },
+      "pages": [
+        {
+          "id": "tab0",
+          "keys": [
+            "compiler",
+            "cmdline",
+            "output_file",
+            "script_name_on_firewall",
+            "firewall_is_part_of_any_and_networks",
+            "check_shading",
+            "accept_new_tcp_with_no_syn",
+            "ignore_empty_groups",
+            "accept_established",
+            "local_nat",
+            "drop_invalid",
+            "log_invalid",
+            "clamp_mss_to_mtu",
+            "bridging_fw",
+            "action_on_reject",
+            "add_rules_for_ipv6_neighbor_discovery",
+            "use_m_set",
+            "use_kerneltz",
+            "mgmt_ssh",
+            "mgmt_addr",
+            "add_mgmt_ssh_rule_when_stoped"
+          ],
+          "title": "Compiler"
+        },
+        {
+          "id": "tab1",
+          "keys": [
+            "firewall_dir",
+            "admUser",
+            "altAddress",
+            "activationCmd",
+            "sshArgs",
+            "scpArgs"
+          ],
+          "title": "Installer"
+        },
+        {
+          "id": "tab2",
+          "keys": [
+            "epilog_script",
+            "prolog_script",
+            "hooks_profile",
+            "prolog_place"
+          ],
+          "title": "Prolog/Epilog"
+        },
+        {
+          "id": "tab3",
+          "keys": [
+            "log_tcp_seq",
+            "log_ip_opt",
+            "use_numeric_log_levels",
+            "log_level",
+            "log_tcp_opt",
+            "ulog_cprange",
+            "ulog_qthreshold",
+            "ulog_nlgroup",
+            "log_prefix",
+            "limit_value",
+            "limit_suffix",
+            "log_all"
+          ],
+          "title": "Logging"
+        },
+        {
+          "id": "tab4",
+          "keys": [
+            "load_modules",
+            "debug",
+            "verify_interfaces",
+            "configure_interfaces",
+            "clear_unknown_interfaces",
+            "configure_vlan_interfaces",
+            "configure_bridge_interfaces",
+            "configure_bonding_interfaces",
+            "manage_virtual_addr",
+            "use_iptables_restore"
+          ],
+          "title": "Script"
+        }
+      ],
       "ui": "iptadvanceddialog_q.ui"
     },
     "junosAdvancedDialog": {
@@ -1546,6 +2032,16 @@
           "widget_class": "QCheckBox"
         }
       },
+      "pages": [
+        {
+          "id": "TabPage",
+          "keys": [
+            "junos_set_host_name",
+            "junos_ip_address"
+          ],
+          "title": "General"
+        }
+      ],
       "ui": "junosadvanceddialog_q.ui"
     },
     "junosaclAdvancedDialog": {
@@ -1708,6 +2204,61 @@
           "widget_class": "QCheckBox"
         }
       },
+      "pages": [
+        {
+          "id": "compiler_tab",
+          "keys": [
+            "output_file",
+            "ignore_empty_groups",
+            "check_shading",
+            "filter_prefix"
+          ],
+          "title": "Compiler Options"
+        },
+        {
+          "id": "script_options_tab",
+          "keys": [
+            "junosacl_include_comments"
+          ],
+          "title": "Script Options"
+        },
+        {
+          "id": "installer_tab",
+          "keys": [
+            "use_scp",
+            "filesystem",
+            "firewall_dir",
+            "admUser",
+            "altAddress",
+            "sshArgs",
+            "scpArgs"
+          ],
+          "title": "Installer"
+        },
+        {
+          "id": "prolog_epilog_tab",
+          "keys": [
+            "junosacl_prolog_script",
+            "junosacl_epilog_script"
+          ],
+          "title": "Prolog/Epilog"
+        },
+        {
+          "id": "logging_tab",
+          "keys": [
+            "junosacl_generate_logging_commands",
+            "junosacl_syslog_host",
+            "junosacl_syslog_facility",
+            "junosacl_logging_trap_level",
+            "junosacl_logging_timestamp",
+            "junosacl_logging_buffered",
+            "junosacl_logging_console",
+            "junosacl_logging_buffered_level",
+            "junosacl_logging_console_level"
+          ],
+          "title": "Logging"
+        }
+      ],
       "ui": "junosacladvanceddialog_q.ui"
     },
     "linksysAdvancedDialog": {
@@ -1774,6 +2325,30 @@
           "widget_class": "QLineEdit"
         }
       },
+      "pages": [
+        {
+          "id": "TabPage",
+          "keys": [
+            "linux24_path_iptables",
+            "linux24_path_ip",
+            "linux24_path_logger",
+            "linux24_path_modprobe",
+            "linux24_path_lsmod",
+            "linksys_path_vconfig",
+            "linksys_path_brctl",
+            "linksys_path_ifenslave"
+          ],
+          "title": "Path"
+        },
+        {
+          "id": "tab",
+          "keys": [
+            "prompt1",
+            "prompt2"
+          ],
+          "title": "Prompts"
+        }
+      ],
       "ui": "linksysadvanceddialog_q.ui"
     },
     "linux24AdvancedDialog": {
@@ -2069,7 +2644,135 @@
           "widget_class": "QComboBox"
         }
       },
+      "pages": [
+        {
+          "id": "tab0",
+          "keys": [
+            "linux24_ip_forward",
+            "linux24_ipv6_forward",
+            "linux24_rp_filter",
+            "linux24_icmp_echo_ignore_broadcasts",
+            "linux24_icmp_echo_ignore_all",
+            "linux24_accept_source_route",
+            "linux24_accept_redirects",
+            "linux24_icmp_ignore_bogus_error_responses",
+            "linux24_ip_dynaddr",
+            "linux24_log_martians"
+          ],
+          "title": "Options"
+        },
+        {
+          "id": "tab1",
+          "keys": [
+            "linux24_tcp_fin_timeout",
+            "linux24_tcp_keepalive_interval",
+            "linux24_tcp_window_scaling",
+            "linux24_tcp_sack",
+            "linux24_tcp_fack",
+            "linux24_tcp_ecn",
+            "linux24_tcp_syncookies",
+            "linux24_tcp_timestamps"
+          ],
+          "title": "TCP"
+        },
+        {
+          "id": "tab2",
+          "keys": [
+            "linux24_path_iptables",
+            "linux24_path_ip6tables",
+            "linux24_path_ip",
+            "linux24_path_logger",
+            "linux24_path_vconfig",
+            "linux24_path_brctl",
+            "linux24_path_ifenslave",
+            "linux24_path_modprobe",
+            "linux24_path_lsmod",
+            "linux24_path_ipset",
+            "linux24_path_iptables_restore",
+            "linux24_path_ip6tables_restore"
+          ],
+          "title": "Path"
+        },
+        {
+          "id": "tab",
+          "keys": [
+            "linux24_conntrack_max",
+            "linux24_conntrack_hashsize",
+            "linux24_conntrack_tcp_be_liberal"
+          ],
+          "title": "conntrack"
+        },
+        {
+          "id": "tab_2",
+          "keys": [
+            "data_dir"
+          ],
+          "title": "Data"
+        }
+      ],
       "ui": "linux24advanceddialog_q.ui"
+    },
+    "linux24IfaceOptsDialog": {
+      "field_count": 5,
+      "fields": {
+        "bonding_policy": {
+          "choices": [
+            "balance-rr",
+            "active-backup",
+            "balance-xor",
+            "broadcast",
+            "802.3ad",
+            "balance-tlb",
+            "balance-alb"
+          ],
+          "key": "bonding_policy",
+          "type": "enum",
+          "widget": "bonding_policy",
+          "widget_class": "QComboBox"
+        },
+        "bondng_driver_options": {
+          "key": "bondng_driver_options",
+          "type": "string",
+          "widget": "bondng_driver_options",
+          "widget_class": "QLineEdit"
+        },
+        "enable_stp": {
+          "key": "enable_stp",
+          "type": "bool",
+          "widget": "enable_stp",
+          "widget_class": "QCheckBox"
+        },
+        "vlan_id": {
+          "key": "vlan_id",
+          "type": "int",
+          "widget": "vlan_id",
+          "widget_class": "QSpinBox"
+        },
+        "xmit_hash_policy": {
+          "choices": [
+            "layer2",
+            "layer3+4"
+          ],
+          "key": "xmit_hash_policy",
+          "type": "enum",
+          "widget": "xmit_hash_policy",
+          "widget_class": "QComboBox"
+        }
+      },
+      "pages": [
+        {
+          "id": "tab",
+          "keys": [
+            "vlan_id",
+            "enable_stp",
+            "bonding_policy",
+            "xmit_hash_policy",
+            "bondng_driver_options"
+          ],
+          "title": "Options"
+        }
+      ],
+      "ui": "linux24ifaceoptsdialog_q.ui"
     },
     "macosxAdvancedDialog": {
       "field_count": 5,
@@ -2120,6 +2823,25 @@
           "widget_class": "QLineEdit"
         }
       },
+      "pages": [
+        {
+          "id": "tab0",
+          "keys": [
+            "macosx_ip_forward",
+            "macosx_ip_redirect",
+            "macosx_ip_sourceroute"
+          ],
+          "title": "Options"
+        },
+        {
+          "id": "tab1",
+          "keys": [
+            "macosx_path_ipfw",
+            "macosx_path_sysctl"
+          ],
+          "title": "Path"
+        }
+      ],
       "ui": "macosxadvanceddialog_q.ui"
     },
     "nxosAdvancedDialog": {
@@ -2138,6 +2860,16 @@
           "widget_class": "QCheckBox"
         }
       },
+      "pages": [
+        {
+          "id": "TabPage",
+          "keys": [
+            "nxos_set_host_name",
+            "nxos_ip_address"
+          ],
+          "title": "General"
+        }
+      ],
       "ui": "nxosadvanceddialog_q.ui"
     },
     "nxosaclAdvancedDialog": {
@@ -2342,6 +3074,67 @@
           "widget_class": "QCheckBox"
         }
       },
+      "pages": [
+        {
+          "id": "compiler_tab",
+          "keys": [
+            "output_file",
+            "ignore_empty_groups",
+            "check_shading",
+            "nxosacl_use_object_groups",
+            "mgmt_ssh",
+            "mgmt_addr"
+          ],
+          "title": "Compiler Options"
+        },
+        {
+          "id": "script_options_tab",
+          "keys": [
+            "nxosacl_include_comments",
+            "nxosacl_use_acl_remarks",
+            "nxosacl_regroup_commands",
+            "nxosacl_acl_temp_addr"
+          ],
+          "title": "Script Options"
+        },
+        {
+          "id": "installer_tab",
+          "keys": [
+            "use_scp",
+            "filesystem",
+            "firewall_dir",
+            "admUser",
+            "altAddress",
+            "sshArgs",
+            "scpArgs",
+            "use_nxos_session"
+          ],
+          "title": "Installer"
+        },
+        {
+          "id": "prolog_epilog_tab",
+          "keys": [
+            "nxosacl_prolog_script",
+            "nxosacl_epilog_script"
+          ],
+          "title": "Prolog/Epilog"
+        },
+        {
+          "id": "logging_tab",
+          "keys": [
+            "nxosacl_generate_logging_commands",
+            "nxosacl_syslog_host",
+            "nxosacl_syslog_facility",
+            "nxosacl_logging_trap_level",
+            "nxosacl_logging_timestamp",
+            "nxosacl_logging_buffered",
+            "nxosacl_logging_console",
+            "nxosacl_logging_buffered_level",
+            "nxosacl_logging_console_level"
+          ],
+          "title": "Logging"
+        }
+      ],
       "ui": "nxosacladvanceddialog_q.ui"
     },
     "openbsdAdvancedDialog": {
@@ -2421,6 +3214,34 @@
           "widget_class": "QLineEdit"
         }
       },
+      "pages": [
+        {
+          "id": "tab0",
+          "keys": [
+            "openbsd_ip_forward",
+            "openbsd_ipv6_forward",
+            "openbsd_ip_directed_broadcast",
+            "openbsd_ip_sourceroute",
+            "openbsd_ip_redirect"
+          ],
+          "title": "Options"
+        },
+        {
+          "id": "tab1",
+          "keys": [
+            "openbsd_path_pfctl",
+            "openbsd_path_sysctl"
+          ],
+          "title": "Path"
+        },
+        {
+          "id": "tab",
+          "keys": [
+            "data_dir"
+          ],
+          "title": "Data"
+        }
+      ],
       "ui": "openbsdadvanceddialog_q.ui"
     },
     "pfAdvancedDialog": {
@@ -2999,6 +3820,144 @@
           "widget_class": "QLineEdit"
         }
       },
+      "pages": [
+        {
+          "id": "tab1",
+          "keys": [
+            "compiler",
+            "cmdline",
+            "output_file",
+            "conf1_file",
+            "script_name_on_firewall",
+            "conf_file_name_on_firewall",
+            "accept_new_tcp_with_no_syn",
+            "check_shading",
+            "pf_modulate_state",
+            "ignore_empty_groups",
+            "preserve_group_names",
+            "mgmt_ssh",
+            "mgmt_addr"
+          ],
+          "title": "Compiler"
+        },
+        {
+          "id": "tab2",
+          "keys": [
+            "pf_scrub_no_df",
+            "pf_scrub_random_id",
+            "pf_scrub_use_minttl",
+            "pf_scrub_minttl",
+            "pf_scrub_use_maxmss",
+            "pf_scrub_maxmss",
+            "pf_do_scrub"
+          ],
+          "title": "Scrub"
+        },
+        {
+          "id": "tab3",
+          "keys": [
+            "pf_do_limit_frags",
+            "pf_limit_frags",
+            "pf_do_limit_states",
+            "pf_limit_states",
+            "pf_do_limit_src_nodes",
+            "pf_limit_src_nodes",
+            "pf_do_limit_tables",
+            "pf_limit_tables",
+            "pf_do_limit_table_entries",
+            "pf_limit_table_entries",
+            "pf_optimization",
+            "pf_set_debug",
+            "pf_state_policy",
+            "pf_block_policy"
+          ],
+          "title": "Options"
+        },
+        {
+          "id": "tab4",
+          "keys": [
+            "pf_set_tcp_first",
+            "pf_tcp_first",
+            "pf_set_tcp_opening",
+            "pf_tcp_opening",
+            "pf_set_tcp_established",
+            "pf_tcp_established",
+            "pf_tcp_closing",
+            "pf_set_tcp_closing",
+            "pf_tcp_finwait",
+            "pf_set_tcp_finwait",
+            "pf_tcp_closed",
+            "pf_set_tcp_closed",
+            "pf_set_udp_first",
+            "pf_udp_first",
+            "pf_set_udp_single",
+            "pf_udp_single",
+            "pf_set_udp_multiple",
+            "pf_udp_multiple",
+            "pf_set_other_first",
+            "pf_other_first",
+            "pf_set_other_single",
+            "pf_set_other_multiple",
+            "pf_other_single",
+            "pf_other_multiple",
+            "pf_icmp_first",
+            "pf_icmp_error",
+            "pf_set_icmp_first",
+            "pf_set_icmp_error",
+            "pf_set_adaptive",
+            "pf_adaptive_start",
+            "pf_adaptive_end",
+            "pf_do_timeout_interval",
+            "pf_timeout_interval",
+            "pf_do_timeout_frag",
+            "pf_timeout_frag"
+          ],
+          "title": "Timeouts"
+        },
+        {
+          "id": "tab5",
+          "keys": [
+            "firewall_dir",
+            "admUser",
+            "altAddress",
+            "activationCmd",
+            "sshArgs",
+            "scpArgs"
+          ],
+          "title": "Installer"
+        },
+        {
+          "id": "tab6",
+          "keys": [
+            "epilog_script",
+            "prolog_script",
+            "prolog_place"
+          ],
+          "title": "Prolog/Epilog"
+        },
+        {
+          "id": "tab7",
+          "keys": [
+            "log_prefix",
+            "fallback_log"
+          ],
+          "title": "Logging"
+        },
+        {
+          "id": "tab8",
+          "keys": [
+            "debug",
+            "configure_interfaces",
+            "configure_carp_interfaces",
+            "configure_pfsync_interfaces",
+            "configure_vlan_interfaces",
+            "configure_bridge_interfaces",
+            "manage_virtual_addr",
+            "pf_flush_states"
+          ],
+          "title": "Script"
+        }
+      ],
       "ui": "pfadvanceddialog_q.ui"
     },
     "pixAdvancedDialog": {
@@ -3515,6 +4474,134 @@
           "widget_class": "QSpinBox"
         }
       },
+      "pages": [
+        {
+          "id": "TabPage1",
+          "keys": [
+            "output_file",
+            "pix_assume_fw_part_of_any",
+            "check_shading",
+            "pix_emulate_out_acl",
+            "pix_generate_out_acl",
+            "ignore_empty_groups",
+            "pix_optimize_default_nat",
+            "pix_replace_natted_objects",
+            "pix_check_duplicate_nat",
+            "pix_check_overlapping_statics",
+            "pix_check_overlapping_global_pools",
+            "pix_check_overlapping_global_statics",
+            "mgmt_ssh",
+            "mgmt_addr"
+          ],
+          "title": "Compiler"
+        },
+        {
+          "id": "tab2",
+          "keys": [
+            "admUser",
+            "altAddress",
+            "sshArgs",
+            "scpArgs",
+            "use_scp",
+            "filesystem",
+            "firewall_dir"
+          ],
+          "title": "Installer"
+        },
+        {
+          "id": "TabPage2",
+          "keys": [
+            "pix_prolog_script",
+            "pix_epilog_script"
+          ],
+          "title": "Prolog/Epilog"
+        },
+        {
+          "id": "label584",
+          "keys": [
+            "xlate_hh",
+            "conn_hh",
+            "udp_hh",
+            "rpc_hh",
+            "h323_hh",
+            "sip_hh",
+            "sip_media_hh",
+            "uauth_hh",
+            "xlate_mm",
+            "conn_mm",
+            "udp_mm",
+            "rpc_mm",
+            "h323_mm",
+            "sip_mm",
+            "sip_media_mm",
+            "uauth_mm",
+            "xlate_ss",
+            "conn_ss",
+            "udp_ss",
+            "rpc_ss",
+            "h323_ss",
+            "sip_ss",
+            "sip_media_ss",
+            "uauth_ss",
+            "half-closed_ss",
+            "half-closed_mm",
+            "half-closed_hh",
+            "pix_ssh_timeout",
+            "pix_telnet_timeout"
+          ],
+          "title": "Timeouts"
+        },
+        {
+          "id": "label596",
+          "keys": [
+            "pix_syslog_host",
+            "pix_syslog_queue_size",
+            "pix_syslog_facility",
+            "pix_logging_trap_level",
+            "pix_emblem_log_format",
+            "pix_logging_timestamp",
+            "pix_logging_buffered",
+            "pix_logging_buffered_level",
+            "pix_logging_console",
+            "pix_logging_console_level"
+          ],
+          "title": "Logging"
+        },
+        {
+          "id": "tab1",
+          "keys": [
+            "pix_acl_temp_addr"
+          ],
+          "title": "Script"
+        },
+        {
+          "id": "tab_2",
+          "keys": [
+            "short_script",
+            "pix_include_comments",
+            "pix_use_acl_remarks",
+            "pix_regroup_commands",
+            "pix_use_manual_commit"
+          ],
+          "title": "Script (additional)"
+        },
+        {
+          "id": "pix_options",
+          "keys": [
+            "pix_resetinbound",
+            "pix_resetoutside",
+            "pix_connection_timewait",
+            "pix_fragguard",
+            "pix_floodguard",
+            "pix_route_dnat",
+            "pix_nodnsalias_inbound",
+            "pix_nodnsalias_outbound",
+            "pix_max_conns",
+            "pix_emb_limit"
+          ],
+          "title": "PIX Options"
+        }
+      ],
       "ui": "pixadvanceddialog_q.ui"
     },
     "pixosAdvancedDialog": {
@@ -3633,7 +4720,68 @@
           "widget_class": "QSpinBox"
         }
       },
+      "pages": [
+        {
+          "id": "TabPage",
+          "keys": [
+            "pix_set_host_name",
+            "pix_ip_address"
+          ],
+          "title": "General"
+        },
+        {
+          "id": "label593",
+          "keys": [
+            "pix_ntp1",
+            "pix_ntp2",
+            "pix_ntp3"
+          ],
+          "title": "NTP"
+        },
+        {
+          "id": "label602",
+          "keys": [
+            "pix_disable_snmp_agent",
+            "pix_set_communities_from_object_data",
+            "pix_snmp_server1",
+            "pix_snmp_server2",
+            "pix_snmp_poll_traps_1",
+            "pix_snmp_poll_traps_2",
+            "pix_enable_snmp_traps"
+          ],
+          "title": "SNMP"
+        },
+        {
+          "id": "label608",
+          "keys": [
+            "pix_tcpmss",
+            "pix_tcpmss_value"
+          ],
+          "title": "Options"
+        }
+      ],
       "ui": "pixosadvanceddialog_q.ui"
+    },
+    "pixosIfaceOptsDialog": {
+      "field_count": 1,
+      "fields": {
+        "vlan_id": {
+          "key": "vlan_id",
+          "type": "int",
+          "widget": "vlan_id",
+          "widget_class": "QSpinBox"
+        }
+      },
+      "pages": [
+        {
+          "id": "tab",
+          "keys": [
+            "vlan_id"
+          ],
+          "title": "Options"
+        }
+      ],
+      "ui": "pixosifaceoptsdialog_q.ui"
     },
     "procurveaclAdvancedDialog": {
       "field_count": 30,
@@ -3819,6 +4967,64 @@
           "widget_class": "QCheckBox"
         }
       },
+      "pages": [
+        {
+          "id": "compiler_tab",
+          "keys": [
+            "output_file",
+            "ignore_empty_groups",
+            "check_shading",
+            "mgmt_ssh",
+            "mgmt_addr"
+          ],
+          "title": "Compiler Options"
+        },
+        {
+          "id": "script_options_tab",
+          "keys": [
+            "procurve_acl_acl_temp_addr",
+            "procurve_acl_include_comments",
+            "procurve_acl_use_acl_remarks"
+          ],
+          "title": "Script Options"
+        },
+        {
+          "id": "installer_tab",
+          "keys": [
+            "admUser",
+            "altAddress",
+            "sshArgs",
+            "scpArgs",
+            "use_scp",
+            "filesystem",
+            "firewall_dir"
+          ],
+          "title": "Installer"
+        },
+        {
+          "id": "prolog_epilog_tab",
+          "keys": [
+            "procurve_acl_prolog_script",
+            "procurve_acl_epilog_script"
+          ],
+          "title": "Prolog/Epilog"
+        },
+        {
+          "id": "logging_tab",
+          "keys": [
+            "procurve_acl_generate_logging_commands",
+            "procurve_acl_syslog_host",
+            "procurve_acl_syslog_facility",
+            "procurve_acl_logging_trap_level",
+            "procurve_acl_logging_timestamp",
+            "procurve_acl_logging_buffered",
+            "procurve_acl_logging_console",
+            "procurve_acl_logging_buffered_level",
+            "procurve_acl_logging_console_level"
+          ],
+          "title": "Logging"
+        }
+      ],
       "ui": "procurveacladvanceddialog_q.ui"
     },
     "secuwallAdvancedDialog": {
@@ -4092,7 +5298,129 @@
           "widget_class": "QCheckBox"
         }
       },
+      "pages": [
+        {
+          "id": "tab0",
+          "keys": [
+            "compiler",
+            "cmdline",
+            "firewall_is_part_of_any_and_networks",
+            "accept_new_tcp_with_no_syn",
+            "accept_established",
+            "drop_invalid",
+            "log_invalid",
+            "bridging_fw",
+            "check_shading",
+            "ignore_empty_groups",
+            "local_nat",
+            "clamp_mss_to_mtu",
+            "action_on_reject",
+            "mgmt_ssh",
+            "mgmt_addr",
+            "add_mgmt_ssh_rule_when_stoped"
+          ],
+          "title": "Compiler"
+        },
+        {
+          "id": "tab1",
+          "keys": [
+            "sshArgs",
+            "scpArgs",
+            "altAddress",
+            "activationCmd"
+          ],
+          "title": "Installer"
+        },
+        {
+          "id": "tab2",
+          "keys": [
+            "epilog_script",
+            "prolog_script",
+            "prolog_place"
+          ],
+          "title": "Prolog/Epilog"
+        },
+        {
+          "id": "tab3",
+          "keys": [
+            "log_tcp_seq",
+            "log_ip_opt",
+            "use_numeric_log_levels",
+            "log_level",
+            "log_tcp_opt",
+            "ulog_cprange",
+            "ulog_qthreshold",
+            "ulog_nlgroup",
+            "log_prefix",
+            "limit_value",
+            "limit_suffix",
+            "log_all"
+          ],
+          "title": "Logging"
+        },
+        {
+          "id": "tab4",
+          "keys": [
+            "allow_reboot",
+            "debug",
+            "verify_interfaces",
+            "configure_interfaces",
+            "manage_virtual_addr",
+            "use_iptables_restore"
+          ],
+          "title": "Script"
+        }
+      ],
       "ui": "secuwalladvanceddialog_q.ui"
+    },
+    "secuwallIfaceOptsDialog": {
+      "field_count": 5,
+      "fields": {
+        "iface_disablearp": {
+          "key": "iface_disablearp",
+          "type": "bool",
+          "widget": "iface_disablearp",
+          "widget_class": "QCheckBox"
+        },
+        "iface_disableboot": {
+          "key": "iface_disableboot",
+          "type": "bool",
+          "widget": "iface_disableboot",
+          "widget_class": "QCheckBox"
+        },
+        "iface_mtu": {
+          "key": "iface_mtu",
+          "type": "int",
+          "widget": "iface_mtu",
+          "widget_class": "QSpinBox"
+        },
+        "iface_options": {
+          "key": "iface_options",
+          "type": "string",
+          "widget": "iface_options",
+          "widget_class": "QLineEdit"
+        },
+        "vlan_id": {
+          "key": "vlan_id",
+          "type": "int",
+          "widget": "vlan_id",
+          "widget_class": "QSpinBox"
+        }
+      },
+      "pages": [
+        {
+          "id": "tab",
+          "keys": [
+            "iface_mtu",
+            "iface_options",
+            "vlan_id",
+            "iface_disableboot",
+            "iface_disablearp"
+          ],
+          "title": "Options"
+        }
+      ],
+      "ui": "secuwallifaceoptsdialog_q.ui"
     },
     "secuwallosAdvancedDialog": {
       "field_count": 39,
@@ -4447,6 +5775,77 @@
           "widget_class": "QLineEdit"
         }
       },
+      "pages": [
+        {
+          "id": "tab0",
+          "keys": [
+            "secuwall_mgmt_mgmtaddr",
+            "secuwall_mgmt_loggingaddr",
+            "secuwall_mgmt_snmpaddr",
+            "secuwall_mgmt_rosnmp",
+            "secuwall_mgmt_ntpaddr",
+            "secuwall_mgmt_nagiosaddr",
+            "secuwall_mgmt_varpart",
+            "secuwall_mgmt_confpart",
+            "secuwall_mgmt_rules_disable"
+          ],
+          "title": "Management"
+        },
+        {
+          "id": "tab1",
+          "keys": [
+            "secuwall_dns_srv1",
+            "secuwall_dns_srv2",
+            "secuwall_dns_srv3",
+            "secuwall_dns_domains",
+            "secuwall_dns_hosts",
+            "secuwall_dns_reso1",
+            "secuwall_dns_reso2",
+            "secuwall_dns_reso3",
+            "secuwall_dns_reso4",
+            "secuwall_dns_reso5"
+          ],
+          "title": "DNS Client"
+        },
+        {
+          "id": "tab",
+          "keys": [
+            "linux24_ip_forward",
+            "linux24_ipv6_forward",
+            "linux24_rp_filter",
+            "linux24_icmp_echo_ignore_broadcasts",
+            "linux24_icmp_echo_ignore_all",
+            "linux24_accept_source_route",
+            "linux24_accept_redirects",
+            "linux24_icmp_ignore_bogus_error_responses",
+            "linux24_ip_dynaddr",
+            "linux24_log_martians"
+          ],
+          "title": "Options"
+        },
+        {
+          "id": "tab_2",
+          "keys": [
+            "linux24_tcp_fin_timeout",
+            "linux24_tcp_keepalive_interval",
+            "linux24_tcp_window_scaling",
+            "linux24_tcp_sack",
+            "linux24_tcp_fack",
+            "linux24_tcp_ecn",
+            "linux24_tcp_syncookies",
+            "linux24_tcp_timestamps"
+          ],
+          "title": "TCP"
+        },
+        {
+          "id": "tab_3",
+          "keys": [
+            "secuwall_add_files",
+            "secuwall_add_files_dir"
+          ],
+          "title": "Files"
+        }
+      ],
       "ui": "secuwallosadvanceddialog_q.ui"
     },
     "solarisAdvancedDialog": {
@@ -4520,7 +5919,34 @@
           "widget_class": "QLineEdit"
         }
       },
+      "pages": [
+        {
+          "id": "tab",
+          "keys": [
+            "solaris_ip_forward",
+            "solaris_ip_respond_to_echo_broadcast",
+            "solaris_ip_forward_directed_broadcasts",
+            "solaris_ip_ignore_redirect",
+            "solaris_ip_forward_src_routed"
+          ],
+          "title": "Options"
+        },
+        {
+          "id": "tab1",
+          "keys": [
+            "solaris_path_ipf",
+            "solaris_path_ipnat"
+          ],
+          "title": "Path"
+        }
+      ],
       "ui": "solarisadvanceddialog_q.ui"
+    },
+    "vlanOnlyIfaceOptsDialog": {
+      "field_count": 0,
+      "fields": {},
+      "pages": [],
+      "ui": "vlanonlyifaceoptsdialog_q.ui"
     }
   }
 }

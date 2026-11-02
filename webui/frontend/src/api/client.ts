@@ -131,6 +131,29 @@ export function updateObject(
   });
 }
 
+export function createObject(
+  sessionId: string,
+  body: {
+    parent_id: string;
+    type: string;
+    name: string;
+    comment?: string;
+    attrs?: Record<string, string | number>;
+  },
+) {
+  return api<TreeNode>(`/api/v1/projects/${sessionId}/objects`, {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
+}
+
+export function deleteObject(sessionId: string, objectId: string) {
+  return api<{ ok?: boolean; parent_id?: string }>(
+    `/api/v1/projects/${sessionId}/objects/${encodeURIComponent(objectId)}`,
+    { method: "DELETE" },
+  );
+}
+
 export function fetchRuleset(
   sessionId: string,
   objectId: string,
@@ -262,6 +285,21 @@ export function fetchOptionSchema(platform: string, hostOs = "") {
   }>(`/api/v1/option-schema?${qs.toString()}`);
 }
 
+export function fetchInterfaceOptionSchema(hostOs: string) {
+  const qs = new URLSearchParams({ host_os: hostOs });
+  return api<{
+    host_os: string;
+    interface_dialog?: string | null;
+    dialog_stem?: string | null;
+    supports_advanced_interface_options?: boolean;
+    defaults: Record<string, string>;
+    groups: Array<{ id: string; title: string; keys: string[] }>;
+    featured_keys: string[];
+    fields?: Record<string, OptionFieldMeta>;
+    dialog_field_count?: number;
+  }>(`/api/v1/interface-option-schema?${qs.toString()}`);
+}
+
 export function fetchObjectOptions(sessionId: string, objectId: string) {
   return fetchOptions(sessionId, objectId);
 }
@@ -272,6 +310,8 @@ export function fetchOptions(sessionId: string, objectId: string) {
     options_id: string;
     options: Record<string, string>;
     dirty?: boolean;
+    host_OS?: string;
+    platform?: string;
   }>(`/api/v1/projects/${sessionId}/objects/${encodeURIComponent(objectId)}/options`);
 }
 

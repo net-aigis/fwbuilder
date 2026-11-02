@@ -105,7 +105,15 @@ def get_object(
 class UpdateRequest(BaseModel):
     name: str | None = None
     comment: str | None = None
-    attrs: dict[str, str] | None = None
+    attrs: dict[str, str | int] | None = None
+
+
+class CreateObjectRequest(BaseModel):
+    parent_id: str = Field(..., min_length=1)
+    type: str = Field(..., min_length=1)
+    name: str = Field(..., min_length=1)
+    comment: str | None = None
+    attrs: dict[str, str | int] | None = None
 
 
 class SaveRequest(BaseModel):
@@ -114,6 +122,48 @@ class SaveRequest(BaseModel):
         default=False,
         description="Also copy saved workspace file back to the original path",
     )
+
+
+@router.post("/{session_id}/objects")
+def create_object(
+    session_id: str,
+    body: CreateObjectRequest,
+    _: str = Depends(require_token),
+) -> dict[str, Any]:
+    try:
+        session = store.get(session_id)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail="session not found") from exc
+    payload: dict[str, Any] = {
+        "parent_id": body.parent_id,
+        "type": body.type,
+        "name": body.name,
+    }
+    if body.comment is not None:
+        payload["comment"] = body.comment
+    if body.attrs is not None:
+        payload["attrs"] = body.attrs
+    try:
+        data = session.bridge.request("create", **payload)
+    except BridgeError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    return data.get("object") or {}
+
+
+@router.delete("/{session_id}/objects/{object_id}")
+def delete_object(
+    session_id: str,
+    object_id: str,
+    _: str = Depends(require_token),
+) -> dict[str, Any]:
+    try:
+        session = store.get(session_id)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail="session not found") from exc
+    try:
+        return session.bridge.request("delete", id=object_id)
+    except BridgeError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
 
 
 @router.patch("/{session_id}/objects/{object_id}")

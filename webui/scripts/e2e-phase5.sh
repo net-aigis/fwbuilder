@@ -60,12 +60,16 @@ import json
 d=json.load(open("$TMP/schema.json"))
 assert d["compiler"]=="fwb_nft", d
 assert d["defaults"].get("configure_interfaces"), d["defaults"]
-ids={g["id"] for g in d["groups"]}
-assert {"installer","platform","os","scripts"} <= ids, ids
+titles=[g["title"] for g in d["groups"]]
+print("group titles", titles)
+# Prefer Qt dialog pages (Compiler/Installer/…) when catalog has pages
+assert d.get("dialog_pages") or {"installer","platform"} & {g["id"] for g in d["groups"]}, d["groups"]
 fields=d.get("fields") or {}
 assert fields.get("configure_interfaces",{}).get("type")=="bool", fields.get("configure_interfaces")
 assert d.get("dialog_field_count",0) >= 20, d.get("dialog_field_count")
-print("featured", len(d["featured_keys"]), "groups", ids, "dialog_fields", d.get("dialog_field_count"))
+if d.get("dialog_pages"):
+    assert any(p.get("title")=="Compiler" for p in d["dialog_pages"]), d["dialog_pages"]
+print("featured", len(d["featured_keys"]), "dialog_fields", d.get("dialog_field_count"))
 PY
 
 echo "== schema guides firewall options UI =="

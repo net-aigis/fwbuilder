@@ -440,9 +440,16 @@ button.ghost {
   border-top: 1px solid var(--line);
 }
 
-.rule-options h3 {
+.rule-options h3,
+.create-object h3 {
   margin: 0;
   font-size: 1rem;
+}
+
+.create-object {
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--line);
 }
 
 .options-grid select,

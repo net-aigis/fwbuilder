@@ -15,9 +15,12 @@
 #include "fwbuilder/FWReference.h"
 #include "fwbuilder/Firewall.h"
 #include "fwbuilder/Host.h"
+#include "fwbuilder/Interface.h"
 #include "fwbuilder/Management.h"
 #include "fwbuilder/FWOptions.h"
 #include "fwbuilder/InetAddr.h"
+#include "fwbuilder/Library.h"
+#include "fwbuilder/ObjectGroup.h"
 #include "fwbuilder/Policy.h"
 #include "fwbuilder/NAT.h"
 #include "fwbuilder/Routing.h"
@@ -117,6 +120,15 @@ static QJsonObject typedAttrs(FWObject *obj)
         putStrAttr(attrs, obj, "platform");
         putStrAttr(attrs, obj, "host_OS");
         putStrAttr(attrs, obj, "version");
+    }
+    if (t == "Interface") {
+        const FWObject *parent_host = Host::getParentHost(obj);
+        if (parent_host) {
+            if (!attrs.contains(QStringLiteral("platform")))
+                putStrAttr(attrs, const_cast<FWObject *>(parent_host), "platform");
+            if (!attrs.contains(QStringLiteral("host_OS")))
+                putStrAttr(attrs, const_cast<FWObject *>(parent_host), "host_OS");
+        }
     }
     return attrs;
 }
@@ -778,6 +790,8 @@ static QJsonObject handle(const QJsonObject &req)
         FWOptions *opt = 0;
         if (Firewall *fw = Firewall::cast(obj))
             opt = fw->getOptionsObject();
+        else if (Interface *iface = Interface::cast(obj))
+            opt = iface->getOptionsObject();
         else if (Rule *rule = Rule::cast(obj))
             opt = rule->getOptionsObject();
         else if (Host *host = Host::cast(obj))
@@ -817,6 +831,15 @@ static QJsonObject handle(const QJsonObject &req)
         o.insert(QStringLiteral("options_id"),
                  u8(FWObjectDatabase::getStringId(opt->getId())));
         o.insert(QStringLiteral("options"), optionsToJson(opt));
+        if (Interface *iface = Interface::cast(obj)) {
+            const FWObject *parent_host = Host::getParentHost(iface);
+            if (parent_host) {
+                o.insert(QStringLiteral("host_OS"),
+                         u8(parent_host->getStr("host_OS")));
+                o.insert(QStringLiteral("platform"),
+                         u8(parent_host->getStr("platform")));
+            }
+        }
         return o;
     }
 
@@ -923,6 +946,97 @@ static QJsonObject handle(const QJsonObject &req)
             QJsonObject o = okObj();
             o.insert(QStringLiteral("dirty"), true);
             o.insert(QStringLiteral("object"), objectToJson(obj, 0, 1));
+            return o;
+        } catch (FWException &ex) {
+            return errObj(u8(ex.toString()));
+        }
+    }
+
+    if (cmd == QStringLiteral("create")) {
+        if (!g_db)
+            return errObj(QStringLiteral("no project open"));
+        const string parent_sid =
+            req.value(QStringLiteral("parent_id")).toString().toUtf8().constData();
+        const string type_name =
+            req.value(QStringLiteral("type")).toString().toUtf8().constData();
+        const string name =
+            req.value(QStringLiteral("name")).toString().toUtf8().constData();
+        if (type_name.empty())
+            return errObj(QStringLiteral("type required"));
+        if (name.empty())
+            return errObj(QStringLiteral("name required"));
+        FWObject *parent = parent_sid.empty() ? (FWObject *)g_db
+                                              : findByIdString(g_db, parent_sid);
+        if (!parent)
+            return errObj(QStringLiteral("parent not found"));
+        if (parent->isReadOnly())
+            return errObj(QStringLiteral("parent is read-only"));
+        // Disallow creating under rulesets/rules via this generic API.
+        if (RuleSet::cast(parent) || Rule::cast(parent) || RuleElement::cast(parent))
+            return errObj(QStringLiteral("cannot create under ruleset/rule"));
+        try {
+            FWObject *child = g_db->create(type_name);
+            if (!child)
+                return errObj(QStringLiteral("unknown or unsupported type: ") +
+                              QString::fromUtf8(type_name.c_str()));
+            child->setName(name);
+            if (req.contains(QStringLiteral("comment"))) {
+                child->setComment(
+                    req.value(QStringLiteral("comment")).toString().toUtf8().constData());
+            }
+            if (req.contains(QStringLiteral("attrs")) &&
+                req.value(QStringLiteral("attrs")).isObject()) {
+                QJsonObject attrs = req.value(QStringLiteral("attrs")).toObject();
+                for (auto it = attrs.begin(); it != attrs.end(); ++it) {
+                    const string key = it.key().toUtf8().constData();
+                    if (isMetaAttrKey(key))
+                        continue;
+                    const string val =
+                        it.value().toVariant().toString().toUtf8().constData();
+                    if (isIntKey(key))
+                        child->setInt(key, atoi(val.c_str()));
+                    else
+                        child->setStr(key, val);
+                }
+            }
+            parent->add(child);
+            g_dirty = true;
+            g_db->setDirty(true);
+            QJsonObject o = okObj();
+            o.insert(QStringLiteral("dirty"), true);
+            o.insert(QStringLiteral("object"), objectToJson(child, 0, 1));
+            return o;
+        } catch (FWException &ex) {
+            return errObj(u8(ex.toString()));
+        }
+    }
+
+    if (cmd == QStringLiteral("delete")) {
+        if (!g_db)
+            return errObj(QStringLiteral("no project open"));
+        const string sid =
+            req.value(QStringLiteral("id")).toString().toUtf8().constData();
+        FWObject *obj = findByIdString(g_db, sid);
+        if (!obj)
+            return errObj(QStringLiteral("object not found"));
+        if (obj == g_db)
+            return errObj(QStringLiteral("cannot delete database root"));
+        if (obj->isReadOnly())
+            return errObj(QStringLiteral("object is read-only"));
+        if (Rule::cast(obj))
+            return errObj(QStringLiteral("use delete_rule for rules"));
+        FWObject *parent = obj->getParent();
+        if (!parent)
+            return errObj(QStringLiteral("object has no parent"));
+        try {
+            // remove() unrefs and deletes when last reference.
+            parent->remove(obj, true);
+            g_dirty = true;
+            g_db->setDirty(true);
+            QJsonObject o = okObj();
+            o.insert(QStringLiteral("dirty"), true);
+            o.insert(QStringLiteral("parent_id"),
+                     u8(FWObjectDatabase::getStringId(parent->getId())));
             return o;
         } catch (FWException &ex) {
             return errObj(u8(ex.toString()));

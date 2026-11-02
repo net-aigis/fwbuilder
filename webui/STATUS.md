@@ -30,8 +30,11 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase2 | done | `e2e-phase2.sh` **OK** |
 | Option groups from `src/res/platform` + `os` | done | `GET /api/v1/option-schema`, UI tabs |
 | Typed fields from libgui AdvancedDialog `.ui` | done | `dialog_fields.json` + checkboxes/enums/textareas |
-| Full Qt dialog page/layout parity | open | Types/keys yes; visual page layout no |
+| Dialog tab pages as option groups | done | extract pages → `option-schema.groups`; UI tabs |
+| Full Qt dialog page/layout parity | open | Types/keys/pages yes; pixel layout no |
 | PolicyRuleOptions editor | done | select rule → Rule options panel; E2E phase6 |
+| InterfaceOptions editor | done | IfaceOptsDialog fields + `GET /interface-option-schema`; E2E phase7 |
+| Create / delete objects | done | bridge `create`/`delete` + UI; User library parent |
 
 ## Phase 3 — compile / deploy
 
@@ -48,11 +51,14 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Cisco/Juniper/Procurve compilers | done | `fwb_pix`, `fwb_iosacl`, `fwb_nxosacl`, `fwb_junosacl`, `fwb_procurve_acl` |
 | Local E2E phase5 | done | `e2e-phase5.sh` **OK** |
 | Local E2E phase6 (typed fields + rule options) | done | `e2e-phase6.sh` **OK** |
+| Local E2E phase7 (create/delete + iface options) | done | `e2e-phase7.sh` **OK** |
 
 ## Local commands
 
 ```bash
-podman run --rm -v "$PWD":/src:Z -w /src fwbuilder-linux-qt6 bash docker/build-linux-qt6-fwbweb.sh
+podman run --rm -v "$PWD":/src:Z -w /src -e SKIP_COMPILERS=1 fwbuilder-linux-qt6 bash docker/build-linux-qt6-fwbweb.sh
+# or incremental bridge only:
+podman run --rm -v "$PWD":/src:Z -w /src fwbuilder-linux-qt6 make -C src/fwbweb
 # regenerate dialog field catalog after GUI UI changes:
 python3 webui/scripts/extract-dialog-fields.py
 bash webui/scripts/e2e-local.sh
@@ -61,4 +67,5 @@ bash webui/scripts/e2e-phase3.sh
 bash webui/scripts/e2e-phase4.sh
 bash webui/scripts/e2e-phase5.sh
 bash webui/scripts/e2e-phase6.sh
+bash webui/scripts/e2e-phase7.sh
 ```
