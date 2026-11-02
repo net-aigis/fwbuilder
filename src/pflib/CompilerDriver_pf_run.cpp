@@ -518,7 +518,8 @@ QString CompilerDriver_pf::run(const std::string &cluster_id,
                     *(generated_scripts[ruleset_name]) << endl;
                 }
 
-                all_errors.push_back(n.getErrors("").c_str());
+                if (n.haveErrorsAndWarnings())
+                    all_errors.push_back(n.getErrors("").c_str());
 
                 const list<NATCompiler_pf::redirectRuleInfo> lst = 
                     n.getRedirRulesInfo();
@@ -604,7 +605,8 @@ QString CompilerDriver_pf::run(const std::string &cluster_id,
                     *(generated_scripts[ruleset_name]) << endl;
                 }
 
-                all_errors.push_back(c.getErrors("").c_str());
+                if (c.haveErrorsAndWarnings())
+                    all_errors.push_back(c.getErrors("").c_str());
 
             }
 
