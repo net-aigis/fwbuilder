@@ -96,6 +96,9 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Object color on create | done | color picker + attrs; E2E phase29 |
 | Platform/OS dropdowns on create | done | `GET /platforms` → CreateObject |
 | Rule shortcuts Delete / Ctrl+D | done | rules tab keyboard |
+| Tree name/type filter | done | ObjectTree filter prop |
+| Alt+Up/Down move rule | done | rules tab keyboard |
+| List open sessions | done | `GET /api/v1/sessions`; E2E phase30 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Phase 3 — compile / deploy
@@ -136,6 +139,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase27 (compile-all + Tag/User/Interval) | done | `e2e-phase27.sh` **OK** |
 | Local E2E phase28 (IP/Custom create + compile zip) | done | `e2e-phase28.sh` **OK** |
 | Local E2E phase29 (ICMP/color/platforms/dup) | done | `e2e-phase29.sh` **OK** |
+| Local E2E phase30 (sessions + rule move) | done | `e2e-phase30.sh` **OK** |
 
 ## Local commands
 
@@ -174,6 +178,7 @@ bash webui/scripts/e2e-phase26.sh
 bash webui/scripts/e2e-phase27.sh
 bash webui/scripts/e2e-phase28.sh
 bash webui/scripts/e2e-phase29.sh
+bash webui/scripts/e2e-phase30.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

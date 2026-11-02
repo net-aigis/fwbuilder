@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { TreeNode } from "../api/client";
 
 type Props = {
@@ -7,26 +7,55 @@ type Props = {
   onSelect: (node: TreeNode) => void;
   depth?: number;
   onExpand?: (node: TreeNode) => Promise<TreeNode[] | undefined>;
+  filter?: string;
 };
 
-export function ObjectTree({ node, selectedId, onSelect, depth = 0, onExpand }: Props) {
+function hintOf(node: TreeNode): string | null {
+  const a = node.attrs ?? {};
+  for (const key of ["address", "dnsname", "filename", "tagcode", "userid", "phys_address"]) {
+    const v = a[key];
+    if (v !== undefined && v !== null && String(v).trim()) return String(v);
+  }
+  return null;
+}
+
+function matchesFilter(node: TreeNode, q: string): boolean {
+  if (!q) return true;
+  const hint = hintOf(node) || "";
+  const blob = `${node.name || ""} ${node.type || ""} ${hint}`.toLowerCase();
+  if (blob.includes(q)) return true;
+  return (node.children || []).some((c) => matchesFilter(c, q));
+}
+
+export function ObjectTree({
+  node,
+  selectedId,
+  onSelect,
+  depth = 0,
+  onExpand,
+  filter = "",
+}: Props) {
+  const q = filter.trim().toLowerCase();
   const selected = node.id === selectedId;
   const [kids, setKids] = useState<TreeNode[]>(node.children ?? []);
   const hasKids = kids.length > 0 || (node.children_count ?? 0) > 0;
-  const [open, setOpen] = useState(depth < 2);
+  const [open, setOpen] = useState(depth < 2 || Boolean(q));
   const [loading, setLoading] = useState(false);
   const color =
     typeof node.attrs?.color === "string" && node.attrs.color.trim()
       ? node.attrs.color.trim()
       : null;
-  const hint = (() => {
-    const a = node.attrs ?? {};
-    for (const key of ["address", "dnsname", "filename", "tagcode", "userid", "phys_address"]) {
-      const v = a[key];
-      if (v !== undefined && v !== null && String(v).trim()) return String(v);
-    }
-    return null;
-  })();
+  const hint = hintOf(node);
+
+  useEffect(() => {
+    setKids(node.children ?? []);
+  }, [node.children]);
+
+  useEffect(() => {
+    if (q) setOpen(true);
+  }, [q]);
+
+  if (q && depth > 0 && !matchesFilter(node, q)) return null;
 
   async function toggle() {
     const next = !open;
@@ -41,6 +70,8 @@ export function ObjectTree({ node, selectedId, onSelect, depth = 0, onExpand }: 
       }
     }
   }
+
+  const visibleKids = q ? kids.filter((c) => matchesFilter(c, q)) : kids;
 
   return (
     <div className="tree-node" style={{ paddingLeft: depth === 0 ? 0 : 12 }}>
@@ -78,7 +109,7 @@ export function ObjectTree({ node, selectedId, onSelect, depth = 0, onExpand }: 
         </button>
       </div>
       {open
-        ? kids.map((child) => (
+        ? visibleKids.map((child) => (
             <ObjectTree
               key={child.id}
               node={child}
@@ -86,6 +117,7 @@ export function ObjectTree({ node, selectedId, onSelect, depth = 0, onExpand }: 
               onSelect={onSelect}
               depth={depth + 1}
               onExpand={onExpand}
+              filter={filter}
             />
           ))
         : null}

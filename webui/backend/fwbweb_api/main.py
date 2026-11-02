@@ -44,6 +44,14 @@ def me(_: str = Depends(require_token)) -> dict[str, str]:
     return {"auth": "ok"}
 
 
+@app.get("/api/v1/sessions")
+def list_sessions(_: str = Depends(require_token)) -> dict[str, object]:
+    from .sessions import store
+
+    sessions = store.list()
+    return {"count": len(sessions), "sessions": sessions}
+
+
 @app.websocket("/api/v1/ws/{session_id}")
 async def session_ws(websocket: WebSocket, session_id: str) -> None:
     """Phase-1 stub: accept connections; mutation fan-out comes later."""

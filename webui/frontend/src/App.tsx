@@ -101,6 +101,7 @@ export function App() {
   const [hideDisabled, setHideDisabled] = useState(false);
   const [ruleGroupFilter, setRuleGroupFilter] = useState("");
   const [ruleTextFilter, setRuleTextFilter] = useState("");
+  const [treeFilter, setTreeFilter] = useState("");
 
   const canOperate = useMemo(() => Boolean(sessionId) && !busy, [sessionId, busy]);
 
@@ -388,6 +389,11 @@ export function App() {
       if (mod && e.key.toLowerCase() === "d" && selectedRuleId) {
         e.preventDefault();
         void onDuplicateRule();
+        return;
+      }
+      if (e.altKey && selectedRuleId && (e.key === "ArrowUp" || e.key === "ArrowDown")) {
+        e.preventDefault();
+        void onMoveRule(e.key === "ArrowUp" ? "up" : "down");
         return;
       }
       if ((e.key === "Delete" || e.key === "Backspace") && selectedRuleId && !mod) {
@@ -912,6 +918,15 @@ export function App() {
           <div className="sidebar-title">Objects</div>
           <div className="search-row">
             <input
+              placeholder="Filter tree…"
+              value={treeFilter}
+              disabled={!sessionId || busy}
+              onChange={(e) => setTreeFilter(e.target.value)}
+              title="Filter loaded tree nodes by name/type/hint"
+            />
+          </div>
+          <div className="search-row">
+            <input
               placeholder="Search…"
               value={searchQ}
               disabled={!sessionId || busy}
@@ -975,6 +990,7 @@ export function App() {
               node={tree}
               selectedId={selected?.id}
               onSelect={onSelect}
+              filter={treeFilter}
               onExpand={async (n) => {
                 if (!sessionId) return undefined;
                 const full = await fetchObject(sessionId, n.id);

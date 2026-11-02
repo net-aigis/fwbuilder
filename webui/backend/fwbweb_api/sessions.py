@@ -163,6 +163,22 @@ class SessionStore:
             raise KeyError(sid)
         return session
 
+    def list(self) -> list[dict[str, Any]]:
+        with self._guard:
+            sessions = list(self._sessions.values())
+        out: list[dict[str, Any]] = []
+        for s in sessions:
+            out.append(
+                {
+                    "session_id": s.id,
+                    "path": str(s.source_path),
+                    "work_path": str(s.work_path),
+                    "copy": bool(s.meta.get("copy")),
+                    "new": bool(s.meta.get("new")),
+                }
+            )
+        return out
+
     def close(self, sid: str, *, save: bool = False) -> None:
         with self._guard:
             session = self._sessions.pop(sid, None)
