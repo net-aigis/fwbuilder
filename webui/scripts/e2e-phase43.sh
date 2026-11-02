@@ -55,7 +55,7 @@ user_fws=[r for r in fws.get("results") or [] if not str(r["id"]).startswith("st
 print("stats firewalls", stats.get("firewalls"), "search", len(user_fws))
 assert stats.get("firewalls",0) >= 1
 assert len(user_fws) >= 1
-assert stats["firewalls"] == len(user_fws) or stats["firewalls"] >= len(user_fws)
+assert stats["firewalls"] == len(user_fws)
 
 nets=[r for r in call("GET","/search?q=Networks&type=ObjectGroup&limit=20")["results"]
       if r["name"]=="Networks" and not str(r["id"]).startswith("std")][0]["id"]

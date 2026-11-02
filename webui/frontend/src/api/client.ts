@@ -264,6 +264,7 @@ export type ProjectStats = {
   libraries: number;
   objects: number;
   firewalls: number;
+  clusters?: number;
   hosts: number;
   interfaces: number;
   services: number;

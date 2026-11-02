@@ -437,7 +437,8 @@ export function App() {
       }
       if (mod && e.key.toLowerCase() === "e") {
         e.preventDefault();
-        if (rulesFwId) void onCompile();
+        if (e.shiftKey) void onCompileAll();
+        else if (rulesFwId) void onCompile();
         return;
       }
       if (mod && e.key.toLowerCase() === "i") {
@@ -2294,7 +2295,7 @@ export function App() {
                     className="ghost"
                     disabled={!canOperate}
                     onClick={() => void onCompileAll()}
-                    title="Compile every firewall in this project"
+                    title="Compile every firewall in this project (Ctrl+Shift+E)"
                   >
                     Compile all
                   </button>
@@ -2450,6 +2451,7 @@ export function App() {
                   ["Libraries", stats.libraries],
                   ["Objects (User)", stats.objects],
                   ["Firewalls", stats.firewalls],
+                  ["Clusters", stats.clusters ?? 0],
                   ["Hosts", stats.hosts],
                   ["Interfaces", stats.interfaces],
                   ["Addresses", stats.addresses],

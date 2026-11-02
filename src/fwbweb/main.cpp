@@ -2096,6 +2096,7 @@ static QJsonObject handle(const QJsonObject &req)
         int libraries = 0;
         int objects = 0;
         int firewalls = 0;
+        int clusters = 0;
         int hosts = 0;
         int rules = 0;
         int deleted = 0;
@@ -2128,7 +2129,10 @@ static QJsonObject handle(const QJsonObject &req)
                 if (lib && lib->getId() == FWObjectDatabase::STANDARD_LIB_ID)
                     continue;
                 ++objects;
-                if (Firewall::cast(child))
+                // Cluster derives from Firewall — count separately.
+                if (child->getTypeName() == "Cluster")
+                    ++clusters;
+                else if (Firewall::cast(child))
                     ++firewalls;
                 if (Host::cast(child) && !Firewall::cast(child))
                     ++hosts;
@@ -2149,6 +2153,7 @@ static QJsonObject handle(const QJsonObject &req)
         o.insert(QStringLiteral("libraries"), libraries);
         o.insert(QStringLiteral("objects"), objects);
         o.insert(QStringLiteral("firewalls"), firewalls);
+        o.insert(QStringLiteral("clusters"), clusters);
         o.insert(QStringLiteral("hosts"), hosts);
         o.insert(QStringLiteral("interfaces"), interfaces);
         o.insert(QStringLiteral("services"), services);
