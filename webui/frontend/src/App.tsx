@@ -962,7 +962,12 @@ export function App() {
     setError(null);
     try {
       const res = await findUnusedObjects(sessionId);
-      setUnusedHits(res.objects ?? []);
+      const sorted = [...(res.objects ?? [])].sort((a, b) => {
+        const t = a.type.localeCompare(b.type);
+        if (t !== 0) return t;
+        return (a.name || "").localeCompare(b.name || "");
+      });
+      setUnusedHits(sorted);
       setSearchHits([]);
       setStatus(`Unused objects: ${res.count ?? 0}`);
     } catch (err) {
@@ -1075,6 +1080,11 @@ export function App() {
 
   async function onDuplicateObject() {
     if (!sessionId || !selected) return;
+    if (
+      (selected.type === "Firewall" || selected.type === "Cluster") &&
+      !window.confirm(`Duplicate ${selected.type} “${selected.name}” with its rulesets?`)
+    )
+      return;
     setBusy(true);
     setError(null);
     try {

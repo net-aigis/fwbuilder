@@ -18,6 +18,7 @@
 #include "fwbuilder/AddressTable.h"
 #include "fwbuilder/CustomService.h"
 #include "fwbuilder/DNSName.h"
+#include "fwbuilder/DynamicGroup.h"
 #include "fwbuilder/Firewall.h"
 #include "fwbuilder/Host.h"
 #include "fwbuilder/Interface.h"
@@ -51,6 +52,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QStringList>
 #include <QTextStream>
 
 #include <iostream>
@@ -216,6 +218,14 @@ static QJsonObject typedAttrs(FWObject *obj)
     if (RuleSet *rs = RuleSet::cast(obj)) {
         attrs.insert(QStringLiteral("top"),
                      rs->isTop() ? QStringLiteral("True") : QStringLiteral("False"));
+    }
+    if (DynamicGroup *dg = DynamicGroup::cast(obj)) {
+        QStringList lines;
+        const list<string> &flt = dg->getFilter();
+        for (list<string>::const_iterator it = flt.begin(); it != flt.end();
+             ++it)
+            lines.append(u8(*it));
+        attrs.insert(QStringLiteral("filter"), lines.join(QStringLiteral("\n")));
     }
     return attrs;
 }
@@ -386,6 +396,24 @@ static void applyObjectAttrs(FWObject *obj, const QJsonObject &attrs)
                 if (key.rfind("code_", 0) == 0 && key.size() > 5)
                     platform = key.substr(5);
                 cs->setCodeForPlatform(platform, val);
+                continue;
+            }
+        }
+        if (DynamicGroup *dg = DynamicGroup::cast(obj)) {
+            if (key == "filter") {
+                list<string> filters;
+                QStringList lines = QString::fromUtf8(val.c_str()).split(
+                    QChar('\n'), Qt::SkipEmptyParts);
+                for (const QString &line : lines) {
+                    const string raw = line.trimmed().toUtf8().constData();
+                    if (raw.empty())
+                        continue;
+                    string type, keyword, filter;
+                    if (DynamicGroup::splitFilter(raw, type, keyword) &&
+                        DynamicGroup::makeFilter(filter, type, keyword))
+                        filters.push_back(filter);
+                }
+                dg->setFilter(filters);
                 continue;
             }
         }

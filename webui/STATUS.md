@@ -156,6 +156,9 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Expand tree (depth 5) | done | Expand button; E2E phase49 |
 | Sessions panel | done | statusbar click; E2E phase49 |
 | Where-used count badge | done | statusbar used N |
+| DynamicGroup filter edit | done | attrs `filter`; E2E phase50 |
+| Duplicate Firewall confirm | done | UI confirm; E2E phase50 |
+| Unused list sorted | done | type then name |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Phase 3 — compile / deploy
@@ -216,6 +219,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase47 (create Cluster) | done | `e2e-phase47.sh` **OK** |
 | Local E2E phase48 (unused JSON/delete) | done | `e2e-phase48.sh` **OK** |
 | Local E2E phase49 (DynamicGroup + sessions) | done | `e2e-phase49.sh` **OK** |
+| Local E2E phase50 (dyn filter + fw dup) | done | `e2e-phase50.sh` **OK** |
 
 ## Local commands
 
@@ -274,6 +278,7 @@ bash webui/scripts/e2e-phase46.sh
 bash webui/scripts/e2e-phase47.sh
 bash webui/scripts/e2e-phase48.sh
 bash webui/scripts/e2e-phase49.sh
+bash webui/scripts/e2e-phase50.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

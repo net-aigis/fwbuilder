@@ -73,6 +73,7 @@ const TYPE_FIELDS: Record<string, string[]> = {
     "to_month",
     "to_year",
   ],
+  DynamicGroup: ["filter"],
 };
 
 export function ObjectDetail({
@@ -242,6 +243,7 @@ export function ObjectDetail({
           {fields.map((key) => {
             const isStamp =
               key === "lastModified" || key === "lastCompiled" || key === "lastInstalled";
+            const isFilter = key === "filter";
             return (
               <label key={key} className="field block">
                 {key}
@@ -250,6 +252,15 @@ export function ObjectDetail({
                     value={formatAttrValue(key, attrs[key] ?? "")}
                     disabled
                     readOnly
+                  />
+                ) : isFilter ? (
+                  <textarea
+                    value={attrs[key] ?? ""}
+                    disabled={locked || busy}
+                    rows={4}
+                    placeholder={"type,keyword per line\ne.g. Network,dmz"}
+                    title="One SelectionCriteria per line as type,keyword"
+                    onChange={(e) => setAttrs((prev) => ({ ...prev, [key]: e.target.value }))}
                   />
                 ) : (
                   <input
