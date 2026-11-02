@@ -22,6 +22,7 @@ import {
   type PolicyRule,
   type TreeNode,
 } from "./api/client";
+import { FirewallExtras } from "./components/FirewallExtras";
 import { ObjectDetail } from "./components/ObjectDetail";
 import { ObjectPicker } from "./components/ObjectPicker";
 import { ObjectTree } from "./components/ObjectTree";
@@ -457,6 +458,18 @@ export function App() {
                 sessionId && selected
                   ? (which) => void loadRules(selected.id, which)
                   : undefined
+              }
+              extras={
+                sessionId && selected?.type === "Firewall" ? (
+                  <FirewallExtras
+                    sessionId={sessionId}
+                    firewallId={selected.id}
+                    busy={busy}
+                    onBusy={setBusy}
+                    onStatus={setStatus}
+                    onError={setError}
+                  />
+                ) : null
               }
             />
           ) : (

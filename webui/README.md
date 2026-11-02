@@ -12,6 +12,8 @@ See [ARCHITECTURE.md](ARCHITECTURE.md) and [STATUS.md](STATUS.md).
 - Policy / NAT / Routing grids: enable, action, add / delete / move
 - Rule-cell object picker and drag-and-drop from the tree
 - Compile (`fwb_nft` / `fwb_ipt`) through the same CLIs as the desktop GUI
+- Firewall platform/installer options + management address
+- Deploy dry-run / real `scp`+`ssh` (simplified; not the full Qt installer)
 
 ## Local workflow (no GitHub Actions)
 
@@ -25,6 +27,7 @@ podman run --rm -v "$PWD":/src:Z -w /src -e JOBS=4 fwbuilder-linux-qt6 \
 bash webui/scripts/e2e-local.sh
 bash webui/scripts/e2e-phase2.sh
 bash webui/scripts/e2e-phase3.sh
+bash webui/scripts/e2e-phase4.sh
 
 # 3) Dev servers
 export FWBWEB_BRIDGE="$(pwd)/webui/bin/fwbweb"

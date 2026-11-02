@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import type { TreeNode } from "../api/client";
 
 type Props = {
@@ -11,6 +11,7 @@ type Props = {
     attrs: Record<string, string | number>;
   }) => void;
   onOpenRules?: (which: "policy" | "nat" | "routing") => void;
+  extras?: ReactNode;
 };
 
 const TYPE_FIELDS: Record<string, string[]> = {
@@ -30,7 +31,7 @@ const TYPE_FIELDS: Record<string, string[]> = {
   Interface: ["address", "netmask", "phys_address"],
 };
 
-export function ObjectDetail({ object, readOnly, busy, onSave, onOpenRules }: Props) {
+export function ObjectDetail({ object, readOnly, busy, onSave, onOpenRules, extras }: Props) {
   const [name, setName] = useState("");
   const [comment, setComment] = useState("");
   const [attrs, setAttrs] = useState<Record<string, string>>({});
@@ -134,6 +135,8 @@ export function ObjectDetail({ object, readOnly, busy, onSave, onOpenRules }: Pr
           Apply object changes
         </button>
       ) : null}
+
+      {extras}
     </div>
   );
 }

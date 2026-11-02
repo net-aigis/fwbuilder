@@ -5,6 +5,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from .auth import require_token
 from .routes.compile import router as compile_router
+from .routes.deploy import router as deploy_router
+from .routes.options import router as options_router
 from .routes.projects import router as projects_router
 from .routes.rules import router as rules_router
 from .settings import settings
@@ -26,6 +28,8 @@ app.add_middleware(
 app.include_router(projects_router)
 app.include_router(rules_router)
 app.include_router(compile_router)
+app.include_router(options_router)
+app.include_router(deploy_router)
 
 
 @app.get("/api/v1/health")

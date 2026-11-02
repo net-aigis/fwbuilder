@@ -223,6 +223,87 @@ export function setRuleAny(sessionId: string, ruleId: string, element: string) {
   );
 }
 
+export function fetchOptions(sessionId: string, objectId: string) {
+  return api<{
+    object_id: string;
+    options_id: string;
+    options: Record<string, string>;
+    dirty?: boolean;
+  }>(`/api/v1/projects/${sessionId}/objects/${encodeURIComponent(objectId)}/options`);
+}
+
+export function updateOptions(
+  sessionId: string,
+  objectId: string,
+  options: Record<string, string>,
+) {
+  return api<{
+    object_id: string;
+    options: Record<string, string>;
+    dirty?: boolean;
+  }>(`/api/v1/projects/${sessionId}/objects/${encodeURIComponent(objectId)}/options`, {
+    method: "PATCH",
+    body: JSON.stringify({ options }),
+  });
+}
+
+export function fetchManagement(sessionId: string, objectId: string) {
+  return api<{
+    object_id: string;
+    management: {
+      address?: string;
+      install_script?: { enabled?: boolean; command?: string; arguments?: string };
+    };
+  }>(`/api/v1/projects/${sessionId}/objects/${encodeURIComponent(objectId)}/management`);
+}
+
+export function updateManagement(
+  sessionId: string,
+  objectId: string,
+  body: {
+    address?: string;
+    install_script?: { enabled?: boolean; command?: string; arguments?: string };
+  },
+) {
+  return api<{ object_id: string; management: Record<string, unknown>; dirty?: boolean }>(
+    `/api/v1/projects/${sessionId}/objects/${encodeURIComponent(objectId)}/management`,
+    { method: "PATCH", body: JSON.stringify(body) },
+  );
+}
+
+export function deployFirewall(
+  sessionId: string,
+  body: {
+    firewall_id: string;
+    host?: string;
+    user?: string;
+    remote_dir?: string;
+    activate?: boolean;
+    compile_first?: boolean;
+    dry_run?: boolean;
+  },
+) {
+  return api<{
+    ok: boolean;
+    firewall: string;
+    platform: string;
+    installer_options: Record<string, string>;
+    compile: { outputs?: string[]; destdir?: string; log?: string };
+    deploy: {
+      dry_run: boolean;
+      host: string;
+      user: string;
+      remote_path: string;
+      commands: string[];
+      log: string;
+      note?: string;
+    };
+  }>(`/api/v1/projects/${sessionId}/deploy`, {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
+}
+
 export function compileFirewall(
   sessionId: string,
   firewallId: string,

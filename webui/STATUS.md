@@ -28,7 +28,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Drag & drop from tree into rule cells | done | HTML5 DnD (`application/x-fwb-object-id`) |
 | Search in sidebar | done | API `/search` |
 | Local E2E phase2 | done | `e2e-phase2.sh` **OK** |
-| All platform option dialogs | open | |
+| Per-platform Qt option dialogs (full UI parity) | open | WebUI exposes key/value FirewallOptions instead |
 
 ## Phase 3 — compile / deploy
 
@@ -37,7 +37,9 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Invoke `fwb_nft` / `fwb_ipt` (same CLIs as GUI) | done | `POST …/compile`, Podman-wrapped ELF |
 | Download compile outputs | done | `GET …/compile/outputs/{file}` |
 | Local E2E phase3 (rule ops + compile) | done | `e2e-phase3.sh` **OK** → `nft-test.fw` |
-| Install/deploy to remote host | open | UI points to download + manual install |
+| FirewallOptions + Management address | done | `options` / `management` bridge cmds + UI |
+| Deploy via system `scp`/`ssh` (dry-run default) | done | `POST …/deploy` — **not** full desktop FirewallInstaller |
+| Local E2E phase4 | done | `e2e-phase4.sh` **OK** |
 | Other platforms (`fwb_pf`, PIX, …) | open | mapping stubbed in `compile.py` |
 
 ## Local commands
@@ -47,4 +49,5 @@ podman run --rm -v "$PWD":/src:Z -w /src fwbuilder-linux-qt6 bash docker/build-l
 bash webui/scripts/e2e-local.sh
 bash webui/scripts/e2e-phase2.sh
 bash webui/scripts/e2e-phase3.sh
+bash webui/scripts/e2e-phase4.sh
 ```

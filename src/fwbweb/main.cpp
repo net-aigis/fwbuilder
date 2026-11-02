@@ -14,6 +14,10 @@
 #include "fwbuilder/FWException.h"
 #include "fwbuilder/FWReference.h"
 #include "fwbuilder/Firewall.h"
+#include "fwbuilder/Host.h"
+#include "fwbuilder/Management.h"
+#include "fwbuilder/FWOptions.h"
+#include "fwbuilder/InetAddr.h"
 #include "fwbuilder/Policy.h"
 #include "fwbuilder/NAT.h"
 #include "fwbuilder/Routing.h"
@@ -334,6 +338,46 @@ static RuleSet *resolveRuleSet(FWObject *obj, const QString &which)
     if (which == QStringLiteral("routing"))
         return fw->getRouting();
     return fw->getPolicy();
+}
+
+static bool isMetaAttrKey(const string &key)
+{
+    return key == "id" || key == "name" || key == "comment" || key == "ro";
+}
+
+static QJsonObject optionsToJson(FWOptions *opt)
+{
+    QJsonObject o;
+    if (!opt)
+        return o;
+    for (map<string, string>::const_iterator it = opt->dataBegin();
+         it != opt->dataEnd(); ++it) {
+        if (isMetaAttrKey(it->first))
+            continue;
+        o.insert(u8(it->first), u8(it->second));
+    }
+    return o;
+}
+
+static QJsonObject managementToJson(Management *mgmt)
+{
+    QJsonObject o;
+    if (!mgmt)
+        return o;
+    try {
+        o.insert(QStringLiteral("address"), u8(mgmt->getAddress().toString()));
+    } catch (...) {
+        o.insert(QStringLiteral("address"), QString());
+    }
+    PolicyInstallScript *pis = mgmt->getPolicyInstallScript();
+    if (pis) {
+        QJsonObject script;
+        script.insert(QStringLiteral("enabled"), pis->isEnabled());
+        script.insert(QStringLiteral("command"), u8(pis->getCommand()));
+        script.insert(QStringLiteral("arguments"), u8(pis->getArguments()));
+        o.insert(QStringLiteral("install_script"), script);
+    }
+    return o;
 }
 
 static RuleElement *ruleElementByName(Rule *rule, const QString &el)
@@ -720,6 +764,120 @@ static QJsonObject handle(const QJsonObject &req)
         } catch (FWException &ex) {
             return errObj(u8(ex.toString()));
         }
+    }
+
+    if (cmd == QStringLiteral("options") || cmd == QStringLiteral("update_options")) {
+        if (!g_db)
+            return errObj(QStringLiteral("no project open"));
+        const string sid =
+            req.value(QStringLiteral("id")).toString().toUtf8().constData();
+        FWObject *obj = findByIdString(g_db, sid);
+        if (!obj)
+            return errObj(QStringLiteral("object not found"));
+
+        FWOptions *opt = 0;
+        if (Firewall *fw = Firewall::cast(obj))
+            opt = fw->getOptionsObject();
+        else if (Host *host = Host::cast(obj))
+            opt = host->getOptionsObject();
+        else if (FWOptions *direct = FWOptions::cast(obj))
+            opt = direct;
+        if (!opt)
+            return errObj(QStringLiteral("object has no options"));
+
+        if (cmd == QStringLiteral("update_options")) {
+            if (obj->isReadOnly() || opt->isReadOnly())
+                return errObj(QStringLiteral("object is read-only"));
+            if (!req.contains(QStringLiteral("options")) ||
+                !req.value(QStringLiteral("options")).isObject())
+                return errObj(QStringLiteral("options object required"));
+            try {
+                QJsonObject patch = req.value(QStringLiteral("options")).toObject();
+                for (auto it = patch.begin(); it != patch.end(); ++it) {
+                    const string key = it.key().toUtf8().constData();
+                    if (isMetaAttrKey(key))
+                        continue;
+                    const string val =
+                        it.value().toVariant().toString().toUtf8().constData();
+                    opt->setStr(key, val);
+                }
+                g_dirty = true;
+                g_db->setDirty(true);
+            } catch (FWException &ex) {
+                return errObj(u8(ex.toString()));
+            }
+        }
+
+        QJsonObject o = okObj();
+        o.insert(QStringLiteral("dirty"), g_dirty);
+        o.insert(QStringLiteral("object_id"),
+                 u8(FWObjectDatabase::getStringId(obj->getId())));
+        o.insert(QStringLiteral("options_id"),
+                 u8(FWObjectDatabase::getStringId(opt->getId())));
+        o.insert(QStringLiteral("options"), optionsToJson(opt));
+        return o;
+    }
+
+    if (cmd == QStringLiteral("management") ||
+        cmd == QStringLiteral("update_management")) {
+        if (!g_db)
+            return errObj(QStringLiteral("no project open"));
+        const string sid =
+            req.value(QStringLiteral("id")).toString().toUtf8().constData();
+        FWObject *obj = findByIdString(g_db, sid);
+        Host *host = Host::cast(obj);
+        if (!host)
+            return errObj(QStringLiteral("not a host/firewall"));
+        Management *mgmt = host->getManagementObject();
+        if (!mgmt)
+            return errObj(QStringLiteral("management object missing"));
+
+        if (cmd == QStringLiteral("update_management")) {
+            if (host->isReadOnly() || mgmt->isReadOnly())
+                return errObj(QStringLiteral("object is read-only"));
+            try {
+                if (req.contains(QStringLiteral("address"))) {
+                    const string addr =
+                        req.value(QStringLiteral("address")).toString().toUtf8().constData();
+                    mgmt->setAddress(InetAddr(addr));
+                }
+                if (req.contains(QStringLiteral("install_script")) &&
+                    req.value(QStringLiteral("install_script")).isObject()) {
+                    PolicyInstallScript *pis = mgmt->getPolicyInstallScript();
+                    if (pis) {
+                        QJsonObject script =
+                            req.value(QStringLiteral("install_script")).toObject();
+                        if (script.contains(QStringLiteral("enabled")))
+                            pis->setEnabled(script.value(QStringLiteral("enabled")).toBool());
+                        if (script.contains(QStringLiteral("command")))
+                            pis->setCommand(
+                                script.value(QStringLiteral("command"))
+                                    .toString()
+                                    .toUtf8()
+                                    .constData());
+                        if (script.contains(QStringLiteral("arguments")))
+                            pis->setArguments(
+                                script.value(QStringLiteral("arguments"))
+                                    .toString()
+                                    .toUtf8()
+                                    .constData());
+                    }
+                }
+                g_dirty = true;
+                g_db->setDirty(true);
+            } catch (FWException &ex) {
+                return errObj(u8(ex.toString()));
+            } catch (std::exception &ex) {
+                return errObj(QString::fromUtf8(ex.what()));
+            }
+        }
+
+        QJsonObject o = okObj();
+        o.insert(QStringLiteral("dirty"), g_dirty);
+        o.insert(QStringLiteral("object_id"),
+                 u8(FWObjectDatabase::getStringId(host->getId())));
+        o.insert(QStringLiteral("management"), managementToJson(mgmt));
+        return o;
     }
 
     if (cmd == QStringLiteral("update")) {
