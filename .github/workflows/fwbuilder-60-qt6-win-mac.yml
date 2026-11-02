@@ -57,6 +57,10 @@ jobs:
           mkdir -p ci-logs .ci-ccache
           export PATH="/opt/homebrew/opt/qt@6/bin:/usr/local/opt/qt@6/bin:$PATH"
           export PKG_CONFIG_PATH="/opt/homebrew/opt/libxml2/lib/pkgconfig:/opt/homebrew/opt/libxslt/lib/pkgconfig:${PKG_CONFIG_PATH:-}"
+          # Qt6 qmake needs a resolvable macOS SDK (empty SDKVersion otherwise).
+          export SDKROOT="$(xcrun --sdk macosx --show-sdk-path)"
+          export DEVELOPER_DIR="$(xcode-select -p)"
+          xcrun --show-sdk-version | tee ci-logs/sdk.log
           # SNMP is optional for smoke; keep the tree closer to Linux Qt6 CI.
           bash ./autogen.sh --prefix=/usr/local --with-qmake=qmake6 --without-ucdsnmp \
             2>&1 | tee ci-logs/configure.log
@@ -66,6 +70,8 @@ jobs:
           set -euo pipefail
           mkdir -p ci-logs
           export PATH="/opt/homebrew/opt/qt@6/bin:/usr/local/opt/qt@6/bin:$PATH"
+          export SDKROOT="$(xcrun --sdk macosx --show-sdk-path)"
+          export DEVELOPER_DIR="$(xcode-select -p)"
           make -j"$(sysctl -n hw.ncpu)" 2>&1 | tee ci-logs/build.log
           test -x src/gui/fwbuilder.app/Contents/MacOS/fwbuilder \
             || test -x src/gui/fwbuilder \
