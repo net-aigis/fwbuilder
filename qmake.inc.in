@@ -184,8 +184,10 @@ macx {
 # 9.0.0. Chances are, the same thing may be happening with other
 # dependency libraries. Building on 10.6 with deployment target 10.5
 # should solve the problem
+	# Empty deployment target yields invalid -mmacosx-version-min= on clang.
 	QMAKE_MACOSX_DEPLOYMENT_TARGET = $$(QMAKE_MACOSX_DEPLOYMENT_TARGET)
-	QMAKE_CXXFLAGS += -mmacosx-version-min=$$(QMAKE_MACOSX_DEPLOYMENT_TARGET) $$(CXXFLAGS)
+	isEmpty(QMAKE_MACOSX_DEPLOYMENT_TARGET): QMAKE_MACOSX_DEPLOYMENT_TARGET = 12.0
+	QMAKE_CXXFLAGS += -mmacosx-version-min=$$QMAKE_MACOSX_DEPLOYMENT_TARGET $$(CXXFLAGS)
 	# Empty QMAKE_MAC_SDK makes Qt6 qmake fail with "SDKVersion for ''".
 	QMAKE_MAC_SDK = $$(QMAKE_MAC_SDK)
 	isEmpty(QMAKE_MAC_SDK): QMAKE_MAC_SDK = macosx

@@ -63,9 +63,11 @@ jobs:
           export SDKROOT="$(xcrun --sdk macosx --show-sdk-path)"
           export DEVELOPER_DIR="$(xcode-select -p)"
           export QMAKE_MAC_SDK=macosx
+          export QMAKE_MACOSX_DEPLOYMENT_TARGET=12.0
           {
             echo "SDKROOT=$SDKROOT"
             echo "DEVELOPER_DIR=$DEVELOPER_DIR"
+            echo "QMAKE_MACOSX_DEPLOYMENT_TARGET=$QMAKE_MACOSX_DEPLOYMENT_TARGET"
             xcrun --show-sdk-version
             xcodebuild -version
           } | tee ci-logs/sdk.log
@@ -84,6 +86,7 @@ jobs:
           export SDKROOT="$(xcrun --sdk macosx --show-sdk-path)"
           export DEVELOPER_DIR="$(xcode-select -p)"
           export QMAKE_MAC_SDK=macosx
+          export QMAKE_MACOSX_DEPLOYMENT_TARGET=12.0
           make -j"$(sysctl -n hw.ncpu)" 2>&1 | tee ci-logs/build.log
           test -x src/gui/fwbuilder.app/Contents/MacOS/fwbuilder \
             || test -x src/gui/fwbuilder \
