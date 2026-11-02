@@ -98,6 +98,11 @@ export function App() {
   const [tab, setTab] = useState<MainTab>("object");
   const [rulesWhich, setRulesWhich] = useState<RulesWhich>("policy");
   const [rulesFwId, setRulesFwId] = useState<string | null>(null);
+  const [rulesFwMeta, setRulesFwMeta] = useState<{
+    name: string;
+    platform?: string;
+    host_OS?: string;
+  } | null>(null);
   const [rulesetId, setRulesetId] = useState<string | null>(null);
   const [rulesetList, setRulesetList] = useState<RulesetListEntry[]>([]);
   const [rules, setRules] = useState<AnyRule[]>([]);
@@ -116,6 +121,7 @@ export function App() {
   const [ruleGroupFilter, setRuleGroupFilter] = useState("");
   const [ruleTextFilter, setRuleTextFilter] = useState("");
   const [treeFilter, setTreeFilter] = useState("");
+  const [unusedTypeFilter, setUnusedTypeFilter] = useState("");
   const [trashCount, setTrashCount] = useState(0);
   const [trashOpen, setTrashOpen] = useState(false);
   const [trashItems, setTrashItems] = useState<
@@ -190,6 +196,19 @@ export function App() {
     return Array.from(set).sort();
   }, [rules]);
 
+  const unusedTypes = useMemo(() => {
+    const set = new Set<string>();
+    for (const h of unusedHits) {
+      if (h.type) set.add(h.type);
+    }
+    return Array.from(set).sort();
+  }, [unusedHits]);
+
+  const visibleUnused = useMemo(() => {
+    if (!unusedTypeFilter) return unusedHits;
+    return unusedHits.filter((h) => h.type === unusedTypeFilter);
+  }, [unusedHits, unusedTypeFilter]);
+
   useEffect(() => {
     const onBeforeUnload = (e: BeforeUnloadEvent) => {
       if (!dirty) return;
@@ -245,6 +264,7 @@ export function App() {
     setSelected(null);
     setRules([]);
     setRulesFwId(null);
+    setRulesFwMeta(null);
     setRulesetId(null);
     setRulesetList([]);
     setTab("object");
@@ -370,6 +390,11 @@ export function App() {
       setRules(data.rules ?? []);
       setRulesetName(chosen?.name || data.name || which);
       setRulesFwId(fwId);
+      setRulesFwMeta({
+        name: fw.name || "",
+        platform: fw.attrs?.platform != null ? String(fw.attrs.platform) : undefined,
+        host_OS: fw.attrs?.host_OS != null ? String(fw.attrs.host_OS) : undefined,
+      });
       setRulesetId(targetId);
       setRulesWhich(which);
       setTab("rules");
@@ -765,9 +790,13 @@ export function App() {
 
   async function onDeleteUnused() {
     if (!sessionId || !unusedHits.length) return;
+    const targets = unusedTypeFilter
+      ? unusedHits.filter((h) => h.type === unusedTypeFilter)
+      : unusedHits;
+    if (!targets.length) return;
     if (
       !window.confirm(
-        `Move ${unusedHits.length} unused object(s) to Deleted Objects?`,
+        `Move ${targets.length} unused object(s) to Deleted Objects?`,
       )
     )
       return;
@@ -775,11 +804,13 @@ export function App() {
     setError(null);
     try {
       let n = 0;
-      for (const hit of unusedHits) {
+      const gone = new Set<string>();
+      for (const hit of targets) {
         await deleteObject(sessionId, hit.id, false);
+        gone.add(hit.id);
         n += 1;
       }
-      setUnusedHits([]);
+      setUnusedHits((prev) => prev.filter((u) => !gone.has(u.id)));
       setDirty(true);
       const t = await fetchTree(sessionId, 5);
       setTree(t.root);
@@ -1832,6 +1863,8 @@ export function App() {
       setTree(null);
       setSelected(null);
       setRules([]);
+      setRulesFwId(null);
+      setRulesFwMeta(null);
       setSearchHits([]);
       setCompileLog(null);
       setCompileOutputs([]);
@@ -1840,6 +1873,7 @@ export function App() {
       setTrashItems([]);
       setTrashOpen(false);
       setUnusedHits([]);
+      setUnusedTypeFilter("");
       setSessionsOpen(false);
       setWhereUsedCount(null);
       setStatus("Closed");
@@ -2116,6 +2150,27 @@ export function App() {
             >
               Expand
             </button>
+            <button
+              type="button"
+              className="ghost"
+              disabled={!tree}
+              title="Download currently loaded object tree as JSON"
+              onClick={() => {
+                if (!tree) return;
+                const blob = new Blob([JSON.stringify({ root: tree }, null, 2)], {
+                  type: "application/json",
+                });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "fwbweb-tree.json";
+                a.click();
+                URL.revokeObjectURL(url);
+                setStatus("Downloaded object tree JSON");
+              }}
+            >
+              Tree JSON
+            </button>
           </div>
           <div className="search-row">
             <input
@@ -2172,14 +2227,38 @@ export function App() {
               {unusedHits.length ? (
             <div className="search-hits">
               <div className="trash-panel-head">
-                <span>Unused ({unusedHits.length})</span>
+                <span>
+                  Unused ({visibleUnused.length}
+                  {visibleUnused.length !== unusedHits.length ? `/${unusedHits.length}` : ""})
+                </span>
+                {unusedTypes.length > 1 ? (
+                  <select
+                    value={unusedTypeFilter}
+                    disabled={busy}
+                    onChange={(e) => setUnusedTypeFilter(e.target.value)}
+                    title="Filter unused list by type"
+                  >
+                    <option value="">All types</option>
+                    {unusedTypes.map((t) => (
+                      <option key={t} value={t}>
+                        {t}
+                      </option>
+                    ))}
+                  </select>
+                ) : null}
                 <button
                   type="button"
                   className="ghost"
                   disabled={busy}
                   onClick={() => {
                     const blob = new Blob(
-                      [JSON.stringify({ count: unusedHits.length, objects: unusedHits }, null, 2)],
+                      [
+                        JSON.stringify(
+                          { count: visibleUnused.length, objects: visibleUnused },
+                          null,
+                          2,
+                        ),
+                      ],
                       { type: "application/json" },
                     );
                     const url = URL.createObjectURL(blob);
@@ -2188,7 +2267,7 @@ export function App() {
                     a.download = "fwbweb-unused.json";
                     a.click();
                     URL.revokeObjectURL(url);
-                    setStatus(`Downloaded ${unusedHits.length} unused object(s)`);
+                    setStatus(`Downloaded ${visibleUnused.length} unused object(s)`);
                   }}
                   title="Download unused list as JSON"
                 >
@@ -2201,7 +2280,9 @@ export function App() {
                   onClick={() => {
                     const lines = [
                       "id\ttype\tname",
-                      ...unusedHits.map((h) => `${h.id}\t${h.type}\t${(h.name ?? "").replace(/\t|\n/g, " ")}`),
+                      ...visibleUnused.map(
+                        (h) => `${h.id}\t${h.type}\t${(h.name ?? "").replace(/\t|\n/g, " ")}`,
+                      ),
                     ];
                     const blob = new Blob([lines.join("\n")], {
                       type: "text/tab-separated-values",
@@ -2212,7 +2293,7 @@ export function App() {
                     a.download = "fwbweb-unused.tsv";
                     a.click();
                     URL.revokeObjectURL(url);
-                    setStatus(`Downloaded ${unusedHits.length} unused object(s) as TSV`);
+                    setStatus(`Downloaded ${visibleUnused.length} unused object(s) as TSV`);
                   }}
                   title="Download unused list as TSV"
                 >
@@ -2227,11 +2308,18 @@ export function App() {
                 >
                   Delete all
                 </button>
-                <button type="button" className="ghost" onClick={() => setUnusedHits([])}>
+                <button
+                  type="button"
+                  className="ghost"
+                  onClick={() => {
+                    setUnusedHits([]);
+                    setUnusedTypeFilter("");
+                  }}
+                >
                   Clear
                 </button>
               </div>
-              {unusedHits.map((h) => (
+              {visibleUnused.map((h) => (
                 <div key={h.id} className="trash-row">
                   <button
                     type="button"
@@ -2577,6 +2665,14 @@ export function App() {
               <header className="panel-header">
                 <h2>
                   {rulesetName || "Rules"}
+                  {rulesFwMeta ? (
+                    <span className="muted">
+                      {" "}
+                      · {rulesFwMeta.name}
+                      {rulesFwMeta.platform ? ` · ${rulesFwMeta.platform}` : ""}
+                      {rulesFwMeta.host_OS ? `/${rulesFwMeta.host_OS}` : ""}
+                    </span>
+                  ) : null}
                   {rules.length ? (
                     <span className="muted">
                       {" "}

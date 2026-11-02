@@ -189,6 +189,9 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Move visible rules to ruleset | done | Move visible to…; E2E phase59 |
 | Delete object key | done | Delete/Backspace on object tab |
 | Sessions JSON download | done | sessions panel; E2E phase59 |
+| Rules header fw platform/OS | done | loadRules meta; E2E phase60 |
+| Unused type filter | done | unused panel; E2E phase60 |
+| Object tree JSON download | done | Tree JSON button |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Phase 3 — compile / deploy
@@ -259,6 +262,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase57 (bulk action + members) | done | `e2e-phase57.sh` **OK** |
 | Local E2E phase58 (id search + copy visible) | done | `e2e-phase58.sh` **OK** |
 | Local E2E phase59 (move visible + sessions) | done | `e2e-phase59.sh` **OK** |
+| Local E2E phase60 (fw meta + unused types) | done | `e2e-phase60.sh` **OK** |
 
 ## Local commands
 
@@ -327,6 +331,7 @@ bash webui/scripts/e2e-phase56.sh
 bash webui/scripts/e2e-phase57.sh
 bash webui/scripts/e2e-phase58.sh
 bash webui/scripts/e2e-phase59.sh
+bash webui/scripts/e2e-phase60.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```
