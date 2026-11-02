@@ -123,6 +123,8 @@ jobs:
           export CCACHE_DIR="$PWD/.ci-ccache"
           mkdir -p "$CCACHE_DIR"
           export PATH="/mingw64/bin:$PATH"
+          # Native MSYS2 MinGW root (MXE builds set this to the cross prefix).
+          export TOOLCHAIN_PREFIX=/mingw64
           qmake6 -v 2>&1 | tee ci-logs/qmake.log
           grep -Eq 'Qt version 6\.' ci-logs/qmake.log
           bash ./autogen.sh --prefix=/mingw64 --with-qmake=qmake6 --without-ucdsnmp \

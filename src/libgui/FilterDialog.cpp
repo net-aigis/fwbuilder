@@ -68,6 +68,20 @@
 using namespace std;
 using namespace libfwbuilder;
 
+// Qt < 5.15 lacks UnanchoredWildcardConversion; strip \A...\z instead.
+static QString fwbWildcardToRegularExpression(const QString &pattern)
+{
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+    return QRegularExpression::wildcardToRegularExpression(
+        pattern, QRegularExpression::UnanchoredWildcardConversion);
+#else
+    QString re = QRegularExpression::wildcardToRegularExpression(pattern);
+    if (re.startsWith(QLatin1String("\\A")) && re.endsWith(QLatin1String("\\z")))
+        re = re.mid(2, re.size() - 4);
+    return re;
+#endif
+}
+
 FilterDialog::FilterDialog(QWidget *parent) : QDialog(parent)
 {
     m_dialog = new Ui::FilterDialog_q;
@@ -363,10 +377,7 @@ FilterPattern FilterDialog::constructRegExp(int p)
     }
 
     if (wildcard)
-    {
-        buf = QRegularExpression::wildcardToRegularExpression(
-            buf, QRegularExpression::UnanchoredWildcardConversion);
-    }
+        buf = fwbWildcardToRegularExpression(buf);
     r.wildcard = wildcard;
     r.re = QRegularExpression(buf, opts);
     return r;
@@ -489,15 +500,9 @@ void Filter::addNamePattern(const QString &s,bool wc)
     FilterPattern fp;
     fp.wildcard = wc;
     if (wc)
-    {
-        fp.re = QRegularExpression(
-            QRegularExpression::wildcardToRegularExpression(
-                s, QRegularExpression::UnanchoredWildcardConversion));
-    }
+        fp.re = QRegularExpression(fwbWildcardToRegularExpression(s));
     else
-    {
         fp.re = QRegularExpression(s);
-    }
     name_patterns.push_back(fp);
 }
 void Filter::addAddrPattern(const QString &s,bool wc)
@@ -505,15 +510,9 @@ void Filter::addAddrPattern(const QString &s,bool wc)
     FilterPattern fp;
     fp.wildcard = wc;
     if (wc)
-    {
-        fp.re = QRegularExpression(
-            QRegularExpression::wildcardToRegularExpression(
-                s, QRegularExpression::UnanchoredWildcardConversion));
-    }
+        fp.re = QRegularExpression(fwbWildcardToRegularExpression(s));
     else
-    {
         fp.re = QRegularExpression(s);
-    }
     addr_patterns.push_back(fp);
 }
 void Filter::clear()

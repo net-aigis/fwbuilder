@@ -369,6 +369,13 @@ dnl  Just in case we support both --with-ucdsnmp and --with-ucd-snmp
 dnl                                    --vk
 dnl
 
+AC_ARG_WITH(ucdsnmp,
+    AS_HELP_STRING([--with-ucdsnmp],[enable SNMP via net-snmp/ucd-snmp (default: yes)]),
+    [], [with_ucdsnmp=yes])
+AC_ARG_WITH(ucd-snmp,
+    AS_HELP_STRING([--with-ucd-snmp],[alias for --with-ucdsnmp]),
+    [], [with_ucd_snmp=])
+
 check_for_ucdsnmp=yes
 if test x$with_ucdsnmp = xno ; then
   check_for_ucdsnmp=no

@@ -70,11 +70,19 @@ win32 {
 
     DEFINES += LIBXML_STATIC LIBXSLT_STATIC 
     DEFINES += WIN32_LEAN_AND_MEAN
-    INCLUDEPATH += $$(TOOLCHAIN_PREFIX)/include $$(TOOLCHAIN_PREFIX)/include/libxml2 $$(TOOLCHAIN_PREFIX)/include/net-snmp /include
-    LIBS += -L$$(TOOLCHAIN_PREFIX)/lib -L$$(TOOLCHAIN_PREFIX)/bin
-#    LIBS += ws2_32.lib pthreadVC.lib 
-    LIBS += pthreadVC.lib 
-    LIBS += libxml2.lib libxslt_a.lib libz.a  # zlib.lib
+    TOOLCHAIN_PREFIX_ENV = $$(TOOLCHAIN_PREFIX)
+    !isEmpty(TOOLCHAIN_PREFIX_ENV) {
+        INCLUDEPATH += $$TOOLCHAIN_PREFIX_ENV/include \
+                       $$TOOLCHAIN_PREFIX_ENV/include/libxml2 \
+                       $$TOOLCHAIN_PREFIX_ENV/include/net-snmp
+        LIBS += -L$$TOOLCHAIN_PREFIX_ENV/lib -L$$TOOLCHAIN_PREFIX_ENV/bin
+        # MSVC/MXE import names (shared toolchain builds)
+        LIBS += pthreadVC.lib libxml2.lib libxslt_a.lib libz.a
+    } else {
+        # Native MSYS2/MinGW: paths and -l flags from configure
+        INCLUDEPATH += @XML_CFLAGS_Q@ @XSLT_CFLAGS_Q@
+        LIBS += @XML_LIBS@ @XSLT_LIBS@ -lpthread -lz
+    }
 }
 
 macx {
