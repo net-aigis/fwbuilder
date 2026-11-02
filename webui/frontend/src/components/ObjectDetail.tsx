@@ -33,7 +33,14 @@ const TYPE_FIELDS: Record<string, string[]> = {
   IPService: ["protocol_num"],
   Firewall: ["platform", "host_OS", "version"],
   Host: ["platform", "host_OS"],
-  Interface: ["phys_address", "label", "management"],
+  Interface: [
+    "phys_address",
+    "label",
+    "management",
+    "dyn",
+    "unnumbered",
+    "security_level",
+  ],
   Interval: [
     "from_hour",
     "from_minute",
@@ -89,6 +96,7 @@ export function ObjectDetail({ object, readOnly, busy, onSave, onOpenRules, extr
         k === "code" ||
         k === "protocol_num" ||
         k === "metric" ||
+        k === "security_level" ||
         k.startsWith("from_") ||
         k.startsWith("to_")
       ) {

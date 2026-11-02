@@ -76,8 +76,28 @@ export function App() {
   const [compileLog, setCompileLog] = useState<string | null>(null);
   const [compileOutputs, setCompileOutputs] = useState<string[]>([]);
   const [dirty, setDirty] = useState(false);
+  const [hideDisabled, setHideDisabled] = useState(false);
+  const [ruleGroupFilter, setRuleGroupFilter] = useState("");
 
   const canOperate = useMemo(() => Boolean(sessionId) && !busy, [sessionId, busy]);
+
+  const visibleRules = useMemo(() => {
+    let list = rules;
+    if (hideDisabled) list = list.filter((r) => !r.disabled);
+    if (ruleGroupFilter.trim()) {
+      const q = ruleGroupFilter.trim().toLowerCase();
+      list = list.filter((r) => (r.group ?? "").toLowerCase().includes(q));
+    }
+    return list;
+  }, [rules, hideDisabled, ruleGroupFilter]);
+
+  const ruleGroups = useMemo(() => {
+    const set = new Set<string>();
+    for (const r of rules) {
+      if (r.group?.trim()) set.add(r.group.trim());
+    }
+    return Array.from(set).sort();
+  }, [rules]);
 
   useEffect(() => {
     const onBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -368,7 +388,31 @@ export function App() {
     setError(null);
     try {
       await moveRule(sessionId, selectedRuleId, { direction });
+      setDirty(true);
       await refreshRules();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function onMoveRuleTo() {
+    if (!sessionId || !selectedRuleId) return;
+    const raw = window.prompt("Move selected rule to position #", "0");
+    if (raw === null) return;
+    const to = Number(raw);
+    if (!Number.isFinite(to) || to < 0) {
+      setError("position must be a non-negative number");
+      return;
+    }
+    setBusy(true);
+    setError(null);
+    try {
+      await moveRule(sessionId, selectedRuleId, { to });
+      setDirty(true);
+      await refreshRules();
+      setStatus(`Moved rule to #${to}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
@@ -883,6 +927,38 @@ export function App() {
                     type="button"
                     className="ghost"
                     disabled={!canOperate || !selectedRuleId}
+                    onClick={() => void onMoveRuleTo()}
+                  >
+                    Move to…
+                  </button>
+                  <label className="field inline">
+                    <input
+                      type="checkbox"
+                      checked={hideDisabled}
+                      disabled={busy}
+                      onChange={(e) => setHideDisabled(e.target.checked)}
+                    />{" "}
+                    Hide disabled
+                  </label>
+                  <label className="field inline">
+                    Group
+                    <select
+                      value={ruleGroupFilter}
+                      disabled={busy}
+                      onChange={(e) => setRuleGroupFilter(e.target.value)}
+                    >
+                      <option value="">All groups</option>
+                      {ruleGroups.map((g) => (
+                        <option key={g} value={g}>
+                          {g}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <button
+                    type="button"
+                    className="ghost"
+                    disabled={!canOperate || !selectedRuleId}
                     onClick={() => void onDuplicateRule()}
                   >
                     Duplicate
@@ -901,7 +977,7 @@ export function App() {
                 </div>
               </header>
               <RuleGrid
-                rules={rules}
+                rules={visibleRules}
                 kind={rulesWhich}
                 busy={busy}
                 selectedId={selectedRuleId}

@@ -127,6 +127,12 @@ static QJsonObject typedAttrs(FWObject *obj)
         attrs.insert(QStringLiteral("management"),
                      iface->isManagement() ? QStringLiteral("True")
                                            : QStringLiteral("False"));
+        attrs.insert(QStringLiteral("dyn"),
+                     iface->isDyn() ? QStringLiteral("True") : QStringLiteral("False"));
+        attrs.insert(QStringLiteral("unnumbered"),
+                     iface->isUnnumbered() ? QStringLiteral("True")
+                                          : QStringLiteral("False"));
+        attrs.insert(QStringLiteral("security_level"), iface->getSecurityLevel());
     }
     if (AddressRange *ar = AddressRange::cast(obj)) {
         attrs.insert(QStringLiteral("start_address"), u8(ar->getRangeStart().toString()));
@@ -313,6 +319,18 @@ static void applyObjectAttrs(FWObject *obj, const QJsonObject &attrs)
             }
             if (key == "management") {
                 iface->setManagement(parseBoolish(val));
+                continue;
+            }
+            if (key == "dyn") {
+                iface->setDyn(parseBoolish(val));
+                continue;
+            }
+            if (key == "unnumbered" || key == "unnum") {
+                iface->setUnnumbered(parseBoolish(val));
+                continue;
+            }
+            if (key == "security_level" || key == "sec_level") {
+                iface->setSecurityLevel(atoi(val.c_str()));
                 continue;
             }
         }
