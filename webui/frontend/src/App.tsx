@@ -1842,6 +1842,21 @@ export function App() {
                       </button>
                     </span>
                   ))}
+                  <button
+                    type="button"
+                    className="ghost"
+                    disabled={busy}
+                    title="Copy object path"
+                    onClick={() => {
+                      const text = objectPath.map((p) => p.name || p.type).join(" / ");
+                      void navigator.clipboard.writeText(text).then(
+                        () => setStatus("Copied object path"),
+                        () => setError("Clipboard write failed"),
+                      );
+                    }}
+                  >
+                    Copy path
+                  </button>
                 </nav>
               ) : null}
             <ObjectDetail
@@ -2029,6 +2044,17 @@ export function App() {
                   ) : null}
                 </h2>
                 <div className="btn-row">
+                  {rulesFwId ? (
+                    <button
+                      type="button"
+                      className="ghost"
+                      disabled={busy}
+                      title="Select the firewall object"
+                      onClick={() => void onSelect({ id: rulesFwId, name: "", type: "Firewall" })}
+                    >
+                      Firewall
+                    </button>
+                  ) : null}
                   {(["policy", "nat", "routing"] as RulesWhich[]).map((w) => (
                     <button
                       key={w}

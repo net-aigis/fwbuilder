@@ -147,6 +147,8 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Download compile log | done | Compile panel button |
 | Stats clusters vs firewalls | done | separate counts; E2E phase44 |
 | Ctrl+Shift+E compile all | done | keyboard |
+| Copy object path | done | breadcrumb Copy path; E2E phase45 |
+| Jump to firewall from rules | done | Firewall button; E2E phase45 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Phase 3 — compile / deploy
@@ -202,6 +204,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase42 (stats unused) | done | `e2e-phase42.sh` **OK** |
 | Local E2E phase43 (stats fw list + rename) | done | `e2e-phase43.sh` **OK** |
 | Local E2E phase44 (clusters vs firewalls) | done | `e2e-phase44.sh` **OK** |
+| Local E2E phase45 (path copy + fw jump) | done | `e2e-phase45.sh` **OK** |
 
 ## Local commands
 
@@ -255,6 +258,7 @@ bash webui/scripts/e2e-phase41.sh
 bash webui/scripts/e2e-phase42.sh
 bash webui/scripts/e2e-phase43.sh
 bash webui/scripts/e2e-phase44.sh
+bash webui/scripts/e2e-phase45.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```
