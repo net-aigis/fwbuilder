@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import {
   formatRuleObjects,
   type AnyRule,
@@ -114,6 +115,11 @@ export function RuleGrid({
   onCycleDirection,
   selectedId,
 }: Props) {
+  const selectedRef = useRef<HTMLTableRowElement | null>(null);
+  useEffect(() => {
+    selectedRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }, [selectedId]);
+
   if (!rules.length) {
     return <p className="muted pad">No rules in this ruleset.</p>;
   }
@@ -146,6 +152,7 @@ export function RuleGrid({
               ) : (
                 <tr
                   key={row.rule.id}
+                  ref={selectedId === row.rule.id ? selectedRef : undefined}
                   className={selectedId === row.rule.id ? "selected" : undefined}
                   onClick={() => onSelectRule?.(row.rule)}
                 >
@@ -243,6 +250,7 @@ export function RuleGrid({
             {(rules as NatRule[]).map((r) => (
               <tr
                 key={r.id}
+                ref={selectedId === r.id ? selectedRef : undefined}
                 className={selectedId === r.id ? "selected" : undefined}
                 onClick={() => onSelectRule?.(r)}
               >
@@ -306,6 +314,7 @@ export function RuleGrid({
           {(rules as RoutingRuleRow[]).map((r) => (
             <tr
               key={r.id}
+              ref={selectedId === r.id ? selectedRef : undefined}
               className={selectedId === r.id ? "selected" : undefined}
               onClick={() => onSelectRule?.(r)}
             >

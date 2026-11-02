@@ -390,12 +390,19 @@ export function App() {
         void onSave(e.shiftKey);
         return;
       }
-      if (tab !== "rules" || typing) return;
-      if (mod && e.key.toLowerCase() === "d" && selectedRuleId) {
-        e.preventDefault();
-        void onDuplicateRule();
-        return;
+      if (mod && e.key.toLowerCase() === "d") {
+        if (tab === "rules" && selectedRuleId) {
+          e.preventDefault();
+          void onDuplicateRule();
+          return;
+        }
+        if (tab === "object" && selected && !selected.ro && selected.type !== "FWObjectDatabase") {
+          e.preventDefault();
+          void onDuplicateObject();
+          return;
+        }
       }
+      if (tab !== "rules" || typing) return;
       if (e.altKey && selectedRuleId && (e.key === "ArrowUp" || e.key === "ArrowDown")) {
         e.preventDefault();
         void onMoveRule(e.key === "ArrowUp" ? "up" : "down");
@@ -436,7 +443,7 @@ export function App() {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [sessionId, busy, tab, selectedRuleId, visibleRules]);
+  }, [sessionId, busy, tab, selectedRuleId, selected, visibleRules]);
 
   async function onApplyObject(patch: {
     name: string;
@@ -651,6 +658,29 @@ export function App() {
       setDirty(true);
       await refreshRules();
       setStatus(`Commented ${visibleRules.length} visible rules`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function onBulkGroup() {
+    if (!sessionId || !visibleRules.length) return;
+    const text = window.prompt(
+      `Set group on ${visibleRules.length} visible rule(s)`,
+      ruleGroupFilter || "",
+    );
+    if (text === null) return;
+    setBusy(true);
+    setError(null);
+    try {
+      for (const rule of visibleRules) {
+        await updateRule(sessionId, rule.id, { group: text });
+      }
+      setDirty(true);
+      await refreshRules();
+      setStatus(`Grouped ${visibleRules.length} visible rules as “${text}”`);
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
@@ -1541,6 +1571,15 @@ export function App() {
                     title="Set the same comment on all visible rules"
                   >
                     Comment visible…
+                  </button>
+                  <button
+                    type="button"
+                    className="ghost"
+                    disabled={!canOperate || !visibleRules.length}
+                    onClick={() => void onBulkGroup()}
+                    title="Set the same group on all visible rules"
+                  >
+                    Group visible…
                   </button>
                   <button
                     type="button"

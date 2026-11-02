@@ -113,6 +113,9 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | L / G rule logging & direction | done | keyboard + clickable cells; E2E phase34 |
 | Bulk comment visible rules | done | Comment visible… toolbar |
 | Copy object id | done | ObjectDetail button |
+| Bulk group visible rules | done | Group visible… toolbar; E2E phase35 |
+| Ctrl+D duplicate object | done | object tab keyboard; E2E phase35 |
+| Selected rule scrollIntoView | done | RuleGrid |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Phase 3 — compile / deploy
@@ -158,6 +161,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase32 (soft-delete + TCP ports) | done | `e2e-phase32.sh` **OK** |
 | Local E2E phase33 (restore + empty trash) | done | `e2e-phase33.sh` **OK** |
 | Local E2E phase34 (deleted list + log/dir) | done | `e2e-phase34.sh` **OK** |
+| Local E2E phase35 (bulk group + object dup) | done | `e2e-phase35.sh` **OK** |
 
 ## Local commands
 
@@ -201,6 +205,7 @@ bash webui/scripts/e2e-phase31.sh
 bash webui/scripts/e2e-phase32.sh
 bash webui/scripts/e2e-phase33.sh
 bash webui/scripts/e2e-phase34.sh
+bash webui/scripts/e2e-phase35.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```
