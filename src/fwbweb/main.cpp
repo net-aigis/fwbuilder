@@ -553,6 +553,11 @@ static QJsonObject objectToJson(FWObject *obj, int depth, int max_depth)
     o.insert(QStringLiteral("type"), u8(obj->getTypeName()));
     o.insert(QStringLiteral("comment"), u8(obj->getComment()));
     o.insert(QStringLiteral("ro"), obj->isReadOnly());
+    if (FWObject *par = obj->getParent()) {
+        o.insert(QStringLiteral("parent_id"),
+                 u8(FWObjectDatabase::getStringId(par->getId())));
+        o.insert(QStringLiteral("parent_type"), u8(par->getTypeName()));
+    }
 
     QJsonObject attrs = typedAttrs(obj);
     if (!attrs.isEmpty())
@@ -576,6 +581,21 @@ static QJsonObject objectToJson(FWObject *obj, int depth, int max_depth)
             sets.insert(QStringLiteral("routing"),
                         u8(FWObjectDatabase::getStringId(fw->getRouting()->getId())));
         o.insert(QStringLiteral("rulesets"), sets);
+
+        QJsonArray rslist;
+        for (FWObject::iterator i = fw->begin(); i != fw->end(); ++i) {
+            RuleSet *rs = RuleSet::cast(*i);
+            if (!rs)
+                continue;
+            QJsonObject entry;
+            entry.insert(QStringLiteral("id"),
+                         u8(FWObjectDatabase::getStringId(rs->getId())));
+            entry.insert(QStringLiteral("name"), u8(rs->getName()));
+            entry.insert(QStringLiteral("type"), u8(rs->getTypeName()));
+            entry.insert(QStringLiteral("top"), rs->isTop());
+            rslist.append(entry);
+        }
+        o.insert(QStringLiteral("ruleset_list"), rslist);
     }
 
     if (depth < max_depth && !children.empty()) {

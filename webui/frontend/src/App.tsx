@@ -29,6 +29,7 @@ import {
   type NatRule,
   type PolicyRule,
   type RoutingRuleRow,
+  type RulesetListEntry,
   type TreeNode,
 } from "./api/client";
 import { CreateObject } from "./components/CreateObject";
@@ -66,6 +67,8 @@ export function App() {
   const [tab, setTab] = useState<MainTab>("object");
   const [rulesWhich, setRulesWhich] = useState<RulesWhich>("policy");
   const [rulesFwId, setRulesFwId] = useState<string | null>(null);
+  const [rulesetId, setRulesetId] = useState<string | null>(null);
+  const [rulesetList, setRulesetList] = useState<RulesetListEntry[]>([]);
   const [rules, setRules] = useState<AnyRule[]>([]);
   const [rulesetName, setRulesetName] = useState("");
   const [selectedRuleId, setSelectedRuleId] = useState<string | undefined>();
@@ -151,7 +154,32 @@ export function App() {
     try {
       const full = await fetchObject(sessionId, node.id);
       setSelected(full);
-      setTab("object");
+      if (full.type === "Policy" || full.type === "NAT" || full.type === "Routing") {
+        const which =
+          full.type === "NAT" ? "nat" : full.type === "Routing" ? "routing" : "policy";
+        const fwId =
+          full.parent_type === "Firewall" || full.parent_type === "Cluster"
+            ? full.parent_id
+            : full.id;
+        const data = await fetchRuleset(sessionId, full.id, which);
+        setRules(data.rules ?? []);
+        setRulesetName(data.name || full.name || which);
+        setRulesFwId(fwId ?? full.id);
+        setRulesetId(full.id);
+        setRulesWhich(which);
+        if (fwId) {
+          try {
+            const fw = await fetchObject(sessionId, fwId);
+            setRulesetList(fw.ruleset_list ?? []);
+          } catch {
+            setRulesetList([]);
+          }
+        }
+        setTab("rules");
+        setStatus(`${full.name} · ${data.rules?.length ?? 0} rules`);
+      } else {
+        setTab("object");
+      }
     } catch (err) {
       setSelected(node);
       setError(err instanceof Error ? err.message : String(err));
@@ -160,18 +188,30 @@ export function App() {
     }
   }
 
-  async function loadRules(fwId: string, which: RulesWhich) {
+  async function loadRules(fwId: string, which: RulesWhich, preferRulesetId?: string) {
     if (!sessionId) return;
     setBusy(true);
     setError(null);
     try {
-      const data = await fetchRuleset(sessionId, fwId, which);
+      const fw = await fetchObject(sessionId, fwId);
+      const list = fw.ruleset_list ?? [];
+      setRulesetList(list);
+      const wantType = which === "nat" ? "NAT" : which === "routing" ? "Routing" : "Policy";
+      const candidates = list.filter((r) => r.type === wantType);
+      const chosen =
+        candidates.find((r) => r.id === preferRulesetId) ||
+        candidates.find((r) => r.top) ||
+        candidates[0] ||
+        null;
+      const targetId = chosen?.id || fw.rulesets?.[which] || fwId;
+      const data = await fetchRuleset(sessionId, targetId, which);
       setRules(data.rules ?? []);
-      setRulesetName(data.name || which);
+      setRulesetName(chosen?.name || data.name || which);
       setRulesFwId(fwId);
+      setRulesetId(targetId);
       setRulesWhich(which);
       setTab("rules");
-      setStatus(`${which} · ${data.rules?.length ?? 0} rules`);
+      setStatus(`${chosen?.name || which} · ${data.rules?.length ?? 0} rules`);
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
@@ -181,7 +221,8 @@ export function App() {
 
   async function refreshRules() {
     if (!sessionId || !rulesFwId) return;
-    const data = await fetchRuleset(sessionId, rulesFwId, rulesWhich);
+    const target = rulesetId || rulesFwId;
+    const data = await fetchRuleset(sessionId, target, rulesWhich);
     setRules(data.rules ?? []);
     setRulesetName(data.name || rulesWhich);
     setStatus(`${rulesWhich} · ${data.rules?.length ?? 0} rules`);
@@ -333,10 +374,11 @@ export function App() {
     if (!sessionId || !rulesFwId) return;
     if ((where === "before" || where === "after") && !selectedRuleId) return;
     const selected = rules.find((r) => r.id === selectedRuleId);
+    const target = rulesetId || rulesFwId;
     setBusy(true);
     setError(null);
     try {
-      const created = await addRule(sessionId, rulesFwId, {
+      const created = await addRule(sessionId, target, {
         which: rulesWhich,
         where,
         position: selected?.position,
@@ -888,6 +930,43 @@ export function App() {
                       {w}
                     </button>
                   ))}
+                  {rulesetList.filter((r) => {
+                    const want =
+                      rulesWhich === "nat"
+                        ? "NAT"
+                        : rulesWhich === "routing"
+                          ? "Routing"
+                          : "Policy";
+                    return r.type === want;
+                  }).length > 1 ? (
+                    <label className="field inline">
+                      Ruleset
+                      <select
+                        value={rulesetId ?? ""}
+                        disabled={busy || !rulesFwId}
+                        onChange={(e) => {
+                          if (rulesFwId) void loadRules(rulesFwId, rulesWhich, e.target.value);
+                        }}
+                      >
+                        {rulesetList
+                          .filter((r) => {
+                            const want =
+                              rulesWhich === "nat"
+                                ? "NAT"
+                                : rulesWhich === "routing"
+                                  ? "Routing"
+                                  : "Policy";
+                            return r.type === want;
+                          })
+                          .map((r) => (
+                            <option key={r.id} value={r.id}>
+                              {r.name}
+                              {r.top ? " (top)" : ""}
+                            </option>
+                          ))}
+                      </select>
+                    </label>
+                  ) : null}
                   <button type="button" disabled={!canOperate} onClick={() => void onAddRule("bottom")}>
                     Add
                   </button>

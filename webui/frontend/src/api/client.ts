@@ -1,13 +1,23 @@
+export type RulesetListEntry = {
+  id: string;
+  name: string;
+  type: string;
+  top?: boolean;
+};
+
 export type TreeNode = {
   id: string;
   name: string;
   type: string;
   comment?: string;
   ro?: boolean;
+  parent_id?: string;
+  parent_type?: string;
   children_count?: number;
   attrs?: Record<string, string | number>;
   children?: TreeNode[];
   rulesets?: { policy?: string; nat?: string; routing?: string };
+  ruleset_list?: RulesetListEntry[];
 };
 
 export type RuleRef = { id: string; name: string; type: string };

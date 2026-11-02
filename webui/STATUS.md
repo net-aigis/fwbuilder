@@ -74,6 +74,8 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Create Library with folder skeleton | done | populateLibraryFolders; E2E phase23 |
 | RuleSet `top` flag | done | secondary Policy/NAT/Routing; E2E phase23 |
 | Rule group header rows | done | RuleGrid visual groups |
+| Multi Policy/NAT ruleset picker | done | `ruleset_list` + UI select; E2E phase24 |
+| parent_id on objects | done | objectToJson; open Policy from tree |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Phase 3 — compile / deploy
@@ -108,6 +110,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase21 (search type + lazy tree) | done | `e2e-phase21.sh` **OK** |
 | Local E2E phase22 (iface flags + move to) | done | `e2e-phase22.sh` **OK** |
 | Local E2E phase23 (Library + RuleSet top) | done | `e2e-phase23.sh` **OK** |
+| Local E2E phase24 (multi ruleset list) | done | `e2e-phase24.sh` **OK** |
 
 ## Local commands
 
@@ -140,6 +143,7 @@ bash webui/scripts/e2e-phase20.sh
 bash webui/scripts/e2e-phase21.sh
 bash webui/scripts/e2e-phase22.sh
 bash webui/scripts/e2e-phase23.sh
+bash webui/scripts/e2e-phase24.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```
