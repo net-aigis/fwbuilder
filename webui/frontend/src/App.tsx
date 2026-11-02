@@ -538,6 +538,16 @@ export function App() {
         setSelectedRuleId(visibleRules[next]?.id);
         return;
       }
+      if (!mod && !e.altKey && e.key === "Home" && visibleRules.length) {
+        e.preventDefault();
+        setSelectedRuleId(visibleRules[0]?.id);
+        return;
+      }
+      if (!mod && !e.altKey && e.key === "End" && visibleRules.length) {
+        e.preventDefault();
+        setSelectedRuleId(visibleRules[visibleRules.length - 1]?.id);
+        return;
+      }
       if (e.key === " " && selectedRuleId && !mod && !e.altKey) {
         e.preventDefault();
         const rule = visibleRules.find((r) => r.id === selectedRuleId);
@@ -1940,6 +1950,39 @@ export function App() {
           ) : null}
           {searchHits.length ? (
             <div className="search-hits">
+              <div className="trash-panel-head">
+                <span>Search ({searchHits.length})</span>
+                <button
+                  type="button"
+                  className="ghost"
+                  onClick={() => {
+                    const blob = new Blob(
+                      [JSON.stringify({ count: searchHits.length, results: searchHits }, null, 2)],
+                      { type: "application/json" },
+                    );
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = "fwbweb-search.json";
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    setStatus(`Downloaded ${searchHits.length} search hit(s)`);
+                  }}
+                  title="Download search hits as JSON"
+                >
+                  JSON
+                </button>
+                <button
+                  type="button"
+                  className="ghost"
+                  onClick={() => {
+                    setSearchHits([]);
+                    setSearchQ("");
+                  }}
+                >
+                  Clear
+                </button>
+              </div>
               {searchHits.map((h) => (
                 <button
                   key={h.id}
@@ -2208,6 +2251,9 @@ export function App() {
                       {" "}
                       · {visibleRules.length}
                       {visibleRules.length !== rules.length ? `/${rules.length}` : ""} rules
+                      {rules.some((r) => r.disabled)
+                        ? ` · ${rules.filter((r) => r.disabled).length} disabled`
+                        : ""}
                     </span>
                   ) : null}
                 </h2>

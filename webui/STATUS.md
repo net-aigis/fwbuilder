@@ -162,6 +162,10 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Rename ruleset | done | Rename… toolbar; E2E phase51 |
 | Copy rule JSON | done | rules toolbar |
 | Search hits sorted | done | type then name |
+| Home/End rule navigation | done | rules keyboard |
+| Search hits JSON download | done | search panel |
+| Disabled rule count | done | rules header; E2E phase52 |
+| Secondary NAT create | done | CreateObject; E2E phase52 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Phase 3 — compile / deploy
@@ -224,6 +228,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase49 (DynamicGroup + sessions) | done | `e2e-phase49.sh` **OK** |
 | Local E2E phase50 (dyn filter + fw dup) | done | `e2e-phase50.sh` **OK** |
 | Local E2E phase51 (rename ruleset) | done | `e2e-phase51.sh` **OK** |
+| Local E2E phase52 (NAT + disabled count) | done | `e2e-phase52.sh` **OK** |
 
 ## Local commands
 
@@ -284,6 +289,7 @@ bash webui/scripts/e2e-phase48.sh
 bash webui/scripts/e2e-phase49.sh
 bash webui/scripts/e2e-phase50.sh
 bash webui/scripts/e2e-phase51.sh
+bash webui/scripts/e2e-phase52.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```
