@@ -20,6 +20,7 @@ class UpdateRuleRequest(BaseModel):
     direction: str | None = None
     logging: bool | None = None
     metric: int | None = None
+    branch_id: str | None = None
 
 
 class AddRuleRequest(BaseModel):

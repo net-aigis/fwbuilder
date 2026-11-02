@@ -361,6 +361,21 @@ static QJsonObject ruleElementJson(RuleElement *re)
     return o;
 }
 
+static void putBranchAttr(QJsonObject &o, Rule *rule)
+{
+    RuleSet *branch = rule->getBranch();
+    if (branch) {
+        o.insert(QStringLiteral("branch_id"),
+                 u8(FWObjectDatabase::getStringId(branch->getId())));
+        o.insert(QStringLiteral("branch_name"), u8(branch->getName()));
+        o.insert(QStringLiteral("branch_type"), u8(branch->getTypeName()));
+    } else {
+        o.insert(QStringLiteral("branch_id"), QString());
+        o.insert(QStringLiteral("branch_name"), QString());
+        o.insert(QStringLiteral("branch_type"), QString());
+    }
+}
+
 static QJsonObject policyRuleJson(PolicyRule *rule)
 {
     QJsonObject o;
@@ -374,6 +389,7 @@ static QJsonObject policyRuleJson(PolicyRule *rule)
     o.insert(QStringLiteral("logging"), rule->getLogging());
     o.insert(QStringLiteral("comment"), u8(rule->getComment()));
     o.insert(QStringLiteral("group"), u8(rule->getRuleGroupName()));
+    putBranchAttr(o, rule);
     o.insert(QStringLiteral("src"), ruleElementJson(rule->getSrc()));
     o.insert(QStringLiteral("dst"), ruleElementJson(rule->getDst()));
     o.insert(QStringLiteral("srv"), ruleElementJson(rule->getSrv()));
@@ -394,6 +410,7 @@ static QJsonObject natRuleJson(NATRule *rule)
     o.insert(QStringLiteral("rule_type"), u8(rule->getRuleTypeAsString()));
     o.insert(QStringLiteral("comment"), u8(rule->getComment()));
     o.insert(QStringLiteral("group"), u8(rule->getRuleGroupName()));
+    putBranchAttr(o, rule);
     o.insert(QStringLiteral("osrc"), ruleElementJson(rule->getOSrc()));
     o.insert(QStringLiteral("odst"), ruleElementJson(rule->getODst()));
     o.insert(QStringLiteral("osrv"), ruleElementJson(rule->getOSrv()));
@@ -795,6 +812,19 @@ static QJsonObject handle(const QJsonObject &req)
             } else if (RoutingRule *rr = RoutingRule::cast(rule)) {
                 if (req.contains(QStringLiteral("metric")))
                     rr->setMetric(req.value(QStringLiteral("metric")).toInt());
+            }
+            if (req.contains(QStringLiteral("branch_id"))) {
+                const QString bid = req.value(QStringLiteral("branch_id")).toString();
+                if (bid.isEmpty()) {
+                    rule->setBranch(0);
+                } else {
+                    FWObject *bobj =
+                        findByIdString(g_db, bid.toUtf8().constData());
+                    RuleSet *rs = RuleSet::cast(bobj);
+                    if (!rs)
+                        return errObj(QStringLiteral("branch_id is not a ruleset"));
+                    rule->setBranch(rs);
+                }
             }
             g_dirty = true;
             g_db->setDirty(true);

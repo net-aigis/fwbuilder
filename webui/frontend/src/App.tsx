@@ -8,6 +8,7 @@ import {
   duplicateObject,
   duplicateRule,
   downloadCompileOutput,
+  downloadProjectUrl,
   deleteRule,
   fetchObject,
   fetchRuleset,
@@ -481,6 +482,7 @@ export function App() {
 
   async function onClose() {
     if (!sessionId) return;
+    if (dirty && !window.confirm("Discard unsaved changes and close?")) return;
     setBusy(true);
     setError(null);
     try {
@@ -492,7 +494,33 @@ export function App() {
       setSearchHits([]);
       setCompileLog(null);
       setCompileOutputs([]);
+      setDirty(false);
       setStatus("Closed");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function onDownloadFwb() {
+    if (!sessionId) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const res = await fetch(downloadProjectUrl(sessionId), {
+        headers: { Authorization: `Bearer ${getToken()}` },
+      });
+      if (!res.ok) throw new Error(`download failed (${res.status})`);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = path.split("/").pop() || "project.fwb";
+      a.click();
+      URL.revokeObjectURL(url);
+      setDirty(false);
+      setStatus("Downloaded .fwb");
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
@@ -536,6 +564,9 @@ export function App() {
           </button>
           <button type="button" onClick={() => void onSave(false)} disabled={!canOperate}>
             Save
+          </button>
+          <button type="button" className="ghost" onClick={() => void onDownloadFwb()} disabled={!canOperate}>
+            Download .fwb
           </button>
           <button
             type="button"

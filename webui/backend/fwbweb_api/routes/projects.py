@@ -361,6 +361,32 @@ def save_project(
     return {"ok": True, "path": data.get("path"), "source_path": str(session.source_path)}
 
 
+@router.get("/{session_id}/download")
+def download_project(
+    session_id: str,
+    _: str = Depends(require_token),
+):
+    """Download the current workspace .fwb (saves first so content is current)."""
+    from fastapi.responses import FileResponse
+
+    try:
+        session = store.get(session_id)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail="session not found") from exc
+    try:
+        session.bridge.request("save", path=str(session.work_path))
+    except BridgeError as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+    path = Path(session.work_path)
+    if not path.is_file():
+        raise HTTPException(status_code=404, detail="workspace file missing")
+    return FileResponse(
+        path,
+        media_type="application/xml",
+        filename=path.name,
+    )
+
+
 @router.post("/{session_id}/close", status_code=status.HTTP_204_NO_CONTENT)
 def close_project(
     session_id: str,

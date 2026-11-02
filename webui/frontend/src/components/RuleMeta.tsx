@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { updateRule, type AnyRule, type PolicyRule } from "../api/client";
+import { searchObjects, updateRule, type AnyRule, type PolicyRule } from "../api/client";
 
 type Props = {
   sessionId: string;
@@ -28,13 +28,55 @@ export function RuleMeta({
   const [logging, setLogging] = useState(
     "logging" in rule ? Boolean((rule as PolicyRule).logging) : false,
   );
+  const [branchId, setBranchId] = useState(
+    "branch_id" in rule ? String((rule as PolicyRule).branch_id ?? "") : "",
+  );
+  const [branchName, setBranchName] = useState(
+    "branch_name" in rule ? String((rule as PolicyRule).branch_name ?? "") : "",
+  );
+  const [branchQ, setBranchQ] = useState("");
+  const [branchHits, setBranchHits] = useState<
+    { id: string; name: string; type: string }[]
+  >([]);
+
+  const showBranch =
+    (rule.type === "PolicyRule" && rule.action === "Branch") ||
+    (rule.type === "NATRule" && rule.action === "NATBranch");
 
   useEffect(() => {
     setComment(rule.comment ?? "");
     setGroup(rule.group ?? "");
     setDirection("direction" in rule ? String((rule as PolicyRule).direction ?? "") : "");
     setLogging("logging" in rule ? Boolean((rule as PolicyRule).logging) : false);
+    setBranchId("branch_id" in rule ? String((rule as PolicyRule).branch_id ?? "") : "");
+    setBranchName("branch_name" in rule ? String((rule as PolicyRule).branch_name ?? "") : "");
   }, [rule]);
+
+  useEffect(() => {
+    if (!showBranch || !branchQ.trim()) {
+      setBranchHits([]);
+      return;
+    }
+    let cancelled = false;
+    void searchObjects(sessionId, branchQ)
+      .then((res) => {
+        if (cancelled) return;
+        const want = rule.type === "NATRule" ? "NAT" : "Policy";
+        setBranchHits(
+          (res.results ?? []).filter((r) => r.type === want).map((r) => ({
+            id: r.id,
+            name: r.name,
+            type: r.type,
+          })),
+        );
+      })
+      .catch(() => {
+        if (!cancelled) setBranchHits([]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [sessionId, branchQ, showBranch, rule.type]);
 
   async function save() {
     onBusy?.(true);
@@ -45,11 +87,13 @@ export function RuleMeta({
         group: string;
         direction?: string;
         logging?: boolean;
+        branch_id?: string;
       } = { comment, group };
       if (rule.type === "PolicyRule") {
         body.direction = direction;
         body.logging = logging;
       }
+      if (showBranch) body.branch_id = branchId;
       await updateRule(sessionId, rule.id, body);
       onStatus?.("Rule meta saved");
       onSaved?.();
@@ -101,6 +145,53 @@ export function RuleMeta({
               Logging
             </label>
           </>
+        ) : null}
+        {showBranch ? (
+          <div className="field block">
+            <span>Branch ruleset</span>
+            <p className="muted">
+              {branchId ? `${branchName || branchId} (${branchId})` : "None"}
+            </p>
+            <div className="btn-row">
+              <button
+                type="button"
+                className="ghost"
+                disabled={busy || !branchId}
+                onClick={() => {
+                  setBranchId("");
+                  setBranchName("");
+                }}
+              >
+                Clear
+              </button>
+            </div>
+            <input
+              placeholder="Search Policy/NAT ruleset…"
+              value={branchQ}
+              disabled={busy}
+              onChange={(e) => setBranchQ(e.target.value)}
+            />
+            <ul className="picker-list">
+              {branchHits.map((h) => (
+                <li key={h.id}>
+                  <button
+                    type="button"
+                    className="tree-item"
+                    disabled={busy}
+                    onClick={() => {
+                      setBranchId(h.id);
+                      setBranchName(h.name);
+                      setBranchQ("");
+                      setBranchHits([]);
+                    }}
+                  >
+                    <span className="tree-type">{h.type}</span>
+                    <span className="tree-name">{h.name}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
         ) : null}
       </div>
     </div>

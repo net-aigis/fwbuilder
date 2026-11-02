@@ -60,6 +60,9 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Unsaved dirty flag | done | statusbar after mutations |
 | ICMP6Service create | done | CreateObject + typed fields; E2E phase18 |
 | Tree address/hint | done | ObjectTree hint from attrs |
+| Rule branch target | done | `branch_id` on Policy/NAT; RuleMeta; E2E phase19 |
+| Download workspace .fwb | done | `GET …/download`; E2E phase19 |
+| Close confirms if dirty | done | App confirm dialog |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Phase 3 — compile / deploy
@@ -89,6 +92,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase16 (AT/Tag/User/When/NAT/metric) | done | `e2e-phase16.sh` **OK** |
 | Local E2E phase17 (insert + IPv6 + AttachedNetworks) | done | `e2e-phase17.sh` **OK** |
 | Local E2E phase18 (lock/unlock + ICMP6) | done | `e2e-phase18.sh` **OK** |
+| Local E2E phase19 (branch + download) | done | `e2e-phase19.sh` **OK** |
 
 ## Local commands
 
@@ -116,6 +120,7 @@ bash webui/scripts/e2e-phase15.sh
 bash webui/scripts/e2e-phase16.sh
 bash webui/scripts/e2e-phase17.sh
 bash webui/scripts/e2e-phase18.sh
+bash webui/scripts/e2e-phase19.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

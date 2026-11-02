@@ -29,6 +29,9 @@ export type PolicyRule = {
   logging: boolean;
   comment: string;
   group?: string;
+  branch_id?: string;
+  branch_name?: string;
+  branch_type?: string;
   src?: RuleElement;
   dst?: RuleElement;
   srv?: RuleElement;
@@ -45,6 +48,9 @@ export type NatRule = {
   rule_type?: string;
   comment: string;
   group?: string;
+  branch_id?: string;
+  branch_name?: string;
+  branch_type?: string;
   osrc?: RuleElement;
   odst?: RuleElement;
   osrv?: RuleElement;
@@ -239,12 +245,17 @@ export function updateRule(
     direction?: string;
     logging?: boolean;
     metric?: number;
+    branch_id?: string;
   },
 ) {
   return api<AnyRule>(`/api/v1/projects/${sessionId}/rules/${encodeURIComponent(ruleId)}`, {
     method: "PATCH",
     body: JSON.stringify(body),
   });
+}
+
+export function downloadProjectUrl(sessionId: string) {
+  return `/api/v1/projects/${sessionId}/download`;
 }
 
 export function addRule(
