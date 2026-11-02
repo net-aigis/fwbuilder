@@ -19,7 +19,7 @@ const TYPE_FIELDS: Record<string, string[]> = {
   NetworkIPv6: ["address", "netmask"],
   IPv4: ["address", "netmask"],
   IPv6: ["address", "netmask"],
-  AddressRange: ["address", "netmask"],
+  AddressRange: ["start_address", "end_address"],
   DNSName: ["dnsname", "run_time"],
   TCPService: ["src_range_start", "src_range_end", "dst_range_start", "dst_range_end"],
   UDPService: ["src_range_start", "src_range_end", "dst_range_start", "dst_range_end"],

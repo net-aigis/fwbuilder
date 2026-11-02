@@ -46,9 +46,12 @@ export function CreateObject({
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [netmask, setNetmask] = useState("255.255.255.0");
+  const [endAddress, setEndAddress] = useState("");
   const [dstPort, setDstPort] = useState("");
 
   const isService = type === "TCPService" || type === "UDPService" || type === "TCPUDPService";
+  const isRange = type === "AddressRange";
+  const needsNetmask = type === "Network" || type === "IPv4" || type === "NetworkIPv6" || type === "IPv6";
 
   async function submit() {
     if (!name.trim()) {
@@ -59,8 +62,13 @@ export function CreateObject({
     onError?.(null);
     try {
       const attrs: Record<string, string | number> = {};
-      if (address.trim()) attrs.address = address.trim();
-      if (netmask.trim() && (type === "Network" || type === "IPv4")) attrs.netmask = netmask.trim();
+      if (isRange) {
+        if (address.trim()) attrs.start_address = address.trim();
+        if (endAddress.trim()) attrs.end_address = endAddress.trim();
+      } else {
+        if (address.trim()) attrs.address = address.trim();
+        if (netmask.trim() && needsNetmask) attrs.netmask = netmask.trim();
+      }
       if (isService && dstPort.trim()) {
         attrs.dst_range_start = dstPort.trim();
         attrs.dst_range_end = dstPort.trim();
@@ -74,6 +82,7 @@ export function CreateObject({
       onStatus?.(`Created ${obj.type} ${obj.name}`);
       setName("");
       setAddress("");
+      setEndAddress("");
       setDstPort("");
       onCreated(obj.id);
     } catch (err) {
@@ -104,10 +113,16 @@ export function CreateObject({
           <input value={name} disabled={busy} onChange={(e) => setName(e.target.value)} />
         </label>
         <label className="field block">
-          Address
+          {isRange ? "Start address" : "Address"}
           <input value={address} disabled={busy} onChange={(e) => setAddress(e.target.value)} />
         </label>
-        {type === "Network" || type === "IPv4" ? (
+        {isRange ? (
+          <label className="field block">
+            End address
+            <input value={endAddress} disabled={busy} onChange={(e) => setEndAddress(e.target.value)} />
+          </label>
+        ) : null}
+        {needsNetmask ? (
           <label className="field block">
             Netmask
             <input value={netmask} disabled={busy} onChange={(e) => setNetmask(e.target.value)} />

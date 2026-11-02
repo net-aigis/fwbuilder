@@ -13,13 +13,20 @@
 #include "fwbuilder/FWObject.h"
 #include "fwbuilder/FWException.h"
 #include "fwbuilder/FWReference.h"
+#include "fwbuilder/Address.h"
+#include "fwbuilder/AddressRange.h"
+#include "fwbuilder/DNSName.h"
 #include "fwbuilder/Firewall.h"
 #include "fwbuilder/Host.h"
 #include "fwbuilder/Interface.h"
+#include "fwbuilder/IPv4.h"
+#include "fwbuilder/IPv6.h"
 #include "fwbuilder/Management.h"
 #include "fwbuilder/FWOptions.h"
 #include "fwbuilder/InetAddr.h"
 #include "fwbuilder/Library.h"
+#include "fwbuilder/Network.h"
+#include "fwbuilder/NetworkIPv6.h"
 #include "fwbuilder/ObjectGroup.h"
 #include "fwbuilder/Policy.h"
 #include "fwbuilder/NAT.h"
@@ -49,6 +56,9 @@ using namespace std;
 static FWObjectDatabase *g_db = 0;
 static string g_path;
 static bool g_dirty = false;
+
+static bool isIntKey(const string &key);
+static bool isMetaAttrKey(const string &key);
 
 static QJsonObject errObj(const QString &msg)
 {
@@ -95,16 +105,30 @@ static QJsonObject typedAttrs(FWObject *obj)
 {
     QJsonObject attrs;
     static const char *str_keys[] = {
-        "address", "netmask", "dnsname", "run_time", "platform", "host_OS",
-        "protocol", "src_range_start", "src_range_end",
+        "platform", "host_OS", "protocol", "src_range_start", "src_range_end",
         "dst_range_start", "dst_range_end", "code", "color", "version",
-        "path", "iface_type", "phys_address", "days_of_week",
+        "path", "iface_type", "phys_address", "days_of_week", "run_time",
         0
     };
     for (int k = 0; str_keys[k]; ++k)
         putStrAttr(attrs, obj, str_keys[k]);
 
     const string t = obj->getTypeName();
+    if (AddressRange *ar = AddressRange::cast(obj)) {
+        attrs.insert(QStringLiteral("start_address"), u8(ar->getRangeStart().toString()));
+        attrs.insert(QStringLiteral("end_address"), u8(ar->getRangeEnd().toString()));
+    } else if (Address *addr = Address::cast(obj)) {
+        // Network / IPv4 / IPv6 / NetworkIPv6 — real InetAddr fields, not setStr map.
+        if (addr->getAddressPtr())
+            attrs.insert(QStringLiteral("address"), u8(addr->getAddressPtr()->toString()));
+        if (addr->getNetmaskPtr())
+            attrs.insert(QStringLiteral("netmask"), u8(addr->getNetmaskPtr()->toString()));
+    }
+    if (DNSName *dns = DNSName::cast(obj)) {
+        attrs.insert(QStringLiteral("dnsname"), u8(dns->getSourceName()));
+        attrs.insert(QStringLiteral("run_time"),
+                     dns->isRunTime() ? QStringLiteral("True") : QStringLiteral("False"));
+    }
     if (t == "TCPService" || t == "UDPService" || t == "TCPUDPService") {
         putStrAttr(attrs, obj, "src_range_start");
         putStrAttr(attrs, obj, "src_range_end");
@@ -145,6 +169,71 @@ static QJsonObject typedAttrs(FWObject *obj)
         }
     }
     return attrs;
+}
+
+static bool parseBoolish(const string &val)
+{
+    string low;
+    low.reserve(val.size());
+    for (size_t i = 0; i < val.size(); ++i)
+        low.push_back(static_cast<char>(tolower(static_cast<unsigned char>(val[i]))));
+    return low == "true" || low == "1" || low == "yes";
+}
+
+static void applyObjectAttrs(FWObject *obj, const QJsonObject &attrs)
+{
+    for (auto it = attrs.begin(); it != attrs.end(); ++it) {
+        const string key = it.key().toUtf8().constData();
+        if (isMetaAttrKey(key))
+            continue;
+        const string val = it.value().toVariant().toString().toUtf8().constData();
+
+        if (AddressRange *ar = AddressRange::cast(obj)) {
+            if (key == "start_address" || key == "address") {
+                ar->setRangeStart(InetAddr(val));
+                continue;
+            }
+            if (key == "end_address") {
+                ar->setRangeEnd(InetAddr(val));
+                continue;
+            }
+        } else if (Address *addr = Address::cast(obj)) {
+            if (key == "address") {
+                addr->setAddress(InetAddr(val));
+                continue;
+            }
+            if (key == "netmask") {
+                // Allow dotted mask or prefix length.
+                if (val.find('.') != string::npos || val.find(':') != string::npos) {
+                    addr->setNetmask(InetAddr(val));
+                } else if (addr->getAddressPtr()) {
+                    addr->setNetmask(InetAddr(addr->getAddressPtr()->addressFamily(),
+                                              atoi(val.c_str())));
+                } else {
+                    addr->setNetmask(InetAddr(AF_INET, atoi(val.c_str())));
+                }
+                continue;
+            }
+        }
+        if (DNSName *dns = DNSName::cast(obj)) {
+            if (key == "dnsname" || key == "dnsrec") {
+                dns->setSourceName(val);
+                continue;
+            }
+            if (key == "run_time") {
+                dns->setRunTime(parseBoolish(val));
+                continue;
+            }
+        }
+        if (isIntKey(key)) {
+            if (it.value().isDouble())
+                obj->setInt(key, it.value().toInt());
+            else
+                obj->setInt(key, atoi(val.c_str()));
+        } else {
+            obj->setStr(key, val);
+        }
+    }
 }
 
 static QJsonObject objectToJson(FWObject *obj, int depth, int max_depth);
@@ -986,19 +1075,7 @@ static QJsonObject handle(const QJsonObject &req)
             }
             if (req.contains(QStringLiteral("attrs")) &&
                 req.value(QStringLiteral("attrs")).isObject()) {
-                QJsonObject attrs = req.value(QStringLiteral("attrs")).toObject();
-                for (auto it = attrs.begin(); it != attrs.end(); ++it) {
-                    const string key = it.key().toUtf8().constData();
-                    if (isIntKey(key) && it.value().isDouble()) {
-                        obj->setInt(key, it.value().toInt());
-                    } else {
-                        const string val = it.value().toVariant().toString().toUtf8().constData();
-                        if (isIntKey(key))
-                            obj->setInt(key, atoi(val.c_str()));
-                        else
-                            obj->setStr(key, val);
-                    }
-                }
+                applyObjectAttrs(obj, req.value(QStringLiteral("attrs")).toObject());
             }
             g_dirty = true;
             g_db->setDirty(true);
@@ -1045,18 +1122,7 @@ static QJsonObject handle(const QJsonObject &req)
             }
             if (req.contains(QStringLiteral("attrs")) &&
                 req.value(QStringLiteral("attrs")).isObject()) {
-                QJsonObject attrs = req.value(QStringLiteral("attrs")).toObject();
-                for (auto it = attrs.begin(); it != attrs.end(); ++it) {
-                    const string key = it.key().toUtf8().constData();
-                    if (isMetaAttrKey(key))
-                        continue;
-                    const string val =
-                        it.value().toVariant().toString().toUtf8().constData();
-                    if (isIntKey(key))
-                        child->setInt(key, atoi(val.c_str()));
-                    else
-                        child->setStr(key, val);
-                }
+                applyObjectAttrs(child, req.value(QStringLiteral("attrs")).toObject());
             }
             parent->add(child);
             g_dirty = true;
