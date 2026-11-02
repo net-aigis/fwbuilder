@@ -183,6 +183,9 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Copy rules JSON | done | rules toolbar |
 | Only-disabled toggle key | done | `o` on rules tab |
 | Group members JSON download | done | GroupMembers; E2E phase57 |
+| Search by object id | done | search merges GET by id; E2E phase58 |
+| Copy visible rules to ruleset | done | Copy visible to…; E2E phase58 |
+| Clear recent project paths | done | topbar |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Phase 3 — compile / deploy
@@ -251,6 +254,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase55 (action filter + bulk del) | done | `e2e-phase55.sh` **OK** |
 | Local E2E phase56 (dup ruleset + where-used) | done | `e2e-phase56.sh` **OK** |
 | Local E2E phase57 (bulk action + members) | done | `e2e-phase57.sh` **OK** |
+| Local E2E phase58 (id search + copy visible) | done | `e2e-phase58.sh` **OK** |
 
 ## Local commands
 
@@ -317,6 +321,7 @@ bash webui/scripts/e2e-phase54.sh
 bash webui/scripts/e2e-phase55.sh
 bash webui/scripts/e2e-phase56.sh
 bash webui/scripts/e2e-phase57.sh
+bash webui/scripts/e2e-phase58.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

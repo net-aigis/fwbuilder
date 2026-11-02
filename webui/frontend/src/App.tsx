@@ -1522,25 +1522,31 @@ export function App() {
     }
   }
 
-  async function onCopyRuleToRuleset() {
-    if (!sessionId || !selectedRuleId || !rulesFwId) return;
+  function pickTargetRuleset(promptLabel: string): RulesetListEntry | null {
     const wantType = rulesWhich === "nat" ? "NAT" : rulesWhich === "routing" ? "Routing" : "Policy";
     const candidates = rulesetList.filter(
       (r) => r.type === wantType && r.id !== rulesetId,
     );
     if (!candidates.length) {
       setError(`No other ${wantType} ruleset on this firewall`);
-      return;
+      return null;
     }
     const labels = candidates.map((c, i) => `${i + 1}. ${c.name}${c.top ? " (top)" : ""}`).join("\n");
-    const raw = window.prompt(`Copy selected rule to which ${wantType}?\n${labels}\nEnter number:`, "1");
-    if (raw === null) return;
+    const raw = window.prompt(`${promptLabel}\n${labels}\nEnter number:`, "1");
+    if (raw === null) return null;
     const idx = Number(raw) - 1;
     if (!Number.isFinite(idx) || idx < 0 || idx >= candidates.length) {
       setError("invalid ruleset choice");
-      return;
+      return null;
     }
-    const target = candidates[idx];
+    return candidates[idx];
+  }
+
+  async function onCopyRuleToRuleset() {
+    if (!sessionId || !selectedRuleId || !rulesFwId) return;
+    const wantType = rulesWhich === "nat" ? "NAT" : rulesWhich === "routing" ? "Routing" : "Policy";
+    const target = pickTargetRuleset(`Copy selected rule to which ${wantType}?`);
+    if (!target) return;
     setBusy(true);
     setError(null);
     try {
@@ -1549,6 +1555,41 @@ export function App() {
       setStatus(`Copied rule → ${target.name} (${copy.id})`);
       await loadRules(rulesFwId, rulesWhich, target.id);
       setSelectedRuleId(copy.id);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function onCopyVisibleToRuleset() {
+    if (!sessionId || !rulesFwId || !visibleRules.length) return;
+    const wantType = rulesWhich === "nat" ? "NAT" : rulesWhich === "routing" ? "Routing" : "Policy";
+    const target = pickTargetRuleset(
+      `Copy ${visibleRules.length} visible rule(s) to which ${wantType}?`,
+    );
+    if (!target) return;
+    if (
+      !window.confirm(
+        `Copy ${visibleRules.length} visible rule(s) into “${target.name}”?`,
+      )
+    )
+      return;
+    setBusy(true);
+    setError(null);
+    try {
+      const ordered = [...visibleRules].sort(
+        (a, b) => (a.position ?? 0) - (b.position ?? 0),
+      );
+      let lastId: string | undefined;
+      for (const rule of ordered) {
+        const copy = await duplicateRule(sessionId, rule.id, target.id);
+        lastId = copy.id;
+      }
+      setDirty(true);
+      setStatus(`Copied ${ordered.length} rule(s) → ${target.name}`);
+      await loadRules(rulesFwId, rulesWhich, target.id);
+      if (lastId) setSelectedRuleId(lastId);
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
@@ -1817,19 +1858,50 @@ export function App() {
     setBusy(true);
     setError(null);
     try {
-      const res = await searchObjects(sessionId, searchQ, searchType);
-      const sorted = [...(res.results ?? [])].sort((a, b) => {
+      const q = searchQ.trim();
+      const res = await searchObjects(sessionId, q, searchType);
+      let hits = [...(res.results ?? [])];
+      // Exact id lookup when query looks like a libfwbuilder string id.
+      if (/^id[\w-]+$/i.test(q) && !hits.some((h) => h.id === q)) {
+        try {
+          const byId = await fetchObject(sessionId, q);
+          if (!searchType || byId.type === searchType) {
+            hits = [
+              {
+                id: byId.id,
+                name: byId.name,
+                type: byId.type,
+                children_count: byId.children_count,
+              },
+              ...hits,
+            ];
+          }
+        } catch {
+          /* not found by id — keep name search results */
+        }
+      }
+      const sorted = hits.sort((a, b) => {
         const t = (a.type || "").localeCompare(b.type || "");
         if (t !== 0) return t;
         return (a.name || "").localeCompare(b.name || "");
       });
       setSearchHits(sorted);
-      setStatus(`Search: ${res.count} hits${searchType ? ` · ${searchType}` : ""}`);
+      setStatus(`Search: ${sorted.length} hits${searchType ? ` · ${searchType}` : ""}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
       setBusy(false);
     }
+  }
+
+  function onClearRecent() {
+    setRecentPaths([]);
+    try {
+      localStorage.removeItem("fwbweb.recent");
+    } catch {
+      /* ignore */
+    }
+    setStatus("Cleared recent project paths");
   }
 
   return (
@@ -1860,6 +1932,17 @@ export function App() {
           <button type="button" onClick={onOpen} disabled={busy}>
             Open
           </button>
+          {recentPaths.length ? (
+            <button
+              type="button"
+              className="ghost"
+              disabled={busy}
+              title="Clear recent project paths"
+              onClick={onClearRecent}
+            >
+              Clear recent
+            </button>
+          ) : null}
           <button
             type="button"
             className="ghost"
@@ -2875,6 +2958,15 @@ export function App() {
                     title="Copy into another Policy/NAT/Routing on this firewall"
                   >
                     Copy to ruleset…
+                  </button>
+                  <button
+                    type="button"
+                    className="ghost"
+                    disabled={!canOperate || !visibleRules.length}
+                    onClick={() => void onCopyVisibleToRuleset()}
+                    title="Copy all visible rules into another Policy/NAT/Routing"
+                  >
+                    Copy visible to…
                   </button>
                   <button
                     type="button"
