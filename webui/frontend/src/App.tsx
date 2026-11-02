@@ -14,6 +14,7 @@ import {
   listDeletedObjects,
   listSessions,
   formatRuleObjects,
+  type ProjectSessionInfo,
   duplicateObject,
   restoreDeletedObject,
   duplicateRule,
@@ -127,10 +128,13 @@ export function App() {
     Array<{ id: string; name: string; type: string; comment?: string }>
   >([]);
   const [sessionCount, setSessionCount] = useState(0);
+  const [sessionsOpen, setSessionsOpen] = useState(false);
+  const [sessionList, setSessionList] = useState<ProjectSessionInfo[]>([]);
   const [objectPath, setObjectPath] = useState<ObjectPathEntry[]>([]);
   const [stats, setStats] = useState<ProjectStats | null>(null);
   const [statsFirewalls, setStatsFirewalls] = useState<TreeNode[]>([]);
   const [renameFocusToken, setRenameFocusToken] = useState(0);
+  const [whereUsedCount, setWhereUsedCount] = useState<number | null>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const ruleFilterRef = useRef<HTMLInputElement>(null);
 
@@ -182,6 +186,24 @@ export function App() {
   useEffect(() => {
     void refreshObjectPath(selected?.id ?? null);
   }, [sessionId, selected?.id]);
+
+  useEffect(() => {
+    if (!sessionId || !selected?.id || selected.deleted) {
+      setWhereUsedCount(null);
+      return;
+    }
+    let cancelled = false;
+    void fetchWhereUsed(sessionId, selected.id)
+      .then((res) => {
+        if (!cancelled) setWhereUsedCount(res.count ?? 0);
+      })
+      .catch(() => {
+        if (!cancelled) setWhereUsedCount(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [sessionId, selected?.id, selected?.deleted]);
 
   function rememberPath(p: string) {
     const next = [p, ...recentPaths.filter((x) => x !== p)].slice(0, 8);
@@ -470,6 +492,10 @@ export function App() {
           setStats(null);
           return;
         }
+        if (sessionsOpen) {
+          setSessionsOpen(false);
+          return;
+        }
         if (trashOpen) {
           setTrashOpen(false);
           return;
@@ -550,6 +576,7 @@ export function App() {
     searchHits,
     searchQ,
     stats,
+    sessionsOpen,
     rulesFwId,
   ]);
 
@@ -723,8 +750,40 @@ export function App() {
     try {
       const res = await listSessions();
       setSessionCount(res.count ?? 0);
+      setSessionList(res.sessions ?? []);
     } catch {
       /* ignore */
+    }
+  }
+
+  async function onShowSessions() {
+    setBusy(true);
+    setError(null);
+    try {
+      const res = await listSessions();
+      setSessionCount(res.count ?? 0);
+      setSessionList(res.sessions ?? []);
+      setSessionsOpen(true);
+      setStatus(`Open sessions: ${res.count ?? 0}`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function onExpandTree() {
+    if (!sessionId) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const t = await fetchTree(sessionId, 5);
+      setTree(t.root);
+      setStatus("Tree expanded (depth 5)");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
     }
   }
 
@@ -1491,6 +1550,8 @@ export function App() {
       setTrashItems([]);
       setTrashOpen(false);
       setUnusedHits([]);
+      setSessionsOpen(false);
+      setWhereUsedCount(null);
       setStatus("Closed");
       await refreshSessionCount();
     } catch (err) {
@@ -1709,6 +1770,15 @@ export function App() {
             >
               Collapse
             </button>
+            <button
+              type="button"
+              className="ghost"
+              disabled={!sessionId || busy}
+              onClick={() => void onExpandTree()}
+              title="Reload tree at depth 5"
+            >
+              Expand
+            </button>
           </div>
           <div className="search-row">
             <input
@@ -1733,6 +1803,7 @@ export function App() {
               <option value="Host">Host</option>
               <option value="Firewall">Firewall</option>
               <option value="Cluster">Cluster</option>
+              <option value="DynamicGroup">DynamicGroup</option>
               <option value="Interface">Interface</option>
               <option value="AddressRange">AddressRange</option>
               <option value="DNSName">DNSName</option>
@@ -2476,8 +2547,18 @@ export function App() {
       <footer className="statusbar">
         <span>{status}</span>
         {sessionCount > 0 ? (
-          <span className="muted" title="Open API sessions">
+          <button
+            type="button"
+            className="ghost"
+            title="List open API sessions"
+            onClick={() => void onShowSessions()}
+          >
             sessions {sessionCount}
+          </button>
+        ) : null}
+        {whereUsedCount !== null && selected && !selected.deleted ? (
+          <span className="muted" title="Where-used references">
+            used {whereUsedCount}
           </span>
         ) : null}
         {tab === "rules" && visibleRules.length ? (
@@ -2507,6 +2588,35 @@ export function App() {
           onRemove={(id) => void onRemoveRef(id)}
           onCancel={() => setPicker(null)}
         />
+      ) : null}
+
+      {sessionsOpen ? (
+        <div className="stats-overlay" role="dialog" aria-label="Open sessions">
+          <div className="stats-panel">
+            <header className="panel-header">
+              <h2>Open sessions</h2>
+              <button type="button" className="ghost" onClick={() => setSessionsOpen(false)}>
+                Close
+              </button>
+            </header>
+            {sessionList.length ? (
+              <ul className="stats-fw-list pad">
+                {sessionList.map((s) => (
+                  <li key={s.session_id}>
+                    <code className="muted">{s.session_id.slice(0, 8)}</code>{" "}
+                    {s.path}
+                    {sessionId === s.session_id ? (
+                      <span className="muted"> · current</span>
+                    ) : null}
+                    {s.new ? <span className="muted"> · new</span> : null}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="muted pad">No open sessions</p>
+            )}
+          </div>
+        </div>
       ) : null}
 
       {stats ? (

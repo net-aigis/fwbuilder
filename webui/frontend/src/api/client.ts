@@ -278,16 +278,18 @@ export function fetchProjectStats(sessionId: string) {
   return api<ProjectStats>(`/api/v1/projects/${sessionId}/stats`);
 }
 
+export type ProjectSessionInfo = {
+  session_id: string;
+  path: string;
+  work_path?: string;
+  copy?: boolean;
+  new?: boolean;
+};
+
 export function listSessions() {
   return api<{
     count: number;
-    sessions: Array<{
-      session_id: string;
-      path: string;
-      work_path?: string;
-      copy?: boolean;
-      new?: boolean;
-    }>;
+    sessions: ProjectSessionInfo[];
   }>("/api/v1/sessions");
 }
 

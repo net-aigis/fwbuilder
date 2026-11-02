@@ -34,6 +34,7 @@ const BASE_TYPES = [
   "IntervalGroup",
   "ObjectGroup",
   "ServiceGroup",
+  "DynamicGroup",
 ];
 
 export function CreateObject({
