@@ -1,0 +1,164 @@
+name: FWB 6.0 Qt6 smoke - Windows / macOS
+
+on:
+  # No push trigger: saves Actions minutes (push+PR doubled Win/Mac runs).
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  macos-qt6:
+    name: macOS Qt6 smoke
+    runs-on: macos-14
+    timeout-minutes: 90
+    env:
+      CCACHE_COMPILERCHECK: content
+      CCACHE_MAXSIZE: 512M
+      CCACHE_DIR: ${{ github.workspace }}/.ci-ccache
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Cache ccache
+        uses: actions/cache@v4
+        with:
+          path: .ci-ccache
+          key: macos-qt6-ccache-${{ hashFiles('configure.in', 'qmake.inc.in', '**/src/**/*.pro') }}
+          restore-keys: |
+            macos-qt6-ccache-
+
+      - name: Install dependencies
+        run: |
+          set -euo pipefail
+          mkdir -p ci-logs .ci-ccache
+          # Skip brew update — cold update regularly times out on GHA runners.
+          brew install ccache autoconf automake libtool pkg-config \
+            libxml2 libxslt qt@6 \
+            2>&1 | tee ci-logs/brew.log
+          brew link --force qt@6 2>&1 | tee -a ci-logs/brew.log || true
+          echo "/opt/homebrew/opt/qt@6/bin" >> "$GITHUB_PATH"
+          echo "/usr/local/opt/qt@6/bin" >> "$GITHUB_PATH"
+          export PATH="/opt/homebrew/opt/qt@6/bin:/usr/local/opt/qt@6/bin:$PATH"
+          qmake6 -v 2>&1 | tee ci-logs/qmake.log
+          grep -Eq 'Qt version 6\.' ci-logs/qmake.log
+
+      - name: Configure
+        run: |
+          set -euo pipefail
+          mkdir -p ci-logs .ci-ccache
+          export PATH="/opt/homebrew/opt/qt@6/bin:/usr/local/opt/qt@6/bin:$PATH"
+          export PKG_CONFIG_PATH="/opt/homebrew/opt/libxml2/lib/pkgconfig:/opt/homebrew/opt/libxslt/lib/pkgconfig:${PKG_CONFIG_PATH:-}"
+          # Qt6 qmake needs a named macOS SDK + UTF-8 locale on GHA runners.
+          export LANG=en_US.UTF-8
+          export LC_ALL=en_US.UTF-8
+          export SDKROOT="$(xcrun --sdk macosx --show-sdk-path)"
+          export DEVELOPER_DIR="$(xcode-select -p)"
+          export QMAKE_MAC_SDK=macosx
+          export QMAKE_MACOSX_DEPLOYMENT_TARGET=12.0
+          {
+            echo "SDKROOT=$SDKROOT"
+            echo "DEVELOPER_DIR=$DEVELOPER_DIR"
+            echo "QMAKE_MACOSX_DEPLOYMENT_TARGET=$QMAKE_MACOSX_DEPLOYMENT_TARGET"
+            xcrun --show-sdk-version
+            xcodebuild -version
+          } | tee ci-logs/sdk.log
+          # SNMP is optional for smoke; keep the tree closer to Linux Qt6 CI.
+          # QMAKE_MAC_SDK is picked up from the environment via qmake.inc.in.
+          bash ./autogen.sh --prefix=/usr/local --with-qmake=qmake6 --without-ucdsnmp \
+            2>&1 | tee ci-logs/configure.log
+
+      - name: Compile
+        run: |
+          set -euo pipefail
+          mkdir -p ci-logs
+          export PATH="/opt/homebrew/opt/qt@6/bin:/usr/local/opt/qt@6/bin:$PATH"
+          export LANG=en_US.UTF-8
+          export LC_ALL=en_US.UTF-8
+          export SDKROOT="$(xcrun --sdk macosx --show-sdk-path)"
+          export DEVELOPER_DIR="$(xcode-select -p)"
+          export QMAKE_MAC_SDK=macosx
+          export QMAKE_MACOSX_DEPLOYMENT_TARGET=12.0
+          make -j"$(sysctl -n hw.ncpu)" 2>&1 | tee ci-logs/build.log
+          test -x src/gui/fwbuilder.app/Contents/MacOS/fwbuilder \
+            || test -x src/gui/fwbuilder \
+            || ls -la src/gui/ | tee ci-logs/gui-listing.log
+          find src -type f \( -name fwb_nft -o -name fwb_ipt -o -name fwbuilder \) \
+            -perm +111 -print | sort | tee ci-logs/binaries.log
+
+      - name: Upload macOS logs
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: fwbuilder-60-macos-qt6-logs
+          path: ci-logs/
+          if-no-files-found: warn
+          retention-days: 14
+
+  windows-qt6:
+    name: Windows MSYS2 Qt6 smoke
+    runs-on: windows-2022
+    timeout-minutes: 120
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Setup MSYS2
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: >-
+            git
+            make
+            autoconf
+            automake
+            libtool
+            pkg-config
+            mingw-w64-x86_64-ccache
+            mingw-w64-x86_64-gcc
+            mingw-w64-x86_64-qt6-base
+            mingw-w64-x86_64-qt6-svg
+            mingw-w64-x86_64-qt6-tools
+            mingw-w64-x86_64-libxml2
+            mingw-w64-x86_64-libxslt
+
+      - name: Configure and compile
+        run: |
+          set -euo pipefail
+          mkdir -p ci-logs
+          export CCACHE_DIR="$PWD/.ci-ccache"
+          mkdir -p "$CCACHE_DIR"
+          export PATH="/mingw64/bin:$PATH"
+          # Native MSYS2 MinGW root (MXE builds set this to the cross prefix).
+          export TOOLCHAIN_PREFIX=/mingw64
+          qmake6 -v 2>&1 | tee ci-logs/qmake.log
+          grep -Eq 'Qt version 6\.' ci-logs/qmake.log
+          bash ./autogen.sh --prefix=/mingw64 --with-qmake=qmake6 --without-ucdsnmp \
+            2>&1 | tee ci-logs/configure.log
+          # Low parallelism: MinGW 16 has ICEd/OOM'd on ANTLR parsers under -jN.
+          make -j2 2>&1 | tee ci-logs/build.log
+          find src -type f \( -name 'fwb_nft.exe' -o -name 'fwb_ipt.exe' -o -name 'fwbuilder.exe' \) \
+            -print | sort | tee ci-logs/binaries.log
+          test -s ci-logs/binaries.log
+
+      - name: Upload Windows logs
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: fwbuilder-60-windows-qt6-logs
+          path: ci-logs/
+          if-no-files-found: warn
+          retention-days: 14

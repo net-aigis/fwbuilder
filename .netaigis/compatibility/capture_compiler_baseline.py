@@ -96,7 +96,7 @@ def main() -> int:
     (out / "versions").mkdir()
     (out / "attempts").mkdir()
     (out / "inputs").mkdir()
-    version_lines = (repo / "VERSION").read_text(encoding="utf-8").splitlines()
+    version_lines = (repo / "VERSION.sh").read_text(encoding="utf-8").splitlines()
     xml_versions = [line.partition("=")[2] for line in version_lines
                     if line.startswith("FWBUILDER_XML_VERSION=")]
     if len(xml_versions) != 1 or not xml_versions[0].isdigit():

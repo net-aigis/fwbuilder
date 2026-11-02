@@ -579,7 +579,7 @@ void PIXImporter::pushPolicyRule()
  */
 void PIXImporter::rearrangeVlanInterfaces()
 {
-    std::auto_ptr<interfaceProperties> int_prop(
+    std::unique_ptr<interfaceProperties> int_prop(
         interfacePropertiesObjectFactory::getInterfacePropertiesObject(
             getFirewallObject()));
 

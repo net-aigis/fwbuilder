@@ -68,6 +68,17 @@
 using namespace std;
 using namespace libfwbuilder;
 
+// Prefer unanchored wildcards (old QRegExp Wildcard behavior). Avoid
+// UnanchoredWildcardConversion — missing on some Qt5 builds that still
+// report 5.15 via QT_VERSION.
+static QString fwbWildcardToRegularExpression(const QString &pattern)
+{
+    QString re = QRegularExpression::wildcardToRegularExpression(pattern);
+    if (re.startsWith(QLatin1String("\\A")) && re.endsWith(QLatin1String("\\z")))
+        re = re.mid(2, re.size() - 4);
+    return re;
+}
+
 FilterDialog::FilterDialog(QWidget *parent) : QDialog(parent)
 {
     m_dialog = new Ui::FilterDialog_q;
@@ -363,10 +374,7 @@ FilterPattern FilterDialog::constructRegExp(int p)
     }
 
     if (wildcard)
-    {
-        buf = QRegularExpression::wildcardToRegularExpression(
-            buf, QRegularExpression::UnanchoredWildcardConversion);
-    }
+        buf = fwbWildcardToRegularExpression(buf);
     r.wildcard = wildcard;
     r.re = QRegularExpression(buf, opts);
     return r;
@@ -489,15 +497,9 @@ void Filter::addNamePattern(const QString &s,bool wc)
     FilterPattern fp;
     fp.wildcard = wc;
     if (wc)
-    {
-        fp.re = QRegularExpression(
-            QRegularExpression::wildcardToRegularExpression(
-                s, QRegularExpression::UnanchoredWildcardConversion));
-    }
+        fp.re = QRegularExpression(fwbWildcardToRegularExpression(s));
     else
-    {
         fp.re = QRegularExpression(s);
-    }
     name_patterns.push_back(fp);
 }
 void Filter::addAddrPattern(const QString &s,bool wc)
@@ -505,15 +507,9 @@ void Filter::addAddrPattern(const QString &s,bool wc)
     FilterPattern fp;
     fp.wildcard = wc;
     if (wc)
-    {
-        fp.re = QRegularExpression(
-            QRegularExpression::wildcardToRegularExpression(
-                s, QRegularExpression::UnanchoredWildcardConversion));
-    }
+        fp.re = QRegularExpression(fwbWildcardToRegularExpression(s));
     else
-    {
         fp.re = QRegularExpression(s);
-    }
     addr_patterns.push_back(fp);
 }
 void Filter::clear()

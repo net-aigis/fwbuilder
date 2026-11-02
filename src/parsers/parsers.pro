@@ -37,6 +37,14 @@ DEPENDPATH  += $$ANTLR_INCLUDEPATH ../import ../libfwbuilder/src
 LIBS += $$ANTLR_LIBS
 DEFINES += $$ANTLR_DEFINES
 
+# MinGW g++ 16 ICEs (segfault) optimizing ANTLR *Cfg{Lexer,Parser}.cpp when
+# they pull IPTImporter → ObjectSignature/Dispatch. Keep these files at -O0.
+win32 {
+    QMAKE_CXXFLAGS_RELEASE -= -O2 -O1
+    QMAKE_CXXFLAGS_RELEASE += -O0
+    QMAKE_CXXFLAGS += -O0 -fno-var-tracking-assignments
+}
+
 TARGET   = fwbparser
 
 INSTALLS -= target

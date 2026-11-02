@@ -14,9 +14,10 @@ LT_INIT
 AC_CONFIG_MACRO_DIR([m4])
 
 dnl
-dnl all version numbers are defined in the file VERSION
+dnl all version numbers are defined in the file VERSION.sh
+dnl (not named VERSION: that collides with C++ <version> on case-insensitive FS)
 dnl
-. ./VERSION
+. ./VERSION.sh
 
 RELEASE_NUM=$BUILD_NUM
 GENERATION_SHORT=$(echo $GENERATION | sed 's/\.//')
@@ -368,6 +369,13 @@ dnl
 dnl  Just in case we support both --with-ucdsnmp and --with-ucd-snmp
 dnl                                    --vk
 dnl
+
+AC_ARG_WITH(ucdsnmp,
+    AS_HELP_STRING([--with-ucdsnmp],[enable SNMP via net-snmp/ucd-snmp (default: yes)]),
+    [], [with_ucdsnmp=yes])
+AC_ARG_WITH(ucd-snmp,
+    AS_HELP_STRING([--with-ucd-snmp],[alias for --with-ucdsnmp]),
+    [], [with_ucd_snmp=])
 
 check_for_ucdsnmp=yes
 if test x$with_ucdsnmp = xno ; then

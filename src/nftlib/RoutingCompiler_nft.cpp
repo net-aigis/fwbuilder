@@ -521,8 +521,9 @@ bool RoutingCompiler_nft::validateIPv6Route::processNext()
     }
 
     FWObject *interface_object = FWReference::getObject(rule->getRItf()->front());
-    Interface *interface = Interface::cast(interface_object);
-    bool interface_any = rule->getRItf()->isAny() || interface == nullptr;
+    // Avoid identifier name "interface": Windows headers #define it to struct.
+    Interface *iface = Interface::cast(interface_object);
+    bool interface_any = rule->getRItf()->isAny() || iface == nullptr;
     if (isLinkLocalV6(gateway))
     {
         if (interface_any)
@@ -532,7 +533,7 @@ bool RoutingCompiler_nft::validateIPv6Route::processNext()
 
     if (!interface_any)
     {
-        if (!gatewayInIPv6Network(interface, gateway))
+        if (!gatewayInIPv6Network(iface, gateway))
         {
             compiler->abort(
                 rule,
@@ -540,7 +541,7 @@ bool RoutingCompiler_nft::validateIPv6Route::processNext()
                 "\" used as gateway in the routing rule " +
                 rule->getLabel() +
                 " is not in the same local network as interface " +
-                interface->getName());
+                iface->getName());
         }
         return true;
     }

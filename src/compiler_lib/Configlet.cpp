@@ -171,8 +171,8 @@ void Configlet::setVariable(const QString &name, int value)
 QString Configlet::expand()
 {
     // Need non-greedy matching so that if_re matches only one {{?var}} ... {{?}}
-    // clause
-    QRegularExpression var_re("\{\{\$([^}]*)\}\}",
+    // clause. Escape braces: QRegularExpression treats '{' as a quantifier.
+    QRegularExpression var_re(QStringLiteral(R"(\{\{\$([^}]*)\}\})"),
                                QRegularExpression::InvertedGreedinessOption);
 
     // remove comments before processing {{$var}} and {{if var}} so we can
@@ -248,9 +248,9 @@ QString Configlet::expand()
  */
 bool Configlet::processIf(QString &stream, int pos)
 {
-    QRegularExpression if_re("\{\{if {1,}([^}]{1,})\}\}",
+    QRegularExpression if_re(QStringLiteral(R"(\{\{if +([^}]+)\}\})"),
                              QRegularExpression::InvertedGreedinessOption);
-    QRegularExpression endif_re("\{\{endif\}\}",
+    QRegularExpression endif_re(QStringLiteral(R"(\{\{endif\}\})"),
                                 QRegularExpression::InvertedGreedinessOption);
     QRegularExpressionMatch current_if_m = if_re.match(stream, pos);
     int current_if_pos = current_if_m.capturedStart();
