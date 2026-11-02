@@ -250,6 +250,21 @@ button.ghost {
   white-space: nowrap;
 }
 
+.tree-item.deleted {
+  opacity: 0.72;
+}
+
+.tree-badge {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 0.05rem 0.28rem;
+}
+
 .dirty-flag {
   color: var(--accent);
   font-weight: 600;

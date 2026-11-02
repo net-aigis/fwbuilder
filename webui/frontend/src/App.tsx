@@ -6,8 +6,10 @@ import {
   compileAllFirewalls,
   compileFirewall,
   deleteObject,
+  emptyDeletedObjects,
   formatRuleObjects,
   duplicateObject,
+  reparentObject,
   duplicateRule,
   downloadCompileOutput,
   downloadCompileOutputsZip,
@@ -406,6 +408,12 @@ export function App() {
         setSelectedRuleId(visibleRules[next]?.id);
         return;
       }
+      if (e.key === " " && selectedRuleId && !mod && !e.altKey) {
+        e.preventDefault();
+        const rule = visibleRules.find((r) => r.id === selectedRuleId);
+        if (rule) void onToggleRule(rule);
+        return;
+      }
       if ((e.key === "Delete" || e.key === "Backspace") && selectedRuleId && !mod) {
         e.preventDefault();
         if (window.confirm("Delete selected rule?")) void onDeleteRule();
@@ -472,6 +480,48 @@ export function App() {
       const t = await fetchTree(sessionId, 5);
       setTree(t.root);
       setStatus(res.purged ? "Object purged" : "Object moved to Deleted Objects");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function onRestoreObject() {
+    if (!sessionId || !selected?.deleted) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const hits = await searchObjects(sessionId, "Objects", "ObjectGroup");
+      const target =
+        (hits.results ?? []).find(
+          (r) => r.name === "Objects" && !String(r.id).startsWith("std"),
+        ) ||
+        (hits.results ?? []).find((r) => r.name === "Objects");
+      if (!target) throw new Error("No Objects group found to restore into");
+      const restored = await reparentObject(sessionId, selected.id, target.id);
+      setDirty(true);
+      await refreshTreeSelect(restored.id);
+      setStatus(`Restored ${restored.name} → ${target.name}`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function onEmptyDeleted() {
+    if (!sessionId) return;
+    if (!window.confirm("Permanently purge all objects in Deleted Objects?")) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const res = await emptyDeletedObjects(sessionId);
+      setDirty(true);
+      if (selected?.deleted) setSelected(null);
+      const t = await fetchTree(sessionId, 5);
+      setTree(t.root);
+      setStatus(`Emptied Deleted Objects (${res.purged_count ?? 0} purged)`);
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
@@ -1108,7 +1158,17 @@ export function App() {
                       >
                         {selected.deleted ? "Purge object" : "Delete object"}
                       </button>
-                      {selected.deleted ? null : (
+                      {selected.deleted ? (
+                        <button
+                          type="button"
+                          className="ghost"
+                          disabled={busy || selected.ro}
+                          onClick={() => void onRestoreObject()}
+                          title="Move back into User Objects"
+                        >
+                          Restore
+                        </button>
+                      ) : (
                         <button
                           type="button"
                           className="ghost"
@@ -1119,6 +1179,16 @@ export function App() {
                           Purge…
                         </button>
                       )}
+                      {selected.type === "Library" && selected.name === "Deleted Objects" ? (
+                        <button
+                          type="button"
+                          className="ghost"
+                          disabled={busy}
+                          onClick={() => void onEmptyDeleted()}
+                        >
+                          Empty trash
+                        </button>
+                      ) : null}
                     </div>
                     {selected.type === "Firewall" ? (
                       <FirewallExtras

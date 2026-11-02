@@ -199,6 +199,13 @@ export function deleteObject(sessionId: string, objectId: string, permanent = fa
   });
 }
 
+export function emptyDeletedObjects(sessionId: string) {
+  return api<{ ok?: boolean; purged_count?: number; dirty?: boolean }>(
+    `/api/v1/projects/${sessionId}/empty-deleted`,
+    { method: "POST", body: "{}" },
+  );
+}
+
 export function reparentObject(sessionId: string, objectId: string, parentId: string) {
   return api<TreeNode>(
     `/api/v1/projects/${sessionId}/objects/${encodeURIComponent(objectId)}/reparent`,

@@ -206,6 +206,22 @@ def delete_object(
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 
 
+@router.post("/{session_id}/empty-deleted")
+def empty_deleted_objects(
+    session_id: str,
+    _: str = Depends(require_token),
+) -> dict[str, Any]:
+    """Permanently purge every object in the Deleted Objects library."""
+    try:
+        session = store.get(session_id)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail="session not found") from exc
+    try:
+        return session.bridge.request("empty_deleted")
+    except BridgeError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
 class ReparentRequest(BaseModel):
     parent_id: str = Field(..., min_length=1)
 

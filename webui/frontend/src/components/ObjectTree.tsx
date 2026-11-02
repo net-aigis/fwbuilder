@@ -90,7 +90,9 @@ export function ObjectTree({
         )}
         <button
           type="button"
-          className={`tree-item${selected ? " selected" : ""}`}
+          className={`tree-item${selected ? " selected" : ""}${
+            node.deleted || node.name === "Deleted Objects" ? " deleted" : ""
+          }`}
           draggable={node.type !== "FWObjectDatabase"}
           onDragStart={(e) => {
             e.dataTransfer.setData("application/x-fwb-object-id", node.id);
@@ -105,6 +107,9 @@ export function ObjectTree({
           ) : null}
           <span className="tree-type">{node.type}</span>
           <span className="tree-name">{node.name || "(unnamed)"}</span>
+          {node.deleted || node.name === "Deleted Objects" ? (
+            <span className="tree-badge">trash</span>
+          ) : null}
           {hint ? <span className="tree-hint">{hint}</span> : null}
         </button>
       </div>
