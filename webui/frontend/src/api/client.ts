@@ -269,6 +269,7 @@ export type ProjectStats = {
   interfaces: number;
   services: number;
   addresses: number;
+  rulesets?: number;
   rules: number;
   deleted: number;
   unused?: number;

@@ -2145,6 +2145,7 @@ static QJsonObject handle(const QJsonObject &req)
         int clusters = 0;
         int hosts = 0;
         int rules = 0;
+        int rulesets = 0;
         int deleted = 0;
         int interfaces = 0;
         int services = 0;
@@ -2189,6 +2190,8 @@ static QJsonObject handle(const QJsonObject &req)
                 if (Address::cast(child) && !Interface::cast(child) &&
                     !Firewall::cast(child) && !Host::cast(child))
                     ++addresses;
+                if (RuleSet::cast(child))
+                    ++rulesets;
                 if (Rule::cast(child))
                     ++rules;
             }
@@ -2204,6 +2207,7 @@ static QJsonObject handle(const QJsonObject &req)
         o.insert(QStringLiteral("interfaces"), interfaces);
         o.insert(QStringLiteral("services"), services);
         o.insert(QStringLiteral("addresses"), addresses);
+        o.insert(QStringLiteral("rulesets"), rulesets);
         o.insert(QStringLiteral("rules"), rules);
         o.insert(QStringLiteral("deleted"), deleted);
         return o;

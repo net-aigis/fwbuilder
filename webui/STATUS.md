@@ -198,6 +198,8 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Edit rule group key | done | `m` on rules tab; E2E phase62 |
 | Copy object id shortcut | done | Ctrl+Shift+C |
 | Active filters in rules header | done | hide/only/action/group labels |
+| Jump to rule position | done | Jump… / `j`; E2E phase63 |
+| Stats rulesets count | done | bridge stats; E2E phase63 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Phase 3 — compile / deploy
@@ -271,6 +273,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase60 (fw meta + unused types) | done | `e2e-phase60.sh` **OK** |
 | Local E2E phase61 (search id + comment) | done | `e2e-phase61.sh` **OK** |
 | Local E2E phase62 (rule group + object id) | done | `e2e-phase62.sh` **OK** |
+| Local E2E phase63 (jump pos + rulesets) | done | `e2e-phase63.sh` **OK** |
 
 ## Local commands
 
@@ -342,6 +345,7 @@ bash webui/scripts/e2e-phase59.sh
 bash webui/scripts/e2e-phase60.sh
 bash webui/scripts/e2e-phase61.sh
 bash webui/scripts/e2e-phase62.sh
+bash webui/scripts/e2e-phase63.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

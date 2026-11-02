@@ -685,6 +685,11 @@ export function App() {
         }
         return;
       }
+      if (!mod && !e.altKey && e.key.toLowerCase() === "j" && rules.length) {
+        e.preventDefault();
+        onJumpToRulePosition();
+        return;
+      }
       if (e.key === " " && selectedRuleId && !mod && !e.altKey) {
         e.preventDefault();
         const rule = visibleRules.find((r) => r.id === selectedRuleId);
@@ -1483,6 +1488,36 @@ export function App() {
     } finally {
       setBusy(false);
     }
+  }
+
+  function onJumpToRulePosition() {
+    if (!rules.length) return;
+    const positions = rules
+      .map((r) => r.position)
+      .filter((p): p is number => typeof p === "number")
+      .sort((a, b) => a - b);
+    const cur = rules.find((r) => r.id === selectedRuleId)?.position;
+    const raw = window.prompt(
+      `Jump to rule position (${positions[0] ?? 0}…${positions[positions.length - 1] ?? 0})`,
+      cur != null ? String(cur) : String(positions[0] ?? 0),
+    );
+    if (raw === null) return;
+    const pos = Number(raw.trim());
+    if (!Number.isFinite(pos)) {
+      setError("invalid rule position");
+      return;
+    }
+    const hit =
+      rules.find((r) => r.position === pos) ||
+      visibleRules.find((r) => r.position === pos);
+    if (!hit) {
+      setError(`No rule at position ${pos}`);
+      return;
+    }
+    if (hideDisabled && hit.disabled) setHideDisabled(false);
+    if (onlyDisabled && !hit.disabled) setOnlyDisabled(false);
+    setSelectedRuleId(hit.id);
+    setStatus(`Jumped to rule position ${pos}`);
   }
 
   async function onBulkComment() {
@@ -2953,6 +2988,15 @@ export function App() {
                   >
                     Move to…
                   </button>
+                  <button
+                    type="button"
+                    className="ghost"
+                    disabled={!rules.length}
+                    onClick={onJumpToRulePosition}
+                    title="Jump to rule by position (j)"
+                  >
+                    Jump…
+                  </button>
                   <label className="field inline">
                     <input
                       type="checkbox"
@@ -3427,6 +3471,7 @@ export function App() {
                   ["Interfaces", stats.interfaces],
                   ["Addresses", stats.addresses],
                   ["Services", stats.services],
+                  ["Rulesets", stats.rulesets ?? 0],
                   ["Rules", stats.rules],
                   ["Deleted", stats.deleted],
                   ["Unused", stats.unused ?? 0],
