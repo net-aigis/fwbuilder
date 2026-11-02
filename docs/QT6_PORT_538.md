@@ -35,7 +35,8 @@ Qt6 preferred on this branch; Qt5 path must stay buildable (CI baseline still us
 
 - Full tree builds with `qmake6` (EXIT 0), including `src/gui/fwbuilder` and policy compilers (`fwb_nft`, `fwb_ipt`, …).
 - `QMAKE_UIC_FLAGS += -c string` required so `.ui` subclass slots compile.
-- Remaining work: Windows/macOS smoke; keep PR #9 CI green.
+- Remaining work: Windows/macOS Qt6 smoke via `feature/ci-win-mac-qt6-smoke`
+  (workflow `.github/workflows/fwbuilder-60-qt6-win-mac.yml`).
 
 ## Next code passes
 
