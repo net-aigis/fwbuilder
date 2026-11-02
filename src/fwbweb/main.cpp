@@ -1551,9 +1551,9 @@ static QJsonObject handle(const QJsonObject &req)
                 g_db->removeFromIndex(child->getId());
                 delete child;
                 return errObj(
-                    QStringLiteral("parent does not accept this child "
-                                   "(only one Routing per Firewall; "
-                                   "check type/parent)"));
+                    QStringLiteral("parent does not accept this child type "
+                                   "(e.g. Host has no Policy/NAT/Routing; "
+                                   "Firewall allows only one Routing)"));
             }
             parent->add(child, false);
             if (child->getParent() != parent) {

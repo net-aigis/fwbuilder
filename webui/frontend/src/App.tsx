@@ -110,6 +110,7 @@ export function App() {
   const [compileOutputs, setCompileOutputs] = useState<string[]>([]);
   const [dirty, setDirty] = useState(false);
   const [hideDisabled, setHideDisabled] = useState(false);
+  const [onlyDisabled, setOnlyDisabled] = useState(false);
   const [ruleGroupFilter, setRuleGroupFilter] = useState("");
   const [ruleTextFilter, setRuleTextFilter] = useState("");
   const [treeFilter, setTreeFilter] = useState("");
@@ -143,6 +144,7 @@ export function App() {
   const visibleRules = useMemo(() => {
     let list = rules;
     if (hideDisabled) list = list.filter((r) => !r.disabled);
+    else if (onlyDisabled) list = list.filter((r) => r.disabled);
     if (ruleGroupFilter.trim()) {
       const q = ruleGroupFilter.trim().toLowerCase();
       list = list.filter((r) => (r.group ?? "").toLowerCase().includes(q));
@@ -163,7 +165,7 @@ export function App() {
       });
     }
     return list;
-  }, [rules, hideDisabled, ruleGroupFilter, ruleTextFilter]);
+  }, [rules, hideDisabled, onlyDisabled, ruleGroupFilter, ruleTextFilter]);
 
   const ruleGroups = useMemo(() => {
     const set = new Set<string>();
@@ -553,6 +555,7 @@ export function App() {
         if (!disabled.length) return;
         e.preventDefault();
         if (hideDisabled) setHideDisabled(false);
+        if (!onlyDisabled) setOnlyDisabled(true);
         const idx = disabled.findIndex((r) => r.id === selectedRuleId);
         const pick = e.shiftKey
           ? disabled[(idx <= 0 ? disabled.length : idx) - 1]
@@ -594,6 +597,7 @@ export function App() {
     visibleRules,
     rules,
     hideDisabled,
+    onlyDisabled,
     picker,
     trashOpen,
     unusedHits,
@@ -1130,6 +1134,27 @@ export function App() {
     a.click();
     URL.revokeObjectURL(url);
     setStatus(`Downloaded ${visibleRules.length} rule(s) as TSV`);
+  }
+
+  function onDownloadRulesJson() {
+    if (!visibleRules.length) return;
+    const payload = {
+      ruleset_id: rulesetId,
+      ruleset_name: rulesetName,
+      which: rulesWhich,
+      count: visibleRules.length,
+      rules: visibleRules,
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${rulesetName || rulesWhich || "rules"}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    setStatus(`Downloaded ${visibleRules.length} rule(s) as JSON`);
   }
 
   async function onDuplicateObject() {
@@ -2488,9 +2513,25 @@ export function App() {
                       type="checkbox"
                       checked={hideDisabled}
                       disabled={busy}
-                      onChange={(e) => setHideDisabled(e.target.checked)}
+                      onChange={(e) => {
+                        setHideDisabled(e.target.checked);
+                        if (e.target.checked) setOnlyDisabled(false);
+                      }}
                     />{" "}
                     Hide disabled
+                  </label>
+                  <label className="field inline">
+                    <input
+                      type="checkbox"
+                      checked={onlyDisabled}
+                      disabled={busy}
+                      onChange={(e) => {
+                        setOnlyDisabled(e.target.checked);
+                        if (e.target.checked) setHideDisabled(false);
+                      }}
+                      title="Show only disabled rules (also enabled by N / Shift+N)"
+                    />{" "}
+                    Only disabled
                   </label>
                   <label className="field inline">
                     Group
@@ -2517,7 +2558,7 @@ export function App() {
                       onChange={(e) => setRuleTextFilter(e.target.value)}
                     />
                   </label>
-                  {(ruleTextFilter || ruleGroupFilter || hideDisabled) && (
+                  {(ruleTextFilter || ruleGroupFilter || hideDisabled || onlyDisabled) && (
                     <button
                       type="button"
                       className="ghost"
@@ -2526,6 +2567,7 @@ export function App() {
                         setRuleTextFilter("");
                         setRuleGroupFilter("");
                         setHideDisabled(false);
+                        setOnlyDisabled(false);
                       }}
                       title="Clear rule filters"
                     >
@@ -2585,6 +2627,15 @@ export function App() {
                     title="Download visible rules as .tsv"
                   >
                     Download TSV
+                  </button>
+                  <button
+                    type="button"
+                    className="ghost"
+                    disabled={!visibleRules.length}
+                    onClick={onDownloadRulesJson}
+                    title="Download visible rules as JSON"
+                  >
+                    Download JSON
                   </button>
                   <button
                     type="button"

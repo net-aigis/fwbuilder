@@ -171,6 +171,9 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Next/prev disabled rule | done | N / Shift+N; E2E phase53 |
 | Search / unused TSV download | done | search + unused panels |
 | Copy ruleset id | done | rules toolbar |
+| Only-disabled rule filter | done | rules toolbar; E2E phase54 |
+| Download rules JSON | done | rules toolbar |
+| Host create types (no Policy/NAT/Routing) | done | CreateObject; E2E phase54 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Phase 3 — compile / deploy
@@ -235,6 +238,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase51 (rename ruleset) | done | `e2e-phase51.sh` **OK** |
 | Local E2E phase52 (NAT + disabled count) | done | `e2e-phase52.sh` **OK** |
 | Local E2E phase53 (Routing reject + Policy) | done | `e2e-phase53.sh` **OK** |
+| Local E2E phase54 (Host + only-disabled) | done | `e2e-phase54.sh` **OK** |
 
 ## Local commands
 
@@ -297,6 +301,7 @@ bash webui/scripts/e2e-phase50.sh
 bash webui/scripts/e2e-phase51.sh
 bash webui/scripts/e2e-phase52.sh
 bash webui/scripts/e2e-phase53.sh
+bash webui/scripts/e2e-phase54.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

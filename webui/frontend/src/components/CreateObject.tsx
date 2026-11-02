@@ -48,19 +48,24 @@ export function CreateObject({
   onError,
   onStatus,
 }: Props) {
-  const hostLike = parentType === "Firewall" || parentType === "Host" || parentType === "Cluster";
+  const fwLike = parentType === "Firewall" || parentType === "Cluster";
+  const hostOnly = parentType === "Host";
+  const hostLike = fwLike || hostOnly;
   const ifaceLike = parentType === "Interface";
   const groupLike = parentType === "ObjectGroup" || parentType === "Library";
   const rootLike = parentType === "FWObjectDatabase";
+  // Host has no Policy/NAT/Routing; Firewall allows one Routing; Cluster may add Routing.
   const TYPES = ifaceLike
     ? ["IPv4", "IPv6", "AttachedNetworks", ...BASE_TYPES]
-    : hostLike
+    : fwLike
       ? ["Interface", "IPv4", "IPv6", "Policy", "NAT", "Routing", ...BASE_TYPES]
-      : rootLike
-        ? ["Library"]
-        : groupLike
-          ? ["Firewall", "Host", "Cluster", ...BASE_TYPES]
-          : BASE_TYPES;
+      : hostOnly
+        ? ["Interface", "IPv4", "IPv6", ...BASE_TYPES]
+        : rootLike
+          ? ["Library"]
+          : groupLike
+            ? ["Firewall", "Host", "Cluster", ...BASE_TYPES]
+            : BASE_TYPES;
   const [type, setType] = useState(
     rootLike ? "Library" : hostLike ? "Interface" : groupLike ? "Firewall" : "Network",
   );
