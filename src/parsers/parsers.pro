@@ -37,6 +37,12 @@ DEPENDPATH  += $$ANTLR_INCLUDEPATH ../import ../libfwbuilder/src
 LIBS += $$ANTLR_LIBS
 DEFINES += $$ANTLR_DEFINES
 
+# MinGW g++ 16 can ICE at -O2 on the large ANTLR-generated *CfgParser.cpp files.
+win32 {
+    QMAKE_CXXFLAGS_RELEASE -= -O2
+    QMAKE_CXXFLAGS_RELEASE += -O1
+}
+
 TARGET   = fwbparser
 
 INSTALLS -= target
