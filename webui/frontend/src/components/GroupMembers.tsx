@@ -104,6 +104,29 @@ export function GroupMembers({
         <button type="button" className="ghost" disabled={busy} onClick={() => void reload()}>
           Reload
         </button>
+        {members.length ? (
+          <button
+            type="button"
+            className="ghost"
+            disabled={busy}
+            title="Download members as JSON"
+            onClick={() => {
+              const blob = new Blob(
+                [JSON.stringify({ group_id: groupId, count: members.length, members }, null, 2)],
+                { type: "application/json" },
+              );
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement("a");
+              a.href = url;
+              a.download = "fwbweb-group-members.json";
+              a.click();
+              URL.revokeObjectURL(url);
+              onStatus?.(`Downloaded ${members.length} member(s)`);
+            }}
+          >
+            JSON
+          </button>
+        ) : null}
       </header>
       {members.length ? (
         <ul className="picker-list">

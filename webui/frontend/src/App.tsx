@@ -447,6 +447,39 @@ export function App() {
     }
   }
 
+  async function onBulkAction() {
+    if (!sessionId || !visibleRules.length) return;
+    const withAction = visibleRules.filter((r) => "action" in r);
+    if (!withAction.length) {
+      setError("Visible rules have no action field (Routing?)");
+      return;
+    }
+    const current = String((withAction[0] as PolicyRule | NatRule).action ?? "");
+    const next = window.prompt(
+      `Set action on ${withAction.length} visible rule(s)`,
+      current || "Accept",
+    );
+    if (next === null) return;
+    const action = next.trim();
+    if (!action) return;
+    if (!window.confirm(`Set action “${action}” on ${withAction.length} visible rule(s)?`)) return;
+    setBusy(true);
+    setError(null);
+    try {
+      for (const rule of withAction) {
+        if (String((rule as PolicyRule | NatRule).action ?? "") === action) continue;
+        await updateRule(sessionId, rule.id, { action });
+      }
+      setDirty(true);
+      await refreshRules();
+      setStatus(`Set action “${action}” on ${withAction.length} visible rules`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (!sessionId || busy) return;
@@ -576,6 +609,15 @@ export function App() {
           ? disabled[(idx <= 0 ? disabled.length : idx) - 1]
           : disabled[(idx + 1) % disabled.length];
         if (pick) setSelectedRuleId(pick.id);
+        return;
+      }
+      if (!mod && !e.altKey && e.key.toLowerCase() === "o") {
+        e.preventDefault();
+        setOnlyDisabled((v) => {
+          const next = !v;
+          if (next) setHideDisabled(false);
+          return next;
+        });
         return;
       }
       if (e.key === " " && selectedRuleId && !mod && !e.altKey) {
@@ -1194,16 +1236,19 @@ export function App() {
     setStatus(`Downloaded ${visibleRules.length} rule(s) as TSV`);
   }
 
-  function onDownloadRulesJson() {
-    if (!visibleRules.length) return;
-    const payload = {
+  function rulesJsonPayload() {
+    return {
       ruleset_id: rulesetId,
       ruleset_name: rulesetName,
       which: rulesWhich,
       count: visibleRules.length,
       rules: visibleRules,
     };
-    const blob = new Blob([JSON.stringify(payload, null, 2)], {
+  }
+
+  function onDownloadRulesJson() {
+    if (!visibleRules.length) return;
+    const blob = new Blob([JSON.stringify(rulesJsonPayload(), null, 2)], {
       type: "application/json",
     });
     const url = URL.createObjectURL(blob);
@@ -1213,6 +1258,14 @@ export function App() {
     a.click();
     URL.revokeObjectURL(url);
     setStatus(`Downloaded ${visibleRules.length} rule(s) as JSON`);
+  }
+
+  function onCopyRulesJson() {
+    if (!visibleRules.length) return;
+    void navigator.clipboard.writeText(JSON.stringify(rulesJsonPayload(), null, 2)).then(
+      () => setStatus(`Copied ${visibleRules.length} rule(s) as JSON`),
+      () => setError("Clipboard write failed"),
+    );
   }
 
   async function onDuplicateObject() {
@@ -2747,6 +2800,15 @@ export function App() {
                     type="button"
                     className="ghost"
                     disabled={!canOperate || !visibleRules.length}
+                    onClick={() => void onBulkAction()}
+                    title="Set the same action on all visible Policy/NAT rules"
+                  >
+                    Action visible…
+                  </button>
+                  <button
+                    type="button"
+                    className="ghost"
+                    disabled={!canOperate || !visibleRules.length}
                     onClick={() => void onBulkDeleteVisible()}
                     title="Permanently delete all currently visible rules"
                   >
@@ -2760,6 +2822,15 @@ export function App() {
                     title="Copy visible rules as tab-separated text"
                   >
                     Copy TSV
+                  </button>
+                  <button
+                    type="button"
+                    className="ghost"
+                    disabled={!visibleRules.length}
+                    onClick={onCopyRulesJson}
+                    title="Copy visible rules as JSON"
+                  >
+                    Copy JSON
                   </button>
                   <button
                     type="button"
