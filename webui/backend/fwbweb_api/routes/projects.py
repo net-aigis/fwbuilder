@@ -305,6 +305,23 @@ def where_used(
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 
 
+@router.get("/{session_id}/unused")
+def find_unused_objects(
+    session_id: str,
+    limit: int = 200,
+    _: str = Depends(require_token),
+) -> dict[str, Any]:
+    """List User-library Address/Service/Interval objects with no references."""
+    try:
+        session = store.get(session_id)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail="session not found") from exc
+    try:
+        return session.bridge.request("find_unused", limit=limit)
+    except BridgeError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
 class MemberRequest(BaseModel):
     member_id: str = Field(..., min_length=1)
 

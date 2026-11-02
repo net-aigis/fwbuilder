@@ -116,6 +116,12 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Bulk group visible rules | done | Group visible… toolbar; E2E phase35 |
 | Ctrl+D duplicate object | done | object tab keyboard; E2E phase35 |
 | Selected rule scrollIntoView | done | RuleGrid |
+| Find unused objects | done | `GET …/unused` + Unused button; E2E phase36 |
+| Trash panel (restore/purge) | done | trash badge opens list; E2E phase36 |
+| Ctrl+F focus search | done | App keyboard |
+| Jump to parent object | done | Parent button |
+| Copy visible rules TSV | done | Copy TSV toolbar |
+| Rule index in status bar | done | selected/visible count |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Phase 3 — compile / deploy
@@ -162,6 +168,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase33 (restore + empty trash) | done | `e2e-phase33.sh` **OK** |
 | Local E2E phase34 (deleted list + log/dir) | done | `e2e-phase34.sh` **OK** |
 | Local E2E phase35 (bulk group + object dup) | done | `e2e-phase35.sh` **OK** |
+| Local E2E phase36 (unused + trash restore) | done | `e2e-phase36.sh` **OK** |
 
 ## Local commands
 
@@ -206,6 +213,7 @@ bash webui/scripts/e2e-phase32.sh
 bash webui/scripts/e2e-phase33.sh
 bash webui/scripts/e2e-phase34.sh
 bash webui/scripts/e2e-phase35.sh
+bash webui/scripts/e2e-phase36.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

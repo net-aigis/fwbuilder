@@ -192,6 +192,39 @@ button.ghost {
   padding: 0.15rem 0.4rem;
 }
 
+.trash-panel {
+  margin: 0 0 0.6rem;
+  padding: 0.35rem;
+  border: 1px solid var(--line);
+  border-radius: 0.35rem;
+  background: color-mix(in srgb, var(--danger) 8%, var(--panel));
+  max-height: 11rem;
+  overflow: auto;
+}
+
+.trash-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+  margin-bottom: 0.25rem;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.trash-row {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.trash-row .tree-item {
+  flex: 1;
+  min-width: 0;
+}
+
 .tree-row {
   display: flex;
   align-items: center;

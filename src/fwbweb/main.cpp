@@ -29,6 +29,7 @@
 #include "fwbuilder/Management.h"
 #include "fwbuilder/FWOptions.h"
 #include "fwbuilder/InetAddr.h"
+#include "fwbuilder/Interval.h"
 #include "fwbuilder/IntervalGroup.h"
 #include "fwbuilder/Library.h"
 #include "fwbuilder/Network.h"
@@ -40,6 +41,7 @@
 #include "fwbuilder/Rule.h"
 #include "fwbuilder/RuleElement.h"
 #include "fwbuilder/RuleSet.h"
+#include "fwbuilder/Service.h"
 #include "fwbuilder/ServiceGroup.h"
 
 #include "commoninit.h"
@@ -1873,6 +1875,106 @@ static QJsonObject handle(const QJsonObject &req)
                  u8(FWObjectDatabase::getStringId(obj->getId())));
         o.insert(QStringLiteral("count"), uses.size());
         o.insert(QStringLiteral("uses"), uses);
+        return o;
+    }
+
+    if (cmd == QStringLiteral("find_unused")) {
+        if (!g_db)
+            return errObj(QStringLiteral("no project open"));
+        int limit = req.value(QStringLiteral("limit")).toInt(200);
+        if (limit < 1)
+            limit = 1;
+        if (limit > 1000)
+            limit = 1000;
+        QJsonArray unused;
+        for (list<FWObject *>::iterator li = g_db->begin(); li != g_db->end();
+             ++li) {
+            FWObject *lib = *li;
+            if (!Library::cast(lib))
+                continue;
+            if (lib->getId() == FWObjectDatabase::STANDARD_LIB_ID ||
+                lib->getId() == FWObjectDatabase::DELETED_OBJECTS_ID ||
+                lib->getName() == "Standard" ||
+                lib->getName() == "Deleted Objects")
+                continue;
+            list<FWObject *> stack;
+            stack.push_back(lib);
+            while (!stack.empty() && unused.size() < limit) {
+                FWObject *cur = stack.front();
+                stack.pop_front();
+                for (FWObject::iterator i = cur->begin(); i != cur->end(); ++i) {
+                    FWObject *child = *i;
+                    if (!child || FWReference::cast(child))
+                        continue;
+                    // Descend into folders / hosts / firewalls.
+                    if (ObjectGroup::cast(child) || ServiceGroup::cast(child) ||
+                        IntervalGroup::cast(child) || Host::cast(child) ||
+                        Firewall::cast(child) || Interface::cast(child)) {
+                        stack.push_back(child);
+                    }
+                    bool candidate = false;
+                    if (Address::cast(child) && !Interface::cast(child) &&
+                        !Firewall::cast(child) && !Host::cast(child))
+                        candidate = true;
+                    else if (Service::cast(child) && !ServiceGroup::cast(child))
+                        candidate = true;
+                    else if (Interval::cast(child))
+                        candidate = true;
+                    if (!candidate)
+                        continue;
+                    set<FWObject *> refs;
+                    try {
+                        g_db->findWhereObjectIsUsed(child, g_db, refs);
+                    } catch (FWException &) {
+                        continue;
+                    }
+                    // Folder/group containment is not a real "use" for unused
+                    // detection — only rules and other non-group refs count.
+                    bool used = false;
+                    for (set<FWObject *>::const_iterator rit = refs.begin();
+                         rit != refs.end(); ++rit) {
+                        FWObject *hit = *rit;
+                        if (!hit)
+                            continue;
+                        FWObject *display = hit;
+                        if (FWReference::cast(hit) && hit->getParent())
+                            display = hit->getParent();
+                        FWObject *ctx = display;
+                        while (ctx && RuleElement::cast(ctx))
+                            ctx = ctx->getParent();
+                        if (ctx)
+                            display = ctx;
+                        if (ObjectGroup::cast(display) ||
+                            ServiceGroup::cast(display) ||
+                            IntervalGroup::cast(display))
+                            continue;
+                        used = true;
+                        break;
+                    }
+                    if (used)
+                        continue;
+                    QJsonObject row;
+                    row.insert(QStringLiteral("id"),
+                               u8(FWObjectDatabase::getStringId(child->getId())));
+                    row.insert(QStringLiteral("name"), u8(child->getName()));
+                    row.insert(QStringLiteral("type"), u8(child->getTypeName()));
+                    row.insert(QStringLiteral("comment"),
+                               u8(child->getComment()));
+                    if (child->getParent()) {
+                        row.insert(
+                            QStringLiteral("parent_id"),
+                            u8(FWObjectDatabase::getStringId(
+                                child->getParent()->getId())));
+                    }
+                    unused.append(row);
+                    if (unused.size() >= limit)
+                        break;
+                }
+            }
+        }
+        QJsonObject o = okObj();
+        o.insert(QStringLiteral("count"), unused.size());
+        o.insert(QStringLiteral("objects"), unused);
         return o;
     }
 

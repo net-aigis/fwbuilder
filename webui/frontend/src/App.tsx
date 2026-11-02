@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   addRule,
   addRuleRef,
@@ -7,6 +7,7 @@ import {
   compileFirewall,
   deleteObject,
   emptyDeletedObjects,
+  findUnusedObjects,
   listDeletedObjects,
   formatRuleObjects,
   duplicateObject,
@@ -106,6 +107,14 @@ export function App() {
   const [ruleTextFilter, setRuleTextFilter] = useState("");
   const [treeFilter, setTreeFilter] = useState("");
   const [trashCount, setTrashCount] = useState(0);
+  const [trashOpen, setTrashOpen] = useState(false);
+  const [trashItems, setTrashItems] = useState<
+    Array<{ id: string; name: string; type: string; comment?: string }>
+  >([]);
+  const [unusedHits, setUnusedHits] = useState<
+    Array<{ id: string; name: string; type: string; comment?: string }>
+  >([]);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   const canOperate = useMemo(() => Boolean(sessionId) && !busy, [sessionId, busy]);
 
@@ -390,6 +399,12 @@ export function App() {
         void onSave(e.shiftKey);
         return;
       }
+      if (mod && e.key.toLowerCase() === "f") {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+        searchInputRef.current?.select();
+        return;
+      }
       if (mod && e.key.toLowerCase() === "d") {
         if (tab === "rules" && selectedRuleId) {
           e.preventDefault();
@@ -510,22 +525,60 @@ export function App() {
     }
   }
 
+  async function restoreObjectById(objectId: string) {
+    if (!sessionId) return;
+    const hits = await searchObjects(sessionId, "Objects", "ObjectGroup");
+    const target =
+      (hits.results ?? []).find(
+        (r) => r.name === "Objects" && !String(r.id).startsWith("std"),
+      ) ||
+      (hits.results ?? []).find((r) => r.name === "Objects");
+    if (!target) throw new Error("No Objects group found to restore into");
+    const restored = await reparentObject(sessionId, objectId, target.id);
+    setDirty(true);
+    await refreshTreeSelect(restored.id);
+    setStatus(`Restored ${restored.name} → ${target.name}`);
+    await refreshTrashCount();
+  }
+
   async function onRestoreObject() {
     if (!sessionId || !selected?.deleted) return;
     setBusy(true);
     setError(null);
     try {
-      const hits = await searchObjects(sessionId, "Objects", "ObjectGroup");
-      const target =
-        (hits.results ?? []).find(
-          (r) => r.name === "Objects" && !String(r.id).startsWith("std"),
-        ) ||
-        (hits.results ?? []).find((r) => r.name === "Objects");
-      if (!target) throw new Error("No Objects group found to restore into");
-      const restored = await reparentObject(sessionId, selected.id, target.id);
+      await restoreObjectById(selected.id);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function onRestoreFromTrash(objectId: string) {
+    if (!sessionId) return;
+    setBusy(true);
+    setError(null);
+    try {
+      await restoreObjectById(objectId);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function onPurgeFromTrash(objectId: string) {
+    if (!sessionId) return;
+    if (!window.confirm("Permanently purge this deleted object?")) return;
+    setBusy(true);
+    setError(null);
+    try {
+      await deleteObject(sessionId, objectId, true);
       setDirty(true);
-      await refreshTreeSelect(restored.id);
-      setStatus(`Restored ${restored.name} → ${target.name}`);
+      if (selected?.id === objectId) setSelected(null);
+      const t = await fetchTree(sessionId, 5);
+      setTree(t.root);
+      setStatus("Purged deleted object");
       await refreshTrashCount();
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
@@ -552,6 +605,78 @@ export function App() {
     } finally {
       setBusy(false);
     }
+  }
+
+  async function onFindUnused() {
+    if (!sessionId) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const res = await findUnusedObjects(sessionId);
+      setUnusedHits(res.objects ?? []);
+      setSearchHits([]);
+      setStatus(`Unused objects: ${res.count ?? 0}`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function onJumpParent() {
+    if (!sessionId || !selected?.parent_id) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const parent = await fetchObject(sessionId, selected.parent_id);
+      setSelected(parent);
+      setStatus(`Parent: ${parent.name}`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  function onCopyRulesTsv() {
+    if (!visibleRules.length) return;
+    const cols = [
+      "pos",
+      "disabled",
+      "group",
+      "action",
+      "src",
+      "dst",
+      "srv",
+      "itf",
+      "when",
+      "comment",
+    ];
+    const lines = [cols.join("\t")];
+    for (const r of visibleRules) {
+      const action = "action" in r ? String((r as PolicyRule).action ?? "") : "";
+      const cell = (el: RuleElement | undefined) =>
+        el ? formatRuleObjects(el).replace(/\t|\n/g, " ") : "";
+      const pr = r as PolicyRule;
+      lines.push(
+        [
+          String(r.position ?? ""),
+          r.disabled ? "1" : "0",
+          (r.group ?? "").replace(/\t|\n/g, " "),
+          action,
+          cell(pr.src),
+          cell(pr.dst),
+          cell(pr.srv),
+          cell(pr.itf),
+          cell(pr.when),
+          (r.comment ?? "").replace(/\t|\n/g, " "),
+        ].join("\t"),
+      );
+    }
+    void navigator.clipboard.writeText(lines.join("\n")).then(
+      () => setStatus(`Copied ${visibleRules.length} rule(s) as TSV`),
+      () => setError("Clipboard write failed"),
+    );
   }
 
   async function onDuplicateObject() {
@@ -596,11 +721,14 @@ export function App() {
     const id = sid === undefined ? sessionId : sid;
     if (!id) {
       setTrashCount(0);
+      setTrashItems([]);
       return;
     }
     try {
       const res = await listDeletedObjects(id);
       setTrashCount(res.count ?? 0);
+      setTrashItems(res.objects ?? []);
+      if (!(res.count ?? 0)) setTrashOpen(false);
     } catch {
       /* ignore */
     }
@@ -1144,13 +1272,58 @@ export function App() {
                 type="button"
                 className="ghost trash-count"
                 disabled={busy}
-                title="Empty Deleted Objects"
-                onClick={() => void onEmptyDeleted()}
+                title="Show Deleted Objects panel"
+                onClick={() => setTrashOpen((v) => !v)}
               >
                 trash {trashCount}
               </button>
             ) : null}
           </div>
+          {trashOpen && trashItems.length ? (
+            <div className="trash-panel">
+              <div className="trash-panel-head">
+                <span>Deleted Objects</span>
+                <button
+                  type="button"
+                  className="ghost"
+                  disabled={busy}
+                  onClick={() => void onEmptyDeleted()}
+                >
+                  Empty
+                </button>
+              </div>
+              {trashItems.map((item) => (
+                <div key={item.id} className="trash-row">
+                  <button
+                    type="button"
+                    className="tree-item"
+                    onClick={() => void onSelect({ ...item, deleted: true })}
+                  >
+                    <span className="tree-type">{item.type}</span>
+                    <span className="tree-name">{item.name || item.id}</span>
+                  </button>
+                  <button
+                    type="button"
+                    className="ghost"
+                    disabled={busy}
+                    title="Restore into User Objects"
+                    onClick={() => void onRestoreFromTrash(item.id)}
+                  >
+                    Restore
+                  </button>
+                  <button
+                    type="button"
+                    className="ghost"
+                    disabled={busy}
+                    title="Permanently purge"
+                    onClick={() => void onPurgeFromTrash(item.id)}
+                  >
+                    Purge
+                  </button>
+                </div>
+              ))}
+            </div>
+          ) : null}
           <div className="search-row">
             <input
               placeholder="Filter tree…"
@@ -1162,7 +1335,8 @@ export function App() {
           </div>
           <div className="search-row">
             <input
-              placeholder="Search…"
+              ref={searchInputRef}
+              placeholder="Search… (Ctrl+F)"
               value={searchQ}
               disabled={!sessionId || busy}
               onChange={(e) => setSearchQ(e.target.value)}
@@ -1199,7 +1373,37 @@ export function App() {
             <button type="button" className="ghost" disabled={!canOperate} onClick={onSearch}>
               Go
             </button>
+            <button
+              type="button"
+              className="ghost"
+              disabled={!canOperate}
+              onClick={() => void onFindUnused()}
+              title="Find Address/Service/Interval objects with no references"
+            >
+              Unused
+            </button>
           </div>
+          {unusedHits.length ? (
+            <div className="search-hits">
+              <div className="trash-panel-head">
+                <span>Unused ({unusedHits.length})</span>
+                <button type="button" className="ghost" onClick={() => setUnusedHits([])}>
+                  Clear
+                </button>
+              </div>
+              {unusedHits.map((h) => (
+                <button
+                  key={h.id}
+                  type="button"
+                  className="tree-item"
+                  onClick={() => void onSelect(h)}
+                >
+                  <span className="tree-type">{h.type}</span>
+                  <span className="tree-name">{h.name}</span>
+                </button>
+              ))}
+            </div>
+          ) : null}
           {searchHits.length ? (
             <div className="search-hits">
               {searchHits.map((h) => (
@@ -1276,6 +1480,15 @@ export function App() {
                         onClick={() => void onToggleRo()}
                       >
                         {selected.ro ? "Unlock" : "Lock"}
+                      </button>
+                      <button
+                        type="button"
+                        className="ghost"
+                        disabled={busy || !selected.parent_id}
+                        onClick={() => void onJumpParent()}
+                        title="Select parent object"
+                      >
+                        Parent
                       </button>
                       <button
                         type="button"
@@ -1584,6 +1797,15 @@ export function App() {
                   <button
                     type="button"
                     className="ghost"
+                    disabled={!visibleRules.length}
+                    onClick={onCopyRulesTsv}
+                    title="Copy visible rules as tab-separated text"
+                  >
+                    Copy TSV
+                  </button>
+                  <button
+                    type="button"
+                    className="ghost"
                     disabled={!canOperate || !selectedRuleId}
                     onClick={() => void onDuplicateRule()}
                   >
@@ -1704,6 +1926,16 @@ export function App() {
 
       <footer className="statusbar">
         <span>{status}</span>
+        {tab === "rules" && visibleRules.length ? (
+          <span className="muted">
+            rule{" "}
+            {Math.max(
+              0,
+              visibleRules.findIndex((r) => r.id === selectedRuleId),
+            ) + (selectedRuleId ? 1 : 0)}
+            /{visibleRules.length}
+          </span>
+        ) : null}
         {dirty ? <span className="dirty-flag">Unsaved</span> : null}
         {busy ? <span className="muted">Working…</span> : null}
         {error ? <span className="error">{error}</span> : null}

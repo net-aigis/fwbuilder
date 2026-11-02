@@ -214,6 +214,19 @@ export function listDeletedObjects(sessionId: string) {
   }>(`/api/v1/projects/${sessionId}/deleted`);
 }
 
+export function findUnusedObjects(sessionId: string, limit = 200) {
+  return api<{
+    count: number;
+    objects: Array<{
+      id: string;
+      name: string;
+      type: string;
+      comment?: string;
+      parent_id?: string;
+    }>;
+  }>(`/api/v1/projects/${sessionId}/unused?limit=${limit}`);
+}
+
 export function reparentObject(sessionId: string, objectId: string, parentId: string) {
   return api<TreeNode>(
     `/api/v1/projects/${sessionId}/objects/${encodeURIComponent(objectId)}/reparent`,
