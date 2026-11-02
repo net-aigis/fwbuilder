@@ -7,11 +7,12 @@ import subprocess
 from pathlib import Path
 from typing import Any
 
+from .platforms import compiler_for_platform_name
 from .settings import settings
 
 _REPO_ROOT = Path(__file__).resolve().parents[3]
 
-# Platform string from Firewall attrs → compiler basename (no path).
+# Fallback when resources XML is unavailable; prefer platforms.compiler_for_platform_name.
 PLATFORM_COMPILER: dict[str, str] = {
     "iptables": "fwb_ipt",
     "nftables": "fwb_nft",
@@ -20,7 +21,10 @@ PLATFORM_COMPILER: dict[str, str] = {
     "ipfw": "fwb_ipfw",
     "cisco_asa": "fwb_pix",
     "pix": "fwb_pix",
+    "fwsm": "fwb_pix",
     "iosacl": "fwb_iosacl",
+    "nxosacl": "fwb_nxosacl",
+    "junosacl": "fwb_junosacl",
     "procurve_acl": "fwb_procurve_acl",
 }
 
@@ -34,7 +38,7 @@ class CompileError(RuntimeError):
 
 def compiler_for_platform(platform: str) -> str:
     key = (platform or "").strip().lower()
-    name = PLATFORM_COMPILER.get(key)
+    name = compiler_for_platform_name(key) or PLATFORM_COMPILER.get(key)
     if not name:
         raise CompileError(f"unsupported platform for compile: {platform!r}")
     return name

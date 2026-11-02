@@ -28,7 +28,8 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Drag & drop from tree into rule cells | done | HTML5 DnD (`application/x-fwb-object-id`) |
 | Search in sidebar | done | API `/search` |
 | Local E2E phase2 | done | `e2e-phase2.sh` **OK** |
-| Per-platform Qt option dialogs (full UI parity) | open | WebUI exposes key/value FirewallOptions instead |
+| Option groups from `src/res/platform` + `os` | done | `GET /api/v1/option-schema`, UI tabs |
+| Full Qt per-platform dialogs (pixel parity) | open | Schema is defaults/groups, not every dialog widget |
 
 ## Phase 3 — compile / deploy
 
@@ -40,7 +41,10 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | FirewallOptions + Management address | done | `options` / `management` bridge cmds + UI |
 | Deploy via system `scp`/`ssh` (dry-run default) | done | `POST …/deploy` — **not** full desktop FirewallInstaller |
 | Local E2E phase4 | done | `e2e-phase4.sh` **OK** |
-| Other platforms (`fwb_pf`, PIX, …) | open | mapping stubbed in `compile.py` |
+| Platform catalog from resources XML | done | `GET /api/v1/platforms` |
+| Compilers `fwb_pf` / `fwb_ipf` / `fwb_ipfw` | done | local Podman build; compile via XML `<compiler>` |
+| Cisco/Juniper compilers in WebUI image | open | dirs exist; not in default linux WebUI build yet |
+| Local E2E phase5 | done | `e2e-phase5.sh` **OK** |
 
 ## Local commands
 
@@ -50,4 +54,5 @@ bash webui/scripts/e2e-local.sh
 bash webui/scripts/e2e-phase2.sh
 bash webui/scripts/e2e-phase3.sh
 bash webui/scripts/e2e-phase4.sh
+bash webui/scripts/e2e-phase5.sh
 ```

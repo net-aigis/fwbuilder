@@ -55,18 +55,29 @@ if [[ -z "$BIN" ]]; then
   exit 1
 fi
 
-# Optional compilers for WebUI Phase 3 (nftables + iptables).
+# Optional compilers for WebUI (nft/ipt + BSD family).
 # Set SKIP_COMPILERS=1 to keep the bridge-only build.
+# Set EXTRA_COMPILERS=0 to skip pf/ipf/ipfw after nft/ipt.
 if [[ "${SKIP_COMPILERS:-0}" != "1" ]]; then
   make -j"$JOBS" -C src/compiler_lib 2>&1 | tee ci-logs-linux/compiler_lib.log
   # Ensure qmake-generated Makefiles exist for compiler frontends + libs.
-  if [[ ! -f src/nft/Makefile || ! -f src/ipt/Makefile || ! -f src/nftlib/Makefile || ! -f src/iptlib/Makefile ]]; then
+  need_qmake=0
+  for d in nft ipt nftlib iptlib pflib pf ipf ipfw; do
+    [[ -f "src/$d/Makefile" ]] || need_qmake=1
+  done
+  if [[ "$need_qmake" == "1" ]]; then
     ( cd src && "$QMAKE6" -o Makefile src.pro )
   fi
   make -j"$JOBS" -C src/iptlib 2>&1 | tee ci-logs-linux/iptlib.log
   make -j"$JOBS" -C src/nftlib 2>&1 | tee ci-logs-linux/nftlib.log
   make -j"$JOBS" -C src/nft 2>&1 | tee ci-logs-linux/nft.log
   make -j"$JOBS" -C src/ipt 2>&1 | tee ci-logs-linux/ipt.log
+  if [[ "${EXTRA_COMPILERS:-1}" != "0" ]]; then
+    make -j"$JOBS" -C src/pflib 2>&1 | tee ci-logs-linux/pflib.log
+    make -j"$JOBS" -C src/pf 2>&1 | tee ci-logs-linux/pf.log
+    make -j"$JOBS" -C src/ipf 2>&1 | tee ci-logs-linux/ipf.log
+    make -j"$JOBS" -C src/ipfw 2>&1 | tee ci-logs-linux/ipfw.log
+  fi
 fi
 
 # Local resource tree for unpackaged runs (host wrapper / API).
@@ -78,7 +89,11 @@ cp -a src/libfwbuilder/migration webui/.res/
 
 {
   echo "OK: $BIN"
-  for c in src/nft/fwb_nft src/nft/release/fwb_nft src/ipt/fwb_ipt src/ipt/release/fwb_ipt; do
+  for c in \
+    src/nft/fwb_nft src/ipt/fwb_ipt src/pf/fwb_pf src/ipf/fwb_ipf src/ipfw/fwb_ipfw \
+    src/nft/release/fwb_nft src/ipt/release/fwb_ipt src/pf/release/fwb_pf \
+    src/ipf/release/fwb_ipf src/ipfw/release/fwb_ipfw
+  do
     [[ -x "$c" ]] && echo "OK: $c"
   done
 } | tee ci-logs-linux/binaries.log

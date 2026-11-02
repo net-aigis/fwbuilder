@@ -46,6 +46,7 @@ fwb_ipt
 fwb_nft
 fwb_pf
 fwb_pix
+fwb_nxosacl
 fwb_procurve_acl
 fwb_junosacl
 transfer_secuwall

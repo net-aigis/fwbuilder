@@ -464,6 +464,8 @@ export function App() {
                   <FirewallExtras
                     sessionId={sessionId}
                     firewallId={selected.id}
+                    platform={String(selected.attrs?.platform ?? "")}
+                    hostOs={String(selected.attrs?.host_OS ?? "")}
                     busy={busy}
                     onBusy={setBusy}
                     onStatus={setStatus}

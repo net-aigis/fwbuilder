@@ -14,6 +14,7 @@ See [ARCHITECTURE.md](ARCHITECTURE.md) and [STATUS.md](STATUS.md).
 - Compile (`fwb_nft` / `fwb_ipt`) through the same CLIs as the desktop GUI
 - Firewall platform/installer options + management address
 - Deploy dry-run / real `scp`+`ssh` (simplified; not the full Qt installer)
+- Platform/OS catalog and option groups from `src/res` (nft/ipt/pf/ipf/ipfw compilers)
 
 ## Local workflow (no GitHub Actions)
 
@@ -28,6 +29,7 @@ bash webui/scripts/e2e-local.sh
 bash webui/scripts/e2e-phase2.sh
 bash webui/scripts/e2e-phase3.sh
 bash webui/scripts/e2e-phase4.sh
+bash webui/scripts/e2e-phase5.sh
 
 # 3) Dev servers
 export FWBWEB_BRIDGE="$(pwd)/webui/bin/fwbweb"

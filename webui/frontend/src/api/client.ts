@@ -223,6 +223,35 @@ export function setRuleAny(sessionId: string, ruleId: string, element: string) {
   );
 }
 
+export function fetchPlatforms() {
+  return api<{
+    platforms: Array<{
+      name: string;
+      description: string;
+      status: string;
+      group: string;
+      compiler: string;
+      supported_os: string[];
+    }>;
+    oses: Array<{ name: string; description: string; status: string; family: string }>;
+  }>("/api/v1/platforms");
+}
+
+export function fetchOptionSchema(platform: string, hostOs = "") {
+  const qs = new URLSearchParams({ platform, host_os: hostOs });
+  return api<{
+    platform: string;
+    host_os?: string | null;
+    compiler?: string;
+    description?: string;
+    supported_os?: string[];
+    capabilities?: Record<string, string>;
+    defaults: Record<string, string>;
+    groups: Array<{ id: string; title: string; keys: string[] }>;
+    featured_keys: string[];
+  }>(`/api/v1/option-schema?${qs.toString()}`);
+}
+
 export function fetchOptions(sessionId: string, objectId: string) {
   return api<{
     object_id: string;

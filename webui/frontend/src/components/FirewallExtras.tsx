@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import {
   deployFirewall,
   fetchManagement,
+  fetchOptionSchema,
   fetchOptions,
   updateManagement,
   updateOptions,
@@ -10,13 +11,15 @@ import {
 type Props = {
   sessionId: string;
   firewallId: string;
+  platform?: string;
+  hostOs?: string;
   busy?: boolean;
   onBusy?: (busy: boolean) => void;
   onStatus?: (msg: string) => void;
   onError?: (msg: string | null) => void;
 };
 
-const FEATURED = [
+const FALLBACK_FEATURED = [
   "admUser",
   "altAddress",
   "activationCmd",
@@ -32,9 +35,13 @@ const FEATURED = [
   "epilog_script",
 ];
 
+type Group = { id: string; title: string; keys: string[] };
+
 export function FirewallExtras({
   sessionId,
   firewallId,
+  platform,
+  hostOs,
   busy,
   onBusy,
   onStatus,
@@ -48,20 +55,36 @@ export function FirewallExtras({
   const [dryRun, setDryRun] = useState(true);
   const [log, setLog] = useState<string | null>(null);
   const [showAll, setShowAll] = useState(false);
+  const [groups, setGroups] = useState<Group[]>([]);
+  const [featured, setFeatured] = useState<string[]>(FALLBACK_FEATURED);
+  const [compiler, setCompiler] = useState<string>("");
+  const [activeGroup, setActiveGroup] = useState<string>("platform");
 
   async function reload() {
     onBusy?.(true);
     onError?.(null);
     try {
-      const [o, m] = await Promise.all([
+      const plat = platform || "nftables";
+      const [o, m, schema] = await Promise.all([
         fetchOptions(sessionId, firewallId),
         fetchManagement(sessionId, firewallId),
+        fetchOptionSchema(plat, hostOs || "").catch(() => null),
       ]);
       setOptions(o.options ?? {});
       setMgmtAddr(m.management?.address ?? "");
       setDeployHost(m.management?.address || o.options?.altAddress || "");
       setDeployUser(o.options?.admUser || "");
-      onStatus?.(`Options: ${Object.keys(o.options ?? {}).length} keys`);
+      if (schema) {
+        setGroups(schema.groups ?? []);
+        setFeatured(schema.featured_keys?.length ? schema.featured_keys : FALLBACK_FEATURED);
+        setCompiler(schema.compiler || "");
+        if (schema.groups?.[0]?.id) setActiveGroup(schema.groups[0].id);
+      }
+      onStatus?.(
+        `Options: ${Object.keys(o.options ?? {}).length} keys · ${plat}${
+          schema?.compiler ? ` · ${schema.compiler}` : ""
+        }`,
+      );
     } catch (err) {
       onError?.(err instanceof Error ? err.message : String(err));
     } finally {
@@ -72,23 +95,26 @@ export function FirewallExtras({
   useEffect(() => {
     void reload();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sessionId, firewallId]);
+  }, [sessionId, firewallId, platform, hostOs]);
 
   const keys = useMemo(() => {
     const all = Object.keys(options).sort();
     const q = filter.trim().toLowerCase();
-    const base = showAll ? all : all.filter((k) => FEATURED.includes(k) || q);
-    if (!q) return base.length ? base : all.slice(0, 20);
-    return all.filter((k) => k.toLowerCase().includes(q) || (options[k] || "").toLowerCase().includes(q));
-  }, [options, filter, showAll]);
+    if (q) {
+      return all.filter(
+        (k) => k.toLowerCase().includes(q) || (options[k] || "").toLowerCase().includes(q),
+      );
+    }
+    if (showAll) return all;
+    const groupKeys = groups.find((g) => g.id === activeGroup)?.keys ?? featured;
+    const preferred = groupKeys.filter((k) => k in options);
+    return preferred.length ? preferred : featured.filter((k) => k in options);
+  }, [options, filter, showAll, groups, activeGroup, featured]);
 
   async function saveOptions() {
     onBusy?.(true);
     onError?.(null);
     try {
-      const patch: Record<string, string> = {};
-      for (const k of keys) patch[k] = options[k] ?? "";
-      // Always send featured + currently filtered edits; safer: send all options state
       const res = await updateOptions(sessionId, firewallId, options);
       setOptions(res.options ?? options);
       onStatus?.("Firewall options saved");
@@ -153,7 +179,10 @@ export function FirewallExtras({
   return (
     <div className="firewall-extras">
       <header className="panel-header">
-        <h3>Platform / installer options</h3>
+        <h3>
+          Platform / installer options
+          {compiler ? <span className="muted"> · {compiler}</span> : null}
+        </h3>
         <div className="btn-row">
           <button type="button" className="ghost" disabled={busy} onClick={() => void reload()}>
             Reload
@@ -163,6 +192,22 @@ export function FirewallExtras({
           </button>
         </div>
       </header>
+
+      {groups.length && !filter && !showAll ? (
+        <div className="btn-row pad-tight">
+          {groups.map((g) => (
+            <button
+              key={g.id}
+              type="button"
+              className={activeGroup === g.id ? undefined : "ghost"}
+              disabled={busy}
+              onClick={() => setActiveGroup(g.id)}
+            >
+              {g.title}
+            </button>
+          ))}
+        </div>
+      ) : null}
 
       <div className="search-row">
         <input
@@ -193,6 +238,7 @@ export function FirewallExtras({
             />
           </label>
         ))}
+        {!keys.length ? <p className="muted">No keys in this group.</p> : null}
       </div>
 
       <header className="panel-header">
@@ -230,8 +276,8 @@ export function FirewallExtras({
         </button>
       </div>
       <p className="muted pad">
-        Uses system <code>scp</code>/<code>ssh</code> (BatchMode). Not the full desktop installer
-        session. Keep dry-run on until keys and host are verified.
+        Option groups come from <code>src/res/platform</code> / <code>os</code> defaults (not the full
+        Qt dialogs). Deploy uses system <code>scp</code>/<code>ssh</code> (BatchMode).
       </p>
       {log ? <pre className="compile-log pad">{log}</pre> : null}
     </div>
