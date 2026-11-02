@@ -35,8 +35,9 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Item | State | Evidence |
 | --- | --- | --- |
 | Invoke `fwb_nft` / `fwb_ipt` (same CLIs as GUI) | done | `POST …/compile`, Podman-wrapped ELF |
+| Download compile outputs | done | `GET …/compile/outputs/{file}` |
 | Local E2E phase3 (rule ops + compile) | done | `e2e-phase3.sh` **OK** → `nft-test.fw` |
-| Install/deploy integration | open | |
+| Install/deploy to remote host | open | UI points to download + manual install |
 | Other platforms (`fwb_pf`, PIX, …) | open | mapping stubbed in `compile.py` |
 
 ## Local commands

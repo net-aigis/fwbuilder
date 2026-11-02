@@ -4,6 +4,7 @@ import {
   addRuleRef,
   closeProject,
   compileFirewall,
+  downloadCompileOutput,
   deleteRule,
   fetchObject,
   fetchRuleset,
@@ -54,6 +55,7 @@ export function App() {
   const [searchHits, setSearchHits] = useState<TreeNode[]>([]);
   const [picker, setPicker] = useState<PickerTarget | null>(null);
   const [compileLog, setCompileLog] = useState<string | null>(null);
+  const [compileOutputs, setCompileOutputs] = useState<string[]>([]);
 
   const canOperate = useMemo(() => Boolean(sessionId) && !busy, [sessionId, busy]);
 
@@ -70,6 +72,7 @@ export function App() {
       setRules([]);
       setTab("object");
       setCompileLog(null);
+      setCompileOutputs([]);
       setStatus(`Open: ${t.path}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
@@ -283,12 +286,28 @@ export function App() {
     setBusy(true);
     setError(null);
     setCompileLog(null);
+    setCompileOutputs([]);
     try {
       const res = await compileFirewall(sessionId, rulesFwId);
+      setCompileOutputs(res.outputs ?? []);
       setCompileLog(
         `${res.compiler} → ${res.destdir}\noutputs: ${res.outputs.join(", ") || "(none)"}\n\n${res.log}`,
       );
       setStatus(`Compiled ${res.firewall} (${res.platform})`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function onDownloadOutput(filename: string) {
+    if (!sessionId) return;
+    setBusy(true);
+    setError(null);
+    try {
+      await downloadCompileOutput(sessionId, filename);
+      setStatus(`Downloaded ${filename}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
@@ -308,6 +327,7 @@ export function App() {
       setRules([]);
       setSearchHits([]);
       setCompileLog(null);
+      setCompileOutputs([]);
       setStatus("Closed");
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
@@ -498,9 +518,31 @@ export function App() {
                 onEditCell={(rule, element) => setPicker({ ruleId: rule.id, element })}
                 onDropObject={onDropObject}
               />
+              {compileOutputs.length ? (
+                <div className="btn-row pad">
+                  <span className="muted">Outputs:</span>
+                  {compileOutputs.map((f) => (
+                    <button
+                      key={f}
+                      type="button"
+                      className="ghost"
+                      disabled={busy}
+                      onClick={() => void onDownloadOutput(f)}
+                    >
+                      {f}
+                    </button>
+                  ))}
+                </div>
+              ) : null}
               {compileLog ? (
                 <pre className="compile-log pad">{compileLog}</pre>
-              ) : null}
+              ) : (
+                <p className="muted pad">
+                  Compile uses the same <code>fwb_*</code> CLIs as the desktop GUI. Deploy/install
+                  to a remote host is not wired yet — download the generated script and install it
+                  yourself.
+                </p>
+              )}
             </div>
           )}
         </main>

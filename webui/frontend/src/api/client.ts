@@ -242,6 +242,30 @@ export function compileFirewall(
   });
 }
 
+export function compileOutputUrl(sessionId: string, filename: string): string {
+  const qs = new URLSearchParams();
+  // Auth is header-based; for <a download> we append token as query for convenience
+  // is not supported — use fetch blob helper instead.
+  void qs;
+  return `${apiBase}/api/v1/projects/${sessionId}/compile/outputs/${encodeURIComponent(filename)}`;
+}
+
+export async function downloadCompileOutput(sessionId: string, filename: string): Promise<void> {
+  const res = await fetch(compileOutputUrl(sessionId, filename), {
+    headers: { Authorization: `Bearer ${getToken()}` },
+  });
+  if (!res.ok) {
+    throw new Error(`${res.status}: ${await res.text()}`);
+  }
+  const blob = await res.blob();
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 export function searchObjects(sessionId: string, q: string, type = "") {
   const qs = new URLSearchParams({ q, type, limit: "80" });
   return api<{ results: TreeNode[]; count: number }>(

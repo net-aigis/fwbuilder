@@ -35,6 +35,7 @@ fwbedit
 fwbweb
 !src/fwbweb/
 !src/fwbweb/**
+src/fwbweb/fwbweb
 !webui/bin/fwbweb
 qrc_MainRes.cpp
 fwb_iosacl
@@ -42,6 +43,7 @@ fwb_nxosacl
 fwb_ipf
 fwb_ipfw
 fwb_ipt
+fwb_nft
 fwb_pf
 fwb_pix
 fwb_procurve_acl

@@ -129,6 +129,19 @@ if http != 200:
 assert d.get("ok"), d
 assert d.get("compiler") == "fwb_nft", d
 print("outputs", d.get("outputs"))
+assert "nft-test.fw" in d.get("outputs", []), d
+open("$TMP/out.name","w").write("nft-test.fw")
+PY
+
+echo "== download output =="
+OUT=$(cat "$TMP/out.name")
+curl -sf "${auth[@]}" \
+  "http://127.0.0.1:$PORT/api/v1/projects/$SID/compile/outputs/$OUT" \
+  >"$TMP/downloaded.fw"
+python3 - <<PY
+text=open("$TMP/downloaded.fw").read()
+assert "nft" in text.lower() or "table" in text.lower() or len(text)>20, text[:200]
+print("downloaded bytes", len(text))
 PY
 
 curl -sf "${auth[@]}" -d '{}' "http://127.0.0.1:$PORT/api/v1/projects/$SID/save" >/dev/null
