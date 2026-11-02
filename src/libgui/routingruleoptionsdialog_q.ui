@@ -60,6 +60,13 @@
             </property>
            </widget>
           </item>
+          <item row="3" column="0" colspan="3" >
+           <widget class="QCheckBox" name="routing_use_onlink_option" >
+            <property name="text" >
+             <string>Allow on-link gateway (ip route onlink)</string>
+            </property>
+           </widget>
+          </item>
           <item row="5" column="0" >
            <spacer>
             <property name="orientation" >
