@@ -5,8 +5,74 @@ export type TreeNode = {
   comment?: string;
   ro?: boolean;
   children_count?: number;
-  attrs?: Record<string, string>;
+  attrs?: Record<string, string | number>;
   children?: TreeNode[];
+  rulesets?: { policy?: string; nat?: string; routing?: string };
+};
+
+export type RuleRef = { id: string; name: string; type: string };
+
+export type RuleElement = {
+  id?: string;
+  neg?: boolean;
+  any?: boolean;
+  objects?: RuleRef[];
+};
+
+export type PolicyRule = {
+  id: string;
+  type: "PolicyRule";
+  position: number;
+  disabled: boolean;
+  action: string;
+  direction: string;
+  logging: boolean;
+  comment: string;
+  group?: string;
+  src?: RuleElement;
+  dst?: RuleElement;
+  srv?: RuleElement;
+  itf?: RuleElement;
+  when?: RuleElement;
+};
+
+export type NatRule = {
+  id: string;
+  type: "NATRule";
+  position: number;
+  disabled: boolean;
+  action: string;
+  rule_type?: string;
+  comment: string;
+  osrc?: RuleElement;
+  odst?: RuleElement;
+  osrv?: RuleElement;
+  tsrc?: RuleElement;
+  tdst?: RuleElement;
+  tsrv?: RuleElement;
+};
+
+export type RoutingRuleRow = {
+  id: string;
+  type: "RoutingRule";
+  position: number;
+  disabled: boolean;
+  metric: number;
+  rule_type?: string;
+  comment: string;
+  rdst?: RuleElement;
+  rgtw?: RuleElement;
+  ritf?: RuleElement;
+};
+
+export type AnyRule = PolicyRule | NatRule | RoutingRuleRow;
+
+export type RulesetResponse = {
+  ok?: boolean;
+  ruleset_id: string;
+  ruleset_type: string;
+  name: string;
+  rules: AnyRule[];
 };
 
 const tokenKey = "fwbweb_token";
@@ -57,12 +123,47 @@ export function fetchObject(sessionId: string, objectId: string) {
 export function updateObject(
   sessionId: string,
   objectId: string,
-  body: { name?: string; comment?: string; attrs?: Record<string, string> },
+  body: { name?: string; comment?: string; attrs?: Record<string, string | number> },
 ) {
   return api<TreeNode>(`/api/v1/projects/${sessionId}/objects/${encodeURIComponent(objectId)}`, {
     method: "PATCH",
     body: JSON.stringify(body),
   });
+}
+
+export function fetchRuleset(
+  sessionId: string,
+  objectId: string,
+  which: "policy" | "nat" | "routing" = "policy",
+) {
+  return api<RulesetResponse>(
+    `/api/v1/projects/${sessionId}/rulesets/${encodeURIComponent(objectId)}?which=${which}`,
+  );
+}
+
+export function updateRule(
+  sessionId: string,
+  ruleId: string,
+  body: {
+    disabled?: boolean;
+    comment?: string;
+    action?: string;
+    direction?: string;
+    logging?: boolean;
+    metric?: number;
+  },
+) {
+  return api<AnyRule>(`/api/v1/projects/${sessionId}/rules/${encodeURIComponent(ruleId)}`, {
+    method: "PATCH",
+    body: JSON.stringify(body),
+  });
+}
+
+export function searchObjects(sessionId: string, q: string, type = "") {
+  const qs = new URLSearchParams({ q, type, limit: "80" });
+  return api<{ results: TreeNode[]; count: number }>(
+    `/api/v1/projects/${sessionId}/search?${qs.toString()}`,
+  );
 }
 
 export function saveProject(sessionId: string, writeThrough = false) {
@@ -74,4 +175,11 @@ export function saveProject(sessionId: string, writeThrough = false) {
 
 export function closeProject(sessionId: string) {
   return api<void>(`/api/v1/projects/${sessionId}/close`, { method: "POST" });
+}
+
+export function formatRuleObjects(el?: RuleElement): string {
+  if (!el) return "";
+  const prefix = el.neg ? "!" : "";
+  if (el.any || !el.objects?.length) return `${prefix}Any`;
+  return prefix + el.objects.map((o) => o.name).join(", ");
 }

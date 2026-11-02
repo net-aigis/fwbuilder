@@ -1,21 +1,55 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { TreeNode } from "../api/client";
 
 type Props = {
   object?: TreeNode | null;
   readOnly?: boolean;
   busy?: boolean;
-  onSave?: (patch: { name: string; comment: string }) => void;
+  onSave?: (patch: {
+    name: string;
+    comment: string;
+    attrs: Record<string, string | number>;
+  }) => void;
+  onOpenRules?: (which: "policy" | "nat" | "routing") => void;
 };
 
-export function ObjectDetail({ object, readOnly, busy, onSave }: Props) {
+const TYPE_FIELDS: Record<string, string[]> = {
+  Network: ["address", "netmask"],
+  NetworkIPv6: ["address", "netmask"],
+  IPv4: ["address", "netmask"],
+  IPv6: ["address", "netmask"],
+  AddressRange: ["address", "netmask"],
+  DNSName: ["dnsname", "run_time"],
+  TCPService: ["src_range_start", "src_range_end", "dst_range_start", "dst_range_end"],
+  UDPService: ["src_range_start", "src_range_end", "dst_range_start", "dst_range_end"],
+  ICMPService: ["type", "code"],
+  ICMP6Service: ["type", "code"],
+  IPService: ["protocol_num"],
+  Firewall: ["platform", "host_OS", "version"],
+  Host: ["platform", "host_OS"],
+  Interface: ["address", "netmask", "phys_address"],
+};
+
+export function ObjectDetail({ object, readOnly, busy, onSave, onOpenRules }: Props) {
   const [name, setName] = useState("");
   const [comment, setComment] = useState("");
+  const [attrs, setAttrs] = useState<Record<string, string>>({});
+
+  const fields = useMemo(
+    () => TYPE_FIELDS[object?.type ?? ""] ?? Object.keys(object?.attrs ?? {}),
+    [object],
+  );
 
   useEffect(() => {
     setName(object?.name ?? "");
     setComment(object?.comment ?? "");
-  }, [object?.id, object?.name, object?.comment]);
+    const next: Record<string, string> = {};
+    for (const key of fields) {
+      const v = object?.attrs?.[key];
+      next[key] = v === undefined || v === null ? "" : String(v);
+    }
+    setAttrs(next);
+  }, [object?.id, object?.name, object?.comment, object?.attrs, fields]);
 
   if (!object) {
     return (
@@ -25,8 +59,20 @@ export function ObjectDetail({ object, readOnly, busy, onSave }: Props) {
     );
   }
 
-  const attrs = object.attrs ?? {};
   const locked = Boolean(readOnly || object.ro || !onSave);
+  const isFirewall = object.type === "Firewall" || object.type === "Cluster";
+
+  function commit() {
+    const out: Record<string, string | number> = {};
+    for (const [k, v] of Object.entries(attrs)) {
+      if (k === "type" || k === "code" || k === "protocol_num" || k === "metric") {
+        out[k] = v === "" ? 0 : Number(v);
+      } else {
+        out[k] = v;
+      }
+    }
+    onSave?.({ name, comment, attrs: out });
+  }
 
   return (
     <div className="panel">
@@ -38,43 +84,55 @@ export function ObjectDetail({ object, readOnly, busy, onSave }: Props) {
         </p>
       </header>
 
+      {isFirewall && onOpenRules ? (
+        <div className="btn-row">
+          <button type="button" className="ghost" disabled={busy} onClick={() => onOpenRules("policy")}>
+            Policy
+          </button>
+          <button type="button" className="ghost" disabled={busy} onClick={() => onOpenRules("nat")}>
+            NAT
+          </button>
+          <button type="button" className="ghost" disabled={busy} onClick={() => onOpenRules("routing")}>
+            Routing
+          </button>
+        </div>
+      ) : null}
+
       <label className="field block">
         Name
-        <input
-          value={name}
-          disabled={locked || busy}
-          onChange={(e) => setName(e.target.value)}
-        />
+        <input value={name} disabled={locked || busy} onChange={(e) => setName(e.target.value)} />
       </label>
       <label className="field block">
         Comment
         <textarea
           value={comment}
           disabled={locked || busy}
-          rows={4}
+          rows={3}
           onChange={(e) => setComment(e.target.value)}
         />
       </label>
+
+      {fields.length ? (
+        <div className="typed-grid">
+          {fields.map((key) => (
+            <label key={key} className="field block">
+              {key}
+              <input
+                value={attrs[key] ?? ""}
+                disabled={locked || busy}
+                onChange={(e) => setAttrs((prev) => ({ ...prev, [key]: e.target.value }))}
+              />
+            </label>
+          ))}
+        </div>
+      ) : (
+        <p className="muted">No typed fields for this object type yet.</p>
+      )}
+
       {!locked ? (
-        <button
-          type="button"
-          disabled={busy}
-          onClick={() => onSave?.({ name, comment })}
-        >
+        <button type="button" disabled={busy} onClick={commit}>
           Apply object changes
         </button>
-      ) : null}
-
-      <dl className="attr-grid">
-        {Object.entries(attrs).map(([k, v]) => (
-          <div key={k} className="attr-row">
-            <dt>{k}</dt>
-            <dd>{v}</dd>
-          </div>
-        ))}
-      </dl>
-      {!Object.keys(attrs).length ? (
-        <p className="muted">No Phase-1 attributes exposed for this type yet.</p>
       ) : null}
     </div>
   );
