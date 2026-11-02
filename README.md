@@ -11,7 +11,7 @@ This fork tracks **Qt6** builds and an optional **WebUI** that edits the same
 | Track | State |
 | --- | --- |
 | Desktop GUI (Qt6) | Builds on Linux; Win/Mac smoke via MinGW/local Podman (see `docker/`) |
-| WebUI (`feature/webui`) | Local-only: object tree, typed editors, Policy/NAT/Routing grids, rule ops, picker/DnD, compile, FirewallOptions, simplified `scp`/`ssh` deploy (dry-run default) |
+| WebUI (`feature/webui`) | Local-only: object tree, rules, compile/deploy, FirewallOptions grouped from `src/res`, compilers nft/ipt/pf/ipf/ipfw |
 | Full GUI parity | **Not** claimed — see [`webui/STATUS.md` on `feature/webui`](https://github.com/net-aigis/fwbuilder/blob/feature/webui/webui/STATUS.md) |
 
 ## WebUI (local, no GitHub Actions required)
@@ -30,6 +30,7 @@ bash webui/scripts/e2e-local.sh
 bash webui/scripts/e2e-phase2.sh
 bash webui/scripts/e2e-phase3.sh
 bash webui/scripts/e2e-phase4.sh
+bash webui/scripts/e2e-phase5.sh
 
 # Dev servers
 export FWBWEB_BRIDGE="$(pwd)/webui/bin/fwbweb"
