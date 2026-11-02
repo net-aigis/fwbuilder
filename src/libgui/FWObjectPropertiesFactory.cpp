@@ -34,7 +34,6 @@
 #include <qobject.h>
 #include <qtextstream.h>
 #include <qdatetime.h>
-#include <qregexp.h>
 #include <QtDebug>
 
 #include "FWObjectPropertiesFactory.h"

@@ -39,11 +39,9 @@
 //#include "FWWindow.h"
 
 #include <qdir.h>
-#include <qregexp.h>
 #include <qmessagebox.h>
 #include <qapplication.h>
 #include <qeventloop.h>
-#include <qtextcodec.h>
 #include <QObject>
 #include <QtDebug>
 

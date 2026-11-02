@@ -27,6 +27,7 @@
 
 #include "config.h"
 #include "global.h"
+#include <QRegularExpression>
 #include "utils.h"
 #include "events.h"
 
@@ -36,7 +37,6 @@
 #include <qcombobox.h>
 #include <qspinbox.h>
 #include <qtimer.h>
-#include <qregexp.h>
 #include <qlabel.h>
 #include <qtextbrowser.h>
 #include <qtextedit.h>

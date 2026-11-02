@@ -50,7 +50,6 @@
 #include <qcheckbox.h>
 #include <qapplication.h>
 #include <qcursor.h>
-#include <qregexp.h>
 #include <qlineedit.h>
 #include <qpushbutton.h>
 #include <qmessagebox.h>

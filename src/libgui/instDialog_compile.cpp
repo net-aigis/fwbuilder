@@ -52,7 +52,9 @@
 #include <errno.h>
 #include <iostream>
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QTextCodec>
+#endif
 #include <QTimer>
 #include <QMessageBox>
 #include <QFile>
@@ -108,7 +110,9 @@ bool instDialog::runCompiler(Firewall *fw)
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
     QTextCodec::setCodecForCStrings(QTextCodec::codecForName("Utf8"));
 #endif
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("Utf8"));
+#endif
 
     // Launch compiler in the background
     QString path = args.at(0);

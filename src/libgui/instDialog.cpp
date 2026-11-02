@@ -30,6 +30,10 @@
 */
 
 #include "config.h"
+#include <QtGlobal>
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#include <QTextCodec>
+#endif
 #include "global.h"
 #include "utils.h"
 #include "utils_no_qt.h"
@@ -64,7 +68,6 @@
 #include <qgroupbox.h>
 #include <qcolor.h>
 #include <qtablewidget.h>
-#include <qtextcodec.h>
 #include <qfileinfo.h>
 #include <qtextstream.h>
 #include <QDateTime>
@@ -774,7 +777,9 @@ bool instDialog::executeCommand(const QString &path, QStringList &args)
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
     QTextCodec::setCodecForCStrings(QTextCodec::codecForName("Utf8"));
 #endif
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("Utf8"));
+#endif
     enableStopButton();
     QElapsedTimer start_time;
     start_time.start();

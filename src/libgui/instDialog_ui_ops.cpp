@@ -61,7 +61,6 @@
 #include <qgroupbox.h>
 #include <qcolor.h>
 #include <qtablewidget.h>
-#include <qtextcodec.h>
 #include <qfileinfo.h>
 #include <qtextstream.h>
 #include <qpixmapcache.h>

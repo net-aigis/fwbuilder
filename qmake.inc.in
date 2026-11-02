@@ -19,10 +19,9 @@ CPPUNIT_LIBS = @CPPUNIT_LIBS@
 # CONFIG += release
 CONFIG += debug
 
-# Qt6: C++17 is required; QRegExp/QTextCodec live in Qt5Compat until migrated.
+# Qt6: C++17 is required. QRegExp/QTextCodec no longer need Qt5Compat.
 greaterThan(QT_MAJOR_VERSION, 5) {
     CONFIG += c++17
-    QT += core5compat
     # Keep classic SIGNAL/SLOT connections from .ui files; PMF connects
     # bind to the form base class and miss subclass slots.
     QMAKE_UIC_FLAGS += -c string

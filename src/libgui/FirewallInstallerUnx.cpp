@@ -52,7 +52,9 @@
 #include <iostream>
 #include <fcntl.h>
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <QTextCodec>
+#endif
 #include <QTextStream>
 #include <QTimer>
 #include <QMessageBox>
@@ -112,7 +114,9 @@ bool FirewallInstallerUnx::packInstallJobsList(Firewall* fw)
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
     QTextCodec::setCodecForCStrings(QTextCodec::codecForName("Utf8"));
 #endif
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QTextCodec::setCodecForLocale(QTextCodec::codecForName("Utf8"));
+#endif
 
     //key: local_file_name  val: remote_file_name
     QMap<QString,QString> all_files;

@@ -36,7 +36,6 @@
 
 #include <QTreeWidget>
 #include <QRegularExpression>
-#include <qregexp.h>
 #include <qpushbutton.h>
 // #include <qtextbrowser.h>
 

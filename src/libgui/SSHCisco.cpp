@@ -34,7 +34,6 @@
 
 #include <qobject.h>
 #include <qtimer.h>
-#include <qregexp.h>
 #include <qmessagebox.h>
 #include <qapplication.h>
 #include <qeventloop.h>

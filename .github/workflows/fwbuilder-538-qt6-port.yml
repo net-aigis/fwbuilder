@@ -61,7 +61,7 @@ jobs:
           mkdir -p ci-logs
           zypper -n install --no-recommends \
             gcc gcc-c++ ccache make which autoconf automake libtool gettext-tools pkg-config \
-            qt6-base-devel qt6-svg-devel qt6-tools-devel qt6-qt5compat-devel \
+            qt6-base-devel qt6-svg-devel qt6-tools-devel \
             libxml2-devel libxslt-devel net-snmp-devel \
             flex bison \
             2>&1 | tee ci-logs/dependencies.log

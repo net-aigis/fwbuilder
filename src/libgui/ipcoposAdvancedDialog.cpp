@@ -43,8 +43,6 @@
 #include <qradiobutton.h>
 #include <qlineedit.h>
 #include <qstackedwidget.h>
-#include <qregexp.h>
-
 #include "FWWindow.h"
 #include "Help.h"
 

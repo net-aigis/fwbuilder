@@ -36,7 +36,6 @@
 #include "FWWindow.h"
 
 #include <qtextbrowser.h>
-#include <qtextcodec.h>
 #include <qglobal.h>
 #include <qpixmapcache.h>
 #include <qlocale.h>

@@ -1,4 +1,3 @@
-#include <QRegularExpression>
 /* 
 
                           Firewall Builder
@@ -33,7 +32,7 @@
 
 #include <qstring.h>
 #include <qstringlist.h>
-#include <qregexp.h>
+#include <QRegularExpression>
 #include <qprocess.h>
 #include <qobject.h>
 

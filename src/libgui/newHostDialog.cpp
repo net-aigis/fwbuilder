@@ -56,7 +56,6 @@
 #include <qtextbrowser.h>
 #include <qmessagebox.h>
 #include <qtimer.h>
-#include <qregexp.h>
 #include <qapplication.h>
 #include <qcursor.h>
 #include <qpixmapcache.h>

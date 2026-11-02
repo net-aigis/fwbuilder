@@ -26,6 +26,10 @@
 
 
 #include "config.h"
+#include <QtGlobal>
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#include <QTextCodec>
+#endif
 #include "global.h"
 #include "utils.h"
 
@@ -34,11 +38,9 @@
 
 #include <qobject.h>
 #include <qtimer.h>
-#include <qregexp.h>
 #include <qmessagebox.h>
 #include <qapplication.h>
 #include <qeventloop.h>
-#include <qtextcodec.h>
 #include <qapplication.h>
 #include <qdatetime.h>
 #include <QtDebug>

@@ -57,7 +57,6 @@
 #include <QStackedWidget>
 #include <QRegularExpression>
 #include <qcursor.h>
-#include <qregexp.h>
 #include <QtDebug>
 
 #include <iostream>

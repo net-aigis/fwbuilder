@@ -37,7 +37,6 @@
 #include <qradiobutton.h>
 #include <qlineedit.h>
 #include <qstackedwidget.h>
-#include <qregexp.h>
 #include <qtextedit.h>
 #include <QUndoStack>
 
