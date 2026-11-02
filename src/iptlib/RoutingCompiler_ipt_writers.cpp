@@ -281,6 +281,12 @@ string RoutingCompiler_ipt::PrintRule::RoutingRuleToString(RoutingRule *rule)
     }
     command_line << _printRGtw(rule);
     command_line << _printRItf(rule);
+    // Opt-in: request an on-link gateway even when no matching route
+    // is present. The historical default output stays unchanged.
+    FWObject *route_options_obj = rule->getFirstByType(RoutingRuleOptions::TYPENAME);
+    RoutingRuleOptions *route_options = RoutingRuleOptions::cast(route_options_obj);
+    if (route_options && route_options->getBool("use_onlink_option"))
+        command_line << "onlink ";
 
     // to make generated script more readable in single rule compile mode,
     // skip the part that rolls back in case of an error

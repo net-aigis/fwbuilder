@@ -52,6 +52,7 @@
 #include "AutomaticRules_ipt.h"
 
 #include "Configlet.h"
+#include "CentralHooks.h"
 
 
 #include "fwbuilder/FWObjectDatabase.h"
@@ -536,14 +537,27 @@ QString CompilerDriver_ipt::run(const std::string &cluster_id,
 
         if (supports_prolog_epilog)
         {
-            //script_skeleton.setVariable("prolog_epilog",
-            //                         oscnf->printPrologEpilogFunctions().c_str());
-            script_skeleton.setVariable(
-                "prolog_script", 
-                fw->getOptionsObject()->getStr("prolog_script").c_str());
-            script_skeleton.setVariable(
-                "epilog_script", 
-                fw->getOptionsObject()->getStr("epilog_script").c_str());
+            string hooks_error;
+            QString prolog_merged = CentralHooks::composeOrAbort(
+                CentralHooks::Prolog, fw, platform,
+                fw->getOptionsObject()->getStr("prolog_script"),
+                &hooks_error);
+            if (!hooks_error.empty())
+            {
+                abort(hooks_error);
+                return "";
+            }
+            QString epilog_merged = CentralHooks::composeOrAbort(
+                CentralHooks::Epilog, fw, platform,
+                fw->getOptionsObject()->getStr("epilog_script"),
+                &hooks_error);
+            if (!hooks_error.empty())
+            {
+                abort(hooks_error);
+                return "";
+            }
+            script_skeleton.setVariable("prolog_script", prolog_merged);
+            script_skeleton.setVariable("epilog_script", epilog_merged);
         }
 
         ostringstream ostr;

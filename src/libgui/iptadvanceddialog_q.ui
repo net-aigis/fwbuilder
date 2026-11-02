@@ -956,6 +956,23 @@ packets to IPv6 policies</string>
             </property>
            </widget>
           </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="hooksProfileLabel">
+            <property name="text">
+             <string>Central hooks profile</string>
+            </property>
+            <property name="wordWrap">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1" colspan="2">
+           <widget class="QLineEdit" name="hooks_profile">
+            <property name="toolTip">
+             <string>Optional explicit profile name under profiles/&lt;name&gt;/ in the central hooks directory. Leave empty to use profiles.map or no profile. Never inferred from the hostname.</string>
+            </property>
+           </widget>
+          </item>
           <item row="2" column="2">
            <widget class="QPushButton" name="edit_prolog_button">
             <property name="text">
