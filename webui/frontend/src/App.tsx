@@ -6,6 +6,7 @@ import {
   compileFirewall,
   deleteObject,
   duplicateObject,
+  duplicateRule,
   downloadCompileOutput,
   deleteRule,
   fetchObject,
@@ -17,6 +18,7 @@ import {
   saveProject,
   searchObjects,
   setRuleAny,
+  setRuleNeg,
   setToken,
   updateObject,
   updateRule,
@@ -274,6 +276,22 @@ export function App() {
     }
   }
 
+  async function onDuplicateRule() {
+    if (!sessionId || !selectedRuleId) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const copy = await duplicateRule(sessionId, selectedRuleId);
+      setSelectedRuleId(copy.id);
+      setStatus(`Rule duplicated → ${copy.id}`);
+      await refreshRules();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function onMoveRule(direction: "up" | "down") {
     if (!sessionId || !selectedRuleId) return;
     setBusy(true);
@@ -324,6 +342,27 @@ export function App() {
     try {
       await setRuleAny(sessionId, picker.ruleId, picker.element);
       setPicker(null);
+      await refreshRules();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function onToggleNeg() {
+    if (!sessionId || !picker) return;
+    const rule = rules.find((r) => r.id === picker.ruleId);
+    const el = rule ? (rule as Record<string, unknown>)[picker.element] : null;
+    const current =
+      el && typeof el === "object" && el !== null && "neg" in el
+        ? Boolean((el as { neg?: boolean }).neg)
+        : false;
+    setBusy(true);
+    setError(null);
+    try {
+      await setRuleNeg(sessionId, picker.ruleId, picker.element, !current);
+      setStatus(`Negate ${picker.element} → ${!current}`);
       await refreshRules();
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
@@ -660,6 +699,14 @@ export function App() {
                     type="button"
                     className="ghost"
                     disabled={!canOperate || !selectedRuleId}
+                    onClick={() => void onDuplicateRule()}
+                  >
+                    Duplicate
+                  </button>
+                  <button
+                    type="button"
+                    className="ghost"
+                    disabled={!canOperate || !selectedRuleId}
                     onClick={() => void onDeleteRule()}
                   >
                     Delete
@@ -734,6 +781,7 @@ export function App() {
           busy={busy}
           onPick={(obj) => void onPickObject(obj)}
           onAny={() => void onPickAny()}
+          onToggleNeg={() => void onToggleNeg()}
           onCancel={() => setPicker(null)}
         />
       ) : null}

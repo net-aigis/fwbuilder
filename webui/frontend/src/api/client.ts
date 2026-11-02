@@ -270,6 +270,13 @@ export function moveRule(
   );
 }
 
+export function duplicateRule(sessionId: string, ruleId: string) {
+  return api<AnyRule>(
+    `/api/v1/projects/${sessionId}/rules/${encodeURIComponent(ruleId)}/duplicate`,
+    { method: "POST", body: "{}" },
+  );
+}
+
 export function addRuleRef(
   sessionId: string,
   ruleId: string,
@@ -298,6 +305,13 @@ export function setRuleAny(sessionId: string, ruleId: string, element: string) {
   return api<AnyRule>(
     `/api/v1/projects/${sessionId}/rules/${encodeURIComponent(ruleId)}/any`,
     { method: "POST", body: JSON.stringify({ element }) },
+  );
+}
+
+export function setRuleNeg(sessionId: string, ruleId: string, element: string, neg: boolean) {
+  return api<AnyRule>(
+    `/api/v1/projects/${sessionId}/rules/${encodeURIComponent(ruleId)}/neg`,
+    { method: "POST", body: JSON.stringify({ element, neg }) },
   );
 }
 

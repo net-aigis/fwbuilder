@@ -40,6 +40,8 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Duplicate / reparent objects | done | bridge `duplicate`/`reparent` + UI; E2E phase9 |
 | Where-used references | done | bridge `where_used` + panel; E2E phase10 |
 | Group members add/remove | done | bridge `members`/`add_member`/`remove_member`; E2E phase11 |
+| Duplicate rule + negate cell | done | `duplicate_rule` + picker Toggle negate; E2E phase12 |
+| Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Phase 3 — compile / deploy
 
@@ -61,6 +63,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase9 (duplicate + reparent) | done | `e2e-phase9.sh` **OK** |
 | Local E2E phase10 (where-used) | done | `e2e-phase10.sh` **OK** |
 | Local E2E phase11 (group members) | done | `e2e-phase11.sh` **OK** |
+| Local E2E phase12 (duplicate rule + negate) | done | `e2e-phase12.sh` **OK** |
 
 ## Local commands
 
@@ -81,4 +84,7 @@ bash webui/scripts/e2e-phase8.sh
 bash webui/scripts/e2e-phase9.sh
 bash webui/scripts/e2e-phase10.sh
 bash webui/scripts/e2e-phase11.sh
+bash webui/scripts/e2e-phase12.sh
+# or everything:
+bash webui/scripts/e2e-all.sh
 ```

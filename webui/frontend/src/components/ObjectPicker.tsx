@@ -8,9 +8,18 @@ type Props = {
   onPick: (obj: TreeNode) => void;
   onCancel: () => void;
   onAny?: () => void;
+  onToggleNeg?: () => void;
 };
 
-export function ObjectPicker({ sessionId, title, busy, onPick, onCancel, onAny }: Props) {
+export function ObjectPicker({
+  sessionId,
+  title,
+  busy,
+  onPick,
+  onCancel,
+  onAny,
+  onToggleNeg,
+}: Props) {
   const [q, setQ] = useState("");
   const [hits, setHits] = useState<TreeNode[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -49,6 +58,11 @@ export function ObjectPicker({ sessionId, title, busy, onPick, onCancel, onAny }
             {onAny ? (
               <button type="button" className="ghost" disabled={busy} onClick={onAny}>
                 Set Any
+              </button>
+            ) : null}
+            {onToggleNeg ? (
+              <button type="button" className="ghost" disabled={busy} onClick={onToggleNeg}>
+                Toggle negate
               </button>
             ) : null}
             <button type="button" className="ghost" onClick={onCancel}>

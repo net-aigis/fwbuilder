@@ -142,6 +142,23 @@ def move_rule(
     return data.get("rule") or {}
 
 
+@router.post("/{session_id}/rules/{rule_id}/duplicate")
+def duplicate_rule(
+    session_id: str,
+    rule_id: str,
+    _: str = Depends(require_token),
+) -> dict[str, Any]:
+    try:
+        session = store.get(session_id)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail="session not found") from exc
+    try:
+        data = session.bridge.request("duplicate_rule", id=rule_id)
+    except BridgeError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    return data.get("rule") or {}
+
+
 @router.post("/{session_id}/rules/{rule_id}/refs")
 def add_rule_ref(
     session_id: str,

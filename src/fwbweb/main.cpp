@@ -729,6 +729,43 @@ static QJsonObject handle(const QJsonObject &req)
         }
     }
 
+    if (cmd == QStringLiteral("duplicate_rule")) {
+        if (!g_db)
+            return errObj(QStringLiteral("no project open"));
+        const string sid =
+            req.value(QStringLiteral("id")).toString().toUtf8().constData();
+        FWObject *obj = findByIdString(g_db, sid);
+        Rule *src = Rule::cast(obj);
+        if (!src)
+            return errObj(QStringLiteral("not a rule"));
+        RuleSet *rs = RuleSet::cast(src->getParent());
+        if (!rs)
+            return errObj(QStringLiteral("rule has no ruleset parent"));
+        if (rs->isReadOnly())
+            return errObj(QStringLiteral("object is read-only"));
+        try {
+            Rule *created = rs->appendRuleAfter(src->getPosition());
+            if (!created)
+                return errObj(QStringLiteral("failed to create rule"));
+            const int pos = created->getPosition();
+            // Keep the new rule's id; copy content from source (desktop GUI pattern).
+            created->duplicate(src);
+            created->setPosition(pos);
+            g_dirty = true;
+            g_db->setDirty(true);
+            QJsonObject o = okObj();
+            o.insert(QStringLiteral("dirty"), true);
+            o.insert(QStringLiteral("rule"), ruleToJson(created));
+            o.insert(QStringLiteral("source_id"),
+                     u8(FWObjectDatabase::getStringId(src->getId())));
+            o.insert(QStringLiteral("ruleset_id"),
+                     u8(FWObjectDatabase::getStringId(rs->getId())));
+            return o;
+        } catch (FWException &ex) {
+            return errObj(u8(ex.toString()));
+        }
+    }
+
     if (cmd == QStringLiteral("re_add_ref") ||
         cmd == QStringLiteral("re_remove_ref") ||
         cmd == QStringLiteral("re_set_any") ||

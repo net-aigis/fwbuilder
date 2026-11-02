@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+# Run the full local WebUI E2E suite (typecheck + phases).
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+cd "$ROOT"
+
+echo "== frontend typecheck =="
+( cd webui/frontend && npm run typecheck )
+
+fail=0
+scripts=(
+  e2e-local
+  e2e-phase2
+  e2e-phase3
+  e2e-phase4
+  e2e-phase5
+  e2e-phase6
+  e2e-phase7
+  e2e-phase8
+  e2e-phase9
+  e2e-phase10
+  e2e-phase11
+  e2e-phase12
+)
+for s in "${scripts[@]}"; do
+  script="webui/scripts/${s}.sh"
+  if [[ ! -x "$script" ]]; then
+    echo "SKIP $s (missing)"
+    continue
+  fi
+  echo "===== $s ====="
+  if bash "$script"; then
+    echo "OK $s"
+  else
+    echo "FAIL $s"
+    fail=1
+    break
+  fi
+done
+
+if [[ "$fail" -ne 0 ]]; then
+  echo "E2E suite FAILED"
+  exit 1
+fi
+echo "OK: full e2e suite passed"
