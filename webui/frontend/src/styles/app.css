@@ -225,6 +225,29 @@ button.ghost {
   min-width: 0;
 }
 
+.object-path {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.15rem;
+  font-size: 0.85rem;
+  border-bottom: 1px solid var(--line);
+}
+
+button.linkish {
+  background: transparent;
+  border: none;
+  color: var(--accent);
+  padding: 0.1rem 0.15rem;
+  cursor: pointer;
+  font: inherit;
+}
+
+button.linkish:disabled {
+  color: var(--ink);
+  cursor: default;
+}
+
 .tree-row {
   display: flex;
   align-items: center;

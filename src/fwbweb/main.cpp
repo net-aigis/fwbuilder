@@ -572,6 +572,11 @@ static QJsonObject objectToJson(FWObject *obj, int depth, int max_depth)
         o.insert(QStringLiteral("library_name"), u8(lib->getName()));
         o.insert(QStringLiteral("deleted"),
                  lib->getId() == FWObjectDatabase::DELETED_OBJECTS_ID);
+        if (lib->getId() == FWObjectDatabase::DELETED_OBJECTS_ID) {
+            const string prev = obj->getStr("deleted_from_parent");
+            if (!prev.empty())
+                o.insert(QStringLiteral("deleted_from_parent_id"), u8(prev));
+        }
     }
 
     QJsonObject attrs = typedAttrs(obj);
@@ -717,7 +722,8 @@ static RuleSet *resolveRuleSet(FWObject *obj, const QString &which)
 
 static bool isMetaAttrKey(const string &key)
 {
-    return key == "id" || key == "name" || key == "comment" || key == "ro";
+    return key == "id" || key == "name" || key == "comment" || key == "ro" ||
+           key == "deleted_from_parent";
 }
 
 static QJsonObject optionsToJson(FWOptions *opt)
@@ -1576,11 +1582,16 @@ static QJsonObject handle(const QJsonObject &req)
                     parent->remove(obj, true);
                     o.insert(QStringLiteral("purged"), true);
                 } else {
+                    obj->setStr(
+                        "deleted_from_parent",
+                        FWObjectDatabase::getStringId(parent->getId()));
                     parent->remove(obj, false);
                     dlib->add(obj);
                     o.insert(QStringLiteral("soft_deleted"), true);
                     o.insert(QStringLiteral("deleted_library_id"),
                              u8(FWObjectDatabase::getStringId(dlib->getId())));
+                    o.insert(QStringLiteral("deleted_from_parent_id"),
+                             u8(obj->getStr("deleted_from_parent")));
                 }
             }
             g_dirty = true;
@@ -1618,6 +1629,10 @@ static QJsonObject handle(const QJsonObject &req)
                 row.insert(QStringLiteral("name"), u8(child->getName()));
                 row.insert(QStringLiteral("type"), u8(child->getTypeName()));
                 row.insert(QStringLiteral("comment"), u8(child->getComment()));
+                const string prev = child->getStr("deleted_from_parent");
+                if (!prev.empty())
+                    row.insert(QStringLiteral("deleted_from_parent_id"),
+                               u8(prev));
                 items.append(row);
             }
         }
@@ -1625,6 +1640,97 @@ static QJsonObject handle(const QJsonObject &req)
         o.insert(QStringLiteral("count"), items.size());
         o.insert(QStringLiteral("deleted_library_id"), lib_id);
         o.insert(QStringLiteral("objects"), items);
+        return o;
+    }
+
+    if (cmd == QStringLiteral("restore")) {
+        if (!g_db)
+            return errObj(QStringLiteral("no project open"));
+        const string sid =
+            req.value(QStringLiteral("id")).toString().toUtf8().constData();
+        FWObject *obj = findByIdString(g_db, sid);
+        if (!obj)
+            return errObj(QStringLiteral("object not found"));
+        if (obj->isReadOnly())
+            return errObj(QStringLiteral("object is read-only"));
+        FWObject *obj_lib = obj->getLibrary();
+        if (!obj_lib ||
+            obj_lib->getId() != FWObjectDatabase::DELETED_OBJECTS_ID)
+            return errObj(QStringLiteral("object is not in Deleted Objects"));
+        string target_id =
+            req.value(QStringLiteral("parent_id")).toString().toUtf8().constData();
+        if (target_id.empty())
+            target_id = obj->getStr("deleted_from_parent");
+        FWObject *target = 0;
+        if (!target_id.empty())
+            target = findByIdString(g_db, target_id);
+        if (!target) {
+            // Fallback: first User library Objects group.
+            for (list<FWObject *>::iterator li = g_db->begin();
+                 li != g_db->end(); ++li) {
+                FWObject *lib = *li;
+                if (!Library::cast(lib) ||
+                    lib->getId() == FWObjectDatabase::STANDARD_LIB_ID ||
+                    lib->getId() == FWObjectDatabase::DELETED_OBJECTS_ID)
+                    continue;
+                for (FWObject::iterator i = lib->begin(); i != lib->end();
+                     ++i) {
+                    if ((*i)->getName() == "Objects" && ObjectGroup::cast(*i)) {
+                        target = *i;
+                        break;
+                    }
+                }
+                if (target)
+                    break;
+            }
+        }
+        if (!target)
+            return errObj(QStringLiteral("restore parent not found"));
+        FWObject *tlib = target->getLibrary();
+        if (tlib && tlib->getId() == FWObjectDatabase::DELETED_OBJECTS_ID)
+            return errObj(QStringLiteral("cannot restore into Deleted Objects"));
+        try {
+            FWObject *cur_parent = obj->getParent();
+            if (cur_parent)
+                cur_parent->remove(obj, false);
+            target->add(obj);
+            obj->setStr("deleted_from_parent", "");
+            g_dirty = true;
+            g_db->setDirty(true);
+            QJsonObject o = okObj();
+            o.insert(QStringLiteral("dirty"), true);
+            o.insert(QStringLiteral("object"), objectToJson(obj, 0, 1));
+            return o;
+        } catch (FWException &ex) {
+            return errObj(u8(ex.toString()));
+        }
+    }
+
+    if (cmd == QStringLiteral("object_path")) {
+        if (!g_db)
+            return errObj(QStringLiteral("no project open"));
+        const string sid =
+            req.value(QStringLiteral("id")).toString().toUtf8().constData();
+        FWObject *obj = findByIdString(g_db, sid);
+        if (!obj)
+            return errObj(QStringLiteral("object not found"));
+        QJsonArray path;
+        list<FWObject *> chain;
+        for (FWObject *p = obj; p; p = p->getParent())
+            chain.push_front(p);
+        for (list<FWObject *>::iterator i = chain.begin(); i != chain.end();
+             ++i) {
+            FWObject *n = *i;
+            QJsonObject row;
+            row.insert(QStringLiteral("id"),
+                       u8(FWObjectDatabase::getStringId(n->getId())));
+            row.insert(QStringLiteral("name"), u8(n->getName()));
+            row.insert(QStringLiteral("type"), u8(n->getTypeName()));
+            path.append(row);
+        }
+        QJsonObject o = okObj();
+        o.insert(QStringLiteral("path"), path);
+        o.insert(QStringLiteral("count"), path.size());
         return o;
     }
 

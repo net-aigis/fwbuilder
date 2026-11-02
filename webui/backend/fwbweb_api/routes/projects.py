@@ -265,6 +265,48 @@ def reparent_object(
     return data.get("object") or data
 
 
+class RestoreRequest(BaseModel):
+    parent_id: str | None = None
+
+
+@router.post("/{session_id}/objects/{object_id}/restore")
+def restore_object(
+    session_id: str,
+    object_id: str,
+    body: RestoreRequest | None = None,
+    _: str = Depends(require_token),
+) -> dict[str, Any]:
+    """Restore a soft-deleted object to its previous parent (or parent_id)."""
+    try:
+        session = store.get(session_id)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail="session not found") from exc
+    payload: dict[str, Any] = {"id": object_id}
+    if body and body.parent_id:
+        payload["parent_id"] = body.parent_id
+    try:
+        data = session.bridge.request("restore", **payload)
+    except BridgeError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    return data.get("object") or data
+
+
+@router.get("/{session_id}/objects/{object_id}/path")
+def object_path(
+    session_id: str,
+    object_id: str,
+    _: str = Depends(require_token),
+) -> dict[str, Any]:
+    try:
+        session = store.get(session_id)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail="session not found") from exc
+    try:
+        return session.bridge.request("object_path", id=object_id)
+    except BridgeError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
 @router.post("/{session_id}/objects/{object_id}/duplicate")
 def duplicate_object(
     session_id: str,

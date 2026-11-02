@@ -16,12 +16,15 @@ export type TreeNode = {
   library_id?: string;
   library_name?: string;
   deleted?: boolean;
+  deleted_from_parent_id?: string;
   children_count?: number;
   attrs?: Record<string, string | number>;
   children?: TreeNode[];
   rulesets?: { policy?: string; nat?: string; routing?: string };
   ruleset_list?: RulesetListEntry[];
 };
+
+export type ObjectPathEntry = { id: string; name: string; type: string };
 
 export type RuleRef = { id: string; name: string; type: string };
 
@@ -210,8 +213,34 @@ export function listDeletedObjects(sessionId: string) {
   return api<{
     count: number;
     deleted_library_id?: string;
-    objects: Array<{ id: string; name: string; type: string; comment?: string }>;
+    objects: Array<{
+      id: string;
+      name: string;
+      type: string;
+      comment?: string;
+      deleted_from_parent_id?: string;
+    }>;
   }>(`/api/v1/projects/${sessionId}/deleted`);
+}
+
+export function restoreDeletedObject(
+  sessionId: string,
+  objectId: string,
+  parentId?: string,
+) {
+  return api<TreeNode>(
+    `/api/v1/projects/${sessionId}/objects/${encodeURIComponent(objectId)}/restore`,
+    {
+      method: "POST",
+      body: JSON.stringify(parentId ? { parent_id: parentId } : {}),
+    },
+  );
+}
+
+export function fetchObjectPath(sessionId: string, objectId: string) {
+  return api<{ count: number; path: ObjectPathEntry[] }>(
+    `/api/v1/projects/${sessionId}/objects/${encodeURIComponent(objectId)}/path`,
+  );
 }
 
 export function findUnusedObjects(sessionId: string, limit = 200) {

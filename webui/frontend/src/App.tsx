@@ -9,11 +9,12 @@ import {
   emptyDeletedObjects,
   findUnusedObjects,
   fetchWhereUsed,
+  fetchObjectPath,
   listDeletedObjects,
   listSessions,
   formatRuleObjects,
   duplicateObject,
-  reparentObject,
+  restoreDeletedObject,
   duplicateRule,
   downloadCompileOutput,
   downloadCompileOutputsZip,
@@ -40,6 +41,7 @@ import {
   type PolicyRule,
   type RuleElement,
   type RoutingRuleRow,
+  type ObjectPathEntry,
   type RulesetListEntry,
   type TreeNode,
 } from "./api/client";
@@ -117,6 +119,7 @@ export function App() {
     Array<{ id: string; name: string; type: string; comment?: string }>
   >([]);
   const [sessionCount, setSessionCount] = useState(0);
+  const [objectPath, setObjectPath] = useState<ObjectPathEntry[]>([]);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const canOperate = useMemo(() => Boolean(sessionId) && !busy, [sessionId, busy]);
@@ -163,6 +166,10 @@ export function App() {
     window.addEventListener("beforeunload", onBeforeUnload);
     return () => window.removeEventListener("beforeunload", onBeforeUnload);
   }, [dirty]);
+
+  useEffect(() => {
+    void refreshObjectPath(selected?.id ?? null);
+  }, [sessionId, selected?.id]);
 
   function rememberPath(p: string) {
     const next = [p, ...recentPaths.filter((x) => x !== p)].slice(0, 8);
@@ -654,17 +661,10 @@ export function App() {
 
   async function restoreObjectById(objectId: string) {
     if (!sessionId) return;
-    const hits = await searchObjects(sessionId, "Objects", "ObjectGroup");
-    const target =
-      (hits.results ?? []).find(
-        (r) => r.name === "Objects" && !String(r.id).startsWith("std"),
-      ) ||
-      (hits.results ?? []).find((r) => r.name === "Objects");
-    if (!target) throw new Error("No Objects group found to restore into");
-    const restored = await reparentObject(sessionId, objectId, target.id);
+    const restored = await restoreDeletedObject(sessionId, objectId);
     setDirty(true);
     await refreshTreeSelect(restored.id);
-    setStatus(`Restored ${restored.name} → ${target.name}`);
+    setStatus(`Restored ${restored.name} → ${restored.parent_id ?? "?"}`);
     await refreshTrashCount();
   }
 
@@ -758,6 +758,35 @@ export function App() {
       const parent = await fetchObject(sessionId, selected.parent_id);
       setSelected(parent);
       setStatus(`Parent: ${parent.name}`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function refreshObjectPath(id?: string | null) {
+    if (!sessionId || !id) {
+      setObjectPath([]);
+      return;
+    }
+    try {
+      const res = await fetchObjectPath(sessionId, id);
+      setObjectPath(res.path ?? []);
+    } catch {
+      setObjectPath([]);
+    }
+  }
+
+  async function onMakeRulesetTop() {
+    if (!sessionId || !rulesetId || !rulesFwId) return;
+    setBusy(true);
+    setError(null);
+    try {
+      await updateObject(sessionId, rulesetId, { attrs: { top: "True" } });
+      setDirty(true);
+      setStatus("Ruleset marked as top");
+      await loadRules(rulesFwId, rulesWhich, rulesetId);
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
@@ -1600,6 +1629,24 @@ export function App() {
           </div>
 
           {tab === "object" ? (
+            <>
+              {objectPath.length ? (
+                <nav className="object-path pad" aria-label="Object path">
+                  {objectPath.map((p, i) => (
+                    <span key={p.id}>
+                      {i > 0 ? <span className="muted"> / </span> : null}
+                      <button
+                        type="button"
+                        className="linkish"
+                        disabled={busy || p.id === selected?.id}
+                        onClick={() => void onSelect({ id: p.id, name: p.name, type: p.type })}
+                      >
+                        {p.name || p.type}
+                      </button>
+                    </span>
+                  ))}
+                </nav>
+              ) : null}
             <ObjectDetail
               object={selected}
               busy={busy}
@@ -1769,6 +1816,7 @@ export function App() {
                 ) : null
               }
             />
+            </>
           ) : (
             <div className="panel">
               <header className="panel-header">
@@ -1821,6 +1869,18 @@ export function App() {
                           ))}
                       </select>
                     </label>
+                  ) : null}
+                  {rulesetId &&
+                  !rulesetList.find((r) => r.id === rulesetId)?.top ? (
+                    <button
+                      type="button"
+                      className="ghost"
+                      disabled={!canOperate}
+                      onClick={() => void onMakeRulesetTop()}
+                      title="Mark this ruleset as the top Policy/NAT/Routing"
+                    >
+                      Make top
+                    </button>
                   ) : null}
                   {rulesetId &&
                   rulesetList.filter((r) => {

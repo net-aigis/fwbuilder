@@ -127,6 +127,9 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Delete secondary ruleset | done | toolbar + permanent delete; E2E phase37 |
 | Where-used warn on delete | done | confirm shows reference count |
 | Sessions count in status | done | `GET /sessions`; E2E phase37 |
+| Restore to previous parent | done | soft-delete stores parent; `POST …/restore`; E2E phase38 |
+| Object path breadcrumb | done | `GET …/path` + nav; E2E phase38 |
+| Make ruleset top | done | toolbar Make top; E2E phase38 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Phase 3 — compile / deploy
@@ -175,6 +178,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase35 (bulk group + object dup) | done | `e2e-phase35.sh` **OK** |
 | Local E2E phase36 (unused + trash restore) | done | `e2e-phase36.sh` **OK** |
 | Local E2E phase37 (del ruleset + unused) | done | `e2e-phase37.sh` **OK** |
+| Local E2E phase38 (restore parent + path) | done | `e2e-phase38.sh` **OK** |
 
 ## Local commands
 
@@ -221,6 +225,7 @@ bash webui/scripts/e2e-phase34.sh
 bash webui/scripts/e2e-phase35.sh
 bash webui/scripts/e2e-phase36.sh
 bash webui/scripts/e2e-phase37.sh
+bash webui/scripts/e2e-phase38.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```
