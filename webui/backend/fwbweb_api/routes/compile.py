@@ -75,6 +75,11 @@ def compile_firewall(
         "destdir": result["destdir"],
         "outputs": result["outputs"],
     }
+    try:
+        session.bridge.request("touch_compiled", id=body.firewall_id)
+        session.bridge.request("save")
+    except BridgeError:
+        pass
     return result
 
 

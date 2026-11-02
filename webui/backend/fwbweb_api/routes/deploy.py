@@ -150,6 +150,14 @@ def deploy_firewall(
             detail={"message": str(exc), "log": exc.log, "commands": exc.commands},
         ) from exc
 
+    if not body.dry_run and deploy_result.get("ok"):
+        try:
+            session.bridge.request("touch_compiled", id=body.firewall_id)
+            session.bridge.request("touch_installed", id=body.firewall_id)
+            session.bridge.request("save")
+        except BridgeError:
+            pass
+
     return {
         "ok": True,
         "firewall": name,

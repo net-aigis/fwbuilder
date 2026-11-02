@@ -56,6 +56,7 @@
 #include <set>
 #include <string>
 #include <cctype>
+#include <ctime>
 
 using namespace libfwbuilder;
 using namespace std;
@@ -195,6 +196,11 @@ static QJsonObject typedAttrs(FWObject *obj)
         putStrAttr(attrs, obj, "platform");
         putStrAttr(attrs, obj, "host_OS");
         putStrAttr(attrs, obj, "version");
+    }
+    if (t == "Firewall" || t == "Cluster") {
+        putIntAttr(attrs, obj, "lastModified");
+        putIntAttr(attrs, obj, "lastCompiled");
+        putIntAttr(attrs, obj, "lastInstalled");
     }
     if (t == "Interface") {
         const FWObject *parent_host = Host::getParentHost(obj);
@@ -656,7 +662,19 @@ static bool isIntKey(const string &key)
            key == "from_day" || key == "from_month" || key == "from_year" ||
            key == "to_minute" || key == "to_hour" || key == "to_day" ||
            key == "to_month" || key == "to_year" || key == "vlan_id" ||
-           key == "enable_stp";
+           key == "enable_stp" || key == "lastModified" ||
+           key == "lastCompiled" || key == "lastInstalled" ||
+           key == "security_level";
+}
+
+static void bumpFirewallModified(FWObject *obj)
+{
+    for (FWObject *p = obj; p; p = p->getParent()) {
+        if (Firewall::cast(p)) {
+            p->setInt("lastModified", static_cast<int>(time(0)));
+            return;
+        }
+    }
 }
 
 static QJsonObject ruleToJson(Rule *rule)
@@ -950,6 +968,7 @@ static QJsonObject handle(const QJsonObject &req)
                     rule->setBranch(rs);
                 }
             }
+            bumpFirewallModified(rule);
             g_dirty = true;
             g_db->setDirty(true);
             QJsonObject o = okObj();
@@ -992,6 +1011,7 @@ static QJsonObject handle(const QJsonObject &req)
                 created = rs->appendRuleAtBottom();
             if (!created)
                 return errObj(QStringLiteral("failed to create rule"));
+            bumpFirewallModified(created);
             g_dirty = true;
             g_db->setDirty(true);
             QJsonObject o = okObj();
@@ -1022,6 +1042,7 @@ static QJsonObject handle(const QJsonObject &req)
         try {
             if (!rs->deleteRule(rule))
                 return errObj(QStringLiteral("delete failed"));
+            bumpFirewallModified(rs);
             g_dirty = true;
             g_db->setDirty(true);
             QJsonObject o = okObj();
@@ -1353,6 +1374,7 @@ static QJsonObject handle(const QJsonObject &req)
                 req.value(QStringLiteral("attrs")).isObject()) {
                 applyObjectAttrs(obj, req.value(QStringLiteral("attrs")).toObject());
             }
+            bumpFirewallModified(obj);
             g_dirty = true;
             g_db->setDirty(true);
             QJsonObject o = okObj();
@@ -1362,6 +1384,48 @@ static QJsonObject handle(const QJsonObject &req)
         } catch (FWException &ex) {
             return errObj(u8(ex.toString()));
         }
+    }
+
+    if (cmd == QStringLiteral("touch_compiled")) {
+        if (!g_db)
+            return errObj(QStringLiteral("no project open"));
+        const string sid =
+            req.value(QStringLiteral("id")).toString().toUtf8().constData();
+        FWObject *obj = findByIdString(g_db, sid);
+        Firewall *fw = Firewall::cast(obj);
+        if (!fw)
+            return errObj(QStringLiteral("not a firewall"));
+        const int ts = req.contains(QStringLiteral("ts"))
+                           ? req.value(QStringLiteral("ts")).toInt()
+                           : static_cast<int>(time(0));
+        fw->setInt("lastCompiled", ts);
+        g_dirty = true;
+        g_db->setDirty(true);
+        QJsonObject o = okObj();
+        o.insert(QStringLiteral("dirty"), true);
+        o.insert(QStringLiteral("object"), objectToJson(fw, 0, 1));
+        return o;
+    }
+
+    if (cmd == QStringLiteral("touch_installed")) {
+        if (!g_db)
+            return errObj(QStringLiteral("no project open"));
+        const string sid =
+            req.value(QStringLiteral("id")).toString().toUtf8().constData();
+        FWObject *obj = findByIdString(g_db, sid);
+        Firewall *fw = Firewall::cast(obj);
+        if (!fw)
+            return errObj(QStringLiteral("not a firewall"));
+        const int ts = req.contains(QStringLiteral("ts"))
+                           ? req.value(QStringLiteral("ts")).toInt()
+                           : static_cast<int>(time(0));
+        fw->setInt("lastInstalled", ts);
+        g_dirty = true;
+        g_db->setDirty(true);
+        QJsonObject o = okObj();
+        o.insert(QStringLiteral("dirty"), true);
+        o.insert(QStringLiteral("object"), objectToJson(fw, 0, 1));
+        return o;
     }
 
     if (cmd == QStringLiteral("create")) {
@@ -1412,6 +1476,7 @@ static QJsonObject handle(const QJsonObject &req)
                 applyObjectAttrs(child, req.value(QStringLiteral("attrs")).toObject());
             }
             parent->add(child);
+            bumpFirewallModified(child);
             g_dirty = true;
             g_db->setDirty(true);
             QJsonObject o = okObj();

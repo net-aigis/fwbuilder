@@ -31,7 +31,22 @@ const TYPE_FIELDS: Record<string, string[]> = {
   ICMPService: ["type", "code"],
   ICMP6Service: ["type", "code"],
   IPService: ["protocol_num"],
-  Firewall: ["platform", "host_OS", "version"],
+  Firewall: [
+    "platform",
+    "host_OS",
+    "version",
+    "lastModified",
+    "lastCompiled",
+    "lastInstalled",
+  ],
+  Cluster: [
+    "platform",
+    "host_OS",
+    "version",
+    "lastModified",
+    "lastCompiled",
+    "lastInstalled",
+  ],
   Host: ["platform", "host_OS"],
   Interface: [
     "phys_address",
@@ -100,6 +115,9 @@ export function ObjectDetail({ object, readOnly, busy, onSave, onOpenRules, extr
         k === "protocol_num" ||
         k === "metric" ||
         k === "security_level" ||
+        k === "lastModified" ||
+        k === "lastCompiled" ||
+        k === "lastInstalled" ||
         k.startsWith("from_") ||
         k.startsWith("to_")
       ) {
@@ -109,6 +127,24 @@ export function ObjectDetail({ object, readOnly, busy, onSave, onOpenRules, extr
       }
     }
     onSave?.({ name, comment, attrs: out });
+  }
+
+  function formatAttrValue(key: string, value: string): string {
+    if (
+      (key === "lastModified" || key === "lastCompiled" || key === "lastInstalled") &&
+      value &&
+      value !== "0"
+    ) {
+      const n = Number(value);
+      if (Number.isFinite(n) && n > 0) {
+        try {
+          return `${value} · ${new Date(n * 1000).toISOString()}`;
+        } catch {
+          return value;
+        }
+      }
+    }
+    return value;
   }
 
   return (
@@ -151,16 +187,28 @@ export function ObjectDetail({ object, readOnly, busy, onSave, onOpenRules, extr
 
       {fields.length ? (
         <div className="typed-grid">
-          {fields.map((key) => (
-            <label key={key} className="field block">
-              {key}
-              <input
-                value={attrs[key] ?? ""}
-                disabled={locked || busy}
-                onChange={(e) => setAttrs((prev) => ({ ...prev, [key]: e.target.value }))}
-              />
-            </label>
-          ))}
+          {fields.map((key) => {
+            const isStamp =
+              key === "lastModified" || key === "lastCompiled" || key === "lastInstalled";
+            return (
+              <label key={key} className="field block">
+                {key}
+                {isStamp ? (
+                  <input
+                    value={formatAttrValue(key, attrs[key] ?? "")}
+                    disabled
+                    readOnly
+                  />
+                ) : (
+                  <input
+                    value={attrs[key] ?? ""}
+                    disabled={locked || busy}
+                    onChange={(e) => setAttrs((prev) => ({ ...prev, [key]: e.target.value }))}
+                  />
+                )}
+              </label>
+            );
+          })}
         </div>
       ) : (
         <p className="muted">No typed fields for this object type yet.</p>

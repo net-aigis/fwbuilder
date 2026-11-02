@@ -76,6 +76,10 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Rule group header rows | done | RuleGrid visual groups |
 | Multi Policy/NAT ruleset picker | done | `ruleset_list` + UI select; E2E phase24 |
 | parent_id on objects | done | objectToJson; open Policy from tree |
+| Firewall lastModified / lastCompiled / lastInstalled | done | attrs + auto bump; touch after compile/deploy; E2E phase25 |
+| Ctrl+S / Ctrl+Shift+S save | done | App keyboard shortcut |
+| Rule text filter | done | comment/action filter in rules toolbar |
+| NetworkIPv6 create | done | InetAddr AF_INET6; E2E phase25 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Phase 3 — compile / deploy
@@ -111,6 +115,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase22 (iface flags + move to) | done | `e2e-phase22.sh` **OK** |
 | Local E2E phase23 (Library + RuleSet top) | done | `e2e-phase23.sh` **OK** |
 | Local E2E phase24 (multi ruleset list) | done | `e2e-phase24.sh` **OK** |
+| Local E2E phase25 (timestamps + NetworkIPv6) | done | `e2e-phase25.sh` **OK** |
 
 ## Local commands
 
@@ -144,6 +149,7 @@ bash webui/scripts/e2e-phase21.sh
 bash webui/scripts/e2e-phase22.sh
 bash webui/scripts/e2e-phase23.sh
 bash webui/scripts/e2e-phase24.sh
+bash webui/scripts/e2e-phase25.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

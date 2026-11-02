@@ -81,6 +81,7 @@ export function App() {
   const [dirty, setDirty] = useState(false);
   const [hideDisabled, setHideDisabled] = useState(false);
   const [ruleGroupFilter, setRuleGroupFilter] = useState("");
+  const [ruleTextFilter, setRuleTextFilter] = useState("");
 
   const canOperate = useMemo(() => Boolean(sessionId) && !busy, [sessionId, busy]);
 
@@ -91,8 +92,16 @@ export function App() {
       const q = ruleGroupFilter.trim().toLowerCase();
       list = list.filter((r) => (r.group ?? "").toLowerCase().includes(q));
     }
+    if (ruleTextFilter.trim()) {
+      const q = ruleTextFilter.trim().toLowerCase();
+      list = list.filter((r) => {
+        const action = "action" in r ? String((r as PolicyRule).action ?? "") : "";
+        const blob = `${r.comment ?? ""} ${r.group ?? ""} ${action}`.toLowerCase();
+        return blob.includes(q);
+      });
+    }
     return list;
-  }, [rules, hideDisabled, ruleGroupFilter]);
+  }, [rules, hideDisabled, ruleGroupFilter, ruleTextFilter]);
 
   const ruleGroups = useMemo(() => {
     const set = new Set<string>();
@@ -242,6 +251,18 @@ export function App() {
       setBusy(false);
     }
   }
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const mod = e.ctrlKey || e.metaKey;
+      if (!mod || e.key.toLowerCase() !== "s") return;
+      if (!sessionId || busy) return;
+      e.preventDefault();
+      void onSave(e.shiftKey);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [sessionId, busy]);
 
   async function onApplyObject(patch: {
     name: string;
@@ -1033,6 +1054,15 @@ export function App() {
                         </option>
                       ))}
                     </select>
+                  </label>
+                  <label className="field inline">
+                    Filter
+                    <input
+                      value={ruleTextFilter}
+                      disabled={busy}
+                      placeholder="comment/action…"
+                      onChange={(e) => setRuleTextFilter(e.target.value)}
+                    />
                   </label>
                   <button
                     type="button"
