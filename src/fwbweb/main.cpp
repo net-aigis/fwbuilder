@@ -1043,6 +1043,98 @@ static QJsonObject handle(const QJsonObject &req)
         }
     }
 
+    if (cmd == QStringLiteral("reparent")) {
+        if (!g_db)
+            return errObj(QStringLiteral("no project open"));
+        const string sid =
+            req.value(QStringLiteral("id")).toString().toUtf8().constData();
+        const string parent_sid =
+            req.value(QStringLiteral("parent_id")).toString().toUtf8().constData();
+        FWObject *obj = findByIdString(g_db, sid);
+        FWObject *new_parent = findByIdString(g_db, parent_sid);
+        if (!obj)
+            return errObj(QStringLiteral("object not found"));
+        if (!new_parent)
+            return errObj(QStringLiteral("parent not found"));
+        if (obj == g_db)
+            return errObj(QStringLiteral("cannot reparent database root"));
+        if (obj->isReadOnly())
+            return errObj(QStringLiteral("object is read-only"));
+        if (new_parent->isReadOnly())
+            return errObj(QStringLiteral("parent is read-only"));
+        if (Rule::cast(obj) || RuleSet::cast(obj) || RuleElement::cast(obj))
+            return errObj(QStringLiteral("cannot reparent rules via this API"));
+        if (RuleSet::cast(new_parent) || Rule::cast(new_parent) ||
+            RuleElement::cast(new_parent))
+            return errObj(QStringLiteral("cannot reparent under ruleset/rule"));
+        // Prevent moving an object under itself / descendant.
+        for (FWObject *p = new_parent; p; p = p->getParent()) {
+            if (p == obj)
+                return errObj(QStringLiteral("cannot reparent under itself"));
+        }
+        try {
+            new_parent->reparent(obj, true);
+            g_dirty = true;
+            g_db->setDirty(true);
+            QJsonObject o = okObj();
+            o.insert(QStringLiteral("dirty"), true);
+            o.insert(QStringLiteral("object"), objectToJson(obj, 0, 1));
+            o.insert(QStringLiteral("parent_id"),
+                     u8(FWObjectDatabase::getStringId(new_parent->getId())));
+            return o;
+        } catch (FWException &ex) {
+            return errObj(u8(ex.toString()));
+        }
+    }
+
+    if (cmd == QStringLiteral("duplicate")) {
+        if (!g_db)
+            return errObj(QStringLiteral("no project open"));
+        const string sid =
+            req.value(QStringLiteral("id")).toString().toUtf8().constData();
+        FWObject *src = findByIdString(g_db, sid);
+        if (!src)
+            return errObj(QStringLiteral("object not found"));
+        if (src == g_db)
+            return errObj(QStringLiteral("cannot duplicate database root"));
+        if (Rule::cast(src) || RuleSet::cast(src) || RuleElement::cast(src))
+            return errObj(QStringLiteral("cannot duplicate rules via this API"));
+        string parent_sid =
+            req.value(QStringLiteral("parent_id")).toString().toUtf8().constData();
+        FWObject *parent = parent_sid.empty() ? src->getParent()
+                                              : findByIdString(g_db, parent_sid);
+        if (!parent)
+            return errObj(QStringLiteral("parent not found"));
+        if (parent->isReadOnly())
+            return errObj(QStringLiteral("parent is read-only"));
+        try {
+            FWObject *copy = g_db->create(src->getTypeName());
+            if (!copy)
+                return errObj(QStringLiteral("cannot create copy"));
+            // preserve_id=true keeps the new object's freshly issued id
+            // (false would overwrite it with the source id).
+            copy->duplicate(src, true);
+            QString new_name = req.value(QStringLiteral("name")).toString();
+            if (new_name.isEmpty())
+                new_name = u8(src->getName()) + QStringLiteral(" Copy");
+            copy->setName(new_name.toUtf8().constData());
+            if (Interface::cast(copy)) {
+                Interface::cast(copy)->setManagement(false);
+            }
+            parent->add(copy);
+            g_dirty = true;
+            g_db->setDirty(true);
+            QJsonObject o = okObj();
+            o.insert(QStringLiteral("dirty"), true);
+            o.insert(QStringLiteral("object"), objectToJson(copy, 0, 1));
+            o.insert(QStringLiteral("source_id"),
+                     u8(FWObjectDatabase::getStringId(src->getId())));
+            return o;
+        } catch (FWException &ex) {
+            return errObj(u8(ex.toString()));
+        }
+    }
+
     if (cmd == QStringLiteral("save")) {
         if (!g_db)
             return errObj(QStringLiteral("no project open"));

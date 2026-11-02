@@ -154,6 +154,24 @@ export function deleteObject(sessionId: string, objectId: string) {
   );
 }
 
+export function reparentObject(sessionId: string, objectId: string, parentId: string) {
+  return api<TreeNode>(
+    `/api/v1/projects/${sessionId}/objects/${encodeURIComponent(objectId)}/reparent`,
+    { method: "POST", body: JSON.stringify({ parent_id: parentId }) },
+  );
+}
+
+export function duplicateObject(
+  sessionId: string,
+  objectId: string,
+  body?: { parent_id?: string; name?: string },
+) {
+  return api<TreeNode>(
+    `/api/v1/projects/${sessionId}/objects/${encodeURIComponent(objectId)}/duplicate`,
+    { method: "POST", body: JSON.stringify(body ?? {}) },
+  );
+}
+
 export function fetchRuleset(
   sessionId: string,
   objectId: string,

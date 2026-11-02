@@ -5,6 +5,7 @@ type Props = {
   sessionId: string;
   parentId: string;
   parentName?: string;
+  parentType?: string;
   busy?: boolean;
   onCreated: (id: string) => void;
   onBusy?: (busy: boolean) => void;
@@ -12,7 +13,7 @@ type Props = {
   onStatus?: (msg: string) => void;
 };
 
-const TYPES = [
+const BASE_TYPES = [
   "Network",
   "Host",
   "IPv4",
@@ -30,13 +31,16 @@ export function CreateObject({
   sessionId,
   parentId,
   parentName,
+  parentType,
   busy,
   onCreated,
   onBusy,
   onError,
   onStatus,
 }: Props) {
-  const [type, setType] = useState("Network");
+  const hostLike = parentType === "Firewall" || parentType === "Host" || parentType === "Cluster";
+  const TYPES = hostLike ? ["Interface", "IPv4", ...BASE_TYPES] : BASE_TYPES;
+  const [type, setType] = useState(hostLike ? "Interface" : "Network");
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [netmask, setNetmask] = useState("255.255.255.0");

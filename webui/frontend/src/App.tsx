@@ -5,6 +5,7 @@ import {
   closeProject,
   compileFirewall,
   deleteObject,
+  duplicateObject,
   downloadCompileOutput,
   deleteRule,
   fetchObject,
@@ -27,6 +28,7 @@ import { CreateObject } from "./components/CreateObject";
 import { FirewallExtras } from "./components/FirewallExtras";
 import { HostOptions } from "./components/HostOptions";
 import { InterfaceOptions } from "./components/InterfaceOptions";
+import { MoveObject } from "./components/MoveObject";
 import { ObjectDetail } from "./components/ObjectDetail";
 import { ObjectPicker } from "./components/ObjectPicker";
 import { ObjectTree } from "./components/ObjectTree";
@@ -179,6 +181,21 @@ export function App() {
       const t = await fetchTree(sessionId, 5);
       setTree(t.root);
       setStatus("Object deleted");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function onDuplicateObject() {
+    if (!sessionId || !selected) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const copy = await duplicateObject(sessionId, selected.id);
+      setStatus(`Duplicated → ${copy.name}`);
+      await refreshTreeSelect(copy.id);
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
@@ -498,6 +515,14 @@ export function App() {
                         type="button"
                         className="ghost"
                         disabled={busy || selected.ro}
+                        onClick={() => void onDuplicateObject()}
+                      >
+                        Duplicate
+                      </button>
+                      <button
+                        type="button"
+                        className="ghost"
+                        disabled={busy || selected.ro}
                         onClick={() => void onDeleteObject()}
                       >
                         Delete object
@@ -536,13 +561,29 @@ export function App() {
                         onError={setError}
                       />
                     ) : null}
-                    {["ObjectGroup", "Library", "ServiceGroup", "FWObjectDatabase"].includes(
+                    {!selected.ro &&
+                    !["FWObjectDatabase", "Library"].includes(selected.type) &&
+                    !selected.type.endsWith("Rule") ? (
+                      <MoveObject
+                        sessionId={sessionId}
+                        objectId={selected.id}
+                        objectName={selected.name}
+                        busy={busy}
+                        onBusy={setBusy}
+                        onStatus={setStatus}
+                        onError={setError}
+                        onMoved={(id) => void refreshTreeSelect(id)}
+                      />
+                    ) : null}
+                    {["ObjectGroup", "Library", "ServiceGroup", "FWObjectDatabase", "Firewall", "Host", "Cluster"].includes(
                       selected.type,
                     ) || selected.type.endsWith("Group") ? (
                       <CreateObject
+                        key={selected.id}
                         sessionId={sessionId}
                         parentId={selected.id}
                         parentName={selected.name}
+                        parentType={selected.type}
                         busy={busy}
                         onBusy={setBusy}
                         onStatus={setStatus}

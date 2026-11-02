@@ -166,6 +166,57 @@ def delete_object(
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 
 
+class ReparentRequest(BaseModel):
+    parent_id: str = Field(..., min_length=1)
+
+
+class DuplicateRequest(BaseModel):
+    parent_id: str | None = None
+    name: str | None = None
+
+
+@router.post("/{session_id}/objects/{object_id}/reparent")
+def reparent_object(
+    session_id: str,
+    object_id: str,
+    body: ReparentRequest,
+    _: str = Depends(require_token),
+) -> dict[str, Any]:
+    try:
+        session = store.get(session_id)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail="session not found") from exc
+    try:
+        data = session.bridge.request("reparent", id=object_id, parent_id=body.parent_id)
+    except BridgeError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    return data.get("object") or data
+
+
+@router.post("/{session_id}/objects/{object_id}/duplicate")
+def duplicate_object(
+    session_id: str,
+    object_id: str,
+    body: DuplicateRequest | None = None,
+    _: str = Depends(require_token),
+) -> dict[str, Any]:
+    body = body or DuplicateRequest()
+    try:
+        session = store.get(session_id)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail="session not found") from exc
+    payload: dict[str, Any] = {"id": object_id}
+    if body.parent_id:
+        payload["parent_id"] = body.parent_id
+    if body.name:
+        payload["name"] = body.name
+    try:
+        data = session.bridge.request("duplicate", **payload)
+    except BridgeError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    return data.get("object") or data
+
+
 @router.patch("/{session_id}/objects/{object_id}")
 def update_object(
     session_id: str,
