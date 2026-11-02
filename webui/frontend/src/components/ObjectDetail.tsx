@@ -28,7 +28,7 @@ const TYPE_FIELDS: Record<string, string[]> = {
   IPService: ["protocol_num"],
   Firewall: ["platform", "host_OS", "version"],
   Host: ["platform", "host_OS"],
-  Interface: ["phys_address"],
+  Interface: ["phys_address", "label"],
   Interval: [
     "from_hour",
     "from_minute",
@@ -49,10 +49,10 @@ export function ObjectDetail({ object, readOnly, busy, onSave, onOpenRules, extr
   const [comment, setComment] = useState("");
   const [attrs, setAttrs] = useState<Record<string, string>>({});
 
-  const fields = useMemo(
-    () => TYPE_FIELDS[object?.type ?? ""] ?? Object.keys(object?.attrs ?? {}),
-    [object],
-  );
+  const fields = useMemo(() => {
+    const typed = TYPE_FIELDS[object?.type ?? ""] ?? Object.keys(object?.attrs ?? {});
+    return typed.includes("color") ? typed : [...typed, "color"];
+  }, [object]);
 
   useEffect(() => {
     setName(object?.name ?? "");

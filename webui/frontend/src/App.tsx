@@ -17,6 +17,7 @@ import {
   openProject,
   saveProject,
   searchObjects,
+  removeRuleRef,
   setRuleAny,
   setRuleNeg,
   setToken,
@@ -371,6 +372,31 @@ export function App() {
       setBusy(false);
     }
   }
+
+  async function onRemoveRef(objectId: string) {
+    if (!sessionId || !picker) return;
+    setBusy(true);
+    setError(null);
+    try {
+      await removeRuleRef(sessionId, picker.ruleId, picker.element, objectId);
+      setStatus(`Removed ${objectId} from ${picker.element}`);
+      await refreshRules();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  const pickerCurrent = useMemo(() => {
+    if (!picker) return [];
+    const rule = rules.find((r) => r.id === picker.ruleId);
+    if (!rule) return [];
+    const el = (rule as Record<string, unknown>)[picker.element];
+    if (!el || typeof el !== "object" || el === null || !("objects" in el)) return [];
+    const objs = (el as { objects?: { id: string; name: string; type: string }[] }).objects;
+    return objs ?? [];
+  }, [picker, rules]);
 
   async function onCompile() {
     if (!sessionId || !rulesFwId) return;
@@ -802,9 +828,11 @@ export function App() {
           sessionId={sessionId}
           title={`Pick object for ${picker.element}`}
           busy={busy}
+          current={pickerCurrent}
           onPick={(obj) => void onPickObject(obj)}
           onAny={() => void onPickAny()}
           onToggleNeg={() => void onToggleNeg()}
+          onRemove={(id) => void onRemoveRef(id)}
           onCancel={() => setPicker(null)}
         />
       ) : null}

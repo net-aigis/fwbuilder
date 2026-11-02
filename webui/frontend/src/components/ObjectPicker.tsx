@@ -1,24 +1,30 @@
 import { useEffect, useState } from "react";
 import { searchObjects, type TreeNode } from "../api/client";
 
+type CellMember = { id: string; name: string; type: string };
+
 type Props = {
   sessionId: string;
   title: string;
   busy?: boolean;
+  current?: CellMember[];
   onPick: (obj: TreeNode) => void;
   onCancel: () => void;
   onAny?: () => void;
   onToggleNeg?: () => void;
+  onRemove?: (objectId: string) => void;
 };
 
 export function ObjectPicker({
   sessionId,
   title,
   busy,
+  current,
   onPick,
   onCancel,
   onAny,
   onToggleNeg,
+  onRemove,
 }: Props) {
   const [q, setQ] = useState("");
   const [hits, setHits] = useState<TreeNode[]>([]);
@@ -71,6 +77,30 @@ export function ObjectPicker({
           </div>
         </header>
         <div className="pad">
+          {current?.length ? (
+            <div className="picker-current">
+              <p className="muted">In this cell</p>
+              <ul className="picker-list">
+                {current.map((m) => (
+                  <li key={m.id} className="btn-row">
+                    <span>
+                      {m.type} · {m.name}
+                    </span>
+                    {onRemove ? (
+                      <button
+                        type="button"
+                        className="ghost"
+                        disabled={busy}
+                        onClick={() => onRemove(m.id)}
+                      >
+                        Remove
+                      </button>
+                    ) : null}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
           <input
             autoFocus
             placeholder="Search objects…"

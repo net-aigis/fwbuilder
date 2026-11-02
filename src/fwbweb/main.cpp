@@ -21,6 +21,7 @@
 #include "fwbuilder/Interface.h"
 #include "fwbuilder/IPv4.h"
 #include "fwbuilder/IPv6.h"
+#include "fwbuilder/physAddress.h"
 #include "fwbuilder/Management.h"
 #include "fwbuilder/FWOptions.h"
 #include "fwbuilder/InetAddr.h"
@@ -107,13 +108,18 @@ static QJsonObject typedAttrs(FWObject *obj)
     static const char *str_keys[] = {
         "platform", "host_OS", "protocol", "src_range_start", "src_range_end",
         "dst_range_start", "dst_range_end", "code", "color", "version",
-        "path", "iface_type", "phys_address", "days_of_week", "run_time",
+        "path", "iface_type", "days_of_week", "run_time", "label",
         0
     };
     for (int k = 0; str_keys[k]; ++k)
         putStrAttr(attrs, obj, str_keys[k]);
 
     const string t = obj->getTypeName();
+    if (Interface *iface = Interface::cast(obj)) {
+        physAddress *pa = iface->getPhysicalAddress();
+        attrs.insert(QStringLiteral("phys_address"),
+                     pa ? u8(pa->getPhysAddress()) : QString());
+    }
     if (AddressRange *ar = AddressRange::cast(obj)) {
         attrs.insert(QStringLiteral("start_address"), u8(ar->getRangeStart().toString()));
         attrs.insert(QStringLiteral("end_address"), u8(ar->getRangeEnd().toString()));
@@ -222,6 +228,16 @@ static void applyObjectAttrs(FWObject *obj, const QJsonObject &attrs)
             }
             if (key == "run_time") {
                 dns->setRunTime(parseBoolish(val));
+                continue;
+            }
+        }
+        if (Interface *iface = Interface::cast(obj)) {
+            if (key == "phys_address" || key == "physAddress") {
+                iface->setPhysicalAddress(val);
+                continue;
+            }
+            if (key == "label") {
+                iface->setLabel(val);
                 continue;
             }
         }

@@ -47,6 +47,9 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Interval time objects | done | typed attrs + create under Time; E2E phase13 |
 | Where-used de-duplication | done | unique display ids in `where_used` |
 | Address/Network/Range via InetAddr setters | done | `applyObjectAttrs`; XML roundtrip; E2E phase14 |
+| Remove rule refs from picker | done | ObjectPicker current + Remove; E2E phase15 |
+| Interface physAddress / label | done | `setPhysicalAddress` / `setLabel`; E2E phase15 |
+| Object color attr | done | attrs `color` + ObjectDetail field; E2E phase15 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Phase 3 — compile / deploy
@@ -72,6 +75,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase12 (duplicate rule + negate) | done | `e2e-phase12.sh` **OK** |
 | Local E2E phase13 (iface/IPv4 + Interval) | done | `e2e-phase13.sh` **OK** |
 | Local E2E phase14 (address InetAddr roundtrip) | done | `e2e-phase14.sh` **OK** |
+| Local E2E phase15 (remove ref + MAC + color) | done | `e2e-phase15.sh` **OK** |
 
 ## Local commands
 
@@ -95,6 +99,7 @@ bash webui/scripts/e2e-phase11.sh
 bash webui/scripts/e2e-phase12.sh
 bash webui/scripts/e2e-phase13.sh
 bash webui/scripts/e2e-phase14.sh
+bash webui/scripts/e2e-phase15.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```
