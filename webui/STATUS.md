@@ -122,6 +122,11 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Jump to parent object | done | Parent button |
 | Copy visible rules TSV | done | Copy TSV toolbar |
 | Rule index in status bar | done | selected/visible count |
+| Escape clears panels/search | done | picker/trash/unused/search |
+| Delete unused batch | done | Delete all on unused list; E2E phase37 |
+| Delete secondary ruleset | done | toolbar + permanent delete; E2E phase37 |
+| Where-used warn on delete | done | confirm shows reference count |
+| Sessions count in status | done | `GET /sessions`; E2E phase37 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Phase 3 — compile / deploy
@@ -169,6 +174,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase34 (deleted list + log/dir) | done | `e2e-phase34.sh` **OK** |
 | Local E2E phase35 (bulk group + object dup) | done | `e2e-phase35.sh` **OK** |
 | Local E2E phase36 (unused + trash restore) | done | `e2e-phase36.sh` **OK** |
+| Local E2E phase37 (del ruleset + unused) | done | `e2e-phase37.sh` **OK** |
 
 ## Local commands
 
@@ -214,6 +220,7 @@ bash webui/scripts/e2e-phase33.sh
 bash webui/scripts/e2e-phase34.sh
 bash webui/scripts/e2e-phase35.sh
 bash webui/scripts/e2e-phase36.sh
+bash webui/scripts/e2e-phase37.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

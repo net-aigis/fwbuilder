@@ -8,7 +8,9 @@ import {
   deleteObject,
   emptyDeletedObjects,
   findUnusedObjects,
+  fetchWhereUsed,
   listDeletedObjects,
+  listSessions,
   formatRuleObjects,
   duplicateObject,
   reparentObject,
@@ -114,6 +116,7 @@ export function App() {
   const [unusedHits, setUnusedHits] = useState<
     Array<{ id: string; name: string; type: string; comment?: string }>
   >([]);
+  const [sessionCount, setSessionCount] = useState(0);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const canOperate = useMemo(() => Boolean(sessionId) && !busy, [sessionId, busy]);
@@ -189,10 +192,13 @@ export function App() {
     setTab("object");
     setCompileLog(null);
     setCompileOutputs([]);
-      setDirty(Boolean(t.dirty));
-      setStatus(`${label}: ${t.path}`);
-      await refreshTrashCount(opened.session_id);
-    }
+    setUnusedHits([]);
+    setTrashOpen(false);
+    setDirty(Boolean(t.dirty));
+    setStatus(`${label}: ${t.path}`);
+    await refreshTrashCount(opened.session_id);
+    await refreshSessionCount();
+  }
 
   async function onOpen() {
     if (sessionId && dirty && !window.confirm("Discard unsaved changes and open another project?"))
@@ -405,6 +411,25 @@ export function App() {
         searchInputRef.current?.select();
         return;
       }
+      if (e.key === "Escape" && !typing) {
+        if (picker) {
+          setPicker(null);
+          return;
+        }
+        if (trashOpen) {
+          setTrashOpen(false);
+          return;
+        }
+        if (unusedHits.length) {
+          setUnusedHits([]);
+          return;
+        }
+        if (searchHits.length || searchQ) {
+          setSearchHits([]);
+          setSearchQ("");
+          return;
+        }
+      }
       if (mod && e.key.toLowerCase() === "d") {
         if (tab === "rules" && selectedRuleId) {
           e.preventDefault();
@@ -458,7 +483,19 @@ export function App() {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [sessionId, busy, tab, selectedRuleId, selected, visibleRules]);
+  }, [
+    sessionId,
+    busy,
+    tab,
+    selectedRuleId,
+    selected,
+    visibleRules,
+    picker,
+    trashOpen,
+    unusedHits,
+    searchHits,
+    searchQ,
+  ]);
 
   async function onApplyObject(patch: {
     name: string;
@@ -503,25 +540,115 @@ export function App() {
   async function onDeleteObject(permanent = false) {
     if (!sessionId || !selected) return;
     const inTrash = Boolean(selected.deleted);
-    const purge = permanent || inTrash;
+    const isRuleset =
+      selected.type === "Policy" || selected.type === "NAT" || selected.type === "Routing";
+    const purge = permanent || inTrash || isRuleset;
+    let usedNote = "";
+    if (!purge && !inTrash) {
+      try {
+        const wu = await fetchWhereUsed(sessionId, selected.id);
+        if (wu.count > 0) usedNote = `\nReferenced in ${wu.count} place(s).`;
+      } catch {
+        /* ignore */
+      }
+    }
     const msg = purge
-      ? `Permanently purge ${selected.type} “${selected.name}”?`
-      : `Move ${selected.type} “${selected.name}” to Deleted Objects?`;
+      ? `Permanently purge ${selected.type} “${selected.name}”?${
+          isRuleset ? "\nRulesets are always removed permanently." : ""
+        }`
+      : `Move ${selected.type} “${selected.name}” to Deleted Objects?${usedNote}`;
     if (!window.confirm(msg)) return;
     setBusy(true);
     setError(null);
     try {
       const res = await deleteObject(sessionId, selected.id, purge);
+      const deletedId = selected.id;
       setSelected(null);
       setDirty(true);
       const t = await fetchTree(sessionId, 5);
       setTree(t.root);
+      if (isRuleset && rulesFwId) {
+        setUnusedHits((prev) => prev.filter((u) => u.id !== deletedId));
+        await loadRules(rulesFwId, rulesWhich);
+      }
       setStatus(res.purged ? "Object purged" : "Object moved to Deleted Objects");
+      await refreshTrashCount();
+      await refreshSessionCount();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function onDeleteUnused() {
+    if (!sessionId || !unusedHits.length) return;
+    if (
+      !window.confirm(
+        `Move ${unusedHits.length} unused object(s) to Deleted Objects?`,
+      )
+    )
+      return;
+    setBusy(true);
+    setError(null);
+    try {
+      let n = 0;
+      for (const hit of unusedHits) {
+        await deleteObject(sessionId, hit.id, false);
+        n += 1;
+      }
+      setUnusedHits([]);
+      setDirty(true);
+      const t = await fetchTree(sessionId, 5);
+      setTree(t.root);
+      setStatus(`Moved ${n} unused object(s) to Deleted Objects`);
       await refreshTrashCount();
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
       setBusy(false);
+    }
+  }
+
+  async function onDeleteRuleset() {
+    if (!sessionId || !rulesetId || !rulesFwId) return;
+    const entry = rulesetList.find((r) => r.id === rulesetId);
+    if (!entry) return;
+    const sameType = rulesetList.filter((r) => r.type === entry.type);
+    if (sameType.length < 2) {
+      setError("Cannot delete the only ruleset of this type");
+      return;
+    }
+    if (entry.top) {
+      setError("Demote or switch away from the top ruleset before deleting it");
+      return;
+    }
+    if (
+      !window.confirm(
+        `Permanently delete ruleset “${entry.name}” and all its rules?`,
+      )
+    )
+      return;
+    setBusy(true);
+    setError(null);
+    try {
+      await deleteObject(sessionId, rulesetId, true);
+      setDirty(true);
+      setStatus(`Deleted ruleset ${entry.name}`);
+      await loadRules(rulesFwId, rulesWhich);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function refreshSessionCount() {
+    try {
+      const res = await listSessions();
+      setSessionCount(res.count ?? 0);
+    } catch {
+      /* ignore */
     }
   }
 
@@ -1153,7 +1280,11 @@ export function App() {
       setCompileOutputs([]);
       setDirty(false);
       setTrashCount(0);
+      setTrashItems([]);
+      setTrashOpen(false);
+      setUnusedHits([]);
       setStatus("Closed");
+      await refreshSessionCount();
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
@@ -1383,10 +1514,19 @@ export function App() {
               Unused
             </button>
           </div>
-          {unusedHits.length ? (
+              {unusedHits.length ? (
             <div className="search-hits">
               <div className="trash-panel-head">
                 <span>Unused ({unusedHits.length})</span>
+                <button
+                  type="button"
+                  className="ghost"
+                  disabled={busy}
+                  onClick={() => void onDeleteUnused()}
+                  title="Soft-delete all listed unused objects"
+                >
+                  Delete all
+                </button>
                 <button type="button" className="ghost" onClick={() => setUnusedHits([])}>
                   Clear
                 </button>
@@ -1682,6 +1822,27 @@ export function App() {
                       </select>
                     </label>
                   ) : null}
+                  {rulesetId &&
+                  rulesetList.filter((r) => {
+                    const want =
+                      rulesWhich === "nat"
+                        ? "NAT"
+                        : rulesWhich === "routing"
+                          ? "Routing"
+                          : "Policy";
+                    return r.type === want;
+                  }).length > 1 &&
+                  !rulesetList.find((r) => r.id === rulesetId)?.top ? (
+                    <button
+                      type="button"
+                      className="ghost"
+                      disabled={!canOperate}
+                      onClick={() => void onDeleteRuleset()}
+                      title="Permanently delete this secondary ruleset"
+                    >
+                      Delete ruleset
+                    </button>
+                  ) : null}
                   <button type="button" disabled={!canOperate} onClick={() => void onAddRule("bottom")}>
                     Add
                   </button>
@@ -1926,6 +2087,11 @@ export function App() {
 
       <footer className="statusbar">
         <span>{status}</span>
+        {sessionCount > 0 ? (
+          <span className="muted" title="Open API sessions">
+            sessions {sessionCount}
+          </span>
+        ) : null}
         {tab === "rules" && visibleRules.length ? (
           <span className="muted">
             rule{" "}

@@ -227,6 +227,19 @@ export function findUnusedObjects(sessionId: string, limit = 200) {
   }>(`/api/v1/projects/${sessionId}/unused?limit=${limit}`);
 }
 
+export function listSessions() {
+  return api<{
+    count: number;
+    sessions: Array<{
+      session_id: string;
+      path: string;
+      work_path?: string;
+      copy?: boolean;
+      new?: boolean;
+    }>;
+  }>("/api/v1/sessions");
+}
+
 export function reparentObject(sessionId: string, objectId: string, parentId: string) {
   return api<TreeNode>(
     `/api/v1/projects/${sessionId}/objects/${encodeURIComponent(objectId)}/reparent`,
