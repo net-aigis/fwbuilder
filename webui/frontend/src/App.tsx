@@ -429,6 +429,11 @@ export function App() {
         void onNewProject();
         return;
       }
+      if (mod && e.key.toLowerCase() === "e") {
+        e.preventDefault();
+        if (rulesFwId) void onCompile();
+        return;
+      }
       if (e.key === "Escape" && !typing) {
         if (picker) {
           setPicker(null);
@@ -843,8 +848,7 @@ export function App() {
     }
   }
 
-  function onCopyRulesTsv() {
-    if (!visibleRules.length) return;
+  function rulesToTsv(): string {
     const cols = [
       "pos",
       "disabled",
@@ -878,10 +882,27 @@ export function App() {
         ].join("\t"),
       );
     }
-    void navigator.clipboard.writeText(lines.join("\n")).then(
+    return lines.join("\n");
+  }
+
+  function onCopyRulesTsv() {
+    if (!visibleRules.length) return;
+    void navigator.clipboard.writeText(rulesToTsv()).then(
       () => setStatus(`Copied ${visibleRules.length} rule(s) as TSV`),
       () => setError("Clipboard write failed"),
     );
+  }
+
+  function onDownloadRulesTsv() {
+    if (!visibleRules.length) return;
+    const blob = new Blob([rulesToTsv()], { type: "text/tab-separated-values" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${rulesetName || rulesWhich || "rules"}.tsv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    setStatus(`Downloaded ${visibleRules.length} rule(s) as TSV`);
   }
 
   async function onDuplicateObject() {
@@ -1943,6 +1964,7 @@ export function App() {
                             <option key={r.id} value={r.id}>
                               {r.name}
                               {r.top ? " (top)" : ""}
+                              {typeof r.rule_count === "number" ? ` · ${r.rule_count}` : ""}
                             </option>
                           ))}
                       </select>
@@ -2105,6 +2127,15 @@ export function App() {
                   <button
                     type="button"
                     className="ghost"
+                    disabled={!visibleRules.length}
+                    onClick={onDownloadRulesTsv}
+                    title="Download visible rules as .tsv"
+                  >
+                    Download TSV
+                  </button>
+                  <button
+                    type="button"
+                    className="ghost"
                     disabled={!canOperate || !selectedRuleId}
                     onClick={() => void onDuplicateRule()}
                   >
@@ -2127,7 +2158,12 @@ export function App() {
                   >
                     Delete
                   </button>
-                  <button type="button" disabled={!canOperate} onClick={() => void onCompile()}>
+                  <button
+                    type="button"
+                    disabled={!canOperate}
+                    onClick={() => void onCompile()}
+                    title="Compile this firewall (Ctrl+E)"
+                  >
                     Compile
                   </button>
                   <button

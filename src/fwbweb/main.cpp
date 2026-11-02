@@ -613,6 +613,12 @@ static QJsonObject objectToJson(FWObject *obj, int depth, int max_depth)
             entry.insert(QStringLiteral("name"), u8(rs->getName()));
             entry.insert(QStringLiteral("type"), u8(rs->getTypeName()));
             entry.insert(QStringLiteral("top"), rs->isTop());
+            int rc = 0;
+            for (FWObject::iterator ri = rs->begin(); ri != rs->end(); ++ri) {
+                if (Rule::cast(*ri))
+                    ++rc;
+            }
+            entry.insert(QStringLiteral("rule_count"), rc);
             rslist.append(entry);
         }
         o.insert(QStringLiteral("ruleset_list"), rslist);

@@ -3,6 +3,7 @@ export type RulesetListEntry = {
   name: string;
   type: string;
   top?: boolean;
+  rule_count?: number;
 };
 
 export type TreeNode = {
