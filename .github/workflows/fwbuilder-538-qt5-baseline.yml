@@ -267,6 +267,56 @@ jobs:
             "$PWD/src/nft/fwb_nft" \
             "$PWD/src/unit_tests/generatedScriptTestsNft/test1.fwb" \
             ci-logs/central-hooks 2>&1 | tee ci-logs/central-hooks.log
+      # The policy compilers need resources.xml, the XML DTD and configlets
+      # in their compiled RES_DIR. Use the original install targets, but only
+      # for resources in the disposable GitHub Actions container.
+      - name: Install legacy FWB resource data for regression capture
+        run: |
+          set -euo pipefail
+          {
+            make -C src/res install
+            make -C src/libfwbuilder/etc install
+            make -C src/libfwbuilder/migration install
+            resource_dir="$(sed -n 's/^#define RES_DIR "\(.*\)"$/\1/p' src/libfwbuilder/src/fwbuilder/libfwbuilder-config.h)"
+            test -n "$resource_dir" || { echo 'RES_DIR not defined' >&2; exit 1; }
+            case "$resource_dir" in
+              /usr/share/fwbuilder-*) ;;
+              *) echo "Unexpected RES_DIR: $resource_dir" >&2; exit 1 ;;
+            esac
+            test -s "$resource_dir/resources.xml"
+            test -s "$resource_dir/objects_init.xml"
+            test -s "$resource_dir/fwbuilder.dtd"
+            test -s "$resource_dir/migration/FWObjectDatabase_22.xslt"
+            test -s "$resource_dir/migration/FWObjectDatabase_23.xslt"
+            test -d "$resource_dir/configlets"
+            echo "FWB compiler runtime resources ready: $resource_dir"
+          } 2>&1 | tee ci-logs/resource-install.log
+
+      - name: Capture legacy compiler versions and test-fixture outputs
+        # Cisco IOS compiler initializes QApplication; the container has no X server.
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: |
+          set -euo pipefail
+          test -x src/fwbedit/fwbedit
+          python3 .netaigis/compatibility/capture_compiler_baseline.py \
+            --repo . \
+            --output ci-logs/compiler-output-capture \
+            2>&1 | tee ci-logs/compiler-output-capture.log
+
+      - name: Repeat compiler capture to measure reproducibility
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: |
+          set -euo pipefail
+          python3 .netaigis/compatibility/capture_compiler_baseline.py \
+            --repo . \
+            --output ci-logs/compiler-output-repeat \
+            2>&1 | tee ci-logs/compiler-output-repeat.log
+          python3 .netaigis/compatibility/compare_compiler_captures.py \
+            ci-logs/compiler-output-capture \
+            ci-logs/compiler-output-repeat \
+            ci-logs/compiler-output-reproducibility.json
 
       - name: Upload build diagnostics and compiler inventory
         if: ${{ always() }}
