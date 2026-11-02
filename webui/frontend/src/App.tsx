@@ -585,6 +585,14 @@ export function App() {
           return;
         }
       }
+      if (mod && e.shiftKey && e.key.toLowerCase() === "c" && selected) {
+        e.preventDefault();
+        void navigator.clipboard.writeText(selected.id).then(
+          () => setStatus(`Copied object id ${selected.id}`),
+          () => setError("Clipboard write failed"),
+        );
+        return;
+      }
       if (mod && e.key.toLowerCase() === "d") {
         if (tab === "rules" && selectedRuleId) {
           e.preventDefault();
@@ -686,6 +694,11 @@ export function App() {
       if (e.key.toLowerCase() === "c" && selectedRuleId && !mod && !e.altKey) {
         e.preventDefault();
         void onCommentSelectedRule();
+        return;
+      }
+      if (e.key.toLowerCase() === "m" && selectedRuleId && !mod && !e.altKey) {
+        e.preventDefault();
+        void onGroupSelectedRule();
         return;
       }
       if (e.key.toLowerCase() === "l" && selectedRuleId && !mod && !e.altKey) {
@@ -1445,6 +1458,26 @@ export function App() {
       setDirty(true);
       await refreshRules();
       setStatus("Rule comment updated");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function onGroupSelectedRule() {
+    if (!sessionId || !selectedRuleId) return;
+    const rule = rules.find((r) => r.id === selectedRuleId);
+    if (!rule) return;
+    const text = window.prompt("Rule group", rule.group ?? "");
+    if (text === null) return;
+    setBusy(true);
+    setError(null);
+    try {
+      await updateRule(sessionId, rule.id, { group: text });
+      setDirty(true);
+      await refreshRules();
+      setStatus(text.trim() ? `Rule group → ${text.trim()}` : "Rule group cleared");
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
@@ -2724,6 +2757,10 @@ export function App() {
                       {rules.some((r) => r.disabled)
                         ? ` · ${rules.filter((r) => r.disabled).length} disabled`
                         : ""}
+                      {hideDisabled ? " · hide-disabled" : ""}
+                      {onlyDisabled ? " · only-disabled" : ""}
+                      {ruleActionFilter ? ` · action=${ruleActionFilter}` : ""}
+                      {ruleGroupFilter ? ` · group=${ruleGroupFilter}` : ""}
                     </span>
                   ) : null}
                 </h2>

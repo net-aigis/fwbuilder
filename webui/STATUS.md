@@ -195,6 +195,9 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Bridge search matches object id | done | collectSearch; E2E phase61 |
 | Edit rule comment key | done | `c` on rules tab; E2E phase61 |
 | Cycle disabled filter key | done | `f` all→hide→only |
+| Edit rule group key | done | `m` on rules tab; E2E phase62 |
+| Copy object id shortcut | done | Ctrl+Shift+C |
+| Active filters in rules header | done | hide/only/action/group labels |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Phase 3 — compile / deploy
@@ -267,6 +270,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase59 (move visible + sessions) | done | `e2e-phase59.sh` **OK** |
 | Local E2E phase60 (fw meta + unused types) | done | `e2e-phase60.sh` **OK** |
 | Local E2E phase61 (search id + comment) | done | `e2e-phase61.sh` **OK** |
+| Local E2E phase62 (rule group + object id) | done | `e2e-phase62.sh` **OK** |
 
 ## Local commands
 
@@ -337,6 +341,7 @@ bash webui/scripts/e2e-phase58.sh
 bash webui/scripts/e2e-phase59.sh
 bash webui/scripts/e2e-phase60.sh
 bash webui/scripts/e2e-phase61.sh
+bash webui/scripts/e2e-phase62.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

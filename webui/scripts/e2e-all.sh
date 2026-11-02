@@ -70,6 +70,7 @@ scripts=(
   e2e-phase59
   e2e-phase60
   e2e-phase61
+  e2e-phase62
 )
 for s in "${scripts[@]}"; do
   script="webui/scripts/${s}.sh"
