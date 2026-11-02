@@ -78,6 +78,10 @@ export function CreateObject({
   const [toHour, setToHour] = useState("17");
   const [toMinute, setToMinute] = useState("0");
   const [daysOfWeek, setDaysOfWeek] = useState("1,2,3,4,5");
+  const [protocolNum, setProtocolNum] = useState("47");
+  const [customProto, setCustomProto] = useState("tcp");
+  const [customFamily, setCustomFamily] = useState("inet");
+  const [customCode, setCustomCode] = useState("");
   const [platform, setPlatform] = useState("nftables");
   const [hostOs, setHostOs] = useState("linux24");
 
@@ -88,6 +92,8 @@ export function CreateObject({
   const isTag = type === "TagService";
   const isUser = type === "UserService";
   const isInterval = type === "Interval";
+  const isIpService = type === "IPService";
+  const isCustom = type === "CustomService";
   const needsNetmask = type === "Network" || type === "IPv4" || type === "NetworkIPv6" || type === "IPv6";
   const isFwLike = type === "Firewall" || type === "Host" || type === "Cluster";
   const showAddress =
@@ -96,6 +102,8 @@ export function CreateObject({
     !isTag &&
     !isUser &&
     !isInterval &&
+    !isIpService &&
+    !isCustom &&
     (isRange || needsNetmask || type === "Host");
 
   async function submit() {
@@ -126,6 +134,12 @@ export function CreateObject({
         attrs.to_hour = Number(toHour) || 0;
         attrs.to_minute = Number(toMinute) || 0;
         if (daysOfWeek.trim()) attrs.days_of_week = daysOfWeek.trim();
+      } else if (isIpService) {
+        if (protocolNum.trim()) attrs.protocol_num = Number(protocolNum) || 0;
+      } else if (isCustom) {
+        if (customProto.trim()) attrs.protocol = customProto.trim();
+        if (customFamily.trim()) attrs.address_family = customFamily.trim();
+        if (customCode.trim()) attrs.code = customCode.trim();
       } else {
         if (address.trim()) attrs.address = address.trim();
         if (netmask.trim() && needsNetmask) attrs.netmask = netmask.trim();
@@ -262,6 +276,31 @@ export function CreateObject({
                 onChange={(e) => setDaysOfWeek(e.target.value)}
                 placeholder="0=Sun … 6=Sat"
               />
+            </label>
+          </>
+        ) : null}
+        {isIpService ? (
+          <label className="field block">
+            Protocol number
+            <input value={protocolNum} disabled={busy} onChange={(e) => setProtocolNum(e.target.value)} />
+          </label>
+        ) : null}
+        {isCustom ? (
+          <>
+            <label className="field block">
+              Protocol
+              <input value={customProto} disabled={busy} onChange={(e) => setCustomProto(e.target.value)} />
+            </label>
+            <label className="field block">
+              Address family
+              <select value={customFamily} disabled={busy} onChange={(e) => setCustomFamily(e.target.value)}>
+                <option value="inet">inet</option>
+                <option value="inet6">inet6</option>
+              </select>
+            </label>
+            <label className="field block">
+              Code
+              <input value={customCode} disabled={busy} onChange={(e) => setCustomCode(e.target.value)} />
             </label>
           </>
         ) : null}

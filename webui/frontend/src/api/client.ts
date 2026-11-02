@@ -574,6 +574,22 @@ export async function downloadCompileOutput(sessionId: string, filename: string)
   URL.revokeObjectURL(url);
 }
 
+export async function downloadCompileOutputsZip(sessionId: string): Promise<void> {
+  const res = await fetch(`${apiBase}/api/v1/projects/${sessionId}/compile/zip`, {
+    headers: { Authorization: `Bearer ${getToken()}` },
+  });
+  if (!res.ok) {
+    throw new Error(`${res.status}: ${await res.text()}`);
+  }
+  const blob = await res.blob();
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "compile-outputs.zip";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 export function searchObjects(sessionId: string, q: string, type = "") {
   const qs = new URLSearchParams({ q, type, limit: "80" });
   return api<{ results: TreeNode[]; count: number }>(

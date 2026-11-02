@@ -10,6 +10,7 @@ import {
   duplicateObject,
   duplicateRule,
   downloadCompileOutput,
+  downloadCompileOutputsZip,
   downloadProjectUrl,
   deleteRule,
   fetchObject,
@@ -348,6 +349,8 @@ export function App() {
 
   async function onBulkDisable(disabled: boolean) {
     if (!sessionId || !visibleRules.length) return;
+    const verb = disabled ? "Disable" : "Enable";
+    if (!window.confirm(`${verb} ${visibleRules.length} visible rule(s)?`)) return;
     setBusy(true);
     setError(null);
     try {
@@ -745,6 +748,20 @@ export function App() {
     }
   }
 
+  async function onDownloadCompileZip() {
+    if (!sessionId) return;
+    setBusy(true);
+    setError(null);
+    try {
+      await downloadCompileOutputsZip(sessionId);
+      setStatus("Downloaded compile outputs zip");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function onClose() {
     if (!sessionId) return;
     if (dirty && !window.confirm("Discard unsaved changes and close?")) return;
@@ -891,14 +908,23 @@ export function App() {
             >
               <option value="">Any type</option>
               <option value="Network">Network</option>
+              <option value="NetworkIPv6">NetworkIPv6</option>
               <option value="Host">Host</option>
               <option value="Firewall">Firewall</option>
               <option value="Interface">Interface</option>
+              <option value="AddressRange">AddressRange</option>
+              <option value="DNSName">DNSName</option>
               <option value="TCPService">TCPService</option>
               <option value="UDPService">UDPService</option>
-              <option value="DNSName">DNSName</option>
+              <option value="IPService">IPService</option>
+              <option value="ICMPService">ICMPService</option>
+              <option value="TagService">TagService</option>
+              <option value="UserService">UserService</option>
+              <option value="CustomService">CustomService</option>
               <option value="Interval">Interval</option>
               <option value="Policy">Policy</option>
+              <option value="NAT">NAT</option>
+              <option value="Library">Library</option>
             </select>
             <button type="button" className="ghost" disabled={!canOperate} onClick={onSearch}>
               Go
@@ -1307,6 +1333,14 @@ export function App() {
               {compileOutputs.length ? (
                 <div className="btn-row pad">
                   <span className="muted">Outputs:</span>
+                  <button
+                    type="button"
+                    className="ghost"
+                    disabled={busy}
+                    onClick={() => void onDownloadCompileZip()}
+                  >
+                    Download zip
+                  </button>
                   {compileOutputs.map((f) => (
                     <button
                       key={f}

@@ -184,6 +184,44 @@ def list_compile_outputs(
     }
 
 
+@router.get("/{session_id}/compile/zip")
+def download_compile_outputs_zip(
+    session_id: str,
+    _: str = Depends(require_token),
+):
+    """Zip all files from the last compile (or compile-all last firewall)."""
+    import io
+    import zipfile
+
+    from fastapi.responses import StreamingResponse
+
+    try:
+        session = store.get(session_id)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail="session not found") from exc
+
+    last = session.meta.get("last_compile") or {}
+    destdir = Path(last.get("destdir") or "")
+    outputs = list(last.get("outputs") or [])
+    if not destdir.is_dir() or not outputs:
+        raise HTTPException(status_code=404, detail="no compile output yet")
+
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w", compression=zipfile.ZIP_DEFLATED) as zf:
+        for name in outputs:
+            safe = Path(name).name
+            path = destdir / safe
+            if path.is_file():
+                zf.write(path, arcname=safe)
+    buf.seek(0)
+    fw = str(last.get("firewall") or "compile")
+    return StreamingResponse(
+        buf,
+        media_type="application/zip",
+        headers={"Content-Disposition": f'attachment; filename="{fw}-outputs.zip"'},
+    )
+
+
 @router.get("/{session_id}/compile/outputs/{filename}")
 def download_compile_output(
     session_id: str,
