@@ -107,10 +107,32 @@ export function RuleMeta({
   return (
     <div className="rule-options">
       <header className="panel-header">
-        <h3>Rule meta</h3>
-        <button type="button" disabled={busy} onClick={() => void save()}>
-          Save meta
-        </button>
+        <h3>
+          Rule meta
+          <span className="muted">
+            {" "}
+            · #{rule.position} · {rule.id}
+          </span>
+        </h3>
+        <div className="btn-row">
+          <button
+            type="button"
+            className="ghost"
+            disabled={busy}
+            title="Copy rule id"
+            onClick={() => {
+              void navigator.clipboard?.writeText(rule.id).then(
+                () => onStatus?.("Copied rule id"),
+                () => onError?.("Clipboard write failed"),
+              );
+            }}
+          >
+            Copy id
+          </button>
+          <button type="button" disabled={busy} onClick={() => void save()}>
+            Save meta
+          </button>
+        </div>
       </header>
       <div className="typed-grid pad">
         <label className="field block">
