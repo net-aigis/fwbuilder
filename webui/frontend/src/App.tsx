@@ -572,6 +572,20 @@ export function App() {
           return;
         }
       }
+      if (
+        tab === "object" &&
+        !typing &&
+        !mod &&
+        (e.key === "Delete" || e.key === "Backspace") &&
+        selected &&
+        !selected.ro &&
+        selected.type !== "FWObjectDatabase" &&
+        selected.type !== "Library"
+      ) {
+        e.preventDefault();
+        void onDeleteObject(false);
+        return;
+      }
       if (tab !== "rules" || typing) return;
       if (e.altKey && selectedRuleId && (e.key === "ArrowUp" || e.key === "ArrowDown")) {
         e.preventDefault();
@@ -1562,16 +1576,17 @@ export function App() {
     }
   }
 
-  async function onCopyVisibleToRuleset() {
+  async function onCopyVisibleToRuleset(move = false) {
     if (!sessionId || !rulesFwId || !visibleRules.length) return;
     const wantType = rulesWhich === "nat" ? "NAT" : rulesWhich === "routing" ? "Routing" : "Policy";
+    const verb = move ? "Move" : "Copy";
     const target = pickTargetRuleset(
-      `Copy ${visibleRules.length} visible rule(s) to which ${wantType}?`,
+      `${verb} ${visibleRules.length} visible rule(s) to which ${wantType}?`,
     );
     if (!target) return;
     if (
       !window.confirm(
-        `Copy ${visibleRules.length} visible rule(s) into “${target.name}”?`,
+        `${verb} ${visibleRules.length} visible rule(s) ${move ? "from this ruleset into" : "into"} “${target.name}”?`,
       )
     )
       return;
@@ -1581,13 +1596,21 @@ export function App() {
       const ordered = [...visibleRules].sort(
         (a, b) => (a.position ?? 0) - (b.position ?? 0),
       );
+      const sourceIds = ordered.map((r) => r.id);
       let lastId: string | undefined;
       for (const rule of ordered) {
         const copy = await duplicateRule(sessionId, rule.id, target.id);
         lastId = copy.id;
       }
+      if (move) {
+        for (const id of sourceIds) {
+          await deleteRule(sessionId, id);
+        }
+      }
       setDirty(true);
-      setStatus(`Copied ${ordered.length} rule(s) → ${target.name}`);
+      setStatus(
+        `${move ? "Moved" : "Copied"} ${ordered.length} rule(s) → ${target.name}`,
+      );
       await loadRules(rulesFwId, rulesWhich, target.id);
       if (lastId) setSelectedRuleId(lastId);
     } catch (err) {
@@ -2963,10 +2986,19 @@ export function App() {
                     type="button"
                     className="ghost"
                     disabled={!canOperate || !visibleRules.length}
-                    onClick={() => void onCopyVisibleToRuleset()}
+                    onClick={() => void onCopyVisibleToRuleset(false)}
                     title="Copy all visible rules into another Policy/NAT/Routing"
                   >
                     Copy visible to…
+                  </button>
+                  <button
+                    type="button"
+                    className="ghost"
+                    disabled={!canOperate || !visibleRules.length}
+                    onClick={() => void onCopyVisibleToRuleset(true)}
+                    title="Move all visible rules into another Policy/NAT/Routing"
+                  >
+                    Move visible to…
                   </button>
                   <button
                     type="button"
@@ -3140,9 +3172,39 @@ export function App() {
           <div className="stats-panel">
             <header className="panel-header">
               <h2>Open sessions</h2>
-              <button type="button" className="ghost" onClick={() => setSessionsOpen(false)}>
-                Close
-              </button>
+              <div className="btn-row">
+                {sessionList.length ? (
+                  <button
+                    type="button"
+                    className="ghost"
+                    title="Download sessions list as JSON"
+                    onClick={() => {
+                      const blob = new Blob(
+                        [
+                          JSON.stringify(
+                            { count: sessionList.length, sessions: sessionList },
+                            null,
+                            2,
+                          ),
+                        ],
+                        { type: "application/json" },
+                      );
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement("a");
+                      a.href = url;
+                      a.download = "fwbweb-sessions.json";
+                      a.click();
+                      URL.revokeObjectURL(url);
+                      setStatus(`Downloaded ${sessionList.length} session(s)`);
+                    }}
+                  >
+                    JSON
+                  </button>
+                ) : null}
+                <button type="button" className="ghost" onClick={() => setSessionsOpen(false)}>
+                  Close
+                </button>
+              </div>
             </header>
             {sessionList.length ? (
               <ul className="stats-fw-list pad">
