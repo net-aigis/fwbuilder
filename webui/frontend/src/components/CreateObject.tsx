@@ -68,6 +68,7 @@ export function CreateObject({
   const [netmask, setNetmask] = useState("255.255.255.0");
   const [endAddress, setEndAddress] = useState("");
   const [dstPort, setDstPort] = useState("");
+  const [srcPort, setSrcPort] = useState("");
   const [dnsName, setDnsName] = useState("");
   const [runTime, setRunTime] = useState(true);
   const [filename, setFilename] = useState("");
@@ -179,9 +180,15 @@ export function CreateObject({
         if (address.trim()) attrs.address = address.trim();
         if (netmask.trim() && needsNetmask) attrs.netmask = netmask.trim();
       }
-      if (isService && dstPort.trim()) {
-        attrs.dst_range_start = dstPort.trim();
-        attrs.dst_range_end = dstPort.trim();
+      if (isService) {
+        if (dstPort.trim()) {
+          attrs.dst_range_start = dstPort.trim();
+          attrs.dst_range_end = dstPort.trim();
+        }
+        if (srcPort.trim()) {
+          attrs.src_range_start = srcPort.trim();
+          attrs.src_range_end = srcPort.trim();
+        }
       }
       if (isFwLike) {
         if (platform.trim()) attrs.platform = platform.trim();
@@ -199,6 +206,7 @@ export function CreateObject({
       setAddress("");
       setEndAddress("");
       setDstPort("");
+      setSrcPort("");
       setDnsName("");
       setFilename("");
       onCreated(obj.id);
@@ -271,10 +279,16 @@ export function CreateObject({
           </label>
         ) : null}
         {isService ? (
-          <label className="field block">
-            Destination port
-            <input value={dstPort} disabled={busy} onChange={(e) => setDstPort(e.target.value)} />
-          </label>
+          <>
+            <label className="field block">
+              Source port
+              <input value={srcPort} disabled={busy} onChange={(e) => setSrcPort(e.target.value)} />
+            </label>
+            <label className="field block">
+              Destination port
+              <input value={dstPort} disabled={busy} onChange={(e) => setDstPort(e.target.value)} />
+            </label>
+          </>
         ) : null}
         {isTag ? (
           <label className="field block">

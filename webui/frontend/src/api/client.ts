@@ -13,6 +13,9 @@ export type TreeNode = {
   ro?: boolean;
   parent_id?: string;
   parent_type?: string;
+  library_id?: string;
+  library_name?: string;
+  deleted?: boolean;
   children_count?: number;
   attrs?: Record<string, string | number>;
   children?: TreeNode[];
@@ -182,11 +185,18 @@ export function createObject(
   });
 }
 
-export function deleteObject(sessionId: string, objectId: string) {
-  return api<{ ok?: boolean; parent_id?: string }>(
-    `/api/v1/projects/${sessionId}/objects/${encodeURIComponent(objectId)}`,
-    { method: "DELETE" },
-  );
+export function deleteObject(sessionId: string, objectId: string, permanent = false) {
+  // UI default: soft-delete. Pass permanent=true to purge.
+  const qs = permanent ? "?permanent=true" : "?soft=true";
+  return api<{
+    ok?: boolean;
+    parent_id?: string;
+    soft_deleted?: boolean;
+    purged?: boolean;
+    deleted_library_id?: string;
+  }>(`/api/v1/projects/${sessionId}/objects/${encodeURIComponent(objectId)}${qs}`, {
+    method: "DELETE",
+  });
 }
 
 export function reparentObject(sessionId: string, objectId: string, parentId: string) {

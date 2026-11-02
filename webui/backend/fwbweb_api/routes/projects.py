@@ -184,14 +184,24 @@ def create_object(
 def delete_object(
     session_id: str,
     object_id: str,
+    permanent: bool = True,
+    soft: bool = False,
     _: str = Depends(require_token),
 ) -> dict[str, Any]:
+    """Delete an object.
+
+    Default is permanent (API/e2e compatible). Pass soft=true (or
+    permanent=false) to move into Deleted Objects like the desktop GUI.
+    """
     try:
         session = store.get(session_id)
     except KeyError as exc:
         raise HTTPException(status_code=404, detail="session not found") from exc
+    do_permanent = permanent and not soft
     try:
-        return session.bridge.request("delete", id=object_id)
+        return session.bridge.request(
+            "delete", id=object_id, permanent=do_permanent
+        )
     except BridgeError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 

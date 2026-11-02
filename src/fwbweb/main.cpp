@@ -564,6 +564,13 @@ static QJsonObject objectToJson(FWObject *obj, int depth, int max_depth)
                  u8(FWObjectDatabase::getStringId(par->getId())));
         o.insert(QStringLiteral("parent_type"), u8(par->getTypeName()));
     }
+    if (FWObject *lib = obj->getLibrary()) {
+        o.insert(QStringLiteral("library_id"),
+                 u8(FWObjectDatabase::getStringId(lib->getId())));
+        o.insert(QStringLiteral("library_name"), u8(lib->getName()));
+        o.insert(QStringLiteral("deleted"),
+                 lib->getId() == FWObjectDatabase::DELETED_OBJECTS_ID);
+    }
 
     QJsonObject attrs = typedAttrs(obj);
     if (!attrs.isEmpty())
@@ -634,6 +641,10 @@ static void collectSearch(FWObject *root, const string &q, const string &type_fi
                           QJsonArray &out, int limit)
 {
     if (!root || (int)out.size() >= limit)
+        return;
+    // Skip Deleted Objects library (and its contents), matching desktop search.
+    if (Library::cast(root) &&
+        root->getId() == FWObjectDatabase::DELETED_OBJECTS_ID)
         return;
     string name = root->getName();
     string type = root->getTypeName();
@@ -1515,6 +1526,9 @@ static QJsonObject handle(const QJsonObject &req)
             return errObj(QStringLiteral("object not found"));
         if (obj == g_db)
             return errObj(QStringLiteral("cannot delete database root"));
+        if (obj->getId() == FWObjectDatabase::DELETED_OBJECTS_ID ||
+            obj->getId() == FWObjectDatabase::STANDARD_LIB_ID)
+            return errObj(QStringLiteral("cannot delete system library"));
         if (obj->isReadOnly())
             return errObj(QStringLiteral("object is read-only"));
         if (Rule::cast(obj))
@@ -1522,15 +1536,53 @@ static QJsonObject handle(const QJsonObject &req)
         FWObject *parent = obj->getParent();
         if (!parent)
             return errObj(QStringLiteral("object has no parent"));
+        const bool permanent = req.value(QStringLiteral("permanent")).toBool(false);
+        FWObject *obj_lib = obj->getLibrary();
+        const bool already_deleted =
+            obj_lib && obj_lib->getId() == FWObjectDatabase::DELETED_OBJECTS_ID;
         try {
-            // remove() unrefs and deletes when last reference.
-            parent->remove(obj, true);
-            g_dirty = true;
-            g_db->setDirty(true);
             QJsonObject o = okObj();
             o.insert(QStringLiteral("dirty"), true);
             o.insert(QStringLiteral("parent_id"),
                      u8(FWObjectDatabase::getStringId(parent->getId())));
+            if (permanent || already_deleted) {
+                // Permanent destroy (GUI: delete from Deleted Objects).
+                parent->remove(obj, true);
+                o.insert(QStringLiteral("purged"), true);
+            } else {
+                // Soft-delete: move into Deleted Objects library.
+                FWObject *dlib =
+                    g_db->findInIndex(FWObjectDatabase::DELETED_OBJECTS_ID);
+                if (!dlib) {
+                    for (list<FWObject *>::iterator i = g_db->begin();
+                         i != g_db->end(); ++i) {
+                        if (Library::cast(*i) &&
+                            (*i)->getName() == "Deleted Objects") {
+                            dlib = *i;
+                            break;
+                        }
+                    }
+                }
+                if (!dlib) {
+                    dlib = g_db->create(Library::TYPENAME);
+                    dlib->setId(FWObjectDatabase::DELETED_OBJECTS_ID);
+                    dlib->setName("Deleted Objects");
+                    dlib->setReadOnly(false);
+                    g_db->add(dlib);
+                }
+                if (obj == dlib || obj->isChildOf(dlib)) {
+                    parent->remove(obj, true);
+                    o.insert(QStringLiteral("purged"), true);
+                } else {
+                    parent->remove(obj, false);
+                    dlib->add(obj);
+                    o.insert(QStringLiteral("soft_deleted"), true);
+                    o.insert(QStringLiteral("deleted_library_id"),
+                             u8(FWObjectDatabase::getStringId(dlib->getId())));
+                }
+            }
+            g_dirty = true;
+            g_db->setDirty(true);
             return o;
         } catch (FWException &ex) {
             return errObj(u8(ex.toString()));

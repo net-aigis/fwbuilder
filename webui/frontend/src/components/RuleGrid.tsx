@@ -17,6 +17,7 @@ type Props = {
   onSelectRule?: (rule: AnyRule) => void;
   onEditCell?: (rule: AnyRule, element: string) => void;
   onDropObject?: (rule: AnyRule, element: string, objectId: string) => void;
+  onJumpObject?: (objectId: string) => void;
   selectedId?: string;
 };
 
@@ -56,6 +57,7 @@ function Cell({
   busy,
   onEditCell,
   onDropObject,
+  onJumpObject,
 }: {
   rule: AnyRule;
   element: string;
@@ -63,13 +65,18 @@ function Cell({
   busy?: boolean;
   onEditCell?: (rule: AnyRule, element: string) => void;
   onDropObject?: (rule: AnyRule, element: string, objectId: string) => void;
+  onJumpObject?: (objectId: string) => void;
 }) {
   return (
     <td
       className="rule-cell"
-      title="Click to pick · drop object from tree"
+      title="Click to pick · Ctrl+click to open object · drop from tree"
       onClick={(e) => {
         e.stopPropagation();
+        if ((e.ctrlKey || e.metaKey) && onJumpObject && el?.objects?.length) {
+          onJumpObject(el.objects[0].id);
+          return;
+        }
         onEditCell?.(rule, element);
       }}
       onDragOver={(e) => {
@@ -100,6 +107,7 @@ export function RuleGrid({
   onSelectRule,
   onEditCell,
   onDropObject,
+  onJumpObject,
   selectedId,
 }: Props) {
   if (!rules.length) {
@@ -166,11 +174,11 @@ export function RuleGrid({
                       ) : null}
                     </select>
                   </td>
-                  <Cell rule={row.rule} element="src" el={(row.rule as PolicyRule).src} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} />
-                  <Cell rule={row.rule} element="dst" el={(row.rule as PolicyRule).dst} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} />
-                  <Cell rule={row.rule} element="srv" el={(row.rule as PolicyRule).srv} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} />
-                  <Cell rule={row.rule} element="itf" el={(row.rule as PolicyRule).itf} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} />
-                  <Cell rule={row.rule} element="when" el={(row.rule as PolicyRule).when} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} />
+                  <Cell rule={row.rule} element="src" el={(row.rule as PolicyRule).src} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} onJumpObject={onJumpObject} />
+                  <Cell rule={row.rule} element="dst" el={(row.rule as PolicyRule).dst} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} onJumpObject={onJumpObject} />
+                  <Cell rule={row.rule} element="srv" el={(row.rule as PolicyRule).srv} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} onJumpObject={onJumpObject} />
+                  <Cell rule={row.rule} element="itf" el={(row.rule as PolicyRule).itf} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} onJumpObject={onJumpObject} />
+                  <Cell rule={row.rule} element="when" el={(row.rule as PolicyRule).when} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} onJumpObject={onJumpObject} />
                   <td>{(row.rule as PolicyRule).direction}</td>
                   <td>{(row.rule as PolicyRule).logging ? "✓" : ""}</td>
                   <td className="comment-cell">{row.rule.comment}</td>
@@ -235,12 +243,12 @@ export function RuleGrid({
                     ) : null}
                   </select>
                 </td>
-                <Cell rule={r} element="osrc" el={r.osrc} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} />
-                <Cell rule={r} element="odst" el={r.odst} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} />
-                <Cell rule={r} element="osrv" el={r.osrv} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} />
-                <Cell rule={r} element="tsrc" el={r.tsrc} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} />
-                <Cell rule={r} element="tdst" el={r.tdst} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} />
-                <Cell rule={r} element="tsrv" el={r.tsrv} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} />
+                <Cell rule={r} element="osrc" el={r.osrc} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} onJumpObject={onJumpObject} />
+                <Cell rule={r} element="odst" el={r.odst} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} onJumpObject={onJumpObject} />
+                <Cell rule={r} element="osrv" el={r.osrv} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} onJumpObject={onJumpObject} />
+                <Cell rule={r} element="tsrc" el={r.tsrc} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} onJumpObject={onJumpObject} />
+                <Cell rule={r} element="tdst" el={r.tdst} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} onJumpObject={onJumpObject} />
+                <Cell rule={r} element="tsrv" el={r.tsrv} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} onJumpObject={onJumpObject} />
                 <td className="comment-cell">{r.comment}</td>
               </tr>
             ))}
@@ -294,9 +302,9 @@ export function RuleGrid({
                   }
                 />
               </td>
-              <Cell rule={r} element="rdst" el={r.rdst} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} />
-              <Cell rule={r} element="rgtw" el={r.rgtw} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} />
-              <Cell rule={r} element="ritf" el={r.ritf} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} />
+              <Cell rule={r} element="rdst" el={r.rdst} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} onJumpObject={onJumpObject} />
+              <Cell rule={r} element="rgtw" el={r.rgtw} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} onJumpObject={onJumpObject} />
+              <Cell rule={r} element="ritf" el={r.ritf} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} onJumpObject={onJumpObject} />
               <td className="comment-cell">{r.comment}</td>
             </tr>
           ))}

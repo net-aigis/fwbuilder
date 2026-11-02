@@ -396,6 +396,16 @@ export function App() {
         void onMoveRule(e.key === "ArrowUp" ? "up" : "down");
         return;
       }
+      if (!mod && !e.altKey && (e.key === "ArrowUp" || e.key === "ArrowDown") && visibleRules.length) {
+        e.preventDefault();
+        const idx = visibleRules.findIndex((r) => r.id === selectedRuleId);
+        const next =
+          e.key === "ArrowUp"
+            ? Math.max(0, (idx < 0 ? 0 : idx) - 1)
+            : Math.min(visibleRules.length - 1, (idx < 0 ? -1 : idx) + 1);
+        setSelectedRuleId(visibleRules[next]?.id);
+        return;
+      }
       if ((e.key === "Delete" || e.key === "Backspace") && selectedRuleId && !mod) {
         e.preventDefault();
         if (window.confirm("Delete selected rule?")) void onDeleteRule();
@@ -403,7 +413,7 @@ export function App() {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [sessionId, busy, tab, selectedRuleId]);
+  }, [sessionId, busy, tab, selectedRuleId, visibleRules]);
 
   async function onApplyObject(patch: {
     name: string;
@@ -445,18 +455,23 @@ export function App() {
     }
   }
 
-  async function onDeleteObject() {
+  async function onDeleteObject(permanent = false) {
     if (!sessionId || !selected) return;
-    if (!window.confirm(`Delete ${selected.type} “${selected.name}”?`)) return;
+    const inTrash = Boolean(selected.deleted);
+    const purge = permanent || inTrash;
+    const msg = purge
+      ? `Permanently purge ${selected.type} “${selected.name}”?`
+      : `Move ${selected.type} “${selected.name}” to Deleted Objects?`;
+    if (!window.confirm(msg)) return;
     setBusy(true);
     setError(null);
     try {
-      await deleteObject(sessionId, selected.id);
+      const res = await deleteObject(sessionId, selected.id, purge);
       setSelected(null);
       setDirty(true);
       const t = await fetchTree(sessionId, 5);
       setTree(t.root);
-      setStatus("Object deleted");
+      setStatus(res.purged ? "Object purged" : "Object moved to Deleted Objects");
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
@@ -1089,10 +1104,21 @@ export function App() {
                         type="button"
                         className="ghost"
                         disabled={busy || selected.ro}
-                        onClick={() => void onDeleteObject()}
+                        onClick={() => void onDeleteObject(false)}
                       >
-                        Delete object
+                        {selected.deleted ? "Purge object" : "Delete object"}
                       </button>
+                      {selected.deleted ? null : (
+                        <button
+                          type="button"
+                          className="ghost"
+                          disabled={busy || selected.ro}
+                          onClick={() => void onDeleteObject(true)}
+                          title="Permanently destroy without Deleted Objects"
+                        >
+                          Purge…
+                        </button>
+                      )}
                     </div>
                     {selected.type === "Firewall" ? (
                       <FirewallExtras
@@ -1382,6 +1408,10 @@ export function App() {
                 onChangeMetric={onChangeMetric}
                 onEditCell={(rule, element) => setPicker({ ruleId: rule.id, element })}
                 onDropObject={onDropObject}
+                onJumpObject={(id) => {
+                  setTab("object");
+                  void refreshTreeSelect(id);
+                }}
               />
               {sessionId && selectedRuleId ? (
                 <>
