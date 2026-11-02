@@ -690,11 +690,13 @@ static void collectSearch(FWObject *root, const string &q, const string &type_fi
     string name = root->getName();
     string type = root->getTypeName();
     const string sid = FWObjectDatabase::getStringId(root->getId());
+    const string comment = root->getComment();
     bool type_ok = type_filter.empty() || type == type_filter;
     const QString qq = QString::fromUtf8(q.c_str());
     bool name_ok =
         q.empty() ||
         QString::fromUtf8(name.c_str()).contains(qq, Qt::CaseInsensitive) ||
+        QString::fromUtf8(comment.c_str()).contains(qq, Qt::CaseInsensitive) ||
         QString::fromUtf8(sid.c_str()).contains(qq, Qt::CaseInsensitive) ||
         QString::fromUtf8(sid.c_str()).compare(qq, Qt::CaseInsensitive) == 0;
     if (type_ok && name_ok && !FWReference::cast(root) &&
@@ -703,7 +705,7 @@ static void collectSearch(FWObject *root, const string &q, const string &type_fi
         hit.insert(QStringLiteral("id"), u8(sid));
         hit.insert(QStringLiteral("name"), u8(name));
         hit.insert(QStringLiteral("type"), u8(type));
-        hit.insert(QStringLiteral("comment"), u8(root->getComment()));
+        hit.insert(QStringLiteral("comment"), u8(comment));
         out.append(hit);
     }
     for (FWObject::iterator i = root->begin(); i != root->end(); ++i)

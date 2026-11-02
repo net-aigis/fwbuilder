@@ -472,6 +472,32 @@ export function App() {
     }
   }
 
+  async function onBulkLogging(logging: boolean) {
+    if (!sessionId || !visibleRules.length) return;
+    const verb = logging ? "Enable logging on" : "Disable logging on";
+    if (!window.confirm(`${verb} ${visibleRules.length} visible rule(s)?`)) return;
+    setBusy(true);
+    setError(null);
+    try {
+      for (const rule of visibleRules) {
+        const cur = "logging" in rule ? Boolean((rule as PolicyRule).logging) : false;
+        if (cur === logging) continue;
+        await updateRule(sessionId, rule.id, { logging });
+      }
+      setDirty(true);
+      await refreshRules();
+      setStatus(
+        logging
+          ? `Logging on for ${visibleRules.length} visible rules`
+          : `Logging off for ${visibleRules.length} visible rules`,
+      );
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function onBulkAction() {
     if (!sessionId || !visibleRules.length) return;
     const withAction = visibleRules.filter((r) => "action" in r);
@@ -3103,6 +3129,24 @@ export function App() {
                     title="Enable all currently visible rules"
                   >
                     Enable visible
+                  </button>
+                  <button
+                    type="button"
+                    className="ghost"
+                    disabled={!canOperate || !visibleRules.length}
+                    onClick={() => void onBulkLogging(true)}
+                    title="Turn logging on for all visible rules"
+                  >
+                    Log on visible
+                  </button>
+                  <button
+                    type="button"
+                    className="ghost"
+                    disabled={!canOperate || !visibleRules.length}
+                    onClick={() => void onBulkLogging(false)}
+                    title="Turn logging off for all visible rules"
+                  >
+                    Log off visible
                   </button>
                   <button
                     type="button"
