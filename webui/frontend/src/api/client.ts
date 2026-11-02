@@ -257,6 +257,25 @@ export function findUnusedObjects(sessionId: string, limit = 200) {
   }>(`/api/v1/projects/${sessionId}/unused?limit=${limit}`);
 }
 
+export type ProjectStats = {
+  ok?: boolean;
+  path?: string;
+  dirty?: boolean;
+  libraries: number;
+  objects: number;
+  firewalls: number;
+  hosts: number;
+  interfaces: number;
+  services: number;
+  addresses: number;
+  rules: number;
+  deleted: number;
+};
+
+export function fetchProjectStats(sessionId: string) {
+  return api<ProjectStats>(`/api/v1/projects/${sessionId}/stats`);
+}
+
 export function listSessions() {
   return api<{
     count: number;

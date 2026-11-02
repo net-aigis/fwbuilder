@@ -364,6 +364,22 @@ def find_unused_objects(
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 
 
+@router.get("/{session_id}/stats")
+def project_stats(
+    session_id: str,
+    _: str = Depends(require_token),
+) -> dict[str, Any]:
+    """Aggregate counts for the open project (User library, not Standard)."""
+    try:
+        session = store.get(session_id)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail="session not found") from exc
+    try:
+        return session.bridge.request("stats")
+    except BridgeError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
 class MemberRequest(BaseModel):
     member_id: str = Field(..., min_length=1)
 

@@ -2090,6 +2090,74 @@ static QJsonObject handle(const QJsonObject &req)
         return o;
     }
 
+    if (cmd == QStringLiteral("stats")) {
+        if (!g_db)
+            return errObj(QStringLiteral("no project open"));
+        int libraries = 0;
+        int objects = 0;
+        int firewalls = 0;
+        int hosts = 0;
+        int rules = 0;
+        int deleted = 0;
+        int interfaces = 0;
+        int services = 0;
+        int addresses = 0;
+        list<FWObject *> stack;
+        stack.push_back(g_db);
+        while (!stack.empty()) {
+            FWObject *cur = stack.front();
+            stack.pop_front();
+            for (FWObject::iterator i = cur->begin(); i != cur->end(); ++i) {
+                FWObject *child = *i;
+                if (!child || FWReference::cast(child))
+                    continue;
+                stack.push_back(child);
+                if (Library::cast(child)) {
+                    ++libraries;
+                    continue;
+                }
+                FWObject *lib = child->getLibrary();
+                const bool in_deleted =
+                    lib && lib->getId() == FWObjectDatabase::DELETED_OBJECTS_ID;
+                if (in_deleted) {
+                    if (!ObjectGroup::cast(child) && !ServiceGroup::cast(child) &&
+                        !IntervalGroup::cast(child) && !Library::cast(child))
+                        ++deleted;
+                    continue;
+                }
+                if (lib && lib->getId() == FWObjectDatabase::STANDARD_LIB_ID)
+                    continue;
+                ++objects;
+                if (Firewall::cast(child))
+                    ++firewalls;
+                if (Host::cast(child) && !Firewall::cast(child))
+                    ++hosts;
+                if (Interface::cast(child))
+                    ++interfaces;
+                if (Service::cast(child) && !ServiceGroup::cast(child))
+                    ++services;
+                if (Address::cast(child) && !Interface::cast(child) &&
+                    !Firewall::cast(child) && !Host::cast(child))
+                    ++addresses;
+                if (Rule::cast(child))
+                    ++rules;
+            }
+        }
+        QJsonObject o = okObj();
+        o.insert(QStringLiteral("path"), u8(g_path));
+        o.insert(QStringLiteral("dirty"), g_dirty);
+        o.insert(QStringLiteral("libraries"), libraries);
+        o.insert(QStringLiteral("objects"), objects);
+        o.insert(QStringLiteral("firewalls"), firewalls);
+        o.insert(QStringLiteral("hosts"), hosts);
+        o.insert(QStringLiteral("interfaces"), interfaces);
+        o.insert(QStringLiteral("services"), services);
+        o.insert(QStringLiteral("addresses"), addresses);
+        o.insert(QStringLiteral("rules"), rules);
+        o.insert(QStringLiteral("deleted"), deleted);
+        return o;
+    }
+
     if (cmd == QStringLiteral("save")) {
         if (!g_db)
             return errObj(QStringLiteral("no project open"));

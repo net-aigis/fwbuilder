@@ -8,6 +8,7 @@ import {
   deleteObject,
   emptyDeletedObjects,
   findUnusedObjects,
+  fetchProjectStats,
   fetchWhereUsed,
   fetchObjectPath,
   listDeletedObjects,
@@ -42,6 +43,7 @@ import {
   type RuleElement,
   type RoutingRuleRow,
   type ObjectPathEntry,
+  type ProjectStats,
   type RulesetListEntry,
   type TreeNode,
 } from "./api/client";
@@ -126,6 +128,7 @@ export function App() {
   >([]);
   const [sessionCount, setSessionCount] = useState(0);
   const [objectPath, setObjectPath] = useState<ObjectPathEntry[]>([]);
+  const [stats, setStats] = useState<ProjectStats | null>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const canOperate = useMemo(() => Boolean(sessionId) && !busy, [sessionId, busy]);
@@ -434,9 +437,18 @@ export function App() {
         if (rulesFwId) void onCompile();
         return;
       }
+      if (mod && e.key.toLowerCase() === "i") {
+        e.preventDefault();
+        void onShowStats();
+        return;
+      }
       if (e.key === "Escape" && !typing) {
         if (picker) {
           setPicker(null);
+          return;
+        }
+        if (stats) {
+          setStats(null);
           return;
         }
         if (trashOpen) {
@@ -518,6 +530,8 @@ export function App() {
     unusedHits,
     searchHits,
     searchQ,
+    stats,
+    rulesFwId,
   ]);
 
   async function onApplyObject(patch: {
@@ -781,6 +795,23 @@ export function App() {
       const t = await fetchTree(sessionId, 1);
       setTree(t.root);
       setStatus("Tree collapsed");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function onShowStats() {
+    if (!sessionId) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const res = await fetchProjectStats(sessionId);
+      setStats(res);
+      setStatus(
+        `Stats: ${res.objects} objects, ${res.rules} rules, ${res.deleted} deleted`,
+      );
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
@@ -1488,6 +1519,15 @@ export function App() {
           </button>
           <button type="button" onClick={onClose} disabled={!canOperate}>
             Close
+          </button>
+          <button
+            type="button"
+            className="ghost"
+            disabled={!canOperate}
+            onClick={() => void onShowStats()}
+            title="Project stats (Ctrl+I)"
+          >
+            Stats
           </button>
           <button
             type="button"
@@ -2293,6 +2333,40 @@ export function App() {
           onRemove={(id) => void onRemoveRef(id)}
           onCancel={() => setPicker(null)}
         />
+      ) : null}
+
+      {stats ? (
+        <div className="stats-overlay" role="dialog" aria-label="Project stats">
+          <div className="stats-panel">
+            <header className="panel-header">
+              <h2>Project stats</h2>
+              <button type="button" className="ghost" onClick={() => setStats(null)}>
+                Close
+              </button>
+            </header>
+            <dl className="stats-grid">
+              {(
+                [
+                  ["Libraries", stats.libraries],
+                  ["Objects (User)", stats.objects],
+                  ["Firewalls", stats.firewalls],
+                  ["Hosts", stats.hosts],
+                  ["Interfaces", stats.interfaces],
+                  ["Addresses", stats.addresses],
+                  ["Services", stats.services],
+                  ["Rules", stats.rules],
+                  ["Deleted", stats.deleted],
+                ] as const
+              ).map(([label, value]) => (
+                <div key={label}>
+                  <dt>{label}</dt>
+                  <dd>{value}</dd>
+                </div>
+              ))}
+            </dl>
+            <p className="muted pad">{stats.path}</p>
+          </div>
+        </div>
       ) : null}
     </div>
   );

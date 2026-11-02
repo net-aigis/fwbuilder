@@ -137,6 +137,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Ruleset rule_count | done | firewall `ruleset_list`; E2E phase40 |
 | Ctrl+E compile | done | keyboard + Compile button |
 | Download rules TSV | done | Download TSV toolbar |
+| Project stats panel | done | `GET …/stats` + Ctrl+I; E2E phase41 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Phase 3 — compile / deploy
@@ -188,6 +189,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase38 (restore parent + path) | done | `e2e-phase38.sh` **OK** |
 | Local E2E phase39 (restore-all + collapse) | done | `e2e-phase39.sh` **OK** |
 | Local E2E phase40 (ruleset rule_count) | done | `e2e-phase40.sh` **OK** |
+| Local E2E phase41 (project stats) | done | `e2e-phase41.sh` **OK** |
 
 ## Local commands
 
@@ -237,6 +239,7 @@ bash webui/scripts/e2e-phase37.sh
 bash webui/scripts/e2e-phase38.sh
 bash webui/scripts/e2e-phase39.sh
 bash webui/scripts/e2e-phase40.sh
+bash webui/scripts/e2e-phase41.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

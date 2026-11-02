@@ -248,6 +248,44 @@ button.linkish:disabled {
   cursor: default;
 }
 
+.stats-overlay {
+  position: fixed;
+  inset: 0;
+  background: color-mix(in srgb, #000 35%, transparent);
+  display: grid;
+  place-items: center;
+  z-index: 40;
+  padding: 1rem;
+}
+
+.stats-panel {
+  width: min(28rem, 100%);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  box-shadow: 0 12px 40px color-mix(in srgb, #000 25%, transparent);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.35rem 1rem;
+  margin: 0;
+  padding: 0.75rem 1rem 1rem;
+}
+
+.stats-grid dt {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.stats-grid dd {
+  margin: 0;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-family: var(--mono);
+}
+
 .tree-row {
   display: flex;
   align-items: center;
