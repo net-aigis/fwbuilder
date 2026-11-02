@@ -57,11 +57,20 @@ jobs:
           mkdir -p ci-logs .ci-ccache
           export PATH="/opt/homebrew/opt/qt@6/bin:/usr/local/opt/qt@6/bin:$PATH"
           export PKG_CONFIG_PATH="/opt/homebrew/opt/libxml2/lib/pkgconfig:/opt/homebrew/opt/libxslt/lib/pkgconfig:${PKG_CONFIG_PATH:-}"
-          # Qt6 qmake needs a resolvable macOS SDK (empty SDKVersion otherwise).
+          # Qt6 qmake needs a named macOS SDK + UTF-8 locale on GHA runners.
+          export LANG=en_US.UTF-8
+          export LC_ALL=en_US.UTF-8
           export SDKROOT="$(xcrun --sdk macosx --show-sdk-path)"
           export DEVELOPER_DIR="$(xcode-select -p)"
-          xcrun --show-sdk-version | tee ci-logs/sdk.log
+          export QMAKE_MAC_SDK=macosx
+          {
+            echo "SDKROOT=$SDKROOT"
+            echo "DEVELOPER_DIR=$DEVELOPER_DIR"
+            xcrun --show-sdk-version
+            xcodebuild -version
+          } | tee ci-logs/sdk.log
           # SNMP is optional for smoke; keep the tree closer to Linux Qt6 CI.
+          # QMAKE_MAC_SDK is picked up from the environment via qmake.inc.in.
           bash ./autogen.sh --prefix=/usr/local --with-qmake=qmake6 --without-ucdsnmp \
             2>&1 | tee ci-logs/configure.log
 
@@ -70,8 +79,11 @@ jobs:
           set -euo pipefail
           mkdir -p ci-logs
           export PATH="/opt/homebrew/opt/qt@6/bin:/usr/local/opt/qt@6/bin:$PATH"
+          export LANG=en_US.UTF-8
+          export LC_ALL=en_US.UTF-8
           export SDKROOT="$(xcrun --sdk macosx --show-sdk-path)"
           export DEVELOPER_DIR="$(xcode-select -p)"
+          export QMAKE_MAC_SDK=macosx
           make -j"$(sysctl -n hw.ncpu)" 2>&1 | tee ci-logs/build.log
           test -x src/gui/fwbuilder.app/Contents/MacOS/fwbuilder \
             || test -x src/gui/fwbuilder \

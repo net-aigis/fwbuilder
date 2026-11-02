@@ -186,7 +186,9 @@ macx {
 # should solve the problem
 	QMAKE_MACOSX_DEPLOYMENT_TARGET = $$(QMAKE_MACOSX_DEPLOYMENT_TARGET)
 	QMAKE_CXXFLAGS += -mmacosx-version-min=$$(QMAKE_MACOSX_DEPLOYMENT_TARGET) $$(CXXFLAGS)
+	# Empty QMAKE_MAC_SDK makes Qt6 qmake fail with "SDKVersion for ''".
 	QMAKE_MAC_SDK = $$(QMAKE_MAC_SDK)
+	isEmpty(QMAKE_MAC_SDK): QMAKE_MAC_SDK = macosx
 
 	CONFIG += qt thread rtti stl warn_on debug  # release
 
