@@ -1,6 +1,6 @@
 # Qt6 port of preserved FWB 5.3.8
 
-Branch: `feature/qt6-port-538` (from `feature/central-hooks-on-nft` / PR #8).
+Merged into `modernization/start` (PR #9). Product version: **6.0.0**.
 Qt5 remains the supported CI path until this branch is green.
 
 ## Not in scope here

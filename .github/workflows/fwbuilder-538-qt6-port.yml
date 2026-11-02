@@ -1,13 +1,12 @@
-name: FWB 5.3.8 Qt6 port - openSUSE Leap 16.0
+name: FWB 6.0 Qt6 - openSUSE Leap 16.0
 
 on:
   pull_request:
     branches:
       - modernization/start
-      - feature/central-hooks-on-nft
   push:
     branches:
-      - feature/qt6-port-538
+      - modernization/start
   workflow_dispatch:
 
 permissions:
@@ -15,7 +14,7 @@ permissions:
 
 jobs:
   qt6-port:
-    name: Build preserved FWB 5.3.8 with Qt6
+    name: Build FWB 6.0 with Qt6
     runs-on: ubuntu-24.04
     container:
       image: opensuse/leap:16.0
@@ -39,7 +38,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Verify 5.3.8 layout (not the CMake master reference)
+      - name: Verify preserved autotools layout (not CMake master)
         run: |
           set -euo pipefail
           # Checkout may clean the workspace, including logs from the Git install step.
@@ -52,7 +51,7 @@ jobs:
             test -f fwbuilder3.pro
             test -f runqmake.sh
             test ! -f CMakeLists.txt
-            printf 'Porting preserved 5.3.8 autotools/qmake tree with Qt6.\n'
+            printf 'Building preserved autotools/qmake tree with Qt6 (FWB 6.0).\n'
           } 2>&1 | tee ci-logs/source.log
 
       - name: Install Qt6 and build dependencies

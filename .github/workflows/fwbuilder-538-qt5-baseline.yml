@@ -1,4 +1,4 @@
-name: FWB 5.3.8 Qt5 baseline - openSUSE Leap 16.0
+name: FWB 6.0 Qt5 baseline - openSUSE Leap 16.0
 
 on:
   pull_request:
@@ -14,7 +14,7 @@ permissions:
 
 jobs:
   qt5-baseline:
-    name: Build preserved FWB 5.3.8 with Qt5
+    name: Build FWB 6.0 with Qt5
     runs-on: ubuntu-24.04
     container:
       image: opensuse/leap:16.0
@@ -39,13 +39,13 @@ jobs:
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
           git --version
 
-      - name: Check out the FWB 5.3.8 development branch
+      - name: Check out the modernization branch
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Verify exact original 5.3.8 ancestry and build structure
+      - name: Verify preserved ancestry and build structure
         run: |
           set -euo pipefail
           # Checkout may clean the workspace, including logs from the Git install step.
@@ -132,51 +132,13 @@ jobs:
           bash ./autogen.sh --prefix=/usr --with-qmake="${qmake_bin##*/}" \
             2>&1 | tee ci-logs/configure.log
 
-      # Full legacy/GUI build remains intact for the preserved baseline.
-      # PR #6 builds only native nftables and its direct static dependencies.
-      - name: Compile preserved FWB 5.3.8 baseline
-        if: ${{ github.event_name != 'pull_request' || (github.head_ref != 'feature/native-nftables-port' && github.head_ref != 'feature/central-hooks-on-nft') }}
+      # Full GUI + policy compilers including native nftables.
+      - name: Compile FWB 6.0 baseline
         run: |
           set -euo pipefail
           export PATH="/tmp/fwb-ci-compiler-wrappers:$PATH"
           test "$(command -v g++)" = /tmp/fwb-ci-compiler-wrappers/g++
           make -j2 2>&1 | tee ci-logs/build.log
-
-      - name: Compile native nftables and direct dependencies only
-        if: ${{ github.event_name == 'pull_request' && (github.head_ref == 'feature/native-nftables-port' || github.head_ref == 'feature/central-hooks-on-nft') }}
-        run: |
-          set -euo pipefail
-          export PATH="/tmp/fwb-ci-compiler-wrappers:$PATH"
-          test "$(command -v g++)" = /tmp/fwb-ci-compiler-wrappers/g++
-          # These exact link inputs are declared in src/nft/nft.pro.
-          # qmake/autogen creates all Makefiles; do NOT build the GUI or the
-          # unused iptables, PF, Cisco, Juniper and other compiler binaries.
-          targets=(
-            src/libfwbuilder/src/fwbuilder
-            src/libfwbuilder/src/fwcompiler
-            src/common
-            src/compiler_lib
-            src/iptlib
-            src/nftlib
-            src/nft
-          )
-          printf '%s\n' "${targets[@]}" > ci-logs/nft-build-targets.log
-          for target in "${targets[@]}"; do
-            test -f "$target/Makefile" || {
-              echo "Missing qmake-generated Makefile: $target" >&2
-              exit 1
-            }
-          done
-          {
-            for target in "${targets[@]}"; do
-              printf '\n=== Building %s ===\n' "$target"
-              make -j2 -C "$target"
-            done
-          } 2>&1 | tee ci-logs/build.log
-          test -x src/nft/fwb_nft || {
-            echo 'Targeted build did not produce src/nft/fwb_nft' >&2
-            exit 1
-          }
 
       - name: Report C/C++ compiler cache statistics
         if: ${{ always() && steps.ccache_setup.outcome == 'success' }}
@@ -195,22 +157,24 @@ jobs:
           key: ${{ steps.ccache_restore.outputs.cache-primary-key }}
 
       - name: Inventory compiled firewall policy compilers
-        if: ${{ github.event_name != 'pull_request' || (github.head_ref != 'feature/native-nftables-port' && github.head_ref != 'feature/central-hooks-on-nft') }}
         run: |
           set -euo pipefail
           find . -type f \
             \( -name fwb_ipt -o -name fwb_pf -o -name fwb_ipf \
             -o -name fwb_ipfw -o -name fwb_pix -o -name fwb_iosacl \
-            -o -name fwb_junosacl \) \
+            -o -name fwb_junosacl -o -name fwb_nft \) \
             -perm /111 -print | sort | tee ci-logs/compiler-binaries.log
           test -s ci-logs/compiler-binaries.log || {
             echo 'Build completed without discovering any policy compiler binaries' >&2
             exit 1
           }
+          grep -E '/fwb_nft$' ci-logs/compiler-binaries.log || {
+            echo 'Native fwb_nft missing from compiled inventory' >&2
+            exit 1
+          }
           echo 'Compiled backend inventory recorded; no firewall rules deployed.'
 
       - name: Smoke-test native nftables CLI and generated policy
-        if: ${{ github.event_name == 'pull_request' && (github.head_ref == 'feature/native-nftables-port' || github.head_ref == 'feature/central-hooks-on-nft') }}
         run: |
           set -euo pipefail
           compiler="$(find src/nft -type f -name fwb_nft -perm /111 -print -quit)"
@@ -251,7 +215,6 @@ jobs:
       # built fwb_nft binary. Only positive scenarios enter nft-output;
       # the existing second job validates all outputs against nft and kernel.
       - name: Compile expanded native FWB XML test matrix
-        if: ${{ github.event_name == 'pull_request' && (github.head_ref == 'feature/native-nftables-port' || github.head_ref == 'feature/central-hooks-on-nft') }}
         run: |
           set -euo pipefail
           bash ci/check-nft-project-fixtures.sh \
@@ -260,7 +223,6 @@ jobs:
             ci-logs/nft-output 2>&1 | tee ci-logs/nft-fixture-results.log
 
       - name: Verify central prolog/epilog hooks with fwb_nft
-        if: ${{ github.event_name == 'pull_request' && github.head_ref == 'feature/central-hooks-on-nft' }}
         run: |
           set -euo pipefail
           bash ci/check-central-hooks.sh \
@@ -331,7 +293,7 @@ jobs:
   nft-syntax:
     name: Check generated nftables grammar without loading rules
     needs: qt5-baseline
-    if: ${{ github.event_name == 'pull_request' && (github.head_ref == 'feature/native-nftables-port' || github.head_ref == 'feature/central-hooks-on-nft') }}
+    if: ${{ success() }}
     runs-on: ubuntu-24.04
     steps:
       - name: Check out syntax checker only
