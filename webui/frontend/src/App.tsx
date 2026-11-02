@@ -24,7 +24,9 @@ import {
   updateObject,
   updateRule,
   type AnyRule,
+  type NatRule,
   type PolicyRule,
+  type RoutingRuleRow,
   type TreeNode,
 } from "./api/client";
 import { CreateObject } from "./components/CreateObject";
@@ -231,12 +233,27 @@ export function App() {
     }
   }
 
-  async function onChangeAction(rule: PolicyRule, action: string) {
+  async function onChangeAction(rule: PolicyRule | NatRule, action: string) {
     if (!sessionId || !rulesFwId) return;
     setBusy(true);
     setError(null);
     try {
       await updateRule(sessionId, rule.id, { action });
+      await refreshRules();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function onChangeMetric(rule: RoutingRuleRow, metric: number) {
+    if (!sessionId || !rulesFwId) return;
+    if (rule.metric === metric) return;
+    setBusy(true);
+    setError(null);
+    try {
+      await updateRule(sessionId, rule.id, { metric });
       await refreshRules();
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
@@ -760,6 +777,7 @@ export function App() {
                 onSelectRule={(r) => setSelectedRuleId(r.id)}
                 onToggleDisabled={onToggleRule}
                 onChangeAction={onChangeAction}
+                onChangeMetric={onChangeMetric}
                 onEditCell={(rule, element) => setPicker({ ruleId: rule.id, element })}
                 onDropObject={onDropObject}
               />
@@ -807,9 +825,8 @@ export function App() {
                 <pre className="compile-log pad">{compileLog}</pre>
               ) : (
                 <p className="muted pad">
-                  Compile uses the same <code>fwb_*</code> CLIs as the desktop GUI. Deploy/install
-                  to a remote host is not wired yet — download the generated script and install it
-                  yourself.
+                  Compile uses the same <code>fwb_*</code> CLIs as the desktop GUI. Deploy runs
+                  via scp/ssh from the Firewall panel (dry-run by default).
                 </p>
               )}
             </div>

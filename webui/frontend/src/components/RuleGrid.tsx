@@ -12,7 +12,8 @@ type Props = {
   kind: "policy" | "nat" | "routing";
   busy?: boolean;
   onToggleDisabled?: (rule: AnyRule) => void;
-  onChangeAction?: (rule: PolicyRule, action: string) => void;
+  onChangeAction?: (rule: PolicyRule | NatRule, action: string) => void;
+  onChangeMetric?: (rule: RoutingRuleRow, metric: number) => void;
   onSelectRule?: (rule: AnyRule) => void;
   onEditCell?: (rule: AnyRule, element: string) => void;
   onDropObject?: (rule: AnyRule, element: string, objectId: string) => void;
@@ -29,6 +30,8 @@ const POLICY_ACTIONS = [
   "Pipe",
   "Custom",
 ];
+
+const NAT_ACTIONS = ["Translate", "NATBranch"];
 
 function Cell({
   rule,
@@ -77,6 +80,7 @@ export function RuleGrid({
   busy,
   onToggleDisabled,
   onChangeAction,
+  onChangeMetric,
   onSelectRule,
   onEditCell,
   onDropObject,
@@ -99,6 +103,7 @@ export function RuleGrid({
               <th>Dst</th>
               <th>Srv</th>
               <th>Itf</th>
+              <th>When</th>
               <th>Dir</th>
               <th>Log</th>
               <th>Comment</th>
@@ -142,6 +147,7 @@ export function RuleGrid({
                 <Cell rule={r} element="dst" el={r.dst} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} />
                 <Cell rule={r} element="srv" el={r.srv} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} />
                 <Cell rule={r} element="itf" el={r.itf} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} />
+                <Cell rule={r} element="when" el={r.when} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} />
                 <td>{r.direction}</td>
                 <td>{r.logging ? "✓" : ""}</td>
                 <td className="comment-cell">{r.comment}</td>
@@ -188,7 +194,23 @@ export function RuleGrid({
                     onClick={(e) => e.stopPropagation()}
                   />
                 </td>
-                <td>{r.action}</td>
+                <td>
+                  <select
+                    value={r.action}
+                    disabled={busy}
+                    onChange={(e) => onChangeAction?.(r, e.target.value)}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {NAT_ACTIONS.map((a) => (
+                      <option key={a} value={a}>
+                        {a}
+                      </option>
+                    ))}
+                    {!NAT_ACTIONS.includes(r.action) ? (
+                      <option value={r.action}>{r.action}</option>
+                    ) : null}
+                  </select>
+                </td>
                 <Cell rule={r} element="osrc" el={r.osrc} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} />
                 <Cell rule={r} element="odst" el={r.odst} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} />
                 <Cell rule={r} element="osrv" el={r.osrv} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} />
@@ -235,7 +257,19 @@ export function RuleGrid({
                   onClick={(e) => e.stopPropagation()}
                 />
               </td>
-              <td>{r.metric}</td>
+              <td>
+                <input
+                  type="number"
+                  className="metric-input"
+                  defaultValue={r.metric}
+                  key={`${r.id}-${r.metric}`}
+                  disabled={busy}
+                  onClick={(e) => e.stopPropagation()}
+                  onBlur={(e) =>
+                    onChangeMetric?.(r, Number(e.target.value || 0))
+                  }
+                />
+              </td>
               <Cell rule={r} element="rdst" el={r.rdst} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} />
               <Cell rule={r} element="rgtw" el={r.rgtw} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} />
               <Cell rule={r} element="ritf" el={r.ritf} busy={busy} onEditCell={onEditCell} onDropObject={onDropObject} />

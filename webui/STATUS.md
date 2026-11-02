@@ -50,6 +50,9 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Remove rule refs from picker | done | ObjectPicker current + Remove; E2E phase15 |
 | Interface physAddress / label | done | `setPhysicalAddress` / `setLabel`; E2E phase15 |
 | Object color attr | done | attrs `color` + ObjectDetail field; E2E phase15 |
+| AddressTable / Tag / User / CustomService | done | typed attrs + create; E2E phase16 |
+| Policy When column | done | RuleGrid `when` cell; E2E phase16 |
+| NAT action + routing metric edit | done | RuleGrid selects/inputs; E2E phase16 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Phase 3 — compile / deploy
@@ -76,6 +79,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase13 (iface/IPv4 + Interval) | done | `e2e-phase13.sh` **OK** |
 | Local E2E phase14 (address InetAddr roundtrip) | done | `e2e-phase14.sh` **OK** |
 | Local E2E phase15 (remove ref + MAC + color) | done | `e2e-phase15.sh` **OK** |
+| Local E2E phase16 (AT/Tag/User/When/NAT/metric) | done | `e2e-phase16.sh` **OK** |
 
 ## Local commands
 
@@ -100,6 +104,7 @@ bash webui/scripts/e2e-phase12.sh
 bash webui/scripts/e2e-phase13.sh
 bash webui/scripts/e2e-phase14.sh
 bash webui/scripts/e2e-phase15.sh
+bash webui/scripts/e2e-phase16.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

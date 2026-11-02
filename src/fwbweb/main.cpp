@@ -15,6 +15,8 @@
 #include "fwbuilder/FWReference.h"
 #include "fwbuilder/Address.h"
 #include "fwbuilder/AddressRange.h"
+#include "fwbuilder/AddressTable.h"
+#include "fwbuilder/CustomService.h"
 #include "fwbuilder/DNSName.h"
 #include "fwbuilder/Firewall.h"
 #include "fwbuilder/Host.h"
@@ -22,6 +24,8 @@
 #include "fwbuilder/IPv4.h"
 #include "fwbuilder/IPv6.h"
 #include "fwbuilder/physAddress.h"
+#include "fwbuilder/TagService.h"
+#include "fwbuilder/UserService.h"
 #include "fwbuilder/Management.h"
 #include "fwbuilder/FWOptions.h"
 #include "fwbuilder/InetAddr.h"
@@ -109,6 +113,7 @@ static QJsonObject typedAttrs(FWObject *obj)
         "platform", "host_OS", "protocol", "src_range_start", "src_range_end",
         "dst_range_start", "dst_range_end", "code", "color", "version",
         "path", "iface_type", "days_of_week", "run_time", "label",
+        "filename", "tagcode", "userid",
         0
     };
     for (int k = 0; str_keys[k]; ++k)
@@ -134,6 +139,21 @@ static QJsonObject typedAttrs(FWObject *obj)
         attrs.insert(QStringLiteral("dnsname"), u8(dns->getSourceName()));
         attrs.insert(QStringLiteral("run_time"),
                      dns->isRunTime() ? QStringLiteral("True") : QStringLiteral("False"));
+    }
+    if (AddressTable *at = AddressTable::cast(obj)) {
+        attrs.insert(QStringLiteral("filename"), u8(at->getSourceName()));
+        attrs.insert(QStringLiteral("run_time"),
+                     at->isRunTime() ? QStringLiteral("True") : QStringLiteral("False"));
+    }
+    if (TagService *ts = TagService::cast(obj))
+        attrs.insert(QStringLiteral("tagcode"), u8(ts->getCode()));
+    if (UserService *us = UserService::cast(obj))
+        attrs.insert(QStringLiteral("userid"), u8(us->getUserId()));
+    if (CustomService *cs = CustomService::cast(obj)) {
+        attrs.insert(QStringLiteral("protocol"), u8(cs->getProtocol()));
+        attrs.insert(QStringLiteral("address_family"),
+                     cs->getAddressFamily() == AF_INET6 ? QStringLiteral("inet6")
+                                                       : QStringLiteral("inet"));
     }
     if (t == "TCPService" || t == "UDPService" || t == "TCPUDPService") {
         putStrAttr(attrs, obj, "src_range_start");
@@ -228,6 +248,51 @@ static void applyObjectAttrs(FWObject *obj, const QJsonObject &attrs)
             }
             if (key == "run_time") {
                 dns->setRunTime(parseBoolish(val));
+                continue;
+            }
+        }
+        if (AddressTable *at = AddressTable::cast(obj)) {
+            if (key == "filename" || key == "source_name") {
+                at->setSourceName(val);
+                continue;
+            }
+            if (key == "run_time") {
+                at->setRunTime(parseBoolish(val));
+                continue;
+            }
+        }
+        if (TagService *ts = TagService::cast(obj)) {
+            if (key == "tagcode" || key == "code") {
+                ts->setCode(val);
+                continue;
+            }
+        }
+        if (UserService *us = UserService::cast(obj)) {
+            if (key == "userid" || key == "user_id") {
+                us->setUserId(val);
+                continue;
+            }
+        }
+        if (CustomService *cs = CustomService::cast(obj)) {
+            if (key == "protocol") {
+                cs->setProtocol(val);
+                continue;
+            }
+            if (key == "address_family") {
+                string low;
+                for (size_t i = 0; i < val.size(); ++i)
+                    low.push_back(static_cast<char>(
+                        tolower(static_cast<unsigned char>(val[i]))));
+                cs->setAddressFamily(low == "inet6" || low == "ipv6" || low == "6"
+                                         ? AF_INET6
+                                         : AF_INET);
+                continue;
+            }
+            if (key == "code" || key.rfind("code_", 0) == 0) {
+                string platform = "any";
+                if (key.rfind("code_", 0) == 0 && key.size() > 5)
+                    platform = key.substr(5);
+                cs->setCodeForPlatform(platform, val);
                 continue;
             }
         }
