@@ -32,6 +32,9 @@ config.h
 .ui
 qtdbus_test
 fwbedit
+fwbweb
+!src/fwbweb/
+!src/fwbweb/**
 qrc_MainRes.cpp
 fwb_iosacl
 fwb_nxosacl
@@ -65,3 +68,9 @@ configure~
 **/release/
 ci-logs-mingw/
 .ci-ccache-mingw/
+webui/frontend/node_modules/
+webui/frontend/dist/
+webui/backend/.venv/
+webui/backend/**/__pycache__/
+webui/backend/*.egg-info/
+webui/.workspace/

@@ -1,0 +1,56 @@
+from __future__ import annotations
+
+from fastapi import Depends, FastAPI, WebSocket, WebSocketDisconnect
+from fastapi.middleware.cors import CORSMiddleware
+
+from .auth import require_token
+from .routes.projects import router as projects_router
+from .settings import settings
+
+app = FastAPI(
+    title="Firewall Builder WebUI API",
+    version="0.1.0",
+    description="REST/WebSocket front for the libfwbuilder fwbweb bridge",
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.cors_origin_list,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.include_router(projects_router)
+
+
+@app.get("/api/v1/health")
+def health() -> dict[str, str]:
+    return {"status": "ok"}
+
+
+@app.get("/api/v1/me")
+def me(_: str = Depends(require_token)) -> dict[str, str]:
+    return {"auth": "ok"}
+
+
+@app.websocket("/api/v1/ws/{session_id}")
+async def session_ws(websocket: WebSocket, session_id: str) -> None:
+    """Phase-1 stub: accept connections; mutation fan-out comes later."""
+    token = websocket.query_params.get("token")
+    if token != settings.api_token:
+        await websocket.close(code=4403)
+        return
+    await websocket.accept()
+    await websocket.send_json({"ok": True, "event": "subscribed", "session_id": session_id})
+    try:
+        while True:
+            await websocket.receive_text()
+    except WebSocketDisconnect:
+        return
+
+
+def run() -> None:
+    import uvicorn
+
+    uvicorn.run("fwbweb_api.main:app", host="127.0.0.1", port=8088, reload=False)

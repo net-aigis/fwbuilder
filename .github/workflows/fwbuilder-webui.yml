@@ -1,0 +1,51 @@
+name: FWB WebUI
+
+on:
+  pull_request:
+    paths:
+      - "webui/**"
+      - "src/fwbweb/**"
+      - "src/src.pro"
+      - ".github/workflows/fwbuilder-webui.yml"
+  workflow_dispatch:
+
+jobs:
+  frontend:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: webui/frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: npm install
+      - run: npm run typecheck
+      - run: npm run build
+
+  api:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: webui/backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e '.[dev]'
+      - run: pytest -q
+
+  # Full bridge compile stays on the existing Qt6 Linux workflow path later;
+  # this job only verifies the fwbweb sources are present and qmake-parseable
+  # when a host Qt toolchain is available on the runner image extras.
+  bridge-sources:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check fwbweb project files
+        run: |
+          test -f src/fwbweb/fwbweb.pro
+          test -f src/fwbweb/main.cpp
+          grep -q 'fwbweb' src/src.pro

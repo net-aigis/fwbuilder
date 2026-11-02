@@ -15,6 +15,7 @@ SUBDIRS  =  libfwbuilder \
 			parsers \
             import \
 			common \
+			fwbweb \
 			compiler_lib \
 			iptlib \
 			ipt \
