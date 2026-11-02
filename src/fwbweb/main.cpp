@@ -98,7 +98,7 @@ static QJsonObject typedAttrs(FWObject *obj)
         "address", "netmask", "dnsname", "run_time", "platform", "host_OS",
         "protocol", "src_range_start", "src_range_end",
         "dst_range_start", "dst_range_end", "code", "color", "version",
-        "path", "iface_type", "phys_address",
+        "path", "iface_type", "phys_address", "days_of_week",
         0
     };
     for (int k = 0; str_keys[k]; ++k)
@@ -117,6 +117,19 @@ static QJsonObject typedAttrs(FWObject *obj)
     }
     if (t == "IPService")
         putIntAttr(attrs, obj, "protocol_num");
+    if (t == "Interval") {
+        putIntAttr(attrs, obj, "from_minute");
+        putIntAttr(attrs, obj, "from_hour");
+        putIntAttr(attrs, obj, "from_day");
+        putIntAttr(attrs, obj, "from_month");
+        putIntAttr(attrs, obj, "from_year");
+        putIntAttr(attrs, obj, "to_minute");
+        putIntAttr(attrs, obj, "to_hour");
+        putIntAttr(attrs, obj, "to_day");
+        putIntAttr(attrs, obj, "to_month");
+        putIntAttr(attrs, obj, "to_year");
+        putStrAttr(attrs, obj, "days_of_week");
+    }
     if (t == "Firewall" || t == "Cluster" || t == "Host") {
         putStrAttr(attrs, obj, "platform");
         putStrAttr(attrs, obj, "host_OS");
@@ -325,7 +338,11 @@ static void collectSearch(FWObject *root, const string &q, const string &type_fi
 static bool isIntKey(const string &key)
 {
     return key == "type" || key == "code" || key == "protocol_num" ||
-           key == "metric";
+           key == "metric" || key == "from_minute" || key == "from_hour" ||
+           key == "from_day" || key == "from_month" || key == "from_year" ||
+           key == "to_minute" || key == "to_hour" || key == "to_day" ||
+           key == "to_month" || key == "to_year" || key == "vlan_id" ||
+           key == "enable_stp";
 }
 
 static QJsonObject ruleToJson(Rule *rule)
@@ -1251,6 +1268,7 @@ static QJsonObject handle(const QJsonObject &req)
             return errObj(u8(ex.toString()));
         }
         QJsonArray uses;
+        set<int> seen_ids;
         for (set<FWObject *>::const_iterator it = refs.begin();
              it != refs.end(); ++it) {
             FWObject *hit = *it;
@@ -1265,6 +1283,9 @@ static QJsonObject handle(const QJsonObject &req)
                 ctx = ctx->getParent();
             if (ctx)
                 display = ctx;
+            if (seen_ids.count(display->getId()))
+                continue;
+            seen_ids.insert(display->getId());
             QJsonObject row;
             row.insert(QStringLiteral("id"),
                        u8(FWObjectDatabase::getStringId(display->getId())));

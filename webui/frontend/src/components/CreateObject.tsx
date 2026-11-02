@@ -23,6 +23,8 @@ const BASE_TYPES = [
   "UDPService",
   "ICMPService",
   "IPService",
+  "Interval",
+  "IntervalGroup",
   "ObjectGroup",
   "ServiceGroup",
 ];

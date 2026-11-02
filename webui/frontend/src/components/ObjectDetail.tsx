@@ -28,7 +28,20 @@ const TYPE_FIELDS: Record<string, string[]> = {
   IPService: ["protocol_num"],
   Firewall: ["platform", "host_OS", "version"],
   Host: ["platform", "host_OS"],
-  Interface: ["address", "netmask", "phys_address"],
+  Interface: ["phys_address"],
+  Interval: [
+    "from_hour",
+    "from_minute",
+    "to_hour",
+    "to_minute",
+    "days_of_week",
+    "from_day",
+    "from_month",
+    "from_year",
+    "to_day",
+    "to_month",
+    "to_year",
+  ],
 };
 
 export function ObjectDetail({ object, readOnly, busy, onSave, onOpenRules, extras }: Props) {
@@ -66,7 +79,14 @@ export function ObjectDetail({ object, readOnly, busy, onSave, onOpenRules, extr
   function commit() {
     const out: Record<string, string | number> = {};
     for (const [k, v] of Object.entries(attrs)) {
-      if (k === "type" || k === "code" || k === "protocol_num" || k === "metric") {
+      if (
+        k === "type" ||
+        k === "code" ||
+        k === "protocol_num" ||
+        k === "metric" ||
+        k.startsWith("from_") ||
+        k.startsWith("to_")
+      ) {
         out[k] = v === "" ? 0 : Number(v);
       } else {
         out[k] = v;
