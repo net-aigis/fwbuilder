@@ -6,13 +6,15 @@ type Props = {
   selectedId?: string;
   onSelect: (node: TreeNode) => void;
   depth?: number;
+  onExpand?: (node: TreeNode) => Promise<TreeNode[] | undefined>;
 };
 
-export function ObjectTree({ node, selectedId, onSelect, depth = 0 }: Props) {
+export function ObjectTree({ node, selectedId, onSelect, depth = 0, onExpand }: Props) {
   const selected = node.id === selectedId;
-  const kids = node.children ?? [];
+  const [kids, setKids] = useState<TreeNode[]>(node.children ?? []);
   const hasKids = kids.length > 0 || (node.children_count ?? 0) > 0;
   const [open, setOpen] = useState(depth < 2);
+  const [loading, setLoading] = useState(false);
   const color =
     typeof node.attrs?.color === "string" && node.attrs.color.trim()
       ? node.attrs.color.trim()
@@ -26,6 +28,20 @@ export function ObjectTree({ node, selectedId, onSelect, depth = 0 }: Props) {
     return null;
   })();
 
+  async function toggle() {
+    const next = !open;
+    setOpen(next);
+    if (next && kids.length === 0 && (node.children_count ?? 0) > 0 && onExpand) {
+      setLoading(true);
+      try {
+        const loaded = await onExpand(node);
+        if (loaded) setKids(loaded);
+      } finally {
+        setLoading(false);
+      }
+    }
+  }
+
   return (
     <div className="tree-node" style={{ paddingLeft: depth === 0 ? 0 : 12 }}>
       <div className="tree-row">
@@ -34,9 +50,9 @@ export function ObjectTree({ node, selectedId, onSelect, depth = 0 }: Props) {
             type="button"
             className="tree-twist"
             aria-label={open ? "Collapse" : "Expand"}
-            onClick={() => setOpen((v) => !v)}
+            onClick={() => void toggle()}
           >
-            {open ? "▾" : "▸"}
+            {loading ? "…" : open ? "▾" : "▸"}
           </button>
         ) : (
           <span className="tree-twist spacer" />
@@ -69,6 +85,7 @@ export function ObjectTree({ node, selectedId, onSelect, depth = 0 }: Props) {
               selectedId={selectedId}
               onSelect={onSelect}
               depth={depth + 1}
+              onExpand={onExpand}
             />
           ))
         : null}

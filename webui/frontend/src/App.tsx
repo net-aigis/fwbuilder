@@ -70,6 +70,7 @@ export function App() {
   const [rulesetName, setRulesetName] = useState("");
   const [selectedRuleId, setSelectedRuleId] = useState<string | undefined>();
   const [searchQ, setSearchQ] = useState("");
+  const [searchType, setSearchType] = useState("");
   const [searchHits, setSearchHits] = useState<TreeNode[]>([]);
   const [picker, setPicker] = useState<PickerTarget | null>(null);
   const [compileLog, setCompileLog] = useState<string | null>(null);
@@ -85,7 +86,7 @@ export function App() {
       setToken(token);
       const opened = await openProject(path);
       setSessionId(opened.session_id);
-      const t = await fetchTree(opened.session_id, 5);
+      const t = await fetchTree(opened.session_id, 2);
       setTree(t.root);
       setSelected(null);
       setRules([]);
@@ -533,9 +534,9 @@ export function App() {
     setBusy(true);
     setError(null);
     try {
-      const res = await searchObjects(sessionId, searchQ);
+      const res = await searchObjects(sessionId, searchQ, searchType);
       setSearchHits(res.results ?? []);
-      setStatus(`Search: ${res.count} hits`);
+      setStatus(`Search: ${res.count} hits${searchType ? ` · ${searchType}` : ""}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
@@ -603,6 +604,23 @@ export function App() {
                 if (e.key === "Enter") void onSearch();
               }}
             />
+            <select
+              value={searchType}
+              disabled={!sessionId || busy}
+              onChange={(e) => setSearchType(e.target.value)}
+              title="Type filter"
+            >
+              <option value="">Any type</option>
+              <option value="Network">Network</option>
+              <option value="Host">Host</option>
+              <option value="Firewall">Firewall</option>
+              <option value="Interface">Interface</option>
+              <option value="TCPService">TCPService</option>
+              <option value="UDPService">UDPService</option>
+              <option value="DNSName">DNSName</option>
+              <option value="Interval">Interval</option>
+              <option value="Policy">Policy</option>
+            </select>
             <button type="button" className="ghost" disabled={!canOperate} onClick={onSearch}>
               Go
             </button>
@@ -628,7 +646,16 @@ export function App() {
             </div>
           ) : null}
           {tree ? (
-            <ObjectTree node={tree} selectedId={selected?.id} onSelect={onSelect} />
+            <ObjectTree
+              node={tree}
+              selectedId={selected?.id}
+              onSelect={onSelect}
+              onExpand={async (n) => {
+                if (!sessionId) return undefined;
+                const full = await fetchObject(sessionId, n.id);
+                return full.children ?? [];
+              }}
+            />
           ) : (
             <p className="muted pad">Open a `.fwb` project to load the object tree.</p>
           )}
@@ -876,7 +903,10 @@ export function App() {
                       onBusy={setBusy}
                       onStatus={setStatus}
                       onError={setError}
-                      onSaved={() => void refreshRules()}
+                      onSaved={() => {
+                        setDirty(true);
+                        void refreshRules();
+                      }}
                     />
                   ) : null}
                   <RuleOptions

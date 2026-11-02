@@ -65,6 +65,8 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Close confirms if dirty | done | App confirm dialog |
 | Create Firewall/Host + Policy/NAT | done | CreateObject under groups/fw; E2E phase20 |
 | Interface management flag | done | `setManagement`; E2E phase20 |
+| Search type filter | done | sidebar select; E2E phase21 |
+| Lazy tree expand | done | ObjectTree loads children via get; E2E phase21 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Phase 3 — compile / deploy
@@ -96,6 +98,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase18 (lock/unlock + ICMP6) | done | `e2e-phase18.sh` **OK** |
 | Local E2E phase19 (branch + download) | done | `e2e-phase19.sh` **OK** |
 | Local E2E phase20 (new Firewall + management) | done | `e2e-phase20.sh` **OK** |
+| Local E2E phase21 (search type + lazy tree) | done | `e2e-phase21.sh` **OK** |
 
 ## Local commands
 
@@ -125,6 +128,7 @@ bash webui/scripts/e2e-phase17.sh
 bash webui/scripts/e2e-phase18.sh
 bash webui/scripts/e2e-phase19.sh
 bash webui/scripts/e2e-phase20.sh
+bash webui/scripts/e2e-phase21.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```
