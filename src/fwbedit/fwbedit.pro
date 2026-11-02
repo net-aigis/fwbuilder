@@ -24,14 +24,17 @@ TARGET = fwbedit
 }
 
 PRE_TARGETDEPS  = ../common/$$BINARY_SUBDIR/libcommon.a \
-      ../import/$$BINARY_SUBDIR/libimport.a \
       ../parsers/$$BINARY_SUBDIR/libfwbparser.a \
+      ../import/$$BINARY_SUBDIR/libimport.a \
       ../compiler_lib/$$BINARY_SUBDIR/libcompilerdriver.a \
       ../libgui/$$BINARY_SUBDIR/libgui.a \
       ../libfwbuilder/src/fwcompiler/$$BINARY_SUBDIR/libfwcompiler.a \
       ../libfwbuilder/src/fwbuilder/$$BINARY_SUBDIR/libfwbuilder.a \
 
-LIBS  += $$PRE_TARGETDEPS $$ANTLR_LIBS $$LIBS
+# MinGW ld is single-pass: parsers reference PFImporter, so import must
+# follow parsers; wrap on win32 in case of remaining static cycles.
+!win32:LIBS += $$PRE_TARGETDEPS $$ANTLR_LIBS $$LIBS
+win32:LIBS += -Wl,--start-group $$PRE_TARGETDEPS $$ANTLR_LIBS -Wl,--end-group $$LIBS
 
 win32:CONFIG += console
 

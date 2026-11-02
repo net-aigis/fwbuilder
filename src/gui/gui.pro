@@ -20,8 +20,9 @@ FWBPARSER_LIB = ../parsers/$$BINARY_SUBDIR/libfwbparser.a
 INCLUDEPATH += $$ANTLR_INCLUDEPATH
 DEFINES += $$ANTLR_DEFINES
 
+# parsers before import: PFCfgParser references PFImporter (MinGW ld).
 STATIC_LIBS += ../libgui/$$BINARY_SUBDIR/libgui.a \
-				$$IMPORT_LIB $$FWBPARSER_LIB $$ANTLR_LIBS
+				$$FWBPARSER_LIB $$IMPORT_LIB $$ANTLR_LIBS
 
 # fwtransfer lib. Add this before adding -lQtDBus to LIBS below
 # STATIC_LIBS += $$FWTRANSFER_LIB
@@ -64,7 +65,8 @@ PRE_TARGETDEPS  = $$STATIC_LIBS
 macx:STATIC_LIBS += -framework Carbon
 STATIC_LIBS += $$LIBS_FWCOMPILER
 
-LIBS = $$STATIC_LIBS $$LIBS
+!win32:LIBS = $$STATIC_LIBS $$LIBS
+win32:LIBS = -Wl,--start-group $$STATIC_LIBS -Wl,--end-group $$LIBS
 
 win32 {
     RC_FILE = fwbuilder-windows.rc
