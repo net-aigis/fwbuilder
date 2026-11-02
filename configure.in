@@ -14,9 +14,10 @@ LT_INIT
 AC_CONFIG_MACRO_DIR([m4])
 
 dnl
-dnl all version numbers are defined in the file VERSION
+dnl all version numbers are defined in the file VERSION.sh
+dnl (not named VERSION: that collides with C++ <version> on case-insensitive FS)
 dnl
-. ./VERSION
+. ./VERSION.sh
 
 RELEASE_NUM=$BUILD_NUM
 GENERATION_SHORT=$(echo $GENERATION | sed 's/\.//')

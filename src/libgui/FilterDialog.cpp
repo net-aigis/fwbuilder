@@ -68,18 +68,15 @@
 using namespace std;
 using namespace libfwbuilder;
 
-// Qt < 5.15 lacks UnanchoredWildcardConversion; strip \A...\z instead.
+// Prefer unanchored wildcards (old QRegExp Wildcard behavior). Avoid
+// UnanchoredWildcardConversion — missing on some Qt5 builds that still
+// report 5.15 via QT_VERSION.
 static QString fwbWildcardToRegularExpression(const QString &pattern)
 {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
-    return QRegularExpression::wildcardToRegularExpression(
-        pattern, QRegularExpression::UnanchoredWildcardConversion);
-#else
     QString re = QRegularExpression::wildcardToRegularExpression(pattern);
     if (re.startsWith(QLatin1String("\\A")) && re.endsWith(QLatin1String("\\z")))
         re = re.mid(2, re.size() - 4);
     return re;
-#endif
 }
 
 FilterDialog::FilterDialog(QWidget *parent) : QDialog(parent)

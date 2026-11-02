@@ -40,7 +40,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p ci-logs .ci-ccache
-          brew update
+          # Skip brew update — cold update regularly times out on GHA runners.
           brew install ccache autoconf automake libtool pkg-config \
             libxml2 libxslt qt@6 \
             2>&1 | tee ci-logs/brew.log

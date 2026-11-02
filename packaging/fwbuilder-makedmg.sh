@@ -32,7 +32,7 @@ test -z "$BUNDLE" && {
 # script is executed
 BUILD_ROOT_DIR="../../"
 
-. VERSION
+. VERSION.sh
 
 BASE_DMG_FILE_NAME=$(basename $BUNDLE | sed 's/\.app/.dmg/')
 BASE_RO_DMG_FILE_NAME=$(basename $BUNDLE | sed 's/\.app/-ro.dmg/')
