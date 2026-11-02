@@ -124,6 +124,9 @@ static QJsonObject typedAttrs(FWObject *obj)
         physAddress *pa = iface->getPhysicalAddress();
         attrs.insert(QStringLiteral("phys_address"),
                      pa ? u8(pa->getPhysAddress()) : QString());
+        attrs.insert(QStringLiteral("management"),
+                     iface->isManagement() ? QStringLiteral("True")
+                                           : QStringLiteral("False"));
     }
     if (AddressRange *ar = AddressRange::cast(obj)) {
         attrs.insert(QStringLiteral("start_address"), u8(ar->getRangeStart().toString()));
@@ -306,6 +309,10 @@ static void applyObjectAttrs(FWObject *obj, const QJsonObject &attrs)
             }
             if (key == "label") {
                 iface->setLabel(val);
+                continue;
+            }
+            if (key == "management") {
+                iface->setManagement(parseBoolish(val));
                 continue;
             }
         }
@@ -1268,6 +1275,10 @@ static QJsonObject handle(const QJsonObject &req)
                 return errObj(QStringLiteral("unknown or unsupported type: ") +
                               QString::fromUtf8(type_name.c_str()));
             child->setName(name);
+            if (Firewall *fw = Firewall::cast(child))
+                fw->init(g_db);
+            else if (Host *h = Host::cast(child))
+                h->init(g_db);
             if (req.contains(QStringLiteral("comment"))) {
                 child->setComment(
                     req.value(QStringLiteral("comment")).toString().toUtf8().constData());

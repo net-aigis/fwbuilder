@@ -33,7 +33,7 @@ const TYPE_FIELDS: Record<string, string[]> = {
   IPService: ["protocol_num"],
   Firewall: ["platform", "host_OS", "version"],
   Host: ["platform", "host_OS"],
-  Interface: ["phys_address", "label"],
+  Interface: ["phys_address", "label", "management"],
   Interval: [
     "from_hour",
     "from_minute",

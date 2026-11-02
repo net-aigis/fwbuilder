@@ -49,21 +49,29 @@ export function CreateObject({
 }: Props) {
   const hostLike = parentType === "Firewall" || parentType === "Host" || parentType === "Cluster";
   const ifaceLike = parentType === "Interface";
+  const groupLike = parentType === "ObjectGroup" || parentType === "Library";
   const TYPES = ifaceLike
     ? ["IPv4", "IPv6", "AttachedNetworks", ...BASE_TYPES]
     : hostLike
-      ? ["Interface", "IPv4", "IPv6", ...BASE_TYPES]
-      : BASE_TYPES;
-  const [type, setType] = useState(hostLike ? "Interface" : "Network");
+      ? ["Interface", "IPv4", "IPv6", "Policy", "NAT", "Routing", ...BASE_TYPES]
+      : groupLike
+        ? ["Firewall", "Host", "Cluster", ...BASE_TYPES]
+        : BASE_TYPES;
+  const [type, setType] = useState(
+    hostLike ? "Interface" : groupLike ? "Firewall" : "Network",
+  );
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [netmask, setNetmask] = useState("255.255.255.0");
   const [endAddress, setEndAddress] = useState("");
   const [dstPort, setDstPort] = useState("");
+  const [platform, setPlatform] = useState("nftables");
+  const [hostOs, setHostOs] = useState("linux24");
 
   const isService = type === "TCPService" || type === "UDPService" || type === "TCPUDPService";
   const isRange = type === "AddressRange";
   const needsNetmask = type === "Network" || type === "IPv4" || type === "NetworkIPv6" || type === "IPv6";
+  const isFwLike = type === "Firewall" || type === "Host" || type === "Cluster";
 
   async function submit() {
     if (!name.trim()) {
@@ -84,6 +92,10 @@ export function CreateObject({
       if (isService && dstPort.trim()) {
         attrs.dst_range_start = dstPort.trim();
         attrs.dst_range_end = dstPort.trim();
+      }
+      if (isFwLike) {
+        if (platform.trim()) attrs.platform = platform.trim();
+        if (hostOs.trim()) attrs.host_OS = hostOs.trim();
       }
       const obj = await createObject(sessionId, {
         parent_id: parentId,
@@ -145,6 +157,18 @@ export function CreateObject({
             Destination port
             <input value={dstPort} disabled={busy} onChange={(e) => setDstPort(e.target.value)} />
           </label>
+        ) : null}
+        {isFwLike ? (
+          <>
+            <label className="field block">
+              Platform
+              <input value={platform} disabled={busy} onChange={(e) => setPlatform(e.target.value)} />
+            </label>
+            <label className="field block">
+              Host OS
+              <input value={hostOs} disabled={busy} onChange={(e) => setHostOs(e.target.value)} />
+            </label>
+          </>
         ) : null}
       </div>
       <button type="button" disabled={busy} onClick={() => void submit()}>

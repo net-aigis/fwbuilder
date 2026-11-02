@@ -63,6 +63,8 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Rule branch target | done | `branch_id` on Policy/NAT; RuleMeta; E2E phase19 |
 | Download workspace .fwb | done | `GET …/download`; E2E phase19 |
 | Close confirms if dirty | done | App confirm dialog |
+| Create Firewall/Host + Policy/NAT | done | CreateObject under groups/fw; E2E phase20 |
+| Interface management flag | done | `setManagement`; E2E phase20 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Phase 3 — compile / deploy
@@ -93,6 +95,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase17 (insert + IPv6 + AttachedNetworks) | done | `e2e-phase17.sh` **OK** |
 | Local E2E phase18 (lock/unlock + ICMP6) | done | `e2e-phase18.sh` **OK** |
 | Local E2E phase19 (branch + download) | done | `e2e-phase19.sh` **OK** |
+| Local E2E phase20 (new Firewall + management) | done | `e2e-phase20.sh` **OK** |
 
 ## Local commands
 
@@ -121,6 +124,7 @@ bash webui/scripts/e2e-phase16.sh
 bash webui/scripts/e2e-phase17.sh
 bash webui/scripts/e2e-phase18.sh
 bash webui/scripts/e2e-phase19.sh
+bash webui/scripts/e2e-phase20.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```
