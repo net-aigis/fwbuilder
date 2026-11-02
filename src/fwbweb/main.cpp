@@ -1545,7 +1545,22 @@ static QJsonObject handle(const QJsonObject &req)
                 req.value(QStringLiteral("attrs")).isObject()) {
                 applyObjectAttrs(child, req.value(QStringLiteral("attrs")).toObject());
             }
-            parent->add(child);
+            // Firewall allows only one Routing; add() would otherwise silently
+            // drop the child and leave an orphan indexed object.
+            if (!parent->validateChild(child)) {
+                g_db->removeFromIndex(child->getId());
+                delete child;
+                return errObj(
+                    QStringLiteral("parent does not accept this child "
+                                   "(only one Routing per Firewall; "
+                                   "check type/parent)"));
+            }
+            parent->add(child, false);
+            if (child->getParent() != parent) {
+                g_db->removeFromIndex(child->getId());
+                delete child;
+                return errObj(QStringLiteral("failed to parent new object"));
+            }
             bumpFirewallModified(child);
             g_dirty = true;
             g_db->setDirty(true);

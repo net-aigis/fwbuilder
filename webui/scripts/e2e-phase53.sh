@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Phase-53: secondary Routing create + disabled jump data + search/unused TSV shape.
+# Phase-53: reject 2nd Routing; secondary Policy; disabled jump data; TSV shapes.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$ROOT"
@@ -41,24 +41,35 @@ H={"Authorization":"Bearer $TOKEN","Content-Type":"application/json"}
 base=f"http://127.0.0.1:$PORT/api/v1/projects/$SID"
 FW="$FW"
 
-def call(method, path, body=None):
+def call(method, path, body=None, expect_error=None):
     data=None if body is None else json.dumps(body).encode()
     req=urllib.request.Request(base+path, data=data, method=method, headers=H)
     try:
         with urllib.request.urlopen(req) as resp:
             raw=resp.read()
+            if expect_error is not None:
+                raise AssertionError(f"expected HTTP {expect_error}, got success")
             return json.loads(raw) if raw else {"_status": resp.status}
     except urllib.error.HTTPError as e:
-        raise AssertionError(f"{method} {path} -> {e.code}: {e.read().decode()}") from e
+        body_txt=e.read().decode()
+        if expect_error is not None and e.code == expect_error:
+            print("expected error", e.code, body_txt[:120])
+            return {"_error": body_txt}
+        raise AssertionError(f"{method} {path} -> {e.code}: {body_txt}") from e
 
-rt=call("POST","/objects",{"parent_id": FW, "type":"Routing", "name":"webui-e2e-rt53"})
-print("routing", rt.get("id"), rt.get("type"), (rt.get("attrs") or {}).get("top"))
-assert rt.get("type")=="Routing"
-assert str((rt.get("attrs") or {}).get("top")).lower() in ("false","0","")
+# libfwbuilder: only one Routing per Firewall — create must fail cleanly
+call("POST","/objects",{"parent_id": FW, "type":"Routing", "name":"webui-e2e-rt53"}, expect_error=400)
+
+# Secondary Policy still allowed (parity with NAT phase52)
+pol=call("POST","/objects",{"parent_id": FW, "type":"Policy", "name":"webui-e2e-pol53"})
+print("policy", pol.get("id"), pol.get("type"), (pol.get("attrs") or {}).get("top"))
+assert pol.get("type")=="Policy"
+assert str((pol.get("attrs") or {}).get("top")).lower() in ("false","0","")
 
 fw=call("GET", f"/objects/{FW}")
-rts=[r for r in (fw.get("ruleset_list") or []) if r.get("type")=="Routing"]
-assert any(r.get("id")==rt["id"] for r in rts), rts
+pols=[r for r in (fw.get("ruleset_list") or []) if r.get("type")=="Policy"]
+assert any(r.get("id")==pol["id"] for r in pols), pols
+print("ruleset id", pol["id"])
 
 rules=call("GET", f"/rulesets/{FW}?which=policy")["rules"]
 assert len(rules)>=2
@@ -79,18 +90,12 @@ assert len(tsv_rows)>=2
 print("search tsv lines", len(tsv_rows))
 
 unused=call("GET","/unused")
-objs=unused.get("objects") or unused.get("results") or []
-if isinstance(unused.get("count"), int):
-    print("unused count", unused["count"])
-else:
-    print("unused count", len(objs))
+objs=unused.get("objects") or []
 utsv=["id\ttype\tname"]+[f"{h['id']}\t{h.get('type','')}\t{h.get('name','')}" for h in objs]
 assert utsv[0].startswith("id\t")
 print("unused tsv header ok", len(utsv))
 
-print("ruleset id", rt["id"])
-
-call("DELETE", f"/objects/{rt['id']}?permanent=true")
+call("DELETE", f"/objects/{pol['id']}?permanent=true")
 print("cleaned")
 PY
 
