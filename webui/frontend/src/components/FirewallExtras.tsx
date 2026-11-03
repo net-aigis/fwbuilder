@@ -13,7 +13,7 @@ import {
   type OptionFieldMeta,
 } from "../api/client";
 import { OptionField } from "./OptionField";
-import { qtGridStyle } from "../qtGrid";
+import { qtGridStyle, qtSpacerStyle, type QtGridSpacer } from "../qtGrid";
 
 type Props = {
   sessionId: string;
@@ -43,7 +43,13 @@ const FALLBACK_FEATURED = [
 ];
 
 type GroupSection = { id: string; title: string; keys: string[] };
-type Group = { id: string; title: string; keys: string[]; sections?: GroupSection[] };
+type Group = {
+  id: string;
+  title: string;
+  keys: string[];
+  sections?: GroupSection[];
+  spacers?: QtGridSpacer[];
+};
 
 function groupStorageKey(platform: string, hostOs: string) {
   return `fwbweb.optionGroup.${platform || "unknown"}.${hostOs || ""}`;
@@ -632,14 +638,25 @@ export function FirewallExtras({
           Qt grid placement
         </label>
       </div>
-      {optionSections.map((sec) => {
+      {optionSections.map((sec, secIdx) => {
+        const pageSpacers =
+          useQtGridLayout && secIdx === 0 ? activeGroupMeta?.spacers || [] : [];
         const grid = useQtGridLayout
-          ? qtGridStyle(sec.keys, fields)
+          ? qtGridStyle(sec.keys, fields, pageSpacers)
           : { className: "typed-grid options-grid" };
         return (
           <div key={sec.id || "all"} className="option-section">
             {sec.title ? <h4 className="option-section-title">{sec.title}</h4> : null}
             <div className={grid.className} style={grid.style}>
+              {pageSpacers.map((sp, i) => (
+                <div
+                  key={sp.name || `spacer-${i}`}
+                  className="qt-spacer"
+                  aria-hidden="true"
+                  data-orientation={sp.orientation || undefined}
+                  style={qtSpacerStyle(sp)}
+                />
+              ))}
               {sec.keys.map((key) => (
                 <OptionField
                   key={key}
@@ -739,6 +756,10 @@ export function FirewallExtras({
           />
         </label>
       </div>
+      <p className="muted pad-tight" title="ssh_auth.batch_mode">
+        SSH uses BatchMode (key/agent only). Password and keyboard-interactive auth are not
+        implemented in WebUI.
+      </p>
       <div className="btn-row">
         <button type="button" className="ghost" disabled={busy} onClick={() => void saveManagement()}>
           Save management
@@ -786,14 +807,17 @@ export function FirewallExtras({
           />
           Activate after copy
         </label>
-        <label className="check" title="Maps to desktop Installer compressScript preference">
+        <label
+          className="check"
+          title="Gzip files for scp transfer then gunzip on the host; also sets configlet with_compression (desktop compressScript)"
+        >
           <input
             type="checkbox"
             checked={compress}
             disabled={busy}
             onChange={(e) => setCompress(e.target.checked)}
           />
-          Compress script
+          Compress transfer
         </label>
         <label className="check" title="Cisco/Juniper using_scp configlet flag">
           <input

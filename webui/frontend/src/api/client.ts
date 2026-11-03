@@ -504,6 +504,14 @@ export function fetchOptionSchema(platform: string, hostOs = "") {
       title: string;
       keys: string[];
       sections?: Array<{ id: string; title: string; keys: string[] }>;
+      spacers?: Array<{
+        row?: number;
+        column?: number;
+        rowspan?: number;
+        colspan?: number;
+        orientation?: string;
+        name?: string;
+      }>;
     }>;
     featured_keys: string[];
     fields?: Record<string, OptionFieldMeta>;

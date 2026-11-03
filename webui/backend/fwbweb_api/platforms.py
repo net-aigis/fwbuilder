@@ -315,6 +315,8 @@ def option_schema(platform: str, host_os: str = "") -> dict[str, Any]:
             g: dict[str, Any] = {"id": p["id"], "title": p["title"], "keys": p["keys"]}
             if p.get("sections"):
                 g["sections"] = p["sections"]
+            if p.get("spacers"):
+                g["spacers"] = p["spacers"]
             groups.append(g)
         # Append any installer/script keys missing from pages so deploy still editable.
         page_keys = {k for p in pages for k in p.get("keys") or []}
@@ -401,6 +403,8 @@ def _groups_from_pages(pages: list[dict[str, Any]]) -> list[dict[str, Any]]:
         }
         if p.get("sections"):
             g["sections"] = p["sections"]
+        if p.get("spacers"):
+            g["spacers"] = p["spacers"]
         groups.append(g)
     return groups
 

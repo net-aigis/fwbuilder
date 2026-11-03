@@ -1046,12 +1046,45 @@
           "keys": [
             "firewall_is_part_of_any_and_networks"
           ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 2,
+              "orientation": "Horizontal",
+              "row": 0,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "name": "verticalSpacer_3",
+              "orientation": "Vertical",
+              "row": 3,
+              "rowspan": 1
+            }
+          ],
           "title": "General"
         },
         {
           "id": "tab2",
           "keys": [
             "ulog_nlgroup"
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 4,
+              "orientation": "Horizontal",
+              "row": 1,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 2,
+              "orientation": "Vertical",
+              "row": 2,
+              "rowspan": 1
+            }
           ],
           "title": "Logging"
         },
@@ -1063,6 +1096,38 @@
             "limit_value_not",
             "limit_burst"
           ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 5,
+              "name": "horizontalSpacer_4",
+              "orientation": "Horizontal",
+              "row": 1,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 7,
+              "orientation": "Horizontal",
+              "row": 1,
+              "rowspan": 1
+            },
+            {
+              "colspan": 6,
+              "column": 2,
+              "name": "horizontalSpacer_5",
+              "orientation": "Horizontal",
+              "row": 2,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 2,
+              "orientation": "Vertical",
+              "row": 3,
+              "rowspan": 1
+            }
+          ],
           "title": "limit"
         },
         {
@@ -1071,6 +1136,37 @@
             "connlimit_value",
             "connlimit_above_not",
             "connlimit_masklen"
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 5,
+              "orientation": "Horizontal",
+              "row": 1,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 7,
+              "name": "horizontalSpacer_3",
+              "orientation": "Horizontal",
+              "row": 1,
+              "rowspan": 1
+            },
+            {
+              "colspan": 6,
+              "column": 3,
+              "orientation": "Horizontal",
+              "row": 2,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 2,
+              "orientation": "Vertical",
+              "row": 3,
+              "rowspan": 1
+            }
           ],
           "title": "connlimit"
         },
@@ -1091,6 +1187,15 @@
             "hashlimit_expire",
             "hashlimit_gcinterval"
           ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 2,
+              "orientation": "Vertical",
+              "row": 6,
+              "rowspan": 1
+            }
+          ],
           "title": "hashlimit"
         },
         {
@@ -1098,12 +1203,48 @@
           "keys": [
             "ipt_mark_connections"
           ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 2,
+              "name": "spacer",
+              "orientation": "Horizontal",
+              "row": 0,
+              "rowspan": 3
+            },
+            {
+              "colspan": 3,
+              "column": 0,
+              "name": "spacer_2",
+              "orientation": "Vertical",
+              "row": 3,
+              "rowspan": 1
+            }
+          ],
           "title": "Tag"
         },
         {
           "id": "tab7_2",
           "keys": [
             "classify_str"
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 1,
+              "name": "horizontalSpacer_6",
+              "orientation": "Horizontal",
+              "row": 1,
+              "rowspan": 1
+            },
+            {
+              "colspan": 2,
+              "column": 0,
+              "name": "spacer_3",
+              "orientation": "Vertical",
+              "row": 2,
+              "rowspan": 1
+            }
           ],
           "title": "Classify"
         },
@@ -1115,6 +1256,40 @@
             "ipt_gw",
             "ipt_continue",
             "ipt_tee"
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 3,
+              "name": "horizontalSpacer_16",
+              "orientation": "Horizontal",
+              "row": 0,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 2,
+              "name": "verticalSpacer_4",
+              "orientation": "Vertical",
+              "row": 2,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 1,
+              "name": "verticalSpacer_7",
+              "orientation": "Vertical",
+              "row": 0,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 3,
+              "name": "horizontalSpacer_7",
+              "orientation": "Horizontal",
+              "row": 3,
+              "rowspan": 1
+            }
           ],
           "title": "Route"
         }
@@ -1197,6 +1372,61 @@
             "iface_options",
             "vlan_id",
             "enable_stp"
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 2,
+              "orientation": "Vertical",
+              "row": 0,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 4,
+              "orientation": "Horizontal",
+              "row": 1,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 4,
+              "name": "horizontalSpacer_2",
+              "orientation": "Horizontal",
+              "row": 2,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 5,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 2,
+              "name": "horizontalSpacer",
+              "orientation": "Horizontal",
+              "row": 0,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 1,
+              "name": "verticalSpacer_2",
+              "orientation": "Vertical",
+              "row": 1,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "name": "verticalSpacer",
+              "orientation": "Vertical",
+              "row": 1,
+              "rowspan": 1
+            }
           ],
           "title": "Options"
         }
@@ -1356,6 +1586,30 @@
             "freebsd_ip_sourceroute",
             "freebsd_ip_redirect"
           ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 0,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 2,
+              "orientation": "Horizontal",
+              "row": 1,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 1,
+              "name": "verticalSpacer",
+              "orientation": "Vertical",
+              "row": 5,
+              "rowspan": 1
+            }
+          ],
           "title": "Options"
         },
         {
@@ -1367,12 +1621,53 @@
             "freebsd_path_ipnat",
             "freebsd_path_sysctl"
           ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 1,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 3,
+              "orientation": "Horizontal",
+              "row": 1,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 2,
+              "orientation": "Vertical",
+              "row": 6,
+              "rowspan": 1
+            }
+          ],
           "title": "Path"
         },
         {
           "id": "tab",
           "keys": [
             "data_dir"
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 1,
+              "name": "spacer_2",
+              "orientation": "Vertical",
+              "row": 0,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 2,
+              "name": "verticalSpacer_5",
+              "orientation": "Vertical",
+              "row": 3,
+              "rowspan": 1
+            }
           ],
           "title": "Data"
         }
@@ -1415,6 +1710,15 @@
           "keys": [
             "ios_set_host_name",
             "ios_ip_address"
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 2,
+              "rowspan": 1
+            }
           ],
           "title": "General"
         }
@@ -1842,6 +2146,23 @@
               "title": "Other"
             }
           ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 1,
+              "name": "horizontalSpacer_2",
+              "orientation": "Horizontal",
+              "row": 4,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 5,
+              "rowspan": 1
+            }
+          ],
           "title": "Compiler Options"
         },
         {
@@ -1854,6 +2175,37 @@
             "iosacl_acl_basic",
             "iosacl_acl_no_clear",
             "iosacl_acl_substitution"
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "name": "verticalSpacer",
+              "orientation": "Vertical",
+              "row": 3,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 1,
+              "orientation": "Vertical",
+              "row": 3,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 2,
+              "orientation": "Horizontal",
+              "row": 1,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 1,
+              "rowspan": 1
+            }
           ],
           "title": "Script Options"
         },
@@ -1889,6 +2241,23 @@
               "title": "Other"
             }
           ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 3,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 1,
+              "name": "horizontalSpacer",
+              "orientation": "Horizontal",
+              "row": 3,
+              "rowspan": 1
+            }
+          ],
           "title": "Installer"
         },
         {
@@ -1896,6 +2265,22 @@
           "keys": [
             "iosacl_prolog_script",
             "iosacl_epilog_script"
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 2,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 2,
+              "rowspan": 1
+            }
           ],
           "title": "Prolog/Epilog"
         },
@@ -1939,6 +2324,15 @@
                 "iosacl_generate_logging_commands"
               ],
               "title": "Other"
+            }
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 3,
+              "rowspan": 1
             }
           ],
           "title": "Logging"
@@ -2358,6 +2752,29 @@
             "mgmt_ssh",
             "mgmt_addr"
           ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 4,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 6,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 1,
+              "orientation": "Vertical",
+              "row": 7,
+              "rowspan": 1
+            }
+          ],
           "title": "Compiler"
         },
         {
@@ -2384,6 +2801,15 @@
               "title": "Built-in installer"
             }
           ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 2,
+              "rowspan": 1
+            }
+          ],
           "title": "Installer"
         },
         {
@@ -2391,6 +2817,23 @@
           "keys": [
             "epilog_script",
             "prolog_script"
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 2,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "name": "horizontalSpacer",
+              "orientation": "Horizontal",
+              "row": 2,
+              "rowspan": 1
+            }
           ],
           "title": "Prolog/Epilog"
         },
@@ -2411,6 +2854,29 @@
             "limit_suffix",
             "log_all"
           ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 4,
+              "orientation": "Vertical",
+              "row": 4,
+              "rowspan": 2
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 5,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 3,
+              "rowspan": 1
+            }
+          ],
           "title": "Logging"
         },
         {
@@ -2418,6 +2884,29 @@
           "keys": [
             "debug",
             "verify_interfaces"
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 2,
+              "orientation": "Horizontal",
+              "row": 3,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 1,
+              "rowspan": 4
+            },
+            {
+              "colspan": 1,
+              "column": 1,
+              "orientation": "Vertical",
+              "row": 5,
+              "rowspan": 1
+            }
           ],
           "title": "Script"
         }
@@ -2872,6 +3361,36 @@
             "linux24_ip_dynaddr",
             "linux24_log_martians"
           ],
+          "spacers": [
+            {
+              "colspan": 2,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 0,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 3,
+              "orientation": "Horizontal",
+              "row": 1,
+              "rowspan": 7
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 10,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 2,
+              "orientation": "Vertical",
+              "row": 11,
+              "rowspan": 1
+            }
+          ],
           "title": "Options"
         },
         {
@@ -2885,6 +3404,36 @@
             "linux24_tcp_ecn",
             "linux24_tcp_syncookies",
             "linux24_tcp_timestamps"
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 1,
+              "orientation": "Vertical",
+              "row": 0,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 2,
+              "orientation": "Vertical",
+              "row": 10,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 3,
+              "orientation": "Horizontal",
+              "row": 2,
+              "rowspan": 3
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 10,
+              "rowspan": 1
+            }
           ],
           "title": "TCP"
         },
@@ -2902,6 +3451,22 @@
             "linux24_path_lsmod",
             "linux24_path_iptables_restore",
             "linux24_path_ip6tables_restore"
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 1,
+              "orientation": "Vertical",
+              "row": 0,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 2,
+              "orientation": "Vertical",
+              "row": 13,
+              "rowspan": 1
+            }
           ],
           "title": "Path"
         }
@@ -3424,6 +3989,15 @@
             "action_on_reject",
             "ipf_return_icmp_as_dest"
           ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 1,
+              "orientation": "Vertical",
+              "row": 15,
+              "rowspan": 1
+            }
+          ],
           "title": "Compiler"
         },
         {
@@ -3438,6 +4012,29 @@
             "ipf_nat_ekshell_proxy",
             "ipf_nat_pptp_proxy",
             "ipf_nat_irc_proxy"
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 1,
+              "orientation": "Vertical",
+              "row": 0,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 2,
+              "rowspan": 5
+            },
+            {
+              "colspan": 1,
+              "column": 1,
+              "orientation": "Vertical",
+              "row": 11,
+              "rowspan": 1
+            }
           ],
           "title": "Protocol Helpers"
         },
@@ -3465,6 +4062,22 @@
               "title": "Built-in installer"
             }
           ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 1,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 4,
+              "rowspan": 1
+            }
+          ],
           "title": "Installer"
         },
         {
@@ -3472,6 +4085,22 @@
           "keys": [
             "prolog_script",
             "epilog_script"
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 2,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 2,
+              "rowspan": 1
+            }
           ],
           "title": "Prolog/Epilog"
         },
@@ -3483,6 +4112,43 @@
             "ipf_log_body",
             "ipf_log_or_block"
           ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 2,
+              "orientation": "Vertical",
+              "row": 0,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 2,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 3,
+              "orientation": "Horizontal",
+              "row": 2,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 2,
+              "orientation": "Vertical",
+              "row": 6,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 2,
+              "orientation": "Vertical",
+              "row": 3,
+              "rowspan": 1
+            }
+          ],
           "title": "Logging"
         },
         {
@@ -3493,6 +4159,29 @@
             "debug",
             "optimize",
             "dynAddr"
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 2,
+              "rowspan": 3
+            },
+            {
+              "colspan": 1,
+              "column": 2,
+              "orientation": "Vertical",
+              "row": 0,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 1,
+              "orientation": "Vertical",
+              "row": 7,
+              "rowspan": 1
+            }
           ],
           "title": "Script Options"
         }
@@ -3742,6 +4431,22 @@
             "mgmt_ssh",
             "mgmt_addr"
           ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 6,
+              "rowspan": 1
+            },
+            {
+              "colspan": 2,
+              "column": 1,
+              "orientation": "Vertical",
+              "row": 12,
+              "rowspan": 1
+            }
+          ],
           "title": "Compiler"
         },
         {
@@ -3768,6 +4473,15 @@
               "title": "Built-in installer"
             }
           ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 2,
+              "rowspan": 1
+            }
+          ],
           "title": "Installer"
         },
         {
@@ -3775,6 +4489,22 @@
           "keys": [
             "epilog_script",
             "prolog_script"
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 2,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 2,
+              "rowspan": 1
+            }
           ],
           "title": "Prolog/Epilog"
         },
@@ -3784,6 +4514,29 @@
             "manage_virtual_addr",
             "configure_interfaces",
             "debug"
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 2,
+              "rowspan": 3
+            },
+            {
+              "colspan": 1,
+              "column": 1,
+              "orientation": "Vertical",
+              "row": 6,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 2,
+              "orientation": "Vertical",
+              "row": 0,
+              "rowspan": 1
+            }
           ],
           "title": "Script Options"
         }
@@ -4476,6 +5229,31 @@
             "mgmt_addr",
             "add_mgmt_ssh_rule_when_stoped"
           ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 1,
+              "orientation": "Vertical",
+              "row": 10,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 2,
+              "name": "horizontalSpacer_3",
+              "orientation": "Horizontal",
+              "row": 1,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 2,
+              "name": "horizontalSpacer",
+              "orientation": "Horizontal",
+              "row": 0,
+              "rowspan": 1
+            }
+          ],
           "title": "Compiler"
         },
         {
@@ -4502,6 +5280,15 @@
               "title": "Built-in installer"
             }
           ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 2,
+              "rowspan": 1
+            }
+          ],
           "title": "Installer"
         },
         {
@@ -4511,6 +5298,15 @@
             "prolog_script",
             "hooks_profile",
             "prolog_place"
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 2,
+              "rowspan": 1
+            }
           ],
           "title": "Prolog/Epilog"
         },
@@ -4531,6 +5327,29 @@
             "limit_suffix",
             "log_all"
           ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 4,
+              "orientation": "Vertical",
+              "row": 4,
+              "rowspan": 2
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 5,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 3,
+              "rowspan": 1
+            }
+          ],
           "title": "Logging"
         },
         {
@@ -4546,6 +5365,46 @@
             "configure_bonding_interfaces",
             "manage_virtual_addr",
             "use_iptables_restore"
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 0,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 1,
+              "name": "verticalSpacer_4",
+              "orientation": "Vertical",
+              "row": 1,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 1,
+              "name": "verticalSpacer_3",
+              "orientation": "Vertical",
+              "row": 4,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 1,
+              "name": "verticalSpacer_2",
+              "orientation": "Vertical",
+              "row": 13,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 1,
+              "orientation": "Vertical",
+              "row": 16,
+              "rowspan": 1
+            }
           ],
           "title": "Script"
         }
@@ -4588,6 +5447,15 @@
           "keys": [
             "junos_set_host_name",
             "junos_ip_address"
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 2,
+              "rowspan": 1
+            }
           ],
           "title": "General"
         }
@@ -4918,12 +5786,31 @@
               "title": "Other"
             }
           ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 4,
+              "rowspan": 1
+            }
+          ],
           "title": "Compiler Options"
         },
         {
           "id": "script_options_tab",
           "keys": [
             "junosacl_include_comments"
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "name": "verticalSpacer",
+              "orientation": "Vertical",
+              "row": 1,
+              "rowspan": 1
+            }
           ],
           "title": "Script Options"
         },
@@ -4959,6 +5846,23 @@
               "title": "Other"
             }
           ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 3,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 1,
+              "name": "horizontalSpacer",
+              "orientation": "Horizontal",
+              "row": 2,
+              "rowspan": 1
+            }
+          ],
           "title": "Installer"
         },
         {
@@ -4966,6 +5870,22 @@
           "keys": [
             "junosacl_prolog_script",
             "junosacl_epilog_script"
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 2,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 2,
+              "rowspan": 1
+            }
           ],
           "title": "Prolog/Epilog"
         },
@@ -5009,6 +5929,15 @@
                 "junosacl_generate_logging_commands"
               ],
               "title": "Other"
+            }
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 3,
+              "rowspan": 1
             }
           ],
           "title": "Logging"
@@ -5153,6 +6082,22 @@
             "linksys_path_brctl",
             "linksys_path_ifenslave"
           ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 1,
+              "orientation": "Vertical",
+              "row": 0,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 2,
+              "orientation": "Vertical",
+              "row": 10,
+              "rowspan": 1
+            }
+          ],
           "title": "Path"
         },
         {
@@ -5160,6 +6105,36 @@
           "keys": [
             "prompt1",
             "prompt2"
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 2,
+              "orientation": "Vertical",
+              "row": 5,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 3,
+              "orientation": "Horizontal",
+              "row": 2,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 4,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 1,
+              "orientation": "Vertical",
+              "row": 1,
+              "rowspan": 1
+            }
           ],
           "title": "Prompts"
         }
@@ -5675,6 +6650,36 @@
             "linux24_ip_dynaddr",
             "linux24_log_martians"
           ],
+          "spacers": [
+            {
+              "colspan": 2,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 0,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 3,
+              "orientation": "Horizontal",
+              "row": 1,
+              "rowspan": 7
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 10,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 2,
+              "orientation": "Vertical",
+              "row": 11,
+              "rowspan": 1
+            }
+          ],
           "title": "Options"
         },
         {
@@ -5688,6 +6693,36 @@
             "linux24_tcp_ecn",
             "linux24_tcp_syncookies",
             "linux24_tcp_timestamps"
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 1,
+              "orientation": "Vertical",
+              "row": 0,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 2,
+              "orientation": "Vertical",
+              "row": 10,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 3,
+              "orientation": "Horizontal",
+              "row": 2,
+              "rowspan": 3
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 10,
+              "rowspan": 1
+            }
           ],
           "title": "TCP"
         },
@@ -5707,6 +6742,22 @@
             "linux24_path_iptables_restore",
             "linux24_path_ip6tables_restore"
           ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 1,
+              "orientation": "Vertical",
+              "row": 0,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 2,
+              "orientation": "Vertical",
+              "row": 14,
+              "rowspan": 1
+            }
+          ],
           "title": "Path"
         },
         {
@@ -5716,12 +6767,48 @@
             "linux24_conntrack_hashsize",
             "linux24_conntrack_tcp_be_liberal"
           ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "name": "verticalSpacer",
+              "orientation": "Vertical",
+              "row": 2,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 2,
+              "name": "horizontalSpacer",
+              "orientation": "Horizontal",
+              "row": 1,
+              "rowspan": 1
+            }
+          ],
           "title": "conntrack"
         },
         {
           "id": "tab_2",
           "keys": [
             "data_dir"
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 1,
+              "name": "spacer",
+              "orientation": "Vertical",
+              "row": 0,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 2,
+              "name": "verticalSpacer_3",
+              "orientation": "Vertical",
+              "row": 3,
+              "rowspan": 1
+            }
           ],
           "title": "Data"
         }
@@ -5816,6 +6903,53 @@
             "xmit_hash_policy",
             "bondng_driver_options"
           ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 1,
+              "orientation": "Vertical",
+              "row": 0,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 2,
+              "orientation": "Horizontal",
+              "row": 1,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 3,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 2,
+              "name": "horizontalSpacer",
+              "orientation": "Horizontal",
+              "row": 0,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 1,
+              "name": "verticalSpacer_2",
+              "orientation": "Vertical",
+              "row": 1,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "name": "verticalSpacer",
+              "orientation": "Vertical",
+              "row": 1,
+              "rowspan": 1
+            }
+          ],
           "title": "Options"
         }
       ],
@@ -5908,6 +7042,36 @@
             "macosx_ip_redirect",
             "macosx_ip_sourceroute"
           ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 4,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 0,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 2,
+              "orientation": "Vertical",
+              "row": 1,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 1,
+              "orientation": "Vertical",
+              "row": 4,
+              "rowspan": 1
+            }
+          ],
           "title": "Options"
         },
         {
@@ -5915,6 +7079,29 @@
           "keys": [
             "macosx_path_ipfw",
             "macosx_path_sysctl"
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 3,
+              "orientation": "Vertical",
+              "row": 1,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 1,
+              "rowspan": 2
+            },
+            {
+              "colspan": 1,
+              "column": 2,
+              "orientation": "Vertical",
+              "row": 3,
+              "rowspan": 1
+            }
           ],
           "title": "Path"
         }
@@ -5957,6 +7144,15 @@
           "keys": [
             "nxos_set_host_name",
             "nxos_ip_address"
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 2,
+              "rowspan": 1
+            }
           ],
           "title": "General"
         }
@@ -6397,6 +7593,23 @@
               "title": "Other"
             }
           ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 1,
+              "name": "horizontalSpacer_2",
+              "orientation": "Horizontal",
+              "row": 4,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 5,
+              "rowspan": 1
+            }
+          ],
           "title": "Compiler Options"
         },
         {
@@ -6409,6 +7622,37 @@
             "nxosacl_acl_basic",
             "nxosacl_acl_no_clear",
             "nxosacl_acl_substitution"
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "name": "verticalSpacer",
+              "orientation": "Vertical",
+              "row": 3,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 1,
+              "orientation": "Vertical",
+              "row": 3,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 2,
+              "orientation": "Horizontal",
+              "row": 1,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 1,
+              "rowspan": 1
+            }
           ],
           "title": "Script Options"
         },
@@ -6446,6 +7690,23 @@
               "title": "Other"
             }
           ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 4,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 1,
+              "name": "horizontalSpacer",
+              "orientation": "Horizontal",
+              "row": 3,
+              "rowspan": 1
+            }
+          ],
           "title": "Installer"
         },
         {
@@ -6453,6 +7714,22 @@
           "keys": [
             "nxosacl_prolog_script",
             "nxosacl_epilog_script"
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 2,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 2,
+              "rowspan": 1
+            }
           ],
           "title": "Prolog/Epilog"
         },
@@ -6496,6 +7773,15 @@
                 "nxosacl_generate_logging_commands"
               ],
               "title": "Other"
+            }
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 3,
+              "rowspan": 1
             }
           ],
           "title": "Logging"
@@ -6638,6 +7924,36 @@
             "openbsd_ip_sourceroute",
             "openbsd_ip_redirect"
           ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 0,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 2,
+              "orientation": "Horizontal",
+              "row": 1,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 6,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 1,
+              "orientation": "Vertical",
+              "row": 6,
+              "rowspan": 1
+            }
+          ],
           "title": "Options"
         },
         {
@@ -6646,12 +7962,53 @@
             "openbsd_path_pfctl",
             "openbsd_path_sysctl"
           ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 2,
+              "orientation": "Vertical",
+              "row": 3,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 3,
+              "orientation": "Horizontal",
+              "row": 1,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 1,
+              "rowspan": 1
+            }
+          ],
           "title": "Path"
         },
         {
           "id": "tab",
           "keys": [
             "data_dir"
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 1,
+              "name": "spacer",
+              "orientation": "Vertical",
+              "row": 0,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 2,
+              "name": "verticalSpacer_3",
+              "orientation": "Vertical",
+              "row": 3,
+              "rowspan": 1
+            }
           ],
           "title": "Data"
         }
@@ -7876,6 +9233,16 @@
               "title": "Other"
             }
           ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 1,
+              "name": "verticalSpacer",
+              "orientation": "Vertical",
+              "row": 6,
+              "rowspan": 1
+            }
+          ],
           "title": "Compiler"
         },
         {
@@ -7892,6 +9259,22 @@
             "pf_scrub_fragm_crop",
             "pf_scrub_fragm_drop_ovl",
             "pf_scrub_reassemble_tcp"
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 0,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 1,
+              "orientation": "Vertical",
+              "row": 8,
+              "rowspan": 1
+            }
           ],
           "title": "Scrub"
         },
@@ -7939,6 +9322,16 @@
                 "pf_block_policy"
               ],
               "title": "Options"
+            }
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 1,
+              "name": "verticalSpacer_2",
+              "orientation": "Vertical",
+              "row": 1,
+              "rowspan": 1
             }
           ],
           "title": "Options"
@@ -8055,6 +9448,23 @@
               "title": "Fragments"
             }
           ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 1,
+              "orientation": "Vertical",
+              "row": 5,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 2,
+              "name": "horizontalSpacer_3",
+              "orientation": "Horizontal",
+              "row": 0,
+              "rowspan": 1
+            }
+          ],
           "title": "Timeouts"
         },
         {
@@ -8081,6 +9491,15 @@
               "title": "Built-in installer"
             }
           ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 2,
+              "rowspan": 1
+            }
+          ],
           "title": "Installer"
         },
         {
@@ -8090,6 +9509,29 @@
             "prolog_script",
             "prolog_place"
           ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 2,
+              "rowspan": 1
+            },
+            {
+              "colspan": 2,
+              "column": 2,
+              "orientation": "Horizontal",
+              "row": 0,
+              "rowspan": 1
+            },
+            {
+              "colspan": 3,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 3,
+              "rowspan": 1
+            }
+          ],
           "title": "Prolog/Epilog"
         },
         {
@@ -8097,6 +9539,36 @@
           "keys": [
             "log_prefix",
             "fallback_log"
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 2,
+              "orientation": "Vertical",
+              "row": 0,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 1,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 3,
+              "orientation": "Horizontal",
+              "row": 1,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 2,
+              "orientation": "Vertical",
+              "row": 3,
+              "rowspan": 1
+            }
           ],
           "title": "Logging"
         },
@@ -8136,6 +9608,22 @@
                 "pf_flush_states"
               ],
               "title": "Enable auxiliary sections in the generated script"
+            }
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 1,
+              "orientation": "Vertical",
+              "row": 0,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 3,
+              "rowspan": 1
             }
           ],
           "title": "Script"
@@ -9215,6 +10703,31 @@
               "title": "Other"
             }
           ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 1,
+              "name": "horizontalSpacer_9",
+              "orientation": "Horizontal",
+              "row": 1,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 6,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 1,
+              "name": "horizontalSpacer_2",
+              "orientation": "Horizontal",
+              "row": 1,
+              "rowspan": 1
+            }
+          ],
           "title": "Compiler"
         },
         {
@@ -9257,6 +10770,22 @@
             "pix_prolog_script",
             "pix_epilog_script"
           ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 2,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 2,
+              "rowspan": 1
+            }
+          ],
           "title": "Prolog/Epilog"
         },
         {
@@ -9293,6 +10822,22 @@
             "pix_telnet_timeout",
             "uauth_abs",
             "uauth_inact"
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 1,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 1,
+              "orientation": "Vertical",
+              "row": 2,
+              "rowspan": 1
+            }
           ],
           "title": "Timeouts"
         },
@@ -9334,6 +10879,69 @@
               "title": "Other"
             }
           ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 2,
+              "rowspan": 1
+            },
+            {
+              "colspan": 2,
+              "column": 2,
+              "orientation": "Horizontal",
+              "row": 1,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 3,
+              "name": "horizontalSpacer_8",
+              "orientation": "Horizontal",
+              "row": 2,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 3,
+              "name": "horizontalSpacer_7",
+              "orientation": "Horizontal",
+              "row": 3,
+              "rowspan": 1
+            },
+            {
+              "colspan": 2,
+              "column": 1,
+              "orientation": "Horizontal",
+              "row": 0,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 2,
+              "name": "horizontalSpacer_6",
+              "orientation": "Horizontal",
+              "row": 1,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 2,
+              "name": "horizontalSpacer_4",
+              "orientation": "Horizontal",
+              "row": 0,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 2,
+              "name": "horizontalSpacer_5",
+              "orientation": "Horizontal",
+              "row": 1,
+              "rowspan": 1
+            }
+          ],
           "title": "Logging"
         },
         {
@@ -9343,6 +10951,30 @@
             "pix_acl_no_clear",
             "pix_acl_temp_addr",
             "pix_acl_substitution"
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "name": "verticalSpacer",
+              "orientation": "Vertical",
+              "row": 1,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 1,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 2,
+              "orientation": "Horizontal",
+              "row": 1,
+              "rowspan": 1
+            }
           ],
           "title": "Script"
         },
@@ -9370,6 +11002,23 @@
             "pix_nodnsalias_outbound",
             "pix_max_conns",
             "pix_emb_limit"
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 2,
+              "name": "horizontalSpacer_3",
+              "orientation": "Horizontal",
+              "row": 11,
+              "rowspan": 1
+            },
+            {
+              "colspan": 3,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 14,
+              "rowspan": 1
+            }
           ],
           "title": "PIX Options"
         }
@@ -9607,6 +11256,15 @@
             "pix_set_host_name",
             "pix_ip_address"
           ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 2,
+              "rowspan": 1
+            }
+          ],
           "title": "General"
         },
         {
@@ -9631,6 +11289,15 @@
                 "pix_ntp1_pref"
               ],
               "title": "NTP Servers:"
+            }
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 2,
+              "rowspan": 1
             }
           ],
           "title": "NTP"
@@ -9667,6 +11334,15 @@
               "title": "Other"
             }
           ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 5,
+              "rowspan": 1
+            }
+          ],
           "title": "SNMP"
         },
         {
@@ -9674,6 +11350,22 @@
           "keys": [
             "pix_tcpmss",
             "pix_tcpmss_value"
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 1,
+              "orientation": "Vertical",
+              "row": 1,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 3,
+              "orientation": "Horizontal",
+              "row": 0,
+              "rowspan": 1
+            }
           ],
           "title": "Options"
         }
@@ -9701,6 +11393,38 @@
           "id": "tab",
           "keys": [
             "vlan_id"
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 1,
+              "orientation": "Vertical",
+              "row": 0,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 2,
+              "orientation": "Horizontal",
+              "row": 1,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 2,
+              "name": "horizontalSpacer",
+              "orientation": "Horizontal",
+              "row": 0,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 1,
+              "name": "verticalSpacer_2",
+              "orientation": "Vertical",
+              "row": 1,
+              "rowspan": 1
+            }
           ],
           "title": "Options"
         }
@@ -10099,6 +11823,23 @@
               "title": "Other"
             }
           ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 1,
+              "name": "horizontalSpacer_2",
+              "orientation": "Horizontal",
+              "row": 4,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 5,
+              "rowspan": 1
+            }
+          ],
           "title": "Compiler Options"
         },
         {
@@ -10110,6 +11851,30 @@
             "procurve_acl_acl_temp_addr",
             "procurve_acl_include_comments",
             "procurve_acl_use_acl_remarks"
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 2,
+              "orientation": "Horizontal",
+              "row": 1,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 1,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "name": "verticalSpacer",
+              "orientation": "Vertical",
+              "row": 2,
+              "rowspan": 1
+            }
           ],
           "title": "Script Options"
         },
@@ -10145,6 +11910,16 @@
               "title": "Other"
             }
           ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 1,
+              "name": "horizontalSpacer",
+              "orientation": "Horizontal",
+              "row": 3,
+              "rowspan": 1
+            }
+          ],
           "title": "Installer"
         },
         {
@@ -10152,6 +11927,22 @@
           "keys": [
             "procurve_acl_prolog_script",
             "procurve_acl_epilog_script"
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 2,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 2,
+              "rowspan": 1
+            }
           ],
           "title": "Prolog/Epilog"
         },
@@ -10195,6 +11986,15 @@
                 "procurve_acl_generate_logging_commands"
               ],
               "title": "Other"
+            }
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 3,
+              "rowspan": 1
             }
           ],
           "title": "Logging"
@@ -10760,6 +12560,51 @@
             "mgmt_addr",
             "add_mgmt_ssh_rule_when_stoped"
           ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "name": "verticalSpacer",
+              "orientation": "Vertical",
+              "row": 3,
+              "rowspan": 2
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 5,
+              "rowspan": 6
+            },
+            {
+              "colspan": 1,
+              "column": 4,
+              "orientation": "Horizontal",
+              "row": 7,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 4,
+              "orientation": "Horizontal",
+              "row": 13,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 15,
+              "rowspan": 2
+            },
+            {
+              "colspan": 1,
+              "column": 1,
+              "orientation": "Vertical",
+              "row": 18,
+              "rowspan": 1
+            }
+          ],
           "title": "Compiler"
         },
         {
@@ -10782,6 +12627,15 @@
               "title": "Built-in installer"
             }
           ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 2,
+              "rowspan": 1
+            }
+          ],
           "title": "Installer"
         },
         {
@@ -10790,6 +12644,15 @@
             "epilog_script",
             "prolog_script",
             "prolog_place"
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 2,
+              "rowspan": 1
+            }
           ],
           "title": "Prolog/Epilog"
         },
@@ -10810,6 +12673,29 @@
             "limit_suffix",
             "log_all"
           ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 4,
+              "orientation": "Vertical",
+              "row": 4,
+              "rowspan": 2
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 5,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 3,
+              "rowspan": 1
+            }
+          ],
           "title": "Logging"
         },
         {
@@ -10821,6 +12707,46 @@
             "configure_interfaces",
             "manage_virtual_addr",
             "use_iptables_restore"
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 0,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 1,
+              "name": "verticalSpacer_4",
+              "orientation": "Vertical",
+              "row": 2,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 1,
+              "name": "verticalSpacer_3",
+              "orientation": "Vertical",
+              "row": 6,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 1,
+              "name": "verticalSpacer_2",
+              "orientation": "Vertical",
+              "row": 12,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 1,
+              "orientation": "Vertical",
+              "row": 15,
+              "rowspan": 1
+            }
           ],
           "title": "Script"
         }
@@ -10902,6 +12828,84 @@
             "vlan_id",
             "iface_disableboot",
             "iface_disablearp"
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 0,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 2,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 2,
+              "name": "horizontalSpacer_3",
+              "orientation": "Horizontal",
+              "row": 9,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 1,
+              "orientation": "Vertical",
+              "row": 10,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 11,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 2,
+              "name": "horizontalSpacer1",
+              "orientation": "Horizontal",
+              "row": 12,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 2,
+              "name": "horizontalSpacer_2",
+              "orientation": "Horizontal",
+              "row": 5,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 2,
+              "name": "horizontalSpacer_4",
+              "orientation": "Horizontal",
+              "row": 6,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 1,
+              "name": "verticalSpacer",
+              "orientation": "Vertical",
+              "row": 13,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 2,
+              "name": "horizontalSpacer",
+              "orientation": "Horizontal",
+              "row": 0,
+              "rowspan": 1
+            }
           ],
           "title": "Options"
         }
@@ -11493,6 +13497,43 @@
             "secuwall_mgmt_confpart",
             "secuwall_mgmt_rules_disable"
           ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 1,
+              "orientation": "Vertical",
+              "row": 0,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 2,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 2,
+              "orientation": "Horizontal",
+              "row": 7,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 12,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 1,
+              "orientation": "Vertical",
+              "row": 13,
+              "rowspan": 1
+            }
+          ],
           "title": "Management"
         },
         {
@@ -11508,6 +13549,50 @@
             "secuwall_dns_reso3",
             "secuwall_dns_reso4",
             "secuwall_dns_reso5"
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 3,
+              "orientation": "Vertical",
+              "row": 0,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 2,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 5,
+              "rowspan": 1
+            },
+            {
+              "colspan": 2,
+              "column": 2,
+              "orientation": "Horizontal",
+              "row": 6,
+              "rowspan": 1
+            },
+            {
+              "colspan": 2,
+              "column": 1,
+              "orientation": "Vertical",
+              "row": 8,
+              "rowspan": 1
+            },
+            {
+              "colspan": 2,
+              "column": 1,
+              "orientation": "Vertical",
+              "row": 10,
+              "rowspan": 1
+            }
           ],
           "title": "DNS Client"
         },
@@ -11525,6 +13610,43 @@
             "linux24_ip_dynaddr",
             "linux24_log_martians"
           ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 2,
+              "orientation": "Horizontal",
+              "row": 7,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 14,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 0,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 2,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 13,
+              "rowspan": 1
+            }
+          ],
           "title": "Options"
         },
         {
@@ -11539,6 +13661,43 @@
             "linux24_tcp_syncookies",
             "linux24_tcp_timestamps"
           ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 1,
+              "orientation": "Vertical",
+              "row": 0,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 2,
+              "orientation": "Horizontal",
+              "row": 7,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 1,
+              "orientation": "Vertical",
+              "row": 12,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 1,
+              "orientation": "Vertical",
+              "row": 2,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 11,
+              "rowspan": 1
+            }
+          ],
           "title": "TCP"
         },
         {
@@ -11546,6 +13705,43 @@
           "keys": [
             "secuwall_add_files",
             "secuwall_add_files_dir"
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 0,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 2,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 4,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 2,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 3,
+              "orientation": "Horizontal",
+              "row": 2,
+              "rowspan": 1
+            }
           ],
           "title": "Files"
         }
@@ -11675,6 +13871,36 @@
             "solaris_ip_ignore_redirect",
             "solaris_ip_forward_src_routed"
           ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 6,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Vertical",
+              "row": 0,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 2,
+              "orientation": "Horizontal",
+              "row": 1,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 1,
+              "orientation": "Vertical",
+              "row": 6,
+              "rowspan": 1
+            }
+          ],
           "title": "Options"
         },
         {
@@ -11682,6 +13908,29 @@
           "keys": [
             "solaris_path_ipf",
             "solaris_path_ipnat"
+          ],
+          "spacers": [
+            {
+              "colspan": 1,
+              "column": 0,
+              "orientation": "Horizontal",
+              "row": 1,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 3,
+              "orientation": "Horizontal",
+              "row": 1,
+              "rowspan": 1
+            },
+            {
+              "colspan": 1,
+              "column": 2,
+              "orientation": "Vertical",
+              "row": 3,
+              "rowspan": 1
+            }
           ],
           "title": "Path"
         }

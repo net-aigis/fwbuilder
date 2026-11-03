@@ -316,21 +316,26 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Dynamic CSS grid template from .ui extents | done | FirewallExtras; E2E phase173 |
 | Dynamic grid on Rule/Interface options | done | E2E phase174 |
 | Shared qtGridStyle helper | done | `frontend/src/qtGrid.ts`; E2E phase175 |
+| Fix phase165 after qtGrid extract | done | grep `qtGrid.ts`; E2E phase176 |
+| Extract .ui QSpacerItem cells | done | dialog_fields pages.spacers; E2E phase177 |
+| Render Qt spacer holes in options grid | done | `qt-spacer` + qtSpacerStyle; E2E phase178 |
+| Gzip script transfer on compress | done | scp `.gz` + remote gunzip; E2E phase179 |
+| SSH BatchMode / password honesty | done | deploy `ssh_auth` + UI note; E2E phase180 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Soft-complete (feature/webui polish track)
 
-WebUI on `feature/webui` remains soft-complete for the polish track; hard-gap slices continue through phase175+:
+WebUI on `feature/webui` remains soft-complete for the polish track; hard-gap slices continue through phase180+:
 
-- Deploy: manifest `# files:`, OS configlets, external PolicyInstallScript, copyFWB, use_scp/compress, capabilities API, live gate + force_limited, expect stub + UI steps (still **no** expect/SSHSession runtime)
-- Options: .ui labels, QRadio bool, QGroupBox sections, tooltips, page-local QGridLayout + shared `qtGridStyle` (still **not** full pixel Qt layout)
+- Deploy: manifest `# files:`, OS configlets, external PolicyInstallScript, copyFWB, use_scp, gzip transfer on compress, capabilities API, live gate + force_limited, expect stub + UI steps (still **no** expect/SSHSession runtime)
+- Options: .ui labels, QRadio bool, QGroupBox sections, tooltips, page-local QGridLayout + spacers + shared `qtGridStyle` (still **not** full pixel Qt layout)
+- SSH: BatchMode only; password/keyboard-interactive explicitly unsupported (`ssh_auth` in deploy result)
 
 Still open (hard backlog):
 
-- Full Qt AdvancedDialog **pixel** layout parity (spacers, nested layouts, exact geometry; QGrid row/col hints exist since phase165)
+- Full Qt AdvancedDialog **pixel** layout parity (nested layouts, exact geometry; row/col + spacers exist since phase165/177)
 - Full desktop **FirewallInstaller** expect/SSHSession for Cisco/Juniper/Procurve (pre/post configlets, enable mode, `write mem`)
-- Password/keyboard-interactive SSH (WebUI uses BatchMode only)
-- Script compression during transfer (configlet flags only today)
+- Password/keyboard-interactive SSH (documented refusal; BatchMode only)
 
 ## Phase 3 — compile / deploy
 
@@ -516,6 +521,11 @@ Still open (hard backlog):
 | Local E2E phase173 (dynamic grid template) | done | `e2e-phase173.sh` **OK** |
 | Local E2E phase174 (rule/iface grid tmpl) | done | `e2e-phase174.sh` **OK** |
 | Local E2E phase175 (qtGrid helper) | done | `e2e-phase175.sh` **OK** |
+| Local E2E phase176 (phase165 after extract) | done | `e2e-phase176.sh` **OK** |
+| Local E2E phase177 (.ui spacers extract) | done | `e2e-phase177.sh` **OK** |
+| Local E2E phase178 (spacer UI) | done | `e2e-phase178.sh` **OK** |
+| Local E2E phase179 (gzip transfer) | done | `e2e-phase179.sh` **OK** |
+| Local E2E phase180 (SSH BatchMode honesty) | done | `e2e-phase180.sh` **OK** |
 
 ## Local commands
 
@@ -700,6 +710,11 @@ bash webui/scripts/e2e-phase172.sh
 bash webui/scripts/e2e-phase173.sh
 bash webui/scripts/e2e-phase174.sh
 bash webui/scripts/e2e-phase175.sh
+bash webui/scripts/e2e-phase176.sh
+bash webui/scripts/e2e-phase177.sh
+bash webui/scripts/e2e-phase178.sh
+bash webui/scripts/e2e-phase179.sh
+bash webui/scripts/e2e-phase180.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

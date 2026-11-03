@@ -7,6 +7,7 @@ import json
 import re
 import xml.etree.ElementTree as ET
 from pathlib import Path
+from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 LIBGUI = ROOT / "src" / "libgui"
@@ -221,6 +222,42 @@ def _grids_in_subtree(node: ET.Element) -> dict[str, dict[str, int]]:
     return positions
 
 
+def _spacers_in_subtree(node: ET.Element) -> list[dict[str, Any]]:
+    """QSpacerItem cells in QGridLayouts (page-local layout holes)."""
+    spacers: list[dict[str, Any]] = []
+    for lay in node.iter("layout"):
+        if lay.get("class") != "QGridLayout":
+            continue
+        for item in lay.findall("item"):
+            try:
+                row = int(item.get("row") or 0)
+                col = int(item.get("column") or 0)
+            except ValueError:
+                continue
+            rowspan = int(item.get("rowspan") or 1)
+            colspan = int(item.get("colspan") or 1)
+            for child in list(item):
+                if child.tag != "spacer":
+                    continue
+                orient_el = child.find("./property[@name='orientation']/enum")
+                orient = (orient_el.text or "").strip() if orient_el is not None else ""
+                if orient.startswith("Qt::"):
+                    orient = orient[4:]
+                entry: dict[str, Any] = {
+                    "row": row,
+                    "column": col,
+                    "rowspan": rowspan,
+                    "colspan": colspan,
+                }
+                if orient:
+                    entry["orientation"] = orient
+                name = child.get("name")
+                if name:
+                    entry["name"] = name
+                spacers.append(entry)
+    return spacers
+
+
 def parse_grid_positions(root: ET.Element | None) -> dict[str, dict[str, int]]:
     """Map widget → row/column, preferring per-tab-page grids then whole dialog."""
     positions: dict[str, dict[str, int]] = {}
@@ -292,14 +329,16 @@ def parse_pages(root: ET.Element | None) -> list[dict]:
                 cls = w.get("class") or ""
                 if name and cls in CONTROL_CLASSES:
                     widgets.append(name)
-            pages.append(
-                {
-                    "id": page.get("name") or f"page{len(pages)}",
-                    "title": title or page.get("name") or f"Page {len(pages)+1}",
-                    "widgets": widgets,
-                    "sections": parse_groupbox_sections(page),
-                }
-            )
+            page_entry: dict[str, Any] = {
+                "id": page.get("name") or f"page{len(pages)}",
+                "title": title or page.get("name") or f"Page {len(pages)+1}",
+                "widgets": widgets,
+                "sections": parse_groupbox_sections(page),
+            }
+            spacers = _spacers_in_subtree(page)
+            if spacers:
+                page_entry["spacers"] = spacers
+            pages.append(page_entry)
         if pages:
             break  # primary tab widget only
     return pages
@@ -376,6 +415,8 @@ def pages_with_keys(pages: list[dict], fields: dict[str, dict]) -> list[dict]:
             entry: dict = {"id": page["id"], "title": page["title"], "keys": keys}
             if sections_out:
                 entry["sections"] = sections_out
+            if page.get("spacers"):
+                entry["spacers"] = page["spacers"]
             out.append(entry)
     return out
 

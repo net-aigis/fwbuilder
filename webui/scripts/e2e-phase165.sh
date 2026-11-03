@@ -46,6 +46,9 @@ print("cleaned")
 PY
 opt="$ROOT/webui/frontend/src/components/OptionField.tsx"
 extras="$ROOT/webui/frontend/src/components/FirewallExtras.tsx"
+helper="$ROOT/webui/frontend/src/qtGrid.ts"
 grep -q 'gridStyle' "$opt"
-grep -q 'qt-grid' "$extras"
+# qt-grid class lives on the shared helper since phase175 (still used by FirewallExtras).
+grep -q 'qt-grid' "$helper"
+grep -q 'qtGridStyle\|qt-grid' "$extras"
 echo "OK: phase165 e2e passed"

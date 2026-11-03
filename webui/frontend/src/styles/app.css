@@ -694,6 +694,16 @@ button.linkish:disabled {
   grid-template-columns: repeat(4, minmax(10rem, 1fr));
 }
 
+.options-grid.qt-grid .qt-spacer {
+  /* Invisible .ui QSpacerItem stand-in; keeps row/column holes in the grid. */
+  min-height: 0.25rem;
+  pointer-events: none;
+}
+
+.options-grid.qt-grid .qt-spacer[data-orientation="Vertical"] {
+  min-height: 0.75rem;
+}
+
 .dialog-pages {
   display: flex;
   flex-wrap: wrap;
