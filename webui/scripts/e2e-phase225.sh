@@ -31,11 +31,16 @@ auth=(-H "Authorization: Bearer $TOKEN")
 
 curl -sf "${auth[@]}" "http://127.0.0.1:$PORT/api/v1/hard-gaps" >"$TMP/gaps.json"
 python3 - <<PY
-import json
+import json, re
+from pathlib import Path
+src = Path("$ROOT/webui/backend/fwbweb_api/main.py").read_text(encoding="utf-8")
+m = re.search(r'WEBUI_SOFT_COMPLETE_PHASE\s*=\s*"(\d+)"', src)
+assert m, "marker missing"
+want = m.group(1)
 d=json.load(open("$TMP/gaps.json"))
-assert d["soft_complete_phase"] == "228"
+assert d["soft_complete_phase"] == want, (d["soft_complete_phase"], want)
 assert "expect_sshsession_runtime" in d["hard_gap_open"]
-print("hard-gaps ok", d["hard_gap_open"])
+print("hard-gaps ok", d["hard_gap_open"], "phase", want)
 print("cleaned")
 PY
 echo "OK: phase225 e2e passed"
