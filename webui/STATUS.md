@@ -316,9 +316,9 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 
 ## Soft-complete (feature/webui polish track)
 
-WebUI on `feature/webui` remains soft-complete for the polish track; hard-gap slices continue through phase170+:
+WebUI on `feature/webui` remains soft-complete for the polish track; hard-gap slices continue through phase171+:
 
-- Deploy: manifest `# files:`, OS configlets, external PolicyInstallScript, copyFWB, use_scp/compress, capabilities API, live gate + force_limited, expect stub API (still **no** expect/SSHSession runtime)
+- Deploy: manifest `# files:`, OS configlets, external PolicyInstallScript, copyFWB, use_scp/compress, capabilities API, live gate + force_limited, expect stub + UI steps (still **no** expect/SSHSession runtime)
 - Options: .ui labels, QRadio bool, QGroupBox sections, tooltips, QGridLayout row/col hints + toggle (still **not** full pixel Qt layout)
 
 Still open (hard backlog):
