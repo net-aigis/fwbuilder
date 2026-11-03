@@ -42,7 +42,8 @@ for path in sorted(glob.glob("$TMP/*.json")):
     assert d.get("interactive_installer") is True, d
     assert d.get("note"), d
     assert "linux24" not in (d.get("configlet_dir") or "")
-    print(d["host_os"], "interactive ok", Path_name := d.get("configlet_dir","").rsplit("/",1)[-1])
+    cfg = (d.get("configlet_dir") or "").rsplit("/", 1)[-1]
+    print(d["host_os"], "interactive ok", cfg)
 print("cleaned")
 PY
 echo "OK: phase154 e2e passed"

@@ -693,6 +693,31 @@ export function FirewallExtras({
         <button type="button" className="ghost" disabled={busy} onClick={() => void saveManagement()}>
           Save management
         </button>
+        <button
+          type="button"
+          className="ghost"
+          disabled={busy}
+          title="Clear sessionStorage deploy preferences for this firewall"
+          onClick={() => {
+            try {
+              sessionStorage.removeItem(deployPrefsKey(firewallId));
+              sessionStorage.removeItem(deployPlanKey(firewallId));
+            } catch {
+              /* ignore */
+            }
+            setDryRun(true);
+            setActivate(true);
+            setCompress(false);
+            setUseScp(true);
+            setCopyFwb(false);
+            setCompileFirst(true);
+            setIdentityFile("");
+            setLastPlan([]);
+            onStatus?.("Deploy preferences reset");
+          }}
+        >
+          Reset deploy prefs
+        </button>
         <label className="check">
           <input
             type="checkbox"
