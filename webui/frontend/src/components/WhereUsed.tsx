@@ -9,6 +9,7 @@ type Props = {
   onStatus?: (s: string) => void;
   onError?: (e: string | null) => void;
   onSelect?: (id: string) => void;
+  onJumpUse?: (row: UseRow) => void;
 };
 
 type UseRow = {
@@ -28,6 +29,7 @@ export function WhereUsed({
   onStatus,
   onError,
   onSelect,
+  onJumpUse,
 }: Props) {
   const [uses, setUses] = useState<UseRow[]>([]);
 
@@ -85,7 +87,19 @@ export function WhereUsed({
         <ul className="picker-list">
           {uses.map((u) => (
             <li key={`${u.id}-${u.parent_id || ""}`}>
-              <button type="button" disabled={busy} onClick={() => onSelect?.(u.id)}>
+              <button
+                type="button"
+                disabled={busy}
+                title={
+                  u.type.endsWith("Rule")
+                    ? "Open this rule in the Rules tab"
+                    : "Select this object"
+                }
+                onClick={() => {
+                  if (onJumpUse) onJumpUse(u);
+                  else onSelect?.(u.id);
+                }}
+              >
                 {u.type} · {u.name}
                 {u.parent_name ? ` ← ${u.parent_type} ${u.parent_name}` : ""}
               </button>

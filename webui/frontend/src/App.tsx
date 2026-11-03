@@ -326,6 +326,48 @@ export function App() {
     }
   }
 
+  async function onJumpWhereUsed(row: {
+    id: string;
+    name: string;
+    type: string;
+    parent_id?: string;
+    parent_name?: string;
+    parent_type?: string;
+  }) {
+    if (!sessionId) return;
+    const isRule =
+      row.type === "PolicyRule" ||
+      row.type === "NATRule" ||
+      row.type === "RoutingRule" ||
+      row.type.endsWith("Rule");
+    if (isRule) {
+      setError(null);
+      try {
+        const pathRes = await fetchObjectPath(sessionId, row.id);
+        const fw = [...(pathRes.path ?? [])]
+          .reverse()
+          .find((p) => p.type === "Firewall" || p.type === "Cluster");
+        if (!fw) {
+          setError("Could not find firewall for this rule");
+          return;
+        }
+        const which: RulesWhich =
+          row.parent_type === "NAT" || row.type === "NATRule"
+            ? "nat"
+            : row.parent_type === "Routing" || row.type === "RoutingRule"
+              ? "routing"
+              : "policy";
+        await loadRules(fw.id, which, row.parent_id);
+        setSelectedRuleId(row.id);
+        setStatus(`Opened rule ${row.id} in ${fw.name}`);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : String(err));
+      }
+      return;
+    }
+    await refreshTreeSelect(row.id);
+  }
+
   async function onSelect(node: TreeNode) {
     if (!sessionId) {
       setSelected(node);
@@ -2870,6 +2912,7 @@ export function App() {
                         onStatus={setStatus}
                         onError={setError}
                         onSelect={(id) => void refreshTreeSelect(id)}
+                        onJumpUse={(row) => void onJumpWhereUsed(row)}
                       />
                     ) : null}
                     {selected.type.endsWith("Group") || selected.type === "ObjectGroup" || selected.type === "ServiceGroup" ? (
