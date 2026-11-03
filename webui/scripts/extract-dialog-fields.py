@@ -258,6 +258,47 @@ def _spacers_in_subtree(node: ET.Element) -> list[dict[str, Any]]:
     return spacers
 
 
+def _parse_stretch_list(raw: str | None) -> list[int]:
+    if not raw or not str(raw).strip():
+        return []
+    out: list[int] = []
+    for part in str(raw).split(","):
+        part = part.strip()
+        if not part:
+            continue
+        try:
+            out.append(int(part))
+        except ValueError:
+            continue
+    return out
+
+
+def _column_stretch_in_subtree(node: ET.Element) -> list[int]:
+    """Pick columnstretch from the busiest QGridLayout that declares one."""
+    best: list[int] = []
+    best_n = -1
+    for lay in node.iter("layout"):
+        if lay.get("class") != "QGridLayout":
+            continue
+        stretch = _parse_stretch_list(lay.get("columnstretch"))
+        if not stretch:
+            continue
+        n = len(lay.findall("item"))
+        if n > best_n:
+            best_n = n
+            best = stretch
+    return best
+
+
+def _layout_summary(node: ET.Element) -> dict[str, int]:
+    """Count layout classes under a page (nested layout hint, not pixel geometry)."""
+    counts: dict[str, int] = {}
+    for lay in node.iter("layout"):
+        cls = lay.get("class") or "layout"
+        counts[cls] = counts.get(cls, 0) + 1
+    return counts
+
+
 def parse_grid_positions(root: ET.Element | None) -> dict[str, dict[str, int]]:
     """Map widget → row/column, preferring per-tab-page grids then whole dialog."""
     positions: dict[str, dict[str, int]] = {}
@@ -338,6 +379,12 @@ def parse_pages(root: ET.Element | None) -> list[dict]:
             spacers = _spacers_in_subtree(page)
             if spacers:
                 page_entry["spacers"] = spacers
+            col_stretch = _column_stretch_in_subtree(page)
+            if col_stretch:
+                page_entry["column_stretch"] = col_stretch
+            layouts = _layout_summary(page)
+            if layouts:
+                page_entry["layouts"] = layouts
             pages.append(page_entry)
         if pages:
             break  # primary tab widget only
@@ -417,6 +464,10 @@ def pages_with_keys(pages: list[dict], fields: dict[str, dict]) -> list[dict]:
                 entry["sections"] = sections_out
             if page.get("spacers"):
                 entry["spacers"] = page["spacers"]
+            if page.get("column_stretch"):
+                entry["column_stretch"] = page["column_stretch"]
+            if page.get("layouts"):
+                entry["layouts"] = page["layouts"]
             out.append(entry)
     return out
 

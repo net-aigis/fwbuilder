@@ -10,15 +10,25 @@ export type QtGridSpacer = {
   name?: string;
 };
 
+function columnsFromStretch(maxCol: number, stretch: number[]): string {
+  const parts: string[] = [];
+  for (let i = 0; i <= maxCol; i++) {
+    const w = stretch[i] ?? 1;
+    parts.push(`minmax(8rem, ${Math.max(w, 1)}fr)`);
+  }
+  return parts.join(" ");
+}
+
 /** Build CSS grid template extents from .ui QGridLayout metadata. */
 export function qtGridStyle(
   keys: string[],
   fields: Record<string, OptionFieldMeta | undefined>,
   spacers: QtGridSpacer[] = [],
+  columnStretch: number[] = [],
 ): { className: string; style?: CSSProperties } {
   const useQt = keys.some((k) => fields[k]?.grid) || spacers.length > 0;
   if (!useQt) return { className: "typed-grid options-grid" };
-  let maxCol = 3;
+  let maxCol = Math.max(3, columnStretch.length - 1);
   let maxRow = 0;
   for (const k of keys) {
     const g = fields[k]?.grid;
@@ -31,10 +41,14 @@ export function qtGridStyle(
     maxRow = Math.max(maxRow, s.row + (s.rowspan || 1) - 1);
     maxCol = Math.max(maxCol, s.column + (s.colspan || 1) - 1);
   }
+  const cols =
+    columnStretch.length > 0
+      ? columnsFromStretch(maxCol, columnStretch)
+      : `repeat(${maxCol + 1}, minmax(8rem, 1fr))`;
   return {
     className: "typed-grid options-grid qt-grid",
     style: {
-      gridTemplateColumns: `repeat(${maxCol + 1}, minmax(8rem, 1fr))`,
+      gridTemplateColumns: cols,
       gridTemplateRows: `repeat(${maxRow + 1}, auto)`,
     },
   };

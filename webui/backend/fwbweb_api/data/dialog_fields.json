@@ -1046,6 +1046,9 @@
           "keys": [
             "firewall_is_part_of_any_and_networks"
           ],
+          "layouts": {
+            "QGridLayout": 1
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -1070,6 +1073,9 @@
           "keys": [
             "ulog_nlgroup"
           ],
+          "layouts": {
+            "QGridLayout": 1
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -1096,6 +1102,9 @@
             "limit_value_not",
             "limit_burst"
           ],
+          "layouts": {
+            "QGridLayout": 1
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -1137,6 +1146,9 @@
             "connlimit_above_not",
             "connlimit_masklen"
           ],
+          "layouts": {
+            "QGridLayout": 1
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -1187,6 +1199,10 @@
             "hashlimit_expire",
             "hashlimit_gcinterval"
           ],
+          "layouts": {
+            "QGridLayout": 1,
+            "QHBoxLayout": 3
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -1203,6 +1219,9 @@
           "keys": [
             "ipt_mark_connections"
           ],
+          "layouts": {
+            "QGridLayout": 1
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -1228,6 +1247,9 @@
           "keys": [
             "classify_str"
           ],
+          "layouts": {
+            "QGridLayout": 1
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -1257,6 +1279,9 @@
             "ipt_continue",
             "ipt_tee"
           ],
+          "layouts": {
+            "QGridLayout": 3
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -1373,6 +1398,9 @@
             "vlan_id",
             "enable_stp"
           ],
+          "layouts": {
+            "QGridLayout": 3
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -1586,6 +1614,9 @@
             "freebsd_ip_sourceroute",
             "freebsd_ip_redirect"
           ],
+          "layouts": {
+            "QGridLayout": 1
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -1621,6 +1652,9 @@
             "freebsd_path_ipnat",
             "freebsd_path_sysctl"
           ],
+          "layouts": {
+            "QGridLayout": 1
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -1651,6 +1685,9 @@
           "keys": [
             "data_dir"
           ],
+          "layouts": {
+            "QGridLayout": 1
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -1711,6 +1748,9 @@
             "ios_set_host_name",
             "ios_ip_address"
           ],
+          "layouts": {
+            "QGridLayout": 1
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -2126,6 +2166,9 @@
             "mgmt_ssh",
             "mgmt_addr"
           ],
+          "layouts": {
+            "QGridLayout": 3
+          },
           "sections": [
             {
               "id": "frame114",
@@ -2176,6 +2219,9 @@
             "iosacl_acl_no_clear",
             "iosacl_acl_substitution"
           ],
+          "layouts": {
+            "QGridLayout": 4
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -2220,6 +2266,10 @@
             "filesystem",
             "firewall_dir"
           ],
+          "layouts": {
+            "QGridLayout": 4,
+            "QHBoxLayout": 4
+          },
           "sections": [
             {
               "id": "groupBox2",
@@ -2266,6 +2316,9 @@
             "iosacl_prolog_script",
             "iosacl_epilog_script"
           ],
+          "layouts": {
+            "QGridLayout": 3
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -2297,6 +2350,9 @@
             "iosacl_logging_buffered_level",
             "iosacl_logging_console_level"
           ],
+          "layouts": {
+            "QGridLayout": 3
+          },
           "sections": [
             {
               "id": "syslog_controls",
@@ -2752,6 +2808,11 @@
             "mgmt_ssh",
             "mgmt_addr"
           ],
+          "layouts": {
+            "QGridLayout": 1,
+            "QHBoxLayout": 1,
+            "QVBoxLayout": 1
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -2787,6 +2848,10 @@
             "sshArgs",
             "scpArgs"
           ],
+          "layouts": {
+            "QGridLayout": 3,
+            "QHBoxLayout": 4
+          },
           "sections": [
             {
               "id": "groupBox2",
@@ -2818,6 +2883,9 @@
             "epilog_script",
             "prolog_script"
           ],
+          "layouts": {
+            "QGridLayout": 3
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -2854,6 +2922,9 @@
             "limit_suffix",
             "log_all"
           ],
+          "layouts": {
+            "QGridLayout": 4
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -2885,6 +2956,9 @@
             "debug",
             "verify_interfaces"
           ],
+          "layouts": {
+            "QGridLayout": 1
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -3361,6 +3435,9 @@
             "linux24_ip_dynaddr",
             "linux24_log_martians"
           ],
+          "layouts": {
+            "QGridLayout": 1
+          },
           "spacers": [
             {
               "colspan": 2,
@@ -3405,6 +3482,9 @@
             "linux24_tcp_syncookies",
             "linux24_tcp_timestamps"
           ],
+          "layouts": {
+            "QGridLayout": 1
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -3452,6 +3532,9 @@
             "linux24_path_iptables_restore",
             "linux24_path_ip6tables_restore"
           ],
+          "layouts": {
+            "QGridLayout": 1
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -3989,6 +4072,9 @@
             "action_on_reject",
             "ipf_return_icmp_as_dest"
           ],
+          "layouts": {
+            "QGridLayout": 1
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -4013,6 +4099,9 @@
             "ipf_nat_pptp_proxy",
             "ipf_nat_irc_proxy"
           ],
+          "layouts": {
+            "QGridLayout": 1
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -4048,6 +4137,10 @@
             "sshArgs",
             "scpArgs"
           ],
+          "layouts": {
+            "QGridLayout": 3,
+            "QHBoxLayout": 4
+          },
           "sections": [
             {
               "id": "groupBox4",
@@ -4086,6 +4179,9 @@
             "prolog_script",
             "epilog_script"
           ],
+          "layouts": {
+            "QGridLayout": 3
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -4112,6 +4208,9 @@
             "ipf_log_body",
             "ipf_log_or_block"
           ],
+          "layouts": {
+            "QGridLayout": 1
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -4160,6 +4259,9 @@
             "optimize",
             "dynAddr"
           ],
+          "layouts": {
+            "QGridLayout": 1
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -4431,6 +4533,10 @@
             "mgmt_ssh",
             "mgmt_addr"
           ],
+          "layouts": {
+            "QGridLayout": 1,
+            "QHBoxLayout": 1
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -4459,6 +4565,10 @@
             "sshArgs",
             "scpArgs"
           ],
+          "layouts": {
+            "QGridLayout": 3,
+            "QHBoxLayout": 4
+          },
           "sections": [
             {
               "id": "groupBox2",
@@ -4490,6 +4600,9 @@
             "epilog_script",
             "prolog_script"
           ],
+          "layouts": {
+            "QGridLayout": 3
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -4515,6 +4628,9 @@
             "configure_interfaces",
             "debug"
           ],
+          "layouts": {
+            "QGridLayout": 1
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -5205,6 +5321,11 @@
       },
       "pages": [
         {
+          "column_stretch": [
+            5,
+            5,
+            5
+          ],
           "id": "tab0",
           "keys": [
             "compiler",
@@ -5229,6 +5350,10 @@
             "mgmt_addr",
             "add_mgmt_ssh_rule_when_stoped"
           ],
+          "layouts": {
+            "QGridLayout": 5,
+            "QHBoxLayout": 3
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -5266,6 +5391,10 @@
             "sshArgs",
             "scpArgs"
           ],
+          "layouts": {
+            "QGridLayout": 3,
+            "QHBoxLayout": 4
+          },
           "sections": [
             {
               "id": "groupBox2",
@@ -5299,6 +5428,9 @@
             "hooks_profile",
             "prolog_place"
           ],
+          "layouts": {
+            "QGridLayout": 3
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -5327,6 +5459,9 @@
             "limit_suffix",
             "log_all"
           ],
+          "layouts": {
+            "QGridLayout": 4
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -5366,6 +5501,9 @@
             "manage_virtual_addr",
             "use_iptables_restore"
           ],
+          "layouts": {
+            "QGridLayout": 1
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -5448,6 +5586,9 @@
             "junos_set_host_name",
             "junos_ip_address"
           ],
+          "layouts": {
+            "QGridLayout": 1
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -5768,6 +5909,9 @@
             "check_shading",
             "filter_prefix"
           ],
+          "layouts": {
+            "QGridLayout": 3
+          },
           "sections": [
             {
               "id": "frame114",
@@ -5802,6 +5946,9 @@
           "keys": [
             "junosacl_include_comments"
           ],
+          "layouts": {
+            "QGridLayout": 2
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -5825,6 +5972,10 @@
             "sshArgs",
             "scpArgs"
           ],
+          "layouts": {
+            "QGridLayout": 4,
+            "QHBoxLayout": 4
+          },
           "sections": [
             {
               "id": "groupBox2",
@@ -5871,6 +6022,9 @@
             "junosacl_prolog_script",
             "junosacl_epilog_script"
           ],
+          "layouts": {
+            "QGridLayout": 3
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -5902,6 +6056,9 @@
             "junosacl_logging_buffered_level",
             "junosacl_logging_console_level"
           ],
+          "layouts": {
+            "QGridLayout": 3
+          },
           "sections": [
             {
               "id": "syslog_controls",
@@ -6082,6 +6239,9 @@
             "linksys_path_brctl",
             "linksys_path_ifenslave"
           ],
+          "layouts": {
+            "QGridLayout": 1
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -6106,6 +6266,9 @@
             "prompt1",
             "prompt2"
           ],
+          "layouts": {
+            "QGridLayout": 1
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -6650,6 +6813,9 @@
             "linux24_ip_dynaddr",
             "linux24_log_martians"
           ],
+          "layouts": {
+            "QGridLayout": 1
+          },
           "spacers": [
             {
               "colspan": 2,
@@ -6694,6 +6860,9 @@
             "linux24_tcp_syncookies",
             "linux24_tcp_timestamps"
           ],
+          "layouts": {
+            "QGridLayout": 1
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -6742,6 +6911,9 @@
             "linux24_path_iptables_restore",
             "linux24_path_ip6tables_restore"
           ],
+          "layouts": {
+            "QGridLayout": 1
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -6767,6 +6939,11 @@
             "linux24_conntrack_hashsize",
             "linux24_conntrack_tcp_be_liberal"
           ],
+          "layouts": {
+            "QGridLayout": 2,
+            "QHBoxLayout": 1,
+            "QVBoxLayout": 1
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -6792,6 +6969,9 @@
           "keys": [
             "data_dir"
           ],
+          "layouts": {
+            "QGridLayout": 1
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -6903,6 +7083,9 @@
             "xmit_hash_policy",
             "bondng_driver_options"
           ],
+          "layouts": {
+            "QGridLayout": 4
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -7042,6 +7225,9 @@
             "macosx_ip_redirect",
             "macosx_ip_sourceroute"
           ],
+          "layouts": {
+            "QGridLayout": 1
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -7080,6 +7266,9 @@
             "macosx_path_ipfw",
             "macosx_path_sysctl"
           ],
+          "layouts": {
+            "QGridLayout": 1
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -7145,6 +7334,9 @@
             "nxos_set_host_name",
             "nxos_ip_address"
           ],
+          "layouts": {
+            "QGridLayout": 1
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -7573,6 +7765,9 @@
             "mgmt_ssh",
             "mgmt_addr"
           ],
+          "layouts": {
+            "QGridLayout": 3
+          },
           "sections": [
             {
               "id": "frame114",
@@ -7623,6 +7818,9 @@
             "nxosacl_acl_no_clear",
             "nxosacl_acl_substitution"
           ],
+          "layouts": {
+            "QGridLayout": 4
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -7668,6 +7866,10 @@
             "scpArgs",
             "use_nxos_session"
           ],
+          "layouts": {
+            "QGridLayout": 4,
+            "QHBoxLayout": 4
+          },
           "sections": [
             {
               "id": "groupBox2",
@@ -7715,6 +7917,9 @@
             "nxosacl_prolog_script",
             "nxosacl_epilog_script"
           ],
+          "layouts": {
+            "QGridLayout": 3
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -7746,6 +7951,9 @@
             "nxosacl_logging_buffered_level",
             "nxosacl_logging_console_level"
           ],
+          "layouts": {
+            "QGridLayout": 3
+          },
           "sections": [
             {
               "id": "syslog_controls",
@@ -7924,6 +8132,9 @@
             "openbsd_ip_sourceroute",
             "openbsd_ip_redirect"
           ],
+          "layouts": {
+            "QGridLayout": 1
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -7962,6 +8173,9 @@
             "openbsd_path_pfctl",
             "openbsd_path_sysctl"
           ],
+          "layouts": {
+            "QGridLayout": 1
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -7992,6 +8206,9 @@
           "keys": [
             "data_dir"
           ],
+          "layouts": {
+            "QGridLayout": 1
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -9200,6 +9417,10 @@
             "mgmt_ssh",
             "mgmt_addr"
           ],
+          "layouts": {
+            "QGridLayout": 4,
+            "QHBoxLayout": 1
+          },
           "sections": [
             {
               "id": "groupBox_4",
@@ -9260,6 +9481,10 @@
             "pf_scrub_fragm_drop_ovl",
             "pf_scrub_reassemble_tcp"
           ],
+          "layouts": {
+            "QGridLayout": 2,
+            "QHBoxLayout": 2
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -9296,6 +9521,9 @@
             "pf_state_policy",
             "pf_block_policy"
           ],
+          "layouts": {
+            "QGridLayout": 3
+          },
           "sections": [
             {
               "id": "groupBox_6",
@@ -9375,6 +9603,10 @@
             "pf_do_timeout_frag",
             "pf_timeout_frag"
           ],
+          "layouts": {
+            "QGridLayout": 7,
+            "QHBoxLayout": 1
+          },
           "sections": [
             {
               "id": "groupBox1",
@@ -9477,6 +9709,10 @@
             "sshArgs",
             "scpArgs"
           ],
+          "layouts": {
+            "QGridLayout": 3,
+            "QHBoxLayout": 4
+          },
           "sections": [
             {
               "id": "groupBox2_2",
@@ -9509,6 +9745,9 @@
             "prolog_script",
             "prolog_place"
           ],
+          "layouts": {
+            "QGridLayout": 3
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -9540,6 +9779,9 @@
             "log_prefix",
             "fallback_log"
           ],
+          "layouts": {
+            "QGridLayout": 1
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -9586,6 +9828,9 @@
             "manage_virtual_addr",
             "pf_flush_states"
           ],
+          "layouts": {
+            "QGridLayout": 3
+          },
           "sections": [
             {
               "id": "groupBox_3",
@@ -10663,6 +10908,9 @@
             "mgmt_ssh",
             "mgmt_addr"
           ],
+          "layouts": {
+            "QGridLayout": 5
+          },
           "sections": [
             {
               "id": "frame114",
@@ -10741,6 +10989,11 @@
             "filesystem",
             "firewall_dir"
           ],
+          "layouts": {
+            "QGridLayout": 3,
+            "QHBoxLayout": 5,
+            "QVBoxLayout": 1
+          },
           "sections": [
             {
               "id": "groupBox2",
@@ -10770,6 +11023,9 @@
             "pix_prolog_script",
             "pix_epilog_script"
           ],
+          "layouts": {
+            "QGridLayout": 3
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -10823,6 +11079,9 @@
             "uauth_abs",
             "uauth_inact"
           ],
+          "layouts": {
+            "QGridLayout": 3
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -10855,6 +11114,9 @@
             "pix_logging_console",
             "pix_logging_console_level"
           ],
+          "layouts": {
+            "QGridLayout": 4
+          },
           "sections": [
             {
               "id": "frame172",
@@ -10952,6 +11214,10 @@
             "pix_acl_temp_addr",
             "pix_acl_substitution"
           ],
+          "layouts": {
+            "QGridLayout": 3,
+            "QHBoxLayout": 3
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -10987,6 +11253,10 @@
             "pix_regroup_commands",
             "pix_use_manual_commit"
           ],
+          "layouts": {
+            "QGridLayout": 2,
+            "QVBoxLayout": 1
+          },
           "title": "Script (additional)"
         },
         {
@@ -11003,6 +11273,10 @@
             "pix_max_conns",
             "pix_emb_limit"
           ],
+          "layouts": {
+            "QGridLayout": 1,
+            "QVBoxLayout": 1
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -11256,6 +11530,9 @@
             "pix_set_host_name",
             "pix_ip_address"
           ],
+          "layouts": {
+            "QGridLayout": 1
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -11277,6 +11554,9 @@
             "pix_ntp3",
             "pix_ntp1_pref"
           ],
+          "layouts": {
+            "QGridLayout": 2
+          },
           "sections": [
             {
               "id": "ntp_servers_group",
@@ -11313,6 +11593,9 @@
             "pix_snmp_poll_traps_2",
             "pix_enable_snmp_traps"
           ],
+          "layouts": {
+            "QGridLayout": 2
+          },
           "sections": [
             {
               "id": "frame149",
@@ -11351,6 +11634,9 @@
             "pix_tcpmss",
             "pix_tcpmss_value"
           ],
+          "layouts": {
+            "QGridLayout": 1
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -11394,6 +11680,9 @@
           "keys": [
             "vlan_id"
           ],
+          "layouts": {
+            "QGridLayout": 2
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -11804,6 +12093,9 @@
             "mgmt_ssh",
             "mgmt_addr"
           ],
+          "layouts": {
+            "QGridLayout": 3
+          },
           "sections": [
             {
               "id": "frame114",
@@ -11852,6 +12144,9 @@
             "procurve_acl_include_comments",
             "procurve_acl_use_acl_remarks"
           ],
+          "layouts": {
+            "QGridLayout": 4
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -11889,6 +12184,10 @@
             "filesystem",
             "firewall_dir"
           ],
+          "layouts": {
+            "QGridLayout": 4,
+            "QHBoxLayout": 4
+          },
           "sections": [
             {
               "id": "groupBox2",
@@ -11928,6 +12227,9 @@
             "procurve_acl_prolog_script",
             "procurve_acl_epilog_script"
           ],
+          "layouts": {
+            "QGridLayout": 3
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -11959,6 +12261,9 @@
             "procurve_acl_logging_buffered_level",
             "procurve_acl_logging_console_level"
           ],
+          "layouts": {
+            "QGridLayout": 3
+          },
           "sections": [
             {
               "id": "syslog_controls",
@@ -12560,6 +12865,9 @@
             "mgmt_addr",
             "add_mgmt_ssh_rule_when_stoped"
           ],
+          "layouts": {
+            "QGridLayout": 1
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -12615,6 +12923,10 @@
             "altAddress",
             "activationCmd"
           ],
+          "layouts": {
+            "QGridLayout": 3,
+            "QHBoxLayout": 4
+          },
           "sections": [
             {
               "id": "groupBox2",
@@ -12645,6 +12957,9 @@
             "prolog_script",
             "prolog_place"
           ],
+          "layouts": {
+            "QGridLayout": 3
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -12673,6 +12988,9 @@
             "limit_suffix",
             "log_all"
           ],
+          "layouts": {
+            "QGridLayout": 4
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -12708,6 +13026,9 @@
             "manage_virtual_addr",
             "use_iptables_restore"
           ],
+          "layouts": {
+            "QGridLayout": 1
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -12829,6 +13150,9 @@
             "iface_disableboot",
             "iface_disablearp"
           ],
+          "layouts": {
+            "QGridLayout": 2
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -13497,6 +13821,9 @@
             "secuwall_mgmt_confpart",
             "secuwall_mgmt_rules_disable"
           ],
+          "layouts": {
+            "QGridLayout": 1
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -13550,6 +13877,10 @@
             "secuwall_dns_reso4",
             "secuwall_dns_reso5"
           ],
+          "layouts": {
+            "QGridLayout": 1,
+            "QHBoxLayout": 1
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -13610,6 +13941,9 @@
             "linux24_ip_dynaddr",
             "linux24_log_martians"
           ],
+          "layouts": {
+            "QGridLayout": 1
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -13661,6 +13995,9 @@
             "linux24_tcp_syncookies",
             "linux24_tcp_timestamps"
           ],
+          "layouts": {
+            "QGridLayout": 1
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -13706,6 +14043,9 @@
             "secuwall_add_files",
             "secuwall_add_files_dir"
           ],
+          "layouts": {
+            "QGridLayout": 2
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -13871,6 +14211,9 @@
             "solaris_ip_ignore_redirect",
             "solaris_ip_forward_src_routed"
           ],
+          "layouts": {
+            "QGridLayout": 1
+          },
           "spacers": [
             {
               "colspan": 1,
@@ -13909,6 +14252,9 @@
             "solaris_path_ipf",
             "solaris_path_ipnat"
           ],
+          "layouts": {
+            "QGridLayout": 1
+          },
           "spacers": [
             {
               "colspan": 1,

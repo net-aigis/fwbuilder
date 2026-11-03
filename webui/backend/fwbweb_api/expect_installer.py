@@ -12,27 +12,45 @@ from typing import Any
 from .configlets import list_installer_configlets
 
 # High-level steps the desktop expect path performs (no reproduction of expect scripts).
-_EXPECT_STEPS = (
+_BASE_STEPS = (
     "open SSH session (password/keyboard-interactive or key)",
-    "run installer_commands_pre_config when present",
     "enter enable / configure mode as required by platform",
     "push or paste generated config (scp or terminal)",
-    "run installer_commands_post_config / activation",
     "optional write mem / commit",
 )
+
+
+def _desktop_steps(names: list[str]) -> list[str]:
+    """Build step list from which installer_commands_* files exist."""
+    steps: list[str] = [
+        "open SSH session (password/keyboard-interactive or key)",
+    ]
+    if "installer_commands_pre_config" in names:
+        steps.append("run installer_commands_pre_config")
+    steps.append("enter enable / configure mode as required by platform")
+    steps.append("push or paste generated config (scp or terminal)")
+    if "installer_commands_post_config" in names:
+        steps.append("run installer_commands_post_config / activation")
+    else:
+        steps.append("run activation configlet when present")
+    steps.append("optional write mem / commit")
+    return steps
 
 
 def expect_installer_status(host_os: str) -> dict[str, Any]:
     listing = list_installer_configlets(host_os)
     interactive = bool(listing.get("interactive_installer"))
+    names = list(listing.get("names") or [])
     return {
         "host_os": host_os,
         "implemented": False,
         "needed": interactive,
         "interactive_installer": interactive,
         "configlet_dir": listing.get("configlet_dir"),
-        "names": listing.get("names") or [],
-        "desktop_steps": list(_EXPECT_STEPS) if interactive else [],
+        "names": names,
+        "has_pre_config": "installer_commands_pre_config" in names,
+        "has_post_config": "installer_commands_post_config" in names,
+        "desktop_steps": _desktop_steps(names) if interactive else list(_BASE_STEPS)[:0],
         "webui_alternative": (
             "dry_run preview of activation configlet + optional force_limited_installer "
             "scp/ssh (incomplete vs desktop)"

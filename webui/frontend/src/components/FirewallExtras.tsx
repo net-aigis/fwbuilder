@@ -49,6 +49,8 @@ type Group = {
   keys: string[];
   sections?: GroupSection[];
   spacers?: QtGridSpacer[];
+  column_stretch?: number[];
+  layouts?: Record<string, number>;
 };
 
 function groupStorageKey(platform: string, hostOs: string) {
@@ -109,6 +111,7 @@ export function FirewallExtras({
   const [installerNote, setInstallerNote] = useState<string | null>(null);
   const [installerMode, setInstallerMode] = useState<string | null>(null);
   const [expectSteps, setExpectSteps] = useState<string[]>([]);
+  const [expectConfiglets, setExpectConfiglets] = useState<string[]>([]);
   const [resHint, setResHint] = useState<string | null>(null);
 
   async function reload() {
@@ -180,24 +183,36 @@ export function FirewallExtras({
       if (cfgList) {
         const caps = cfgList as typeof cfgList & {
           recommended_webui_mode?: string;
-          expect_installer?: { note?: string; desktop_steps?: string[] };
+          names?: string[];
+          expect_installer?: {
+            note?: string;
+            desktop_steps?: string[];
+            names?: string[];
+            has_pre_config?: boolean;
+            has_post_config?: boolean;
+          };
         };
         setInstallerMode(caps.recommended_webui_mode || null);
         if (cfgList.interactive_installer) {
           const steps = caps.expect_installer?.desktop_steps || [];
           setExpectSteps(steps);
+          setExpectConfiglets(
+            caps.expect_installer?.names || caps.names || cfgList.names || [],
+          );
           setInstallerNote(
             cfgList.note ||
               "This OS uses interactive FirewallInstaller pre/post configlets; WebUI scp/ssh deploy is limited.",
           );
         } else {
           setExpectSteps([]);
+          setExpectConfiglets([]);
           setInstallerNote(null);
         }
       } else {
         setInstallerMode(null);
         setInstallerNote(null);
         setExpectSteps([]);
+        setExpectConfiglets([]);
       }
       if (schema) {
         const nextGroups = schema.groups ?? [];
@@ -641,8 +656,10 @@ export function FirewallExtras({
       {optionSections.map((sec, secIdx) => {
         const pageSpacers =
           useQtGridLayout && secIdx === 0 ? activeGroupMeta?.spacers || [] : [];
+        const pageStretch =
+          useQtGridLayout && secIdx === 0 ? activeGroupMeta?.column_stretch || [] : [];
         const grid = useQtGridLayout
-          ? qtGridStyle(sec.keys, fields, pageSpacers)
+          ? qtGridStyle(sec.keys, fields, pageSpacers, pageStretch)
           : { className: "typed-grid options-grid" };
         return (
           <div key={sec.id || "all"} className="option-section">
@@ -693,6 +710,12 @@ export function FirewallExtras({
                   <li key={s}>{s}</li>
                 ))}
               </ol>
+              {expectConfiglets.length ? (
+                <p className="muted">
+                  Installer configlets:{" "}
+                  <code>{expectConfiglets.join(", ")}</code>
+                </p>
+              ) : null}
             </details>
           ) : null}
         </div>

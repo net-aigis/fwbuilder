@@ -512,6 +512,8 @@ export function fetchOptionSchema(platform: string, hostOs = "") {
         orientation?: string;
         name?: string;
       }>;
+      column_stretch?: number[];
+      layouts?: Record<string, number>;
     }>;
     featured_keys: string[];
     fields?: Record<string, OptionFieldMeta>;
@@ -669,10 +671,14 @@ export function fetchInstallerCapabilities(hostOs: string) {
     recommended_webui_mode?: string;
     webui_modes?: Record<string, boolean>;
     note?: string | null;
+    names?: string[];
     expect_installer?: {
       implemented?: boolean;
       needed?: boolean;
       desktop_steps?: string[];
+      names?: string[];
+      has_pre_config?: boolean;
+      has_post_config?: boolean;
       note?: string;
     };
   }>(`/api/v1/installer-capabilities?${q.toString()}`);
