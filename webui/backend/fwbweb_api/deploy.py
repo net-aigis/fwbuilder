@@ -238,6 +238,11 @@ def plan_and_deploy(
         raise DeployError("host/management address required")
     if not local_script.is_file():
         raise DeployError(f"local script missing: {local_script}")
+    if remote_dir and not (
+        remote_dir.startswith("/")
+        or (len(remote_dir) > 2 and remote_dir[1] == ":")
+    ):
+        raise DeployError(f"remote_dir must be absolute: {remote_dir}")
 
     copies, main_remote = resolve_manifest_files(
         local_script=local_script,
