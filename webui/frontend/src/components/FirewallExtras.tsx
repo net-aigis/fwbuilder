@@ -87,6 +87,7 @@ export function FirewallExtras({
   const [log, setLog] = useState<string | null>(null);
   const [lastPlan, setLastPlan] = useState<string[]>([]);
   const [showAll, setShowAll] = useState(false);
+  const [useQtGridLayout, setUseQtGridLayout] = useState(true);
   const [groups, setGroups] = useState<Group[]>([]);
   const [featured, setFeatured] = useState<string[]>(FALLBACK_FEATURED);
   const [compiler, setCompiler] = useState<string>("");
@@ -604,8 +605,19 @@ export function FirewallExtras({
         </label>
       </div>
 
+      <div className="btn-row pad-tight">
+        <label className="check" title="Place fields using QGridLayout row/column from .ui when available">
+          <input
+            type="checkbox"
+            checked={useQtGridLayout}
+            disabled={busy}
+            onChange={(e) => setUseQtGridLayout(e.target.checked)}
+          />
+          Qt grid placement
+        </label>
+      </div>
       {optionSections.map((sec) => {
-        const useQtGrid = sec.keys.some((k) => fields[k]?.grid);
+        const useQtGrid = useQtGridLayout && sec.keys.some((k) => fields[k]?.grid);
         return (
           <div key={sec.id || "all"} className="option-section">
             {sec.title ? <h4 className="option-section-title">{sec.title}</h4> : null}
