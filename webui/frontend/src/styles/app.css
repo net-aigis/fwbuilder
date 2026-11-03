@@ -718,6 +718,21 @@ pre.configlet-preview {
   align-self: center;
 }
 
+/* .ui QSizePolicy hints (approximate CSS mapping). */
+.field.size-h-Expanding,
+.field.size-h-MinimumExpanding {
+  min-width: 12rem;
+}
+
+.field.size-h-Fixed {
+  max-width: 14rem;
+}
+
+.field.size-v-Expanding textarea,
+.field.size-v-MinimumExpanding textarea {
+  min-height: 7rem;
+}
+
 .dialog-pages {
   display: flex;
   flex-wrap: wrap;

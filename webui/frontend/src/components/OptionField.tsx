@@ -8,6 +8,7 @@ type FieldMeta = {
   widget?: string;
   widget_class?: string;
   grid?: { row?: number; column?: number; rowspan?: number; colspan?: number };
+  size_policy?: { horizontal?: string; vertical?: string };
 };
 
 type Props = {
@@ -33,6 +34,15 @@ function gridStyle(meta?: FieldMeta): CSSProperties | undefined {
   return style;
 }
 
+function sizePolicyClass(meta?: FieldMeta): string {
+  const sp = meta?.size_policy;
+  if (!sp) return "";
+  const parts: string[] = [];
+  if (sp.horizontal) parts.push(`size-h-${sp.horizontal}`);
+  if (sp.vertical) parts.push(`size-v-${sp.vertical}`);
+  return parts.join(" ");
+}
+
 export function OptionField({ name, value, meta, disabled, onChange }: Props) {
   const type = meta?.type || "string";
   const label = (meta?.label || "").trim() || name;
@@ -40,12 +50,14 @@ export function OptionField({ name, value, meta, disabled, onChange }: Props) {
   const tip = (meta?.tooltip || "").trim();
   const title = tip || (showKeyHint ? name : undefined);
   const style = gridStyle(meta);
+  const sizeClass = sizePolicyClass(meta);
+  const fieldClass = ["field", "block", sizeClass].filter(Boolean).join(" ");
 
   const keyHint = showKeyHint ? <span className="muted option-key-hint"> {name}</span> : null;
 
   if (type === "bool") {
     return (
-      <label className="field block check-field" title={title} style={style}>
+      <label className={`${fieldClass} check-field`} title={title} style={style}>
         <span className="check">
           <input
             type="checkbox"
@@ -66,7 +78,7 @@ export function OptionField({ name, value, meta, disabled, onChange }: Props) {
     const choices = meta.choices;
     const known = choices.includes(value) ? value : choices[0] || value;
     return (
-      <label className="field block" title={title} style={style}>
+      <label className={fieldClass} title={title} style={style}>
         <span>
           {label}
           {keyHint}
@@ -91,7 +103,7 @@ export function OptionField({ name, value, meta, disabled, onChange }: Props) {
 
   if (type === "text") {
     return (
-      <label className="field block" title={title} style={style}>
+      <label className={fieldClass} title={title} style={style}>
         <span>
           {label}
           {keyHint}
@@ -108,7 +120,7 @@ export function OptionField({ name, value, meta, disabled, onChange }: Props) {
 
   if (type === "int" || type === "number") {
     return (
-      <label className="field block" title={title} style={style}>
+      <label className={fieldClass} title={title} style={style}>
         <span>
           {label}
           {keyHint}
@@ -124,7 +136,7 @@ export function OptionField({ name, value, meta, disabled, onChange }: Props) {
   }
 
   return (
-    <label className="field block" title={title} style={style}>
+    <label className={fieldClass} title={title} style={style}>
       <span>
         {label}
         {keyHint}

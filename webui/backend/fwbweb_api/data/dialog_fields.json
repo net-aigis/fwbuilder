@@ -334,6 +334,10 @@
             "rowspan": 1
           },
           "key": "connlimit_masklen",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "int",
           "widget": "ipt_connlimit_masklen",
           "widget_class": "QSpinBox"
@@ -346,6 +350,10 @@
             "rowspan": 1
           },
           "key": "connlimit_value",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "int",
           "widget": "ipt_connlimit",
           "widget_class": "QSpinBox"
@@ -487,6 +495,10 @@
             "/second"
           ],
           "key": "hashlimit_suffix",
+          "size_policy": {
+            "horizontal": "Preferred",
+            "vertical": "Fixed"
+          },
           "type": "enum",
           "widget": "ipt_hashlimit_suffix",
           "widget_class": "QComboBox"
@@ -531,6 +543,10 @@
             "rowspan": 1
           },
           "key": "ipf_log_facility",
+          "size_policy": {
+            "horizontal": "Expanding",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "ipf_logFacility",
           "widget_class": "QComboBox"
@@ -702,6 +718,10 @@
             "rowspan": 1
           },
           "key": "limit_suffix",
+          "size_policy": {
+            "horizontal": "Preferred",
+            "vertical": "Fixed"
+          },
           "type": "enum",
           "widget": "ipt_limitSuffix",
           "widget_class": "QComboBox"
@@ -714,6 +734,10 @@
             "rowspan": 1
           },
           "key": "limit_value",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "int",
           "widget": "ipt_limit",
           "widget_class": "QSpinBox"
@@ -805,6 +829,10 @@
             "rowspan": 1
           },
           "key": "pf_max_src_conn",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "int",
           "widget": "pf_max_src_conn",
           "widget_class": "QSpinBox"
@@ -855,6 +883,10 @@
             "rowspan": 1
           },
           "key": "pf_max_src_conn_rate_num",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "int",
           "widget": "pf_max_src_conn_rate_num",
           "widget_class": "QSpinBox"
@@ -867,18 +899,30 @@
             "rowspan": 1
           },
           "key": "pf_max_src_conn_rate_seconds",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "int",
           "widget": "pf_max_src_conn_rate_seconds",
           "widget_class": "QSpinBox"
         },
         "pf_max_src_nodes": {
           "key": "pf_max_src_nodes",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "int",
           "widget": "pf_max_src_nodes",
           "widget_class": "QSpinBox"
         },
         "pf_max_src_states": {
           "key": "pf_max_src_states",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "int",
           "widget": "pf_max_src_states",
           "widget_class": "QSpinBox"
@@ -1770,6 +1814,10 @@
             "rowspan": 1
           },
           "key": "freebsd_path_ipf",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "freebsd_path_ipf",
           "widget_class": "QLineEdit"
@@ -1782,6 +1830,10 @@
             "rowspan": 1
           },
           "key": "freebsd_path_ipfw",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "freebsd_path_ipfw",
           "widget_class": "QLineEdit"
@@ -2096,6 +2148,10 @@
             "rowspan": 1
           },
           "key": "admUser",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "user",
           "widget_class": "QLineEdit"
@@ -2108,6 +2164,10 @@
             "rowspan": 1
           },
           "key": "altAddress",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "altAddress",
           "widget_class": "QLineEdit"
@@ -2179,6 +2239,10 @@
           },
           "key": "iosacl_acl_basic",
           "label": "Clear all access lists then install new ones. This method may interrupt access to the firewall if you manage it remotely via IPSEC tunnel. This is the way access lists were generated in older versions of Firewall Builder for IOSACL.",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "iosacl_acl_basic",
           "widget_class": "QRadioButton"
@@ -2192,6 +2256,10 @@
           },
           "key": "iosacl_acl_no_clear",
           "label": "Do not clear access lists and object group, just generate IOSACL commands for the new ones. Use this option if you have your own policy installation scripts.",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "iosacl_acl_no_clear",
           "widget_class": "QRadioButton"
@@ -2205,6 +2273,10 @@
           },
           "key": "iosacl_acl_substitution",
           "label": "\"Safety net\" method:\n\nFirst, create temporary access list to permit connections from the management subnet specified below to the firewall and assign it to outside interface. This temporary ACL helps maintain session between management station and the firewall while access lists are reloaded in case connection comes over IPSEC tunnel. Then clear permanent lists, recreate them and assign to interfaces. This method ensures that remote access to the firewall is maintained without interruption  at a cost of slightly larger configuration.",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "iosacl_acl_substitution",
           "widget_class": "QRadioButton"
@@ -2217,6 +2289,10 @@
             "rowspan": 1
           },
           "key": "iosacl_acl_temp_addr",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "iosacl_acl_temp_addr",
           "widget_class": "QLineEdit"
@@ -2420,6 +2496,10 @@
             "rowspan": 1
           },
           "key": "mgmt_addr",
+          "size_policy": {
+            "horizontal": "Expanding",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "mgmt_addr",
           "widget_class": "QLineEdit"
@@ -2451,12 +2531,20 @@
         },
         "scpArgs": {
           "key": "scpArgs",
+          "size_policy": {
+            "horizontal": "Expanding",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "scpArgs",
           "widget_class": "QLineEdit"
         },
         "sshArgs": {
           "key": "sshArgs",
+          "size_policy": {
+            "horizontal": "Expanding",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "sshArgs",
           "widget_class": "QLineEdit"
@@ -2828,6 +2916,10 @@
         "accept_new_tcp_with_no_syn": {
           "key": "accept_new_tcp_with_no_syn",
           "label": "Accept TCP sessions opened prior to firewall restart",
+          "size_policy": {
+            "horizontal": "Minimum",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "acceptSessions",
           "widget_class": "QCheckBox"
@@ -2846,6 +2938,10 @@
             "rowspan": 1
           },
           "key": "activationCmd",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "activationCmd",
           "widget_class": "QLineEdit"
@@ -2858,6 +2954,10 @@
             "rowspan": 1
           },
           "key": "admUser",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "ipt_user",
           "widget_class": "QLineEdit"
@@ -2870,6 +2970,10 @@
             "rowspan": 1
           },
           "key": "altAddress",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "altAddress",
           "widget_class": "QLineEdit"
@@ -2877,6 +2981,10 @@
         "bridging_fw": {
           "key": "bridging_fw",
           "label": "Bridging firewall",
+          "size_policy": {
+            "horizontal": "Minimum",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "bridge",
           "widget_class": "QCheckBox"
@@ -2884,6 +2992,10 @@
         "check_shading": {
           "key": "check_shading",
           "label": "Detect shadowing in policy rules",
+          "size_policy": {
+            "horizontal": "Minimum",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "shadowing",
           "widget_class": "QCheckBox"
@@ -2945,6 +3057,10 @@
             "rowspan": 1
           },
           "key": "firewall_dir",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "ipt_fw_dir",
           "widget_class": "QLineEdit"
@@ -2952,6 +3068,10 @@
         "firewall_is_part_of_any_and_networks": {
           "key": "firewall_is_part_of_any_and_networks",
           "label": "Assume firewall is part of 'any'",
+          "size_policy": {
+            "horizontal": "Minimum",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "assumeFwIsPartOfAny",
           "widget_class": "QCheckBox"
@@ -2959,6 +3079,10 @@
         "ignore_empty_groups": {
           "key": "ignore_empty_groups",
           "label": "Ignore empty groups in rules",
+          "size_policy": {
+            "horizontal": "Minimum",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "emptyGroups",
           "widget_class": "QCheckBox"
@@ -2971,6 +3095,10 @@
             "rowspan": 1
           },
           "key": "limit_suffix",
+          "size_policy": {
+            "horizontal": "Preferred",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "logLimitSuffix",
           "widget_class": "QComboBox"
@@ -2990,6 +3118,10 @@
         "local_nat": {
           "key": "local_nat",
           "label": "Enable support for NAT of locally originated connections",
+          "size_policy": {
+            "horizontal": "Minimum",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "localNAT",
           "widget_class": "QCheckBox"
@@ -3088,6 +3220,10 @@
             "rowspan": 1
           },
           "key": "mgmt_addr",
+          "size_policy": {
+            "horizontal": "Expanding",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "mgmt_addr",
           "widget_class": "QLineEdit"
@@ -3131,12 +3267,20 @@
         },
         "scpArgs": {
           "key": "scpArgs",
+          "size_policy": {
+            "horizontal": "Expanding",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "scpArgs",
           "widget_class": "QLineEdit"
         },
         "sshArgs": {
           "key": "sshArgs",
+          "size_policy": {
+            "horizontal": "Expanding",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "sshArgs",
           "widget_class": "QLineEdit"
@@ -4398,6 +4542,10 @@
             "rowspan": 1
           },
           "key": "action_on_reject",
+          "size_policy": {
+            "horizontal": "Expanding",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "actionOnReject",
           "widget_class": "QComboBox"
@@ -4410,6 +4558,10 @@
             "rowspan": 1
           },
           "key": "activationCmd",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "activationCmd",
           "widget_class": "QLineEdit"
@@ -4422,6 +4574,10 @@
             "rowspan": 1
           },
           "key": "admUser",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "ipf_user",
           "widget_class": "QLineEdit"
@@ -4434,6 +4590,10 @@
             "rowspan": 1
           },
           "key": "altAddress",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "altAddress",
           "widget_class": "QLineEdit"
@@ -4548,6 +4708,10 @@
             "rowspan": 1
           },
           "key": "firewall_dir",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "ipf_fw_dir",
           "widget_class": "QLineEdit"
@@ -4779,6 +4943,10 @@
             "rowspan": 1
           },
           "key": "mgmt_addr",
+          "size_policy": {
+            "horizontal": "Expanding",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "mgmt_addr",
           "widget_class": "QLineEdit"
@@ -4848,6 +5016,10 @@
         },
         "scpArgs": {
           "key": "scpArgs",
+          "size_policy": {
+            "horizontal": "Expanding",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "scpArgs",
           "widget_class": "QLineEdit"
@@ -4866,6 +5038,10 @@
         },
         "sshArgs": {
           "key": "sshArgs",
+          "size_policy": {
+            "horizontal": "Expanding",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "sshArgs",
           "widget_class": "QLineEdit"
@@ -5275,6 +5451,10 @@
             "rowspan": 1
           },
           "key": "activationCmd",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "activationCmd",
           "widget_class": "QLineEdit"
@@ -5288,6 +5468,10 @@
           },
           "key": "add_check_state_rule",
           "label": "Add rule to accept packets matching dynamic rules created for\nknown sessions on top of the policy (action 'check-state')",
+          "size_policy": {
+            "horizontal": "Minimum",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "ipfw_add_check_state_rule",
           "widget_class": "QCheckBox"
@@ -5300,6 +5484,10 @@
             "rowspan": 1
           },
           "key": "admUser",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "ipfw_user",
           "widget_class": "QLineEdit"
@@ -5312,6 +5500,10 @@
             "rowspan": 1
           },
           "key": "altAddress",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "altAddress",
           "widget_class": "QLineEdit"
@@ -5325,6 +5517,10 @@
           },
           "key": "check_shading",
           "label": "Detect rule shadowing in policy",
+          "size_policy": {
+            "horizontal": "Expanding",
+            "vertical": "Fixed"
+          },
           "tooltip": "Shadowing happens because a rule is a superset of a subsequent rule and any packets potentially matched by the subsequent rule have already been matched by the prior rule.",
           "type": "bool",
           "widget": "ipfw_check_shadowing",
@@ -5400,6 +5596,10 @@
             "rowspan": 1
           },
           "key": "firewall_dir",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "ipfw_fw_dir",
           "widget_class": "QLineEdit"
@@ -5413,6 +5613,10 @@
           },
           "key": "ignore_empty_groups",
           "label": "Ignore empty groups in rules",
+          "size_policy": {
+            "horizontal": "Expanding",
+            "vertical": "Fixed"
+          },
           "tooltip": "If the option is deactivated, compiler treats empty groups as an error and aborts processing the policy. If this option is activated, compiler removes all empty groups from all rule elements. If rule element becomes 'any' after the last empty group has been removed, the whole rule will be ignored. Use this option only if you fully understand how it works!",
           "type": "bool",
           "widget": "ipfw_ignore_empty_groups",
@@ -5433,6 +5637,10 @@
         },
         "mgmt_addr": {
           "key": "mgmt_addr",
+          "size_policy": {
+            "horizontal": "Expanding",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "mgmt_addr",
           "widget_class": "QLineEdit"
@@ -5470,6 +5678,10 @@
         },
         "scpArgs": {
           "key": "scpArgs",
+          "size_policy": {
+            "horizontal": "Expanding",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "scpArgs",
           "widget_class": "QLineEdit"
@@ -5488,6 +5700,10 @@
         },
         "sshArgs": {
           "key": "sshArgs",
+          "size_policy": {
+            "horizontal": "Expanding",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "sshArgs",
           "widget_class": "QLineEdit"
@@ -5757,6 +5973,10 @@
           },
           "key": "accept_established",
           "label": "Accept ESTABLISHED and RELATED packets before the first rule",
+          "size_policy": {
+            "horizontal": "Minimum",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "acceptESTBeforeFirst",
           "widget_class": "QCheckBox"
@@ -5770,6 +5990,10 @@
           },
           "key": "accept_new_tcp_with_no_syn",
           "label": "Accept TCP sessions opened prior to firewall restart",
+          "size_policy": {
+            "horizontal": "Minimum",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "acceptSessions",
           "widget_class": "QCheckBox"
@@ -5788,6 +6012,10 @@
             "rowspan": 1
           },
           "key": "activationCmd",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "activationCmd",
           "widget_class": "QLineEdit"
@@ -5827,6 +6055,10 @@
             "rowspan": 1
           },
           "key": "admUser",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "ipt_user",
           "widget_class": "QLineEdit"
@@ -5839,6 +6071,10 @@
             "rowspan": 1
           },
           "key": "altAddress",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "altAddress",
           "widget_class": "QLineEdit"
@@ -5852,6 +6088,10 @@
           },
           "key": "bridging_fw",
           "label": "Bridging firewall",
+          "size_policy": {
+            "horizontal": "Minimum",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "bridge",
           "widget_class": "QCheckBox"
@@ -5865,6 +6105,10 @@
           },
           "key": "check_shading",
           "label": "Detect shadowing in policy rules",
+          "size_policy": {
+            "horizontal": "Minimum",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "shadowing",
           "widget_class": "QCheckBox"
@@ -5878,6 +6122,10 @@
           },
           "key": "clamp_mss_to_mtu",
           "label": "Clamp MSS to MTU",
+          "size_policy": {
+            "horizontal": "Minimum",
+            "vertical": "Fixed"
+          },
           "tooltip": "This adds a rule on top of the policy with iptables target TCPMSS\nand option --clamp-mss-to-pmtu. Generation of this command is\nversion-dependent and also depends on the setting of ip or ipv6 forwarding\nin host settings dialog.",
           "type": "bool",
           "widget": "clampMSStoMTU",
@@ -5929,6 +6177,10 @@
           },
           "key": "configure_bonding_interfaces",
           "label": "Configure bonding Interfaces",
+          "size_policy": {
+            "horizontal": "MinimumExpanding",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "configure_bonding_interfaces",
           "widget_class": "QCheckBox"
@@ -5942,6 +6194,10 @@
           },
           "key": "configure_bridge_interfaces",
           "label": "Configure bridge Interfaces",
+          "size_policy": {
+            "horizontal": "MinimumExpanding",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "configure_bridge_interfaces",
           "widget_class": "QCheckBox"
@@ -5955,6 +6211,10 @@
           },
           "key": "configure_interfaces",
           "label": "Configure Interfaces of the firewall machine",
+          "size_policy": {
+            "horizontal": "MinimumExpanding",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "configureInterfaces",
           "widget_class": "QCheckBox"
@@ -5968,6 +6228,10 @@
           },
           "key": "configure_vlan_interfaces",
           "label": "Configure VLAN Interfaces",
+          "size_policy": {
+            "horizontal": "MinimumExpanding",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "configure_vlan_interfaces",
           "widget_class": "QCheckBox"
@@ -5981,6 +6245,10 @@
           },
           "key": "debug",
           "label": "Turn debugging on in generated script",
+          "size_policy": {
+            "horizontal": "MinimumExpanding",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "iptDebug",
           "widget_class": "QCheckBox"
@@ -6012,6 +6280,10 @@
             "rowspan": 1
           },
           "key": "firewall_dir",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "ipt_fw_dir",
           "widget_class": "QLineEdit"
@@ -6025,6 +6297,10 @@
           },
           "key": "firewall_is_part_of_any_and_networks",
           "label": "Assume firewall is part of 'any'",
+          "size_policy": {
+            "horizontal": "Minimum",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "assumeFwIsPartOfAny",
           "widget_class": "QCheckBox"
@@ -6051,6 +6327,10 @@
           },
           "key": "ignore_empty_groups",
           "label": "Ignore empty groups in rules",
+          "size_policy": {
+            "horizontal": "Minimum",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "emptyGroups",
           "widget_class": "QCheckBox"
@@ -6063,6 +6343,10 @@
             "rowspan": 1
           },
           "key": "limit_suffix",
+          "size_policy": {
+            "horizontal": "Preferred",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "logLimitSuffix",
           "widget_class": "QComboBox"
@@ -6088,6 +6372,10 @@
           },
           "key": "load_modules",
           "label": "Load iptables modules",
+          "size_policy": {
+            "horizontal": "MinimumExpanding",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "loadModules",
           "widget_class": "QCheckBox"
@@ -6101,6 +6389,10 @@
           },
           "key": "local_nat",
           "label": "Enable support for NAT of locally originated connections",
+          "size_policy": {
+            "horizontal": "Minimum",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "localNAT",
           "widget_class": "QCheckBox"
@@ -6207,12 +6499,20 @@
           },
           "key": "manage_virtual_addr",
           "label": "Add virtual addresses for NAT",
+          "size_policy": {
+            "horizontal": "MinimumExpanding",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "addVirtualsforNAT",
           "widget_class": "QCheckBox"
         },
         "mgmt_addr": {
           "key": "mgmt_addr",
+          "size_policy": {
+            "horizontal": "Expanding",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "mgmt_addr",
           "widget_class": "QLineEdit"
@@ -6249,6 +6549,10 @@
             "rowspan": 1
           },
           "key": "prolog_place",
+          "size_policy": {
+            "horizontal": "Expanding",
+            "vertical": "Fixed"
+          },
           "type": "enum",
           "widget": "prologPlace",
           "widget_class": "QComboBox"
@@ -6267,6 +6571,10 @@
         },
         "scpArgs": {
           "key": "scpArgs",
+          "size_policy": {
+            "horizontal": "Expanding",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "scpArgs",
           "widget_class": "QLineEdit"
@@ -6285,6 +6593,10 @@
         },
         "sshArgs": {
           "key": "sshArgs",
+          "size_policy": {
+            "horizontal": "Expanding",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "sshArgs",
           "widget_class": "QLineEdit"
@@ -6347,6 +6659,10 @@
           },
           "key": "use_iptables_restore",
           "label": "Use iptables-restore to activate policy",
+          "size_policy": {
+            "horizontal": "MinimumExpanding",
+            "vertical": "Fixed"
+          },
           "tooltip": "iptables-restore replaces firewall policy in one atomic transaction",
           "type": "bool",
           "widget": "iptablesRestoreActivation",
@@ -6400,6 +6716,10 @@
           },
           "key": "verify_interfaces",
           "label": "Verify interfaces before loading firewall policy",
+          "size_policy": {
+            "horizontal": "MinimumExpanding",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "verifyInterfaces",
           "widget_class": "QCheckBox"
@@ -6894,6 +7214,10 @@
             "rowspan": 1
           },
           "key": "admUser",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "user",
           "widget_class": "QLineEdit"
@@ -6906,6 +7230,10 @@
             "rowspan": 1
           },
           "key": "altAddress",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "altAddress",
           "widget_class": "QLineEdit"
@@ -7150,12 +7478,20 @@
         },
         "scpArgs": {
           "key": "scpArgs",
+          "size_policy": {
+            "horizontal": "Expanding",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "scpArgs",
           "widget_class": "QLineEdit"
         },
         "sshArgs": {
           "key": "sshArgs",
+          "size_policy": {
+            "horizontal": "Expanding",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "sshArgs",
           "widget_class": "QLineEdit"
@@ -7837,6 +8173,10 @@
             "rowspan": 1
           },
           "key": "linux24_conntrack_hashsize",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "tooltip": "the size of the hash table storing the lists of conntrack entries",
           "type": "int",
           "widget": "conntrack_hashsize",
@@ -9024,6 +9364,10 @@
             "rowspan": 1
           },
           "key": "macosx_path_ipfw",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "macosx_path_ipfw",
           "widget_class": "QLineEdit"
@@ -9036,6 +9380,10 @@
             "rowspan": 1
           },
           "key": "macosx_path_sysctl",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "macosx_path_sysctl",
           "widget_class": "QLineEdit"
@@ -9238,6 +9586,10 @@
             "rowspan": 1
           },
           "key": "admUser",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "user",
           "widget_class": "QLineEdit"
@@ -9250,6 +9602,10 @@
             "rowspan": 1
           },
           "key": "altAddress",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "altAddress",
           "widget_class": "QLineEdit"
@@ -9314,6 +9670,10 @@
             "rowspan": 1
           },
           "key": "mgmt_addr",
+          "size_policy": {
+            "horizontal": "Expanding",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "mgmt_addr",
           "widget_class": "QLineEdit"
@@ -9346,6 +9706,10 @@
           },
           "key": "nxosacl_acl_basic",
           "label": "Clear all access lists then install new ones. This method may interrupt access to the firewall if you manage it remotely via IPSEC tunnel. This is the way access lists were generated in older versions of Firewall Builder for NX-OSACL.",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "nxosacl_acl_basic",
           "widget_class": "QRadioButton"
@@ -9359,6 +9723,10 @@
           },
           "key": "nxosacl_acl_no_clear",
           "label": "Do not clear access lists and object group, just generate NX-OSACL commands for the new ones. Use this option if you have your own policy installation scripts.",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "nxosacl_acl_no_clear",
           "widget_class": "QRadioButton"
@@ -9372,6 +9740,10 @@
           },
           "key": "nxosacl_acl_substitution",
           "label": "\"Safety net\" method:\n\nFirst, create temporary access list to permit connections from the management subnet specified below to the firewall and assign it to outside interface. This temporary ACL helps maintain session between management station and the firewall while access lists are reloaded in case connection comes over IPSEC tunnel. Then clear permanent lists, recreate them and assign to interfaces. This method ensures that remote access to the firewall is maintained without interruption  at a cost of slightly larger configuration.",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "nxosacl_acl_substitution",
           "widget_class": "QRadioButton"
@@ -9384,6 +9756,10 @@
             "rowspan": 1
           },
           "key": "nxosacl_acl_temp_addr",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "nxosacl_acl_temp_addr",
           "widget_class": "QLineEdit"
@@ -9593,12 +9969,20 @@
         },
         "scpArgs": {
           "key": "scpArgs",
+          "size_policy": {
+            "horizontal": "Expanding",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "scpArgs",
           "widget_class": "QLineEdit"
         },
         "sshArgs": {
           "key": "sshArgs",
+          "size_policy": {
+            "horizontal": "Expanding",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "sshArgs",
           "widget_class": "QLineEdit"
@@ -10324,6 +10708,10 @@
             "rowspan": 1
           },
           "key": "activationCmd",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "activationCmd",
           "widget_class": "QLineEdit"
@@ -10336,6 +10724,10 @@
             "rowspan": 1
           },
           "key": "admUser",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "pf_user",
           "widget_class": "QLineEdit"
@@ -10348,6 +10740,10 @@
             "rowspan": 1
           },
           "key": "altAddress",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "altAddress",
           "widget_class": "QLineEdit"
@@ -10361,6 +10757,10 @@
           },
           "key": "check_shading",
           "label": "Detect rule shadowing",
+          "size_policy": {
+            "horizontal": "Expanding",
+            "vertical": "Fixed"
+          },
           "tooltip": "Shadowing happens because a rule is a superset of \na subsequent rule and any packets potentially matched \nby the subsequent rule have already been matched by \nthe prior rule.",
           "type": "bool",
           "widget": "pf_check_shadowing",
@@ -10423,6 +10823,10 @@
           },
           "key": "configure_bridge_interfaces",
           "label": "Configure bridge Interfaces",
+          "size_policy": {
+            "horizontal": "MinimumExpanding",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "pf_configure_bridge_interfaces",
           "widget_class": "QCheckBox"
@@ -10525,6 +10929,10 @@
             "rowspan": 1
           },
           "key": "firewall_dir",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "pf_fw_dir",
           "widget_class": "QLineEdit"
@@ -10564,6 +10972,10 @@
           },
           "key": "ignore_empty_groups",
           "label": "Ignore empty groups",
+          "size_policy": {
+            "horizontal": "Expanding",
+            "vertical": "Fixed"
+          },
           "tooltip": "If the option is deactivated, compiler treats empty groups as\nan error and aborts processing the policy. If this option is \nactivated, compiler removes all empty groups from all rule \nelements. If rule element becomes 'any' after the last empty \ngroup has been removed, the whole rule will be ignored. Use \nthis option only if you fully understand how it works!",
           "type": "bool",
           "widget": "pf_ignore_empty_groups",
@@ -10596,6 +11008,10 @@
         },
         "mgmt_addr": {
           "key": "mgmt_addr",
+          "size_policy": {
+            "horizontal": "Expanding",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "mgmt_addr",
           "widget_class": "QLineEdit"
@@ -10603,6 +11019,10 @@
         "mgmt_ssh": {
           "key": "mgmt_ssh",
           "label": "Always permit ssh access from\nthe management workstation\nwith this address:",
+          "size_policy": {
+            "horizontal": "Expanding",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "mgmt_ssh",
           "widget_class": "QCheckBox"
@@ -10621,6 +11041,10 @@
         },
         "pf_adaptive_end": {
           "key": "pf_adaptive_end",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "tooltip": "When reaching this number of state entries, all timeout values become zero, effectively purging all state entries immediately.",
           "type": "int",
           "widget": "pf_adaptive_end",
@@ -10628,6 +11052,10 @@
         },
         "pf_adaptive_start": {
           "key": "pf_adaptive_start",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "tooltip": "When the number of state entries exceeds this value, adaptive scaling begins.",
           "type": "int",
           "widget": "pf_adaptive_start",
@@ -10777,6 +11205,10 @@
             "rowspan": 1
           },
           "key": "pf_icmp_error",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "tooltip": "The state after an ICMP error came back in response to an ICMP packet.",
           "type": "int",
           "widget": "pf_icmp_error",
@@ -10790,6 +11222,10 @@
             "rowspan": 1
           },
           "key": "pf_icmp_first",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "tooltip": "The state after the first packet.",
           "type": "int",
           "widget": "pf_icmp_first",
@@ -10803,6 +11239,10 @@
             "rowspan": 1
           },
           "key": "pf_limit_frags",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "tooltip": "maximum number of entries in the memory pool used for packet reassembly",
           "type": "int",
           "widget": "pf_limit_frags",
@@ -10816,6 +11256,10 @@
             "rowspan": 1
           },
           "key": "pf_limit_src_nodes",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "tooltip": "maximum number of entries in the memory pool used for tracking source IP addresses",
           "type": "int",
           "widget": "pf_limit_src_nodes",
@@ -10829,6 +11273,10 @@
             "rowspan": 1
           },
           "key": "pf_limit_states",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "tooltip": "maximum number of entries in the memory pool used for state table entries",
           "type": "int",
           "widget": "pf_limit_states",
@@ -10842,6 +11290,10 @@
             "rowspan": 1
           },
           "key": "pf_limit_table_entries",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "tooltip": "maximum number of addresses that canbe stored in tables",
           "type": "int",
           "widget": "pf_limit_table_entries",
@@ -10855,6 +11307,10 @@
             "rowspan": 1
           },
           "key": "pf_limit_tables",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "tooltip": "maximum number of tables that can exist in the memory simultaneously",
           "type": "int",
           "widget": "pf_limit_tables",
@@ -10869,6 +11325,10 @@
           },
           "key": "pf_modulate_state",
           "label": "Modulate state for all stateful rules (applies only to TCP services)",
+          "size_policy": {
+            "horizontal": "Expanding",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "pf_modulate_state",
           "widget_class": "QCheckBox"
@@ -10894,6 +11354,10 @@
             "rowspan": 1
           },
           "key": "pf_other_first",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "tooltip": "The state after the first packet.",
           "type": "int",
           "widget": "pf_other_first",
@@ -10907,6 +11371,10 @@
             "rowspan": 1
           },
           "key": "pf_other_multiple",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "tooltip": "The state after the first packet.",
           "type": "int",
           "widget": "pf_other_multiple",
@@ -10920,6 +11388,10 @@
             "rowspan": 1
           },
           "key": "pf_other_single",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "tooltip": "The state after the first packet.",
           "type": "int",
           "widget": "pf_other_single",
@@ -10934,6 +11406,10 @@
           },
           "key": "pf_scrub_fragm_crop",
           "label": "Drop duplicate fragments, do not buffer and reassemble",
+          "size_policy": {
+            "horizontal": "Expanding",
+            "vertical": "Fixed"
+          },
           "tooltip": "Causes duplicate fragments to be dropped and any overlaps to be cropped.  In PF 4.5 and earlier.",
           "type": "bool",
           "widget": "pf_scrub_fragm_crop",
@@ -10948,6 +11424,10 @@
           },
           "key": "pf_scrub_fragm_drop_ovl",
           "label": "Drop duplicate and subsequent fragments",
+          "size_policy": {
+            "horizontal": "Expanding",
+            "vertical": "Fixed"
+          },
           "tooltip": "Similar to 'Drop duplicate fragments' except that all duplicate or overlapping fragments will be dropped as well as any further corresponding fragments.  In PF 4.5 and earlier.",
           "type": "bool",
           "widget": "pf_scrub_fragm_drop_ovl",
@@ -11004,6 +11484,10 @@
           },
           "key": "pf_scrub_reassemble",
           "label": "Buffer and reassemble fragments (default)",
+          "size_policy": {
+            "horizontal": "Expanding",
+            "vertical": "Fixed"
+          },
           "tooltip": "Buffers incoming packet fragments and reassembles them into a complete packet before passing them to the filter engine. In PF 4.5 and earlier.",
           "type": "bool",
           "widget": "pf_scrub_reassemble",
@@ -11098,6 +11582,10 @@
           },
           "key": "pf_set_other_first",
           "label": "first",
+          "size_policy": {
+            "horizontal": "Expanding",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "pf_set_other_first",
           "widget_class": "QCheckBox"
@@ -11189,6 +11677,10 @@
           },
           "key": "pf_set_tcp_first",
           "label": "first",
+          "size_policy": {
+            "horizontal": "Expanding",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "pf_set_tcp_first",
           "widget_class": "QCheckBox"
@@ -11266,6 +11758,10 @@
             "rowspan": 1
           },
           "key": "pf_tcp_closed",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "tooltip": "The state after one endpoint sends an RST.",
           "type": "int",
           "widget": "pf_tcp_closed",
@@ -11279,6 +11775,10 @@
             "rowspan": 1
           },
           "key": "pf_tcp_closing",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "tooltip": "The state after the first FIN has been sent.",
           "type": "int",
           "widget": "pf_tcp_closing",
@@ -11292,6 +11792,10 @@
             "rowspan": 1
           },
           "key": "pf_tcp_established",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "tooltip": "The fully established state.",
           "type": "int",
           "widget": "pf_tcp_established",
@@ -11305,6 +11809,10 @@
             "rowspan": 1
           },
           "key": "pf_tcp_finwait",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "tooltip": "The state after both FINs have been exchanged and the connection is closed.",
           "type": "int",
           "widget": "pf_tcp_finwait",
@@ -11318,6 +11826,10 @@
             "rowspan": 1
           },
           "key": "pf_tcp_first",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "tooltip": "The state after the first packet.",
           "type": "int",
           "widget": "pf_tcp_first",
@@ -11331,6 +11843,10 @@
             "rowspan": 1
           },
           "key": "pf_tcp_opening",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "tooltip": "The state before the destination host ever sends a packet.",
           "type": "int",
           "widget": "pf_tcp_opening",
@@ -11344,6 +11860,10 @@
             "rowspan": 1
           },
           "key": "pf_timeout_frag",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "tooltip": "translates into 'set timeout frag'",
           "type": "int",
           "widget": "pf_timeout_frag",
@@ -11357,6 +11877,10 @@
             "rowspan": 1
           },
           "key": "pf_timeout_interval",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "tooltip": "translates into 'set timeout interval'",
           "type": "int",
           "widget": "pf_timeout_interval",
@@ -11370,6 +11894,10 @@
             "rowspan": 1
           },
           "key": "pf_udp_first",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "tooltip": "The state after the first packet.",
           "type": "int",
           "widget": "pf_udp_first",
@@ -11383,6 +11911,10 @@
             "rowspan": 1
           },
           "key": "pf_udp_multiple",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "tooltip": "The state if both hosts have sent packets.",
           "type": "int",
           "widget": "pf_udp_multiple",
@@ -11396,6 +11928,10 @@
             "rowspan": 1
           },
           "key": "pf_udp_single",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "tooltip": "The state if the source host sends more than one packet but the destination host has never sent one back.",
           "type": "int",
           "widget": "pf_udp_single",
@@ -11426,6 +11962,10 @@
             "rowspan": 1
           },
           "key": "prolog_place",
+          "size_policy": {
+            "horizontal": "Expanding",
+            "vertical": "Fixed"
+          },
           "type": "enum",
           "widget": "prologPlace",
           "widget_class": "QComboBox"
@@ -11444,6 +11984,10 @@
         },
         "scpArgs": {
           "key": "scpArgs",
+          "size_policy": {
+            "horizontal": "Expanding",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "scpArgs",
           "widget_class": "QLineEdit"
@@ -11462,6 +12006,10 @@
         },
         "sshArgs": {
           "key": "sshArgs",
+          "size_policy": {
+            "horizontal": "Expanding",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "sshArgs",
           "widget_class": "QLineEdit"
@@ -12153,6 +12701,10 @@
             "rowspan": 1
           },
           "key": "admUser",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "user",
           "widget_class": "QLineEdit"
@@ -12165,6 +12717,10 @@
             "rowspan": 1
           },
           "key": "altAddress",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "altAddress",
           "widget_class": "QLineEdit"
@@ -12325,6 +12881,10 @@
             "rowspan": 1
           },
           "key": "mgmt_addr",
+          "size_policy": {
+            "horizontal": "Expanding",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "mgmt_addr",
           "widget_class": "QLineEdit"
@@ -12363,6 +12923,10 @@
         "pix_acl_basic": {
           "key": "pix_acl_basic",
           "label": "Clear all access lists then install new ones. This method may interrupt access to the firewall if you manage it remotely via IPSEC tunnel. This is the way access lists were generated in older versions of Firewall Builder for PIX.",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "pix_acl_basic",
           "widget_class": "QRadioButton"
@@ -12370,6 +12934,10 @@
         "pix_acl_no_clear": {
           "key": "pix_acl_no_clear",
           "label": "Do not clear access lists and object group, just generate PIX commands for the new ones. Use this option if you have your own policy installation scripts.",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "pix_acl_no_clear",
           "widget_class": "QRadioButton"
@@ -12377,6 +12945,10 @@
         "pix_acl_substitution": {
           "key": "pix_acl_substitution",
           "label": "\"Safety net\" method:\n\nFirst, create temporary access list to permit connections from the management subnet specified below to the firewall and assign it to outside interface. This temporary ACL helps maintain session between management station and the firewall while access lists are reloaded in case connection comes over IPSEC tunnel. Then clear permanent lists, recreate them and assign to interfaces. This method ensures that remote access to the firewall is maintained without interruption  at a cost of slightly larger configuration.",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "pix_acl_substitution",
           "widget_class": "QRadioButton"
@@ -12389,6 +12961,10 @@
             "rowspan": 1
           },
           "key": "pix_acl_temp_addr",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "pix_acl_temp_addr",
           "widget_class": "QLineEdit"
@@ -12448,6 +13024,10 @@
           },
           "key": "pix_check_overlapping_global_statics",
           "label": "Check for overlapping global pools and statics",
+          "size_policy": {
+            "horizontal": "Minimum",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "pix_check_overlapping_global_statics",
           "widget_class": "QCheckBox"
@@ -12750,6 +13330,10 @@
           },
           "key": "pix_replace_natted_objects",
           "label": "Replace NAT'ted objects with their translations in policy rules",
+          "size_policy": {
+            "horizontal": "Minimum",
+            "vertical": "Fixed"
+          },
           "tooltip": "PIX inspects packets with ACLs before it does NAT, while many other firewalls do NAT first and then apply ACLs. Policy compiler can emulate the latter behaviour if this options is turned on.",
           "type": "bool",
           "widget": "pix_replace_natted_objects",
@@ -12919,6 +13503,10 @@
         },
         "scpArgs": {
           "key": "scpArgs",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "scpArgs",
           "widget_class": "QLineEdit"
@@ -13011,6 +13599,10 @@
         },
         "sshArgs": {
           "key": "sshArgs",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "sshArgs",
           "widget_class": "QLineEdit"
@@ -14365,6 +14957,10 @@
             "rowspan": 1
           },
           "key": "admUser",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "user",
           "widget_class": "QLineEdit"
@@ -14377,6 +14973,10 @@
             "rowspan": 1
           },
           "key": "altAddress",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "altAddress",
           "widget_class": "QLineEdit"
@@ -14441,6 +15041,10 @@
             "rowspan": 1
           },
           "key": "mgmt_addr",
+          "size_policy": {
+            "horizontal": "Expanding",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "mgmt_addr",
           "widget_class": "QLineEdit"
@@ -14485,6 +15089,10 @@
           },
           "key": "procurve_acl_acl_basic",
           "label": "Clear all access lists then install new ones. This method may interrupt access to the firewall if you manage it remotely via tunnel.",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "procurve_acl_acl_basic",
           "widget_class": "QRadioButton"
@@ -14498,6 +15106,10 @@
           },
           "key": "procurve_acl_acl_no_clear",
           "label": "Do not clear access lists, just generate commands for the new ones. Use this option if you have your own policy installation scripts.",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "procurve_acl_acl_no_clear",
           "widget_class": "QRadioButton"
@@ -14511,6 +15123,10 @@
           },
           "key": "procurve_acl_acl_substitution",
           "label": "\"Safety net\" method:\n\nFirst, create temporary access list to permit connections from the management subnet specified below to the firewall and assign it to outside interface. This temporary ACL helps maintain session between management station and the firewall while access lists are reloaded in case connection comes over IPSEC tunnel. Then clear permanent lists, recreate them and assign to interfaces. This method ensures that remote access to the firewall is maintained without interruption  at a cost of slightly larger configuration.",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "procurve_acl_acl_substitution",
           "widget_class": "QRadioButton"
@@ -14523,6 +15139,10 @@
             "rowspan": 1
           },
           "key": "procurve_acl_acl_temp_addr",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "procurve_acl_acl_temp_addr",
           "widget_class": "QLineEdit"
@@ -14693,12 +15313,20 @@
         },
         "scpArgs": {
           "key": "scpArgs",
+          "size_policy": {
+            "horizontal": "Expanding",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "scpArgs",
           "widget_class": "QLineEdit"
         },
         "sshArgs": {
           "key": "sshArgs",
+          "size_policy": {
+            "horizontal": "Expanding",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "sshArgs",
           "widget_class": "QLineEdit"
@@ -15059,6 +15687,10 @@
           },
           "key": "accept_established",
           "label": "Accept ESTABLISHED and RELATED packets before the first rule",
+          "size_policy": {
+            "horizontal": "Minimum",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "acceptESTBeforeFirst",
           "widget_class": "QCheckBox"
@@ -15072,6 +15704,10 @@
           },
           "key": "accept_new_tcp_with_no_syn",
           "label": "Accept TCP sessions opened prior to firewall restart",
+          "size_policy": {
+            "horizontal": "Minimum",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "acceptSessions",
           "widget_class": "QCheckBox"
@@ -15096,6 +15732,10 @@
             "rowspan": 1
           },
           "key": "activationCmd",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "activationCmd",
           "widget_class": "QLineEdit"
@@ -15122,6 +15762,10 @@
           },
           "key": "allow_reboot",
           "label": "Allow reboot to load modules (only if needed)",
+          "size_policy": {
+            "horizontal": "MinimumExpanding",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "allowReboot",
           "widget_class": "QCheckBox"
@@ -15134,6 +15778,10 @@
             "rowspan": 1
           },
           "key": "altAddress",
+          "size_policy": {
+            "horizontal": "Fixed",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "altAddress",
           "widget_class": "QLineEdit"
@@ -15147,6 +15795,10 @@
           },
           "key": "bridging_fw",
           "label": "Bridging firewall",
+          "size_policy": {
+            "horizontal": "Minimum",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "bridge",
           "widget_class": "QCheckBox"
@@ -15160,6 +15812,10 @@
           },
           "key": "check_shading",
           "label": "Detect shadowing in policy rules",
+          "size_policy": {
+            "horizontal": "Minimum",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "shadowing",
           "widget_class": "QCheckBox"
@@ -15173,6 +15829,10 @@
           },
           "key": "clamp_mss_to_mtu",
           "label": "Clamp MSS to MTU",
+          "size_policy": {
+            "horizontal": "Minimum",
+            "vertical": "Fixed"
+          },
           "tooltip": "This adds a rule on top of the policy with iptables target TCPMSS\nand option --clamp-mss-to-pmtu. Generation of this command is\nversion-dependent and also depends on the setting of ip or ipv6 forwarding\nin host settings dialog.",
           "type": "bool",
           "widget": "clampMSStoMTU",
@@ -15211,6 +15871,10 @@
           },
           "key": "configure_interfaces",
           "label": "Configure Interfaces of the running firewall machine",
+          "size_policy": {
+            "horizontal": "MinimumExpanding",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "configureInterfaces",
           "widget_class": "QCheckBox"
@@ -15224,6 +15888,10 @@
           },
           "key": "debug",
           "label": "Turn debugging on in generated script",
+          "size_policy": {
+            "horizontal": "MinimumExpanding",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "iptDebug",
           "widget_class": "QCheckBox"
@@ -15262,6 +15930,10 @@
           },
           "key": "firewall_is_part_of_any_and_networks",
           "label": "Assume firewall is part of 'any'",
+          "size_policy": {
+            "horizontal": "Minimum",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "assumeFwIsPartOfAny",
           "widget_class": "QCheckBox"
@@ -15275,6 +15947,10 @@
           },
           "key": "ignore_empty_groups",
           "label": "Ignore empty groups in rules",
+          "size_policy": {
+            "horizontal": "Minimum",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "emptyGroups",
           "widget_class": "QCheckBox"
@@ -15287,6 +15963,10 @@
             "rowspan": 1
           },
           "key": "limit_suffix",
+          "size_policy": {
+            "horizontal": "Preferred",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "logLimitSuffix",
           "widget_class": "QComboBox"
@@ -15312,6 +15992,10 @@
           },
           "key": "local_nat",
           "label": "Enable support for NAT of locally originated connections",
+          "size_policy": {
+            "horizontal": "Minimum",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "localNAT",
           "widget_class": "QCheckBox"
@@ -15424,6 +16108,10 @@
           },
           "key": "manage_virtual_addr",
           "label": "Add virtual addresses for NAT",
+          "size_policy": {
+            "horizontal": "MinimumExpanding",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "addVirtualsforNAT",
           "widget_class": "QCheckBox"
@@ -15436,6 +16124,10 @@
             "rowspan": 1
           },
           "key": "mgmt_addr",
+          "size_policy": {
+            "horizontal": "Expanding",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "mgmt_addr",
           "widget_class": "QLineEdit"
@@ -15466,6 +16158,10 @@
             "rowspan": 1
           },
           "key": "prolog_place",
+          "size_policy": {
+            "horizontal": "Expanding",
+            "vertical": "Fixed"
+          },
           "type": "enum",
           "widget": "prologPlace",
           "widget_class": "QComboBox"
@@ -15484,12 +16180,20 @@
         },
         "scpArgs": {
           "key": "scpArgs",
+          "size_policy": {
+            "horizontal": "Expanding",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "scpArgs",
           "widget_class": "QLineEdit"
         },
         "sshArgs": {
           "key": "sshArgs",
+          "size_policy": {
+            "horizontal": "Expanding",
+            "vertical": "Fixed"
+          },
           "type": "string",
           "widget": "sshArgs",
           "widget_class": "QLineEdit"
@@ -15552,6 +16256,10 @@
           },
           "key": "use_iptables_restore",
           "label": "Use iptables-restore to activate policy",
+          "size_policy": {
+            "horizontal": "MinimumExpanding",
+            "vertical": "Fixed"
+          },
           "tooltip": "iptables-restore replaces firewall policy in one atomic transaction",
           "type": "bool",
           "widget": "iptablesRestoreActivation",
@@ -15579,6 +16287,10 @@
           },
           "key": "verify_interfaces",
           "label": "Verify interfaces before loading firewall policy",
+          "size_policy": {
+            "horizontal": "MinimumExpanding",
+            "vertical": "Fixed"
+          },
           "type": "bool",
           "widget": "verifyInterfaces",
           "widget_class": "QCheckBox"
@@ -16505,6 +17217,10 @@
             "rowspan": 1
           },
           "key": "secuwall_dns_domains",
+          "size_policy": {
+            "horizontal": "Expanding",
+            "vertical": "Fixed"
+          },
           "tooltip": "Enter DNS search domains here. One search domain per line",
           "type": "text",
           "widget": "secuwall_dns_domains",

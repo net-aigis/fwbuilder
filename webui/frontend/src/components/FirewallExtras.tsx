@@ -789,6 +789,27 @@ export function FirewallExtras({
                 >
                   Show expect plan
                 </button>
+                <button
+                  type="button"
+                  className="ghost"
+                  disabled={busy || !expectPlanText}
+                  title="Download the last shown expect plan as text"
+                  onClick={() => {
+                    if (!expectPlanText) return;
+                    const blob = new Blob([expectPlanText + "\n"], {
+                      type: "text/plain;charset=utf-8",
+                    });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = `fwbweb-expect-plan-${firewallId || "fw"}.txt`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    onStatus?.("Downloaded expect plan");
+                  }}
+                >
+                  Download expect plan
+                </button>
               </div>
               {expectPlanText ? (
                 <pre className="deploy-log configlet-preview" tabIndex={0}>

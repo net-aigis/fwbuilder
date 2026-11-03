@@ -193,6 +193,30 @@ def parse_widget_tooltips(root: ET.Element | None) -> dict[str, str]:
     return tips
 
 
+def parse_widget_size_policies(root: ET.Element | None) -> dict[str, dict[str, str]]:
+    """Map widget objectName → {horizontal, vertical} sizePolicy from .ui."""
+    out: dict[str, dict[str, str]] = {}
+    if root is None:
+        return out
+    for w in root.iter("widget"):
+        name = w.get("name")
+        if not name:
+            continue
+        prop = w.find("./property[@name='sizePolicy']/sizepolicy")
+        if prop is None:
+            continue
+        hs = (prop.get("hsizetype") or "").strip()
+        vs = (prop.get("vsizetype") or "").strip()
+        if hs or vs:
+            entry: dict[str, str] = {}
+            if hs:
+                entry["horizontal"] = hs
+            if vs:
+                entry["vertical"] = vs
+            out[name] = entry
+    return out
+
+
 def _grids_in_subtree(node: ET.Element) -> dict[str, dict[str, int]]:
     """Collect QGridLayout positions under a page/subtree (first hit per widget)."""
     positions: dict[str, dict[str, int]] = {}
@@ -457,6 +481,7 @@ def extract_cpp(cpp_path: Path, ui_root: ET.Element | None, ui_widgets: dict[str
     labels = parse_widget_labels(ui_root)
     tips = parse_widget_tooltips(ui_root)
     grid = parse_grid_positions(ui_root)
+    size_policies = parse_widget_size_policies(ui_root)
     fields: dict[str, dict] = {}
     for m in REG_OPT.finditer(src):
         widget, key, _mapping = m.group(1), m.group(2), m.group(3)
@@ -469,6 +494,8 @@ def extract_cpp(cpp_path: Path, ui_root: ET.Element | None, ui_widgets: dict[str
             field["tooltip"] = tips[widget]
         if widget in grid:
             field["grid"] = grid[widget]
+        if widget in size_policies:
+            field["size_policy"] = size_policies[widget]
         if ftype == "enum":
             choices = parse_combo_items(ui_root, widget) or KNOWN_ENUMS.get(key, [])
             if choices:
