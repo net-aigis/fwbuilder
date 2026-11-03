@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import {
   deployFirewall,
   fetchInstallerConfiglet,
+  fetchInstallerConfiglets,
   fetchManagement,
   fetchOptionSchema,
   fetchOptions,
@@ -45,6 +46,10 @@ function groupStorageKey(platform: string, hostOs: string) {
   return `fwbweb.optionGroup.${platform || "unknown"}.${hostOs || ""}`;
 }
 
+function deployPrefsKey(firewallId: string) {
+  return `fwbweb.deployPrefs.${firewallId}`;
+}
+
 export function FirewallExtras({
   sessionId,
   firewallId,
@@ -74,22 +79,49 @@ export function FirewallExtras({
   const [compiler, setCompiler] = useState<string>("");
   const [dialogName, setDialogName] = useState<string>("");
   const [activeGroup, setActiveGroup] = useState<string>("platform");
+  const [installerNote, setInstallerNote] = useState<string | null>(null);
 
   async function reload() {
     onBusy?.(true);
     onError?.(null);
     try {
       const plat = platform || "nftables";
-      const [o, m, schema] = await Promise.all([
+      const [o, m, schema, cfgList] = await Promise.all([
         fetchOptions(sessionId, firewallId),
         fetchManagement(sessionId, firewallId),
         fetchOptionSchema(plat, hostOs || "").catch(() => null),
+        hostOs
+          ? fetchInstallerConfiglets(hostOs).catch(() => null)
+          : Promise.resolve(null),
       ]);
       setOptions(o.options ?? {});
       setMgmtAddr(m.management?.address ?? "");
       setDeployHost(m.management?.address || o.options?.altAddress || "");
       setDeployUser(o.options?.admUser || "");
       setRemoteDir(o.options?.firewall_dir || "/etc");
+      try {
+        const raw = sessionStorage.getItem(deployPrefsKey(firewallId));
+        if (raw) {
+          const prefs = JSON.parse(raw) as {
+            dryRun?: boolean;
+            activate?: boolean;
+            compress?: boolean;
+          };
+          if (typeof prefs.dryRun === "boolean") setDryRun(prefs.dryRun);
+          if (typeof prefs.activate === "boolean") setActivate(prefs.activate);
+          if (typeof prefs.compress === "boolean") setCompress(prefs.compress);
+        }
+      } catch {
+        /* ignore */
+      }
+      if (cfgList?.interactive_installer) {
+        setInstallerNote(
+          cfgList.note ||
+            "This OS uses interactive FirewallInstaller pre/post configlets; WebUI scp/ssh deploy is limited.",
+        );
+      } else {
+        setInstallerNote(null);
+      }
       if (schema) {
         const nextGroups = schema.groups ?? [];
         setGroups(nextGroups);
@@ -134,6 +166,18 @@ export function FirewallExtras({
       /* ignore */
     }
   }, [activeGroup, platform, hostOs]);
+
+  useEffect(() => {
+    if (!firewallId) return;
+    try {
+      sessionStorage.setItem(
+        deployPrefsKey(firewallId),
+        JSON.stringify({ dryRun, activate, compress }),
+      );
+    } catch {
+      /* ignore */
+    }
+  }, [firewallId, dryRun, activate, compress]);
 
   const keys = useMemo(() => {
     const all = Object.keys(options).sort();
@@ -450,6 +494,11 @@ export function FirewallExtras({
       <header className="panel-header">
         <h3>Management / deploy</h3>
       </header>
+      {installerNote ? (
+        <p className="warn pad-tight" role="status">
+          {installerNote}
+        </p>
+      ) : null}
       <div className="typed-grid">
         <label className="field block">
           Management address

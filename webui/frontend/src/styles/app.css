@@ -493,6 +493,12 @@ button.linkish:disabled {
   font-size: 0.85rem;
 }
 
+.warn {
+  color: color-mix(in srgb, var(--danger) 70%, var(--ink));
+  font-size: 0.85rem;
+  margin: 0 0 0.5rem;
+}
+
 .error {
   color: var(--danger);
 }
