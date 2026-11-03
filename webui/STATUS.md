@@ -1,6 +1,6 @@
 # Firewall Builder WebUI — Implementation status
 
-Last updated: 2026-11-02  
+Last updated: 2026-11-03  
 Branch: `feature/webui`
 
 ## Honest scope
@@ -220,6 +220,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Alt+N / Alt+G open NAT / Routing | done | keyboard; E2E phase75 |
 | Keyboard shortcuts help | done | `?` / Help; E2E phase76 |
 | Cycle action filter | done | `a` / Cycle action; E2E phase77 |
+| Copy selected rule TSV | done | `t` / Copy selected TSV; E2E phase78 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Phase 3 — compile / deploy
@@ -308,6 +309,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase75 (Alt+N / Alt+G) | done | `e2e-phase75.sh` **OK** |
 | Local E2E phase76 (shortcuts help) | done | `e2e-phase76.sh` **OK** |
 | Local E2E phase77 (cycle action) | done | `e2e-phase77.sh` **OK** |
+| Local E2E phase78 (selected rule TSV) | done | `e2e-phase78.sh` **OK** |
 
 ## Local commands
 
@@ -394,6 +396,7 @@ bash webui/scripts/e2e-phase74.sh
 bash webui/scripts/e2e-phase75.sh
 bash webui/scripts/e2e-phase76.sh
 bash webui/scripts/e2e-phase77.sh
+bash webui/scripts/e2e-phase78.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

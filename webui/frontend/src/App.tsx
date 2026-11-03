@@ -864,6 +864,11 @@ export function App() {
         setStatus(next ? `Filter: action=${next}` : "Filter: all actions");
         return;
       }
+      if (!mod && !e.altKey && e.key.toLowerCase() === "t" && selectedRuleId) {
+        e.preventDefault();
+        onCopySelectedRuleTsv();
+        return;
+      }
       if (!mod && !e.altKey && e.key.toLowerCase() === "j" && rules.length) {
         e.preventDefault();
         onJumpToRulePosition();
@@ -1456,7 +1461,7 @@ export function App() {
     );
   }
 
-  function rulesToTsv(): string {
+  function rulesToTsv(list: AnyRule[] = visibleRules): string {
     const cols = [
       "id",
       "pos",
@@ -1473,7 +1478,7 @@ export function App() {
       "comment",
     ];
     const lines = [cols.join("\t")];
-    for (const r of visibleRules) {
+    for (const r of list) {
       const action = "action" in r ? String((r as PolicyRule).action ?? "") : "";
       const direction = "direction" in r ? String((r as PolicyRule).direction ?? "") : "";
       const logging =
@@ -1506,6 +1511,15 @@ export function App() {
     if (!visibleRules.length) return;
     void navigator.clipboard.writeText(rulesToTsv()).then(
       () => setStatus(`Copied ${visibleRules.length} rule(s) as TSV`),
+      () => setError("Clipboard write failed"),
+    );
+  }
+
+  function onCopySelectedRuleTsv() {
+    const rule = visibleRules.find((r) => r.id === selectedRuleId);
+    if (!rule) return;
+    void navigator.clipboard.writeText(rulesToTsv([rule])).then(
+      () => setStatus(`Copied selected rule ${rule.id} as TSV`),
       () => setError("Clipboard write failed"),
     );
   }
@@ -3572,6 +3586,15 @@ export function App() {
                     title="Copy visible rules as tab-separated text"
                   >
                     Copy TSV
+                  </button>
+                  <button
+                    type="button"
+                    className="ghost"
+                    disabled={!selectedRuleId}
+                    onClick={onCopySelectedRuleTsv}
+                    title="Copy selected rule as TSV (t)"
+                  >
+                    Copy selected TSV
                   </button>
                   <button
                     type="button"
