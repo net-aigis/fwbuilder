@@ -678,6 +678,11 @@ button.linkish:disabled {
   gap: 0.5rem 0.75rem;
 }
 
+.options-grid.qt-grid {
+  /* Prefer explicit .ui QGridLayout columns when fields carry grid metadata. */
+  grid-template-columns: repeat(4, minmax(10rem, 1fr));
+}
+
 .dialog-pages {
   display: flex;
   flex-wrap: wrap;

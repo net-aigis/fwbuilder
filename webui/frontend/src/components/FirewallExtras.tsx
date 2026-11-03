@@ -597,24 +597,27 @@ export function FirewallExtras({
         </label>
       </div>
 
-      {optionSections.map((sec) => (
-        <div key={sec.id || "all"} className="option-section">
-          {sec.title ? <h4 className="option-section-title">{sec.title}</h4> : null}
-          <div className="typed-grid options-grid">
-            {sec.keys.map((key) => (
-              <OptionField
-                key={key}
-                name={key}
-                value={options[key] ?? ""}
-                meta={fields[key]}
-                disabled={busy}
-                onChange={(v) => setOptions((prev) => ({ ...prev, [key]: v }))}
-              />
-            ))}
-            {!sec.keys.length ? <p className="muted">No keys in this group.</p> : null}
+      {optionSections.map((sec) => {
+        const useQtGrid = sec.keys.some((k) => fields[k]?.grid);
+        return (
+          <div key={sec.id || "all"} className="option-section">
+            {sec.title ? <h4 className="option-section-title">{sec.title}</h4> : null}
+            <div className={`typed-grid options-grid${useQtGrid ? " qt-grid" : ""}`}>
+              {sec.keys.map((key) => (
+                <OptionField
+                  key={key}
+                  name={key}
+                  value={options[key] ?? ""}
+                  meta={fields[key]}
+                  disabled={busy}
+                  onChange={(v) => setOptions((prev) => ({ ...prev, [key]: v }))}
+                />
+              ))}
+              {!sec.keys.length ? <p className="muted">No keys in this group.</p> : null}
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
       {!keys.length ? <p className="muted">No keys in this group.</p> : null}
 
       <header className="panel-header">

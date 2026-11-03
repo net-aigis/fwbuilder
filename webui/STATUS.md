@@ -305,14 +305,15 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | App live deploy force_limited after confirm | done | E2E phase162 |
 | Res-status hint in FirewallExtras | done | E2E phase163 |
 | Reset deploy prefs + hard backlog STATUS | done | E2E phase164 |
+| QGridLayout row/col on option fields | done | extract + OptionField; E2E phase165 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Soft-complete (feature/webui polish track)
 
-WebUI on `feature/webui` remains soft-complete for the polish track; hard-gap slices continue through phase162+:
+WebUI on `feature/webui` remains soft-complete for the polish track; hard-gap slices continue through phase165+:
 
 - Deploy: manifest `# files:`, OS configlets, external PolicyInstallScript, copyFWB, use_scp/compress, capabilities API, live gate + force_limited (still **no** expect/SSHSession)
-- Options: .ui labels, QRadio bool, QGroupBox sections, tooltips (still **no** pixel Qt layout)
+- Options: .ui labels, QRadio bool, QGroupBox sections, tooltips, QGridLayout row/col hints (still **not** full pixel Qt layout)
 
 Still open (hard backlog):
 
@@ -494,6 +495,7 @@ Still open (hard backlog):
 | Local E2E phase162 (App force_limited) | done | `e2e-phase162.sh` **OK** |
 | Local E2E phase163 (res-status hint) | done | `e2e-phase163.sh` **OK** |
 | Local E2E phase164 (reset prefs/backlog) | done | `e2e-phase164.sh` **OK** |
+| Local E2E phase165 (QGridLayout meta) | done | `e2e-phase165.sh` **OK** |
 
 ## Local commands
 
@@ -667,6 +669,7 @@ bash webui/scripts/e2e-phase161.sh
 bash webui/scripts/e2e-phase162.sh
 bash webui/scripts/e2e-phase163.sh
 bash webui/scripts/e2e-phase164.sh
+bash webui/scripts/e2e-phase165.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

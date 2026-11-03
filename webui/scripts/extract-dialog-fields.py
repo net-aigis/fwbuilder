@@ -192,6 +192,37 @@ def parse_widget_tooltips(root: ET.Element | None) -> dict[str, str]:
     return tips
 
 
+def parse_grid_positions(root: ET.Element | None) -> dict[str, dict[str, int]]:
+    """Map widget objectName → QGridLayout row/column (first occurrence)."""
+    positions: dict[str, dict[str, int]] = {}
+    if root is None:
+        return positions
+    for lay in root.iter("layout"):
+        if lay.get("class") != "QGridLayout":
+            continue
+        for item in lay.findall("item"):
+            try:
+                row = int(item.get("row") or 0)
+                col = int(item.get("column") or 0)
+            except ValueError:
+                continue
+            rowspan = int(item.get("rowspan") or 1)
+            colspan = int(item.get("colspan") or 1)
+            for child in list(item):
+                if child.tag != "widget":
+                    continue
+                name = child.get("name")
+                if not name or name in positions:
+                    continue
+                positions[name] = {
+                    "row": row,
+                    "column": col,
+                    "rowspan": rowspan,
+                    "colspan": colspan,
+                }
+    return positions
+
+
 def parse_groupbox_sections(page: ET.Element) -> list[dict]:
     """QGroupBox subgroups on a tab page: {id, title, widgets:[…]}."""
     sections: list[dict] = []
@@ -259,6 +290,7 @@ def extract_cpp(cpp_path: Path, ui_root: ET.Element | None, ui_widgets: dict[str
     src = cpp_path.read_text(encoding="utf-8", errors="replace")
     labels = parse_widget_labels(ui_root)
     tips = parse_widget_tooltips(ui_root)
+    grid = parse_grid_positions(ui_root)
     fields: dict[str, dict] = {}
     for m in REG_OPT.finditer(src):
         widget, key, _mapping = m.group(1), m.group(2), m.group(3)
@@ -269,6 +301,8 @@ def extract_cpp(cpp_path: Path, ui_root: ET.Element | None, ui_widgets: dict[str
             field["label"] = labels[widget]
         if widget in tips:
             field["tooltip"] = tips[widget]
+        if widget in grid:
+            field["grid"] = grid[widget]
         if ftype == "enum":
             choices = parse_combo_items(ui_root, widget) or KNOWN_ENUMS.get(key, [])
             if choices:

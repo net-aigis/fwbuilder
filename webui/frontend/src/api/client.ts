@@ -485,6 +485,7 @@ export type OptionFieldMeta = {
   tooltip?: string;
   widget?: string;
   widget_class?: string;
+  grid?: { row?: number; column?: number; rowspan?: number; colspan?: number };
 };
 
 export function fetchOptionSchema(platform: string, hostOs = "") {

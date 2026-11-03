@@ -281,6 +281,8 @@ def _infer_type(key: str, value: str, meta: dict[str, Any] | None) -> dict[str, 
             out["label"] = meta.get("label")
         if meta.get("tooltip"):
             out["tooltip"] = meta.get("tooltip")
+        if meta.get("grid"):
+            out["grid"] = meta.get("grid")
         return out
 
     low = (value or "").strip().lower()
