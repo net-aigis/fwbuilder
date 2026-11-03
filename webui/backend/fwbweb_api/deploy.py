@@ -226,6 +226,8 @@ def plan_and_deploy(
     compress: bool = False,
     generate_rc_conf: bool = False,
     use_scp: bool = True,
+    copy_fwb: bool = False,
+    fwb_path: Path | None = None,
     ssh_args: str = "",
     scp_args: str = "",
     identity_file: str | None = None,
@@ -269,6 +271,19 @@ def plan_and_deploy(
         scp_cmd = [*base_scp, str(local_path), f"{scp_target}:{remote_path}"]
         scp_cmds.append(scp_cmd)
         commands.append(" ".join(shlex.quote(c) for c in scp_cmd))
+
+    if copy_fwb and fwb_path is not None:
+        fwb = Path(fwb_path)
+        if fwb.is_file():
+            dest_dir = remote_dir.rstrip("/") or "/etc"
+            remote_fwb = f"{dest_dir}/{fwb.name}"
+            plan_lines.append(f"Copy data file: {fwb.name} --> {dest_dir}")
+            scp_cmd = [*base_scp, str(fwb), f"{scp_target}:{remote_fwb}"]
+            scp_cmds.append(scp_cmd)
+            commands.append(" ".join(shlex.quote(c) for c in scp_cmd))
+            copies = [*copies, (fwb, remote_fwb)]
+        else:
+            plan_lines.append(f"Copy data file: skipped (missing {fwb})")
 
     act = (activation_cmd or "").strip()
     activation_source: str | None = None

@@ -76,6 +76,7 @@ export function FirewallExtras({
   const [dryRun, setDryRun] = useState(true);
   const [compress, setCompress] = useState(false);
   const [useScp, setUseScp] = useState(true);
+  const [copyFwb, setCopyFwb] = useState(false);
   const [log, setLog] = useState<string | null>(null);
   const [lastPlan, setLastPlan] = useState<string[]>([]);
   const [showAll, setShowAll] = useState(false);
@@ -116,12 +117,14 @@ export function FirewallExtras({
             activate?: boolean;
             compress?: boolean;
             useScp?: boolean;
+            copyFwb?: boolean;
             identityFile?: string;
           };
           if (typeof prefs.dryRun === "boolean") setDryRun(prefs.dryRun);
           if (typeof prefs.activate === "boolean") setActivate(prefs.activate);
           if (typeof prefs.compress === "boolean") setCompress(prefs.compress);
           if (typeof prefs.useScp === "boolean") setUseScp(prefs.useScp);
+          if (typeof prefs.copyFwb === "boolean") setCopyFwb(prefs.copyFwb);
           if (typeof prefs.identityFile === "string") setIdentityFile(prefs.identityFile);
         }
       } catch {
@@ -185,12 +188,12 @@ export function FirewallExtras({
     try {
       sessionStorage.setItem(
         deployPrefsKey(firewallId),
-        JSON.stringify({ dryRun, activate, compress, useScp, identityFile }),
+        JSON.stringify({ dryRun, activate, compress, useScp, copyFwb, identityFile }),
       );
     } catch {
       /* ignore */
     }
-  }, [firewallId, dryRun, activate, compress, useScp, identityFile]);
+  }, [firewallId, dryRun, activate, compress, useScp, copyFwb, identityFile]);
 
   const keys = useMemo(() => {
     const all = Object.keys(options).sort();
@@ -313,6 +316,7 @@ export function FirewallExtras({
         activate,
         compress,
         use_scp: useScp,
+        copy_fwb: copyFwb,
       });
       const deployAny = res.deploy as typeof res.deploy & {
         plan?: string[];
@@ -631,6 +635,15 @@ export function FirewallExtras({
             onChange={(e) => setUseScp(e.target.checked)}
           />
           Use SCP
+        </label>
+        <label className="check" title="Also copy the .fwb project file (desktop Installer copyFWB)">
+          <input
+            type="checkbox"
+            checked={copyFwb}
+            disabled={busy}
+            onChange={(e) => setCopyFwb(e.target.checked)}
+          />
+          Copy .fwb
         </label>
         <button type="button" disabled={busy} onClick={() => void onDeploy()}>
           Compile + deploy

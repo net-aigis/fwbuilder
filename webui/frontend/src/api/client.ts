@@ -650,6 +650,7 @@ export function deployFirewall(
     dry_run?: boolean;
     compress?: boolean;
     use_scp?: boolean;
+    copy_fwb?: boolean;
   },
 ) {
   return api<{

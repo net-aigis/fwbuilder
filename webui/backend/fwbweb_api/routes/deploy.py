@@ -42,6 +42,8 @@ class DeployRequest(BaseModel):
     # Desktop stores compressScript in QSettings; WebUI passes it per deploy.
     compress: bool | None = None
     use_scp: bool | None = None
+    # Desktop Installer preference copyFWB — also scp the .fwb project file.
+    copy_fwb: bool = False
 
 
 @router.post("/{session_id}/deploy")
@@ -210,6 +212,8 @@ def deploy_firewall(
                 if body.use_scp is not None
                 else _opt_bool("use_scp", default=True)
             ),
+            copy_fwb=bool(body.copy_fwb),
+            fwb_path=Path(session.work_path),
             ssh_args=options.get("sshArgs") or "",
             scp_args=options.get("scpArgs") or "",
             identity_file=body.identity_file,
