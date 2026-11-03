@@ -4,6 +4,7 @@ import {
   fetchInstallerCapabilities,
   fetchInstallerConfiglet,
   fetchExpectInstallPlan,
+  fetchHardGaps,
   fetchInstallerConfigletFile,
   fetchInstallerConfiglets,
   fetchManagement,
@@ -140,7 +141,7 @@ export function FirewallExtras({
     onError?.(null);
     try {
       const plat = platform || "nftables";
-      const [o, m, schema, cfgList, resSt, sshAuth] = await Promise.all([
+      const [o, m, schema, cfgList, resSt, sshAuth, gaps] = await Promise.all([
         fetchOptions(sessionId, firewallId),
         fetchManagement(sessionId, firewallId),
         fetchOptionSchema(plat, hostOs || "").catch(() => null),
@@ -151,10 +152,12 @@ export function FirewallExtras({
           : Promise.resolve(null),
         fetchResStatus().catch(() => null),
         fetchSshAuth().catch(() => null),
+        fetchHardGaps().catch(() => null),
       ]);
       if (sshAuth?.note) setSshAuthNote(sshAuth.note);
       else setSshAuthNote(null);
-      if (resSt?.hard_gap_open?.length) setHardGaps(resSt.hard_gap_open);
+      if (gaps?.hard_gap_open?.length) setHardGaps(gaps.hard_gap_open);
+      else if (resSt?.hard_gap_open?.length) setHardGaps(resSt.hard_gap_open);
       else setHardGaps([]);
       if (resSt?.configlets_ok) {
         const phase = resSt.soft_complete_phase
@@ -611,6 +614,12 @@ export function FirewallExtras({
           {compiler ? <span className="muted"> · {compiler}</span> : null}
           {dialogName ? <span className="muted"> · {dialogName}</span> : null}
           {dialogTitle ? <span className="muted"> · {dialogTitle}</span> : null}
+          {dialogGeometry?.width && dialogGeometry?.height ? (
+            <span className="muted">
+              {" "}
+              · {dialogGeometry.width}×{dialogGeometry.height}
+            </span>
+          ) : null}
         </h3>
         <div className="btn-row">
           <button type="button" className="ghost" disabled={busy} onClick={() => void reload()}>
