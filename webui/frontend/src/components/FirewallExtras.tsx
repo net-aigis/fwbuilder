@@ -5,6 +5,7 @@ import {
   fetchInstallerConfiglet,
   fetchInstallerConfiglets,
   fetchManagement,
+  fetchResStatus,
   fetchOptionSchema,
   fetchOptions,
   updateManagement,
@@ -93,13 +94,14 @@ export function FirewallExtras({
   const [activeGroup, setActiveGroup] = useState<string>("platform");
   const [installerNote, setInstallerNote] = useState<string | null>(null);
   const [installerMode, setInstallerMode] = useState<string | null>(null);
+  const [resHint, setResHint] = useState<string | null>(null);
 
   async function reload() {
     onBusy?.(true);
     onError?.(null);
     try {
       const plat = platform || "nftables";
-      const [o, m, schema, cfgList] = await Promise.all([
+      const [o, m, schema, cfgList, resSt] = await Promise.all([
         fetchOptions(sessionId, firewallId),
         fetchManagement(sessionId, firewallId),
         fetchOptionSchema(plat, hostOs || "").catch(() => null),
@@ -108,7 +110,15 @@ export function FirewallExtras({
               fetchInstallerConfiglets(hostOs).catch(() => null),
             )
           : Promise.resolve(null),
+        fetchResStatus().catch(() => null),
       ]);
+      if (resSt?.configlets_ok) {
+        setResHint(`${resSt.configlet_os_count} installer OS configlet dirs`);
+      } else if (resSt) {
+        setResHint("configlets missing — check FWBUILDER_RES_DIR");
+      } else {
+        setResHint(null);
+      }
       setOptions(o.options ?? {});
       setMgmtAddr(m.management?.address ?? "");
       const script = m.management?.install_script;
@@ -771,6 +781,12 @@ export function FirewallExtras({
       <p className="muted pad">
         Dialog pages come from libgui AdvancedDialog <code>.ui</code> tabs. Pixel-perfect Qt layout
         is not claimed; scp/ssh deploy is simplified vs desktop FirewallInstaller.
+        {resHint ? (
+          <>
+            {" "}
+            · <span>{resHint}</span>
+          </>
+        ) : null}
       </p>
       {log ? <pre className="compile-log pad">{log}</pre> : null}
     </div>

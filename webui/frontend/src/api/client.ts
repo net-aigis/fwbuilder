@@ -639,6 +639,18 @@ export function fetchInstallerConfiglets(hostOs: string) {
   }>(`/api/v1/installer-configlets?${q.toString()}`);
 }
 
+export function fetchResStatus() {
+  return api<{
+    status: string;
+    res_dir: string;
+    res_ok: boolean;
+    configlets_dir: string;
+    configlets_ok: boolean;
+    configlet_os_count: number;
+    configlet_os: string[];
+  }>("/api/v1/res-status");
+}
+
 export function fetchInstallerCapabilities(hostOs: string) {
   const q = new URLSearchParams({ host_os: hostOs });
   return api<{
