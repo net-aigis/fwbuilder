@@ -301,13 +301,14 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Compile-first deploy toggle | done | FirewallExtras; E2E phase158 |
 | Res/configlets status API | done | `GET /res-status`; E2E phase159 |
 | Live gate for interactive OS installers | done | `force_limited_installer`; E2E phase160 |
+| Download install plan | done | FirewallExtras; E2E phase161 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Soft-complete (feature/webui polish track)
 
-WebUI on `feature/webui` remains soft-complete for the polish track; hard-gap slices continue through phase156+:
+WebUI on `feature/webui` remains soft-complete for the polish track; hard-gap slices continue through phase160+:
 
-- Deploy: manifest `# files:`, OS configlets, external PolicyInstallScript, copyFWB, use_scp/compress, capabilities API (still **no** expect/SSHSession)
+- Deploy: manifest `# files:`, OS configlets, external PolicyInstallScript, copyFWB, use_scp/compress, capabilities API, live gate for interactive OS (still **no** expect/SSHSession)
 - Options: .ui labels, QRadio bool, QGroupBox sections, tooltips (still **no** pixel Qt layout)
 
 Still open:
@@ -484,6 +485,7 @@ Still open:
 | Local E2E phase158 (compile-first toggle) | done | `e2e-phase158.sh` **OK** |
 | Local E2E phase159 (res-status) | done | `e2e-phase159.sh` **OK** |
 | Local E2E phase160 (force limited installer) | done | `e2e-phase160.sh` **OK** |
+| Local E2E phase161 (download plan) | done | `e2e-phase161.sh` **OK** |
 
 ## Local commands
 
@@ -653,6 +655,7 @@ bash webui/scripts/e2e-phase157.sh
 bash webui/scripts/e2e-phase158.sh
 bash webui/scripts/e2e-phase159.sh
 bash webui/scripts/e2e-phase160.sh
+bash webui/scripts/e2e-phase161.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

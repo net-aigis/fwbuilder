@@ -441,6 +441,18 @@ export function FirewallExtras({
     );
   }
 
+  function onDownloadPlan() {
+    if (!lastPlan.length) return;
+    const blob = new Blob([lastPlan.join("\n") + "\n"], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `fwbweb-install-plan-${firewallId}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+    onStatus?.("Downloaded install plan");
+  }
+
   async function onPreviewConfiglet() {
     const os = (hostOs || "").trim();
     if (!os) {
@@ -741,9 +753,14 @@ export function FirewallExtras({
           Preview configlet
         </button>
         {lastPlan.length ? (
-          <button type="button" className="ghost" disabled={busy} onClick={onCopyPlan}>
-            Copy plan
-          </button>
+          <>
+            <button type="button" className="ghost" disabled={busy} onClick={onCopyPlan}>
+              Copy plan
+            </button>
+            <button type="button" className="ghost" disabled={busy} onClick={onDownloadPlan}>
+              Download plan
+            </button>
+          </>
         ) : null}
         {log ? (
           <button type="button" className="ghost" disabled={busy} onClick={onCopyLog}>
