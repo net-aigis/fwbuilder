@@ -3554,6 +3554,7 @@
           "title": "Logging"
         }
       ],
+      "size_grip_enabled": false,
       "ui": "iosacladvanceddialog_q.ui",
       "window_title": "IOS ACL Firewall Settings"
     },
@@ -4514,6 +4515,7 @@
           "title": "Script"
         }
       ],
+      "size_grip_enabled": false,
       "ui": "ipcopadvanceddialog_q.ui",
       "window_title": "ipcop advanced settings"
     },
@@ -6531,6 +6533,7 @@
           "title": "Script Options"
         }
       ],
+      "size_grip_enabled": false,
       "ui": "ipfadvanceddialog_q.ui",
       "window_title": "ipf: advanced settings"
     },
@@ -7173,6 +7176,7 @@
           "title": "Script Options"
         }
       ],
+      "size_grip_enabled": false,
       "ui": "ipfwadvanceddialog_q.ui",
       "window_title": "ipfw: advanced settings"
     },
@@ -8590,6 +8594,7 @@
           "title": "Script"
         }
       ],
+      "size_grip_enabled": false,
       "ui": "iptadvanceddialog_q.ui",
       "window_title": "iptables: advanced settings"
     },
@@ -8698,6 +8703,7 @@
           "widget_class": "QLineEdit"
         },
         "check_shading": {
+          "enabled": false,
           "grid": {
             "colspan": 1,
             "column": 0,
@@ -8748,6 +8754,7 @@
           "widget_class": "QLineEdit"
         },
         "ignore_empty_groups": {
+          "enabled": false,
           "grid": {
             "colspan": 1,
             "column": 0,
@@ -8975,6 +8982,7 @@
           "widget_class": null
         },
         "use_scp": {
+          "enabled": true,
           "grid": {
             "colspan": 2,
             "column": 0,
@@ -9439,6 +9447,7 @@
           "title": "Logging"
         }
       ],
+      "size_grip_enabled": false,
       "ui": "junosacladvanceddialog_q.ui",
       "window_title": "jun-OS ACL Firewall Settings"
     },
@@ -12580,6 +12589,7 @@
           "title": "Logging"
         }
       ],
+      "size_grip_enabled": false,
       "ui": "nxosacladvanceddialog_q.ui",
       "window_title": "NX-OS ACL Firewall Settings"
     },
@@ -15285,6 +15295,7 @@
           "title": "Script"
         }
       ],
+      "size_grip_enabled": false,
       "ui": "pfadvanceddialog_q.ui",
       "window_title": "pf: advanced settings"
     },
@@ -17366,6 +17377,7 @@
           "title": "PIX Options"
         }
       ],
+      "size_grip_enabled": false,
       "tab_position": "North",
       "ui": "pixadvanceddialog_q.ui",
       "window_title": "PIX Firewall Settings"
@@ -18976,6 +18988,7 @@
           "title": "Logging"
         }
       ],
+      "size_grip_enabled": false,
       "ui": "procurveacladvanceddialog_q.ui",
       "window_title": "HP ProCurve ACL Firewall Settings"
     },
@@ -20184,6 +20197,7 @@
           "title": "Script"
         }
       ],
+      "size_grip_enabled": false,
       "ui": "secuwalladvanceddialog_q.ui",
       "window_title": "iptables: advanced settings"
     },
@@ -20765,6 +20779,7 @@
           "widget_class": "QCheckBox"
         },
         "secuwall_add_files_dir": {
+          "enabled": false,
           "grid": {
             "colspan": 3,
             "column": 1,

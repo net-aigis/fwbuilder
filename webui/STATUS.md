@@ -421,24 +421,32 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Soft marker 280 | done | E2E phase278 |
 | STATUS buddy/tab mentions | done | E2E phase279 |
 | Soft-complete STATUS through 280 | done | E2E phase280 |
+| Widget enabled + sizeGrip extract | done | E2E phase281 |
+| enabled/sizeGrip UI | done | E2E phase282 |
+| layout_tree hint + walkthrough persist | done | E2E phase283 |
+| hard_gap_notes on /hard-gaps | done | E2E phase284 |
+| 281–284 wiring | done | E2E phase285 |
+| Soft marker 288 | done | E2E phase286 |
+| STATUS 281+ mentions | done | E2E phase287 |
+| Soft-complete STATUS through 288 | done | E2E phase288 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Soft-complete (feature/webui polish track)
 
 WebUI on `feature/webui` remains soft-complete for the polish track.
 
-### Hard-gap honesty/preview track — soft-fertig (phase256); preview slices through 280
+### Hard-gap honesty/preview track — soft-fertig (phase256); preview slices through 288
 
-`WEBUI_SOFT_COMPLETE_PHASE=280`; `/hard-gaps` sets `soft_fertig_honesty_track: true`.
+`WEBUI_SOFT_COMPLETE_PHASE=288`; `/hard-gaps` sets `soft_fertig_honesty_track: true` + `hard_gap_notes`.
 
-- Deploy: manifest `# files:`, OS configlets, external PolicyInstallScript, copyFWB, use_scp, gzip transfer on compress (plan shows −%), capabilities API (+ expect_install_plan / walkthrough pointers), live gate + force_limited, expect stub + raw/expanded configlet preview + ordered expect plan (reg_user + safety_net_acl + download + sessionStorage) + dry walkthrough (all preview_only); `POST …/run` → 501 (still **no** expect/SSHSession runtime)
-- Options: .ui labels, free QLabel annotations (+ alignment), buddy_labels (external_label controls), QRadio bool, QGroupBox sections (flat/checkable), tooltips, page-local QGridLayout + spacers (sizeHint) + column/row stretch + spacing/margins (CSS + page hint) + sizePolicy + min/max size + layout hints + layout_tree + dialog windowTitle/geometry/tab_position (header WxH + tabs + CSS max-height) + shared `qtGridStyle` on Firewall/Rule/Interface (still **not** full pixel Qt layout)
+- Deploy: manifest `# files:`, OS configlets, external PolicyInstallScript, copyFWB, use_scp, gzip transfer on compress (plan shows −%), capabilities API (+ expect_install_plan / walkthrough pointers), live gate + force_limited, expect stub + raw/expanded configlet preview + ordered expect plan (reg_user + safety_net_acl + download + sessionStorage) + dry walkthrough (all preview_only, sessionStorage); `POST …/run` → 501 (still **no** expect/SSHSession runtime)
+- Options: .ui labels, free QLabel annotations (+ alignment), buddy_labels (external_label controls), enabled=false respect, QRadio bool, QGroupBox sections (flat/checkable), tooltips, page-local QGridLayout + spacers (sizeHint) + column/row stretch + spacing/margins (CSS + page hint) + sizePolicy + min/max size + layout hints + layout_tree + dialog windowTitle/geometry/tab_position/sizeGrip (header WxH + tabs + CSS max-height) + shared `qtGridStyle` on Firewall/Rule/Interface (still **not** full pixel Qt layout)
 - SSH: BatchMode only; `GET /ssh-auth`, capabilities.ssh_auth, deploy plan line, `allow_password_auth` → 400, `POST /ssh-auth/password` → 501
-- Honesty: UI lists `hard_gap_open` + note via `fetchHardGaps`; `GET /hard-gaps` documents remaining gaps
+- Honesty: UI lists `hard_gap_open` + note via `fetchHardGaps`; `GET /hard-gaps` documents remaining gaps with per-gap notes
 
 Still open (hard backlog — **not** soft-fertig):
 
-- Full Qt AdvancedDialog **pixel** layout parity (exact geometry; dialog size + grid spacing since phase226/241; row/col + spacers/sizeHint + stretch + annotations/buddy_labels/alignment + sizePolicy/min/max size + QGroupBox flat + layout_tree + tab_position since phase165/177/181/189/205/209/213/257–275)
+- Full Qt AdvancedDialog **pixel** layout parity (exact geometry; dialog size + grid spacing since phase226/241; row/col + spacers/sizeHint + stretch + annotations/buddy_labels/alignment + sizePolicy/min/max/enabled + QGroupBox flat + layout_tree + tab_position/sizeGrip since phase165/177/181/189/205/209/213/257–282)
 - Full desktop **FirewallInstaller** expect/SSHSession for Cisco/Juniper/Procurve (plan/preview/walkthrough/download; run endpoint refuses with 501)
 - Password/keyboard-interactive SSH (API refuses `allow_password_auth` and `POST /ssh-auth/password`; BatchMode only)
 
@@ -731,6 +739,14 @@ Still open (hard backlog — **not** soft-fertig):
 | Local E2E phase278 (soft marker 280) | done | `e2e-phase278.sh` **OK** |
 | Local E2E phase279 (STATUS mentions) | done | `e2e-phase279.sh` **OK** |
 | Local E2E phase280 (STATUS soft-complete) | done | `e2e-phase280.sh` **OK** |
+| Local E2E phase281 (enabled/sizeGrip extract) | done | `e2e-phase281.sh` **OK** |
+| Local E2E phase282 (enabled/sizeGrip UI) | done | `e2e-phase282.sh` **OK** |
+| Local E2E phase283 (tree hint + walkthrough persist) | done | `e2e-phase283.sh` **OK** |
+| Local E2E phase284 (hard_gap_notes) | done | `e2e-phase284.sh` **OK** |
+| Local E2E phase285 (wiring) | done | `e2e-phase285.sh` **OK** |
+| Local E2E phase286 (soft marker 288) | done | `e2e-phase286.sh` **OK** |
+| Local E2E phase287 (STATUS mentions) | done | `e2e-phase287.sh` **OK** |
+| Local E2E phase288 (STATUS soft-complete) | done | `e2e-phase288.sh` **OK** |
 
 ## Local commands
 
@@ -1020,6 +1036,14 @@ bash webui/scripts/e2e-phase277.sh
 bash webui/scripts/e2e-phase278.sh
 bash webui/scripts/e2e-phase279.sh
 bash webui/scripts/e2e-phase280.sh
+bash webui/scripts/e2e-phase281.sh
+bash webui/scripts/e2e-phase282.sh
+bash webui/scripts/e2e-phase283.sh
+bash webui/scripts/e2e-phase284.sh
+bash webui/scripts/e2e-phase285.sh
+bash webui/scripts/e2e-phase286.sh
+bash webui/scripts/e2e-phase287.sh
+bash webui/scripts/e2e-phase288.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

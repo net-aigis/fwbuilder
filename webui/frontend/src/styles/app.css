@@ -727,6 +727,14 @@ pre.configlet-preview {
   font-style: italic;
 }
 
+.option-section-disabled {
+  opacity: 0.55;
+}
+
+.field.field-ui-disabled {
+  opacity: 0.6;
+}
+
 .options-grid.qt-grid .qt-buddy-label {
   font-size: 0.8rem;
   line-height: 1.35;

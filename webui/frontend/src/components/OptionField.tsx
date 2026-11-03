@@ -14,6 +14,7 @@ type FieldMeta = {
   maximum_size?: { width?: number; height?: number };
   alignment?: string;
   external_label?: boolean;
+  enabled?: boolean;
 };
 
 type Props = {
@@ -58,6 +59,7 @@ function sizePolicyClass(meta?: FieldMeta): string {
 export function OptionField({ name, value, meta, disabled, onChange }: Props) {
   const type = meta?.type || "string";
   const external = Boolean(meta?.external_label);
+  const uiDisabled = Boolean(disabled || meta?.enabled === false);
   // When .ui puts caption in a separate buddy QLabel cell, avoid duplicating it on the control.
   const label = external ? "" : (meta?.label || "").trim() || name;
   const showKeyHint = Boolean(
@@ -67,7 +69,13 @@ export function OptionField({ name, value, meta, disabled, onChange }: Props) {
   const title = tip || (showKeyHint ? name : undefined) || (external ? name : undefined);
   const style = fieldStyle(meta);
   const sizeClass = sizePolicyClass(meta);
-  const fieldClass = ["field", "block", sizeClass, external ? "external-label" : ""]
+  const fieldClass = [
+    "field",
+    "block",
+    sizeClass,
+    external ? "external-label" : "",
+    meta?.enabled === false ? "field-ui-disabled" : "",
+  ]
     .filter(Boolean)
     .join(" ");
 
@@ -80,7 +88,7 @@ export function OptionField({ name, value, meta, disabled, onChange }: Props) {
           <input
             type="checkbox"
             checked={isTruthy(value)}
-            disabled={disabled}
+            disabled={uiDisabled}
             onChange={(e) => onChange(e.target.checked ? "True" : "False")}
           />
           {label || keyHint ? (
@@ -107,7 +115,7 @@ export function OptionField({ name, value, meta, disabled, onChange }: Props) {
         </span>
         <select
           value={known}
-          disabled={disabled}
+          disabled={uiDisabled}
           onChange={(e) => onChange(e.target.value)}
         >
           {!choices.includes(value) && value ? (
@@ -133,7 +141,7 @@ export function OptionField({ name, value, meta, disabled, onChange }: Props) {
         <textarea
           rows={5}
           value={value}
-          disabled={disabled}
+          disabled={uiDisabled}
           onChange={(e) => onChange(e.target.value)}
         />
       </label>
@@ -150,7 +158,7 @@ export function OptionField({ name, value, meta, disabled, onChange }: Props) {
         <input
           type="number"
           value={value}
-          disabled={disabled}
+          disabled={uiDisabled}
           onChange={(e) => onChange(e.target.value)}
         />
       </label>
@@ -163,7 +171,7 @@ export function OptionField({ name, value, meta, disabled, onChange }: Props) {
         {label}
         {keyHint}
       </span>
-      <input value={value} disabled={disabled} onChange={(e) => onChange(e.target.value)} />
+      <input value={value} disabled={uiDisabled} onChange={(e) => onChange(e.target.value)} />
     </label>
   );
 }

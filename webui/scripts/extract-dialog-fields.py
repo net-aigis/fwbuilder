@@ -361,6 +361,22 @@ def parse_widget_alignments(root: ET.Element | None) -> dict[str, str]:
     return out
 
 
+def parse_widget_enabled(root: ET.Element | None) -> dict[str, bool]:
+    """Map widget objectName → enabled flag when .ui sets it explicitly."""
+    out: dict[str, bool] = {}
+    if root is None:
+        return out
+    for w in root.iter("widget"):
+        name = w.get("name")
+        if not name:
+            continue
+        prop = w.find("./property[@name='enabled']/bool")
+        if prop is None or prop.text is None:
+            continue
+        out[name] = prop.text.strip().lower() in {"true", "1"}
+    return out
+
+
 def _parse_stretch_list(raw: str | None) -> list[int]:
     if not raw or not str(raw).strip():
         return []
@@ -615,6 +631,9 @@ def parse_groupbox_sections(page: ET.Element) -> list[dict]:
         checked = _bool_prop(w, "checked")
         if checkable and checked is not None:
             entry["checked"] = checked
+        enabled = _bool_prop(w, "enabled")
+        if enabled is not None:
+            entry["enabled"] = enabled
         sections.append(entry)
     return sections
 
@@ -711,6 +730,7 @@ def extract_cpp(cpp_path: Path, ui_root: ET.Element | None, ui_widgets: dict[str
     min_sizes = parse_widget_minimum_sizes(ui_root)
     max_sizes = parse_widget_maximum_sizes(ui_root)
     alignments = parse_widget_alignments(ui_root)
+    enabled_map = parse_widget_enabled(ui_root)
     # Widgets that have a separate grid QLabel buddy cell (caption lives there).
     external_label_widgets: set[str] = set()
     if ui_root is not None:
@@ -736,6 +756,8 @@ def extract_cpp(cpp_path: Path, ui_root: ET.Element | None, ui_widgets: dict[str
             field["size_policy"] = size_policies[widget]
         if widget in alignments:
             field["alignment"] = alignments[widget]
+        if widget in enabled_map:
+            field["enabled"] = enabled_map[widget]
         if widget in min_sizes:
             field["minimum_size"] = min_sizes[widget]
         if widget in max_sizes:
@@ -797,7 +819,7 @@ def pages_with_keys(pages: list[dict], fields: dict[str, dict]) -> list[dict]:
                 "title": sec["title"],
                 "keys": sec_keys,
             }
-            for flag in ("flat", "checkable", "checked"):
+            for flag in ("flat", "checkable", "checked", "enabled"):
                 if flag in sec:
                     sec_entry[flag] = sec[flag]
             sections_out.append(sec_entry)
@@ -859,6 +881,9 @@ def parse_dialog_chrome(root: ET.Element | None) -> dict[str, Any]:
                 raw = raw.split("::", 1)[-1]
             out["tab_position"] = raw
         break
+    grip = top.find("./property[@name='sizeGripEnabled']/bool")
+    if grip is not None and grip.text is not None:
+        out["size_grip_enabled"] = grip.text.strip().lower() in {"true", "1"}
     return out
 
 

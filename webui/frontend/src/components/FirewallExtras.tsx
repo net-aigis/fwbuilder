@@ -62,6 +62,7 @@ type GroupSection = {
   flat?: boolean;
   checkable?: boolean;
   checked?: boolean;
+  enabled?: boolean;
 };
 type Group = {
   id: string;
@@ -92,6 +93,10 @@ function deployPlanKey(firewallId: string) {
 
 function expectPlanKey(firewallId: string) {
   return `fwbweb.expectPlan.${firewallId}`;
+}
+
+function expectWalkthroughKey(firewallId: string) {
+  return `fwbweb.expectWalkthrough.${firewallId}`;
 }
 
 export function FirewallExtras({
@@ -141,6 +146,7 @@ export function FirewallExtras({
     null,
   );
   const [tabPosition, setTabPosition] = useState<string>("");
+  const [sizeGripEnabled, setSizeGripEnabled] = useState<boolean | null>(null);
   const [activeGroup, setActiveGroup] = useState<string>("platform");
   const [installerNote, setInstallerNote] = useState<string | null>(null);
   const [installerMode, setInstallerMode] = useState<string | null>(null);
@@ -234,6 +240,8 @@ export function FirewallExtras({
         }
         const expectRaw = sessionStorage.getItem(expectPlanKey(firewallId));
         if (expectRaw) setExpectPlanText(expectRaw);
+        const walkRaw = sessionStorage.getItem(expectWalkthroughKey(firewallId));
+        if (walkRaw) setExpectWalkthroughText(walkRaw);
       } catch {
         /* ignore */
       }
@@ -287,6 +295,9 @@ export function FirewallExtras({
         setDialogTitle(schema.window_title || "");
         setDialogGeometry(schema.geometry || null);
         setTabPosition(schema.tab_position || "");
+        setSizeGripEnabled(
+          typeof schema.size_grip_enabled === "boolean" ? schema.size_grip_enabled : null,
+        );
         setFields(schema.fields ?? {});
         setDefaults(schema.defaults ?? {});
         let preferred = nextGroups[0]?.id || "platform";
@@ -647,6 +658,7 @@ export function FirewallExtras({
             </span>
           ) : null}
           {tabPosition ? <span className="muted"> · tabs {tabPosition}</span> : null}
+          {sizeGripEnabled === true ? <span className="muted"> · sizeGrip</span> : null}
         </h3>
         <div className="btn-row">
           <button type="button" className="ghost" disabled={busy} onClick={() => void reload()}>
@@ -708,6 +720,9 @@ export function FirewallExtras({
               : ""}
             {activeGroupMeta.row_stretch?.length
               ? ` · rows ${activeGroupMeta.row_stretch.join(":")}`
+              : ""}
+            {activeGroupMeta.layout_tree?.length
+              ? ` · tree×${activeGroupMeta.layout_tree.length}`
               : ""}
             {activeGroupMeta.spacing &&
             (activeGroupMeta.spacing.vertical != null ||
@@ -788,11 +803,13 @@ export function FirewallExtras({
               "option-section",
               sec.flat ? "option-section-flat" : "",
               sec.checkable ? "option-section-checkable" : "",
+              sec.enabled === false ? "option-section-disabled" : "",
             ]
               .filter(Boolean)
               .join(" ")}
             data-flat={sec.flat ? "1" : undefined}
             data-checkable={sec.checkable ? "1" : undefined}
+            data-enabled={sec.enabled === false ? "0" : undefined}
           >
             {sec.title ? (
               <h4 className="option-section-title">
@@ -963,7 +980,13 @@ export function FirewallExtras({
                             }`;
                           }),
                         ];
-                        setExpectWalkthroughText(lines.join("\n"));
+                        const text = lines.join("\n");
+                        setExpectWalkthroughText(text);
+                        try {
+                          sessionStorage.setItem(expectWalkthroughKey(firewallId), text);
+                        } catch {
+                          /* ignore */
+                        }
                         onStatus?.(
                           `Expect walkthrough: ${wt.step_count} steps (preview_only)`,
                         );

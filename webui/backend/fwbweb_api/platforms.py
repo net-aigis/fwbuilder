@@ -257,6 +257,8 @@ def dialog_chrome_for(platform: str) -> dict[str, Any]:
         out["geometry"] = info["geometry"]
     if info.get("tab_position"):
         out["tab_position"] = info["tab_position"]
+    if "size_grip_enabled" in info:
+        out["size_grip_enabled"] = bool(info["size_grip_enabled"])
     return out
 
 

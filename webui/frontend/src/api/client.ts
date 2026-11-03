@@ -491,6 +491,7 @@ export type OptionFieldMeta = {
   maximum_size?: { width?: number; height?: number };
   alignment?: string;
   external_label?: boolean;
+  enabled?: boolean;
 };
 
 export function fetchOptionSchema(platform: string, hostOs = "") {
@@ -504,6 +505,7 @@ export function fetchOptionSchema(platform: string, hostOs = "") {
     window_title?: string;
     geometry?: { width?: number; height?: number };
     tab_position?: string;
+    size_grip_enabled?: boolean;
     supported_os?: string[];
     capabilities?: Record<string, string>;
     defaults: Record<string, string>;
@@ -518,6 +520,7 @@ export function fetchOptionSchema(platform: string, hostOs = "") {
         flat?: boolean;
         checkable?: boolean;
         checked?: boolean;
+        enabled?: boolean;
       }>;
       layout_tree?: unknown[];
       spacers?: Array<{

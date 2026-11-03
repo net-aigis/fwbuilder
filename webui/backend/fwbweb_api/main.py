@@ -35,13 +35,27 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "280"
+WEBUI_SOFT_COMPLETE_PHASE = "288"
 
 HARD_GAPS_OPEN = (
     "full_qt_pixel_layout",
     "expect_sshsession_runtime",
     "password_keyboard_interactive_ssh",
 )
+
+HARD_GAP_NOTES = {
+    "full_qt_pixel_layout": (
+        "Grid/spacers/stretch/buddy_labels/alignment/sizePolicy/sizeHint/"
+        "layout_tree/tab_position/sizeGrip extracted; exact pixel geometry still open."
+    ),
+    "expect_sshsession_runtime": (
+        "Plan + walkthrough + configlet previews available; POST /run → 501; "
+        "no SSHSession/expect execution."
+    ),
+    "password_keyboard_interactive_ssh": (
+        "BatchMode only; allow_password_auth → 400; POST /ssh-auth/password → 501."
+    ),
+}
 
 
 @app.get("/api/v1/health")
@@ -80,6 +94,8 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
         "soft_complete_phase": WEBUI_SOFT_COMPLETE_PHASE,
         "soft_fertig_honesty_track": True,
         "hard_gap_open": list(HARD_GAPS_OPEN),
+        "hard_gap_count": len(HARD_GAPS_OPEN),
+        "hard_gap_notes": dict(HARD_GAP_NOTES),
         "note": (
             "Honesty/preview track is soft-complete (soft_fertig); these items remain "
             "unimplemented (full Qt pixel layout, expect/SSHSession runtime, password SSH)."
