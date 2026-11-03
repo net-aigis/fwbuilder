@@ -280,6 +280,8 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Configlet resolve without linux24 leak | done | family/linux-only fallback; FreeBSD rc_conf; E2E phase135 |
 | List installer configlets API | done | `GET /installer-configlets`; E2E phase136 |
 | Preview configlet in FirewallExtras | done | button + client; E2E phase137 |
+| QGroupBox sections in options UI | done | extract + schema sections; E2E phase138 |
+| Deploy compressScript (per request) | done | body.compress + UI; E2E phase139 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Soft-complete (feature/webui polish track)
@@ -440,6 +442,8 @@ Still open:
 | Local E2E phase135 (configlet resolve/flags) | done | `e2e-phase135.sh` **OK** |
 | Local E2E phase136 (configlet list) | done | `e2e-phase136.sh` **OK** |
 | Local E2E phase137 (preview configlet UI) | done | `e2e-phase137.sh` **OK** |
+| Local E2E phase138 (QGroupBox sections) | done | `e2e-phase138.sh` **OK** |
+| Local E2E phase139 (deploy compress) | done | `e2e-phase139.sh` **OK** |
 
 ## Local commands
 
@@ -586,6 +590,8 @@ bash webui/scripts/e2e-phase134.sh
 bash webui/scripts/e2e-phase135.sh
 bash webui/scripts/e2e-phase136.sh
 bash webui/scripts/e2e-phase137.sh
+bash webui/scripts/e2e-phase138.sh
+bash webui/scripts/e2e-phase139.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

@@ -258,13 +258,14 @@ def dialog_pages_for(platform: str, host_os: str = "") -> list[dict[str, Any]]:
             os_stem = _dialog_stem(host_os)
         if os_stem and os_stem in dialogs:
             for page in dialogs[os_stem].get("pages") or []:
-                pages.append(
-                    {
-                        "id": f"os-{page.get('id')}",
-                        "title": f"OS · {page.get('title')}",
-                        "keys": page.get("keys") or [],
-                    }
-                )
+                entry: dict[str, Any] = {
+                    "id": f"os-{page.get('id')}",
+                    "title": f"OS · {page.get('title')}",
+                    "keys": page.get("keys") or [],
+                }
+                if page.get("sections"):
+                    entry["sections"] = page.get("sections")
+                pages.append(entry)
     return pages
 
 
@@ -305,7 +306,12 @@ def option_schema(platform: str, host_os: str = "") -> dict[str, Any]:
 
     # Prefer real Qt dialog tab pages when available; keep fallback groups otherwise.
     if pages:
-        groups = [{"id": p["id"], "title": p["title"], "keys": p["keys"]} for p in pages]
+        groups = []
+        for p in pages:
+            g: dict[str, Any] = {"id": p["id"], "title": p["title"], "keys": p["keys"]}
+            if p.get("sections"):
+                g["sections"] = p["sections"]
+            groups.append(g)
         # Append any installer/script keys missing from pages so deploy still editable.
         page_keys = {k for p in pages for k in p.get("keys") or []}
         missing_installer = [k for k in INSTALLER_KEYS if k not in page_keys]

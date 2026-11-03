@@ -175,8 +175,36 @@ def parse_widget_labels(root: ET.Element | None) -> dict[str, str]:
     return labels
 
 
+def parse_groupbox_sections(page: ET.Element) -> list[dict]:
+    """QGroupBox subgroups on a tab page: {id, title, widgets:[…]}."""
+    sections: list[dict] = []
+    for w in page.iter("widget"):
+        if w.get("class") != "QGroupBox":
+            continue
+        title_el = w.find("./property[@name='title']/string")
+        title = (title_el.text or "").strip() if title_el is not None else ""
+        if not title:
+            continue
+        widgets: list[str] = []
+        for child in w.iter("widget"):
+            name = child.get("name")
+            cls = child.get("class") or ""
+            if name and cls in CONTROL_CLASSES:
+                widgets.append(name)
+        if not widgets:
+            continue
+        sections.append(
+            {
+                "id": w.get("name") or f"group{len(sections)}",
+                "title": title,
+                "widgets": widgets,
+            }
+        )
+    return sections
+
+
 def parse_pages(root: ET.Element | None) -> list[dict]:
-    """Return tab pages: {id, title, widgets:[widget names]}."""
+    """Return tab pages: {id, title, widgets:[widget names], sections:[…]}."""
     if root is None:
         return []
     pages: list[dict] = []
@@ -202,6 +230,7 @@ def parse_pages(root: ET.Element | None) -> list[dict]:
                     "id": page.get("name") or f"page{len(pages)}",
                     "title": title or page.get("name") or f"Page {len(pages)+1}",
                     "widgets": widgets,
+                    "sections": parse_groupbox_sections(page),
                 }
             )
         if pages:
@@ -240,17 +269,41 @@ def pages_with_keys(pages: list[dict], fields: dict[str, dict]) -> list[dict]:
         if not w:
             continue
         widget_to_keys.setdefault(w, []).append(key)
+
+    def keys_for_widgets(widget_names: list[str], seen: set[str] | None = None) -> list[str]:
+        keys: list[str] = []
+        local_seen = seen if seen is not None else set()
+        for w in widget_names:
+            for key in widget_to_keys.get(w, []):
+                if key not in local_seen:
+                    keys.append(key)
+                    local_seen.add(key)
+        return keys
+
     out = []
     for page in pages:
-        keys: list[str] = []
         seen: set[str] = set()
-        for w in page.get("widgets") or []:
-            for key in widget_to_keys.get(w, []):
-                if key not in seen:
-                    keys.append(key)
-                    seen.add(key)
+        keys = keys_for_widgets(page.get("widgets") or [], seen)
+        sections_out: list[dict] = []
+        section_seen: set[str] = set()
+        for sec in page.get("sections") or []:
+            sec_keys = keys_for_widgets(sec.get("widgets") or [], set())
+            # Keep only keys that also belong to this page
+            sec_keys = [k for k in sec_keys if k in seen]
+            if not sec_keys:
+                continue
+            sections_out.append(
+                {"id": sec["id"], "title": sec["title"], "keys": sec_keys}
+            )
+            section_seen.update(sec_keys)
+        leftover = [k for k in keys if k not in section_seen]
+        if leftover and sections_out:
+            sections_out.append({"id": "other", "title": "Other", "keys": leftover})
         if keys:
-            out.append({"id": page["id"], "title": page["title"], "keys": keys})
+            entry: dict = {"id": page["id"], "title": page["title"], "keys": keys}
+            if sections_out:
+                entry["sections"] = sections_out
+            out.append(entry)
     return out
 
 

@@ -497,7 +497,12 @@ export function fetchOptionSchema(platform: string, hostOs = "") {
     supported_os?: string[];
     capabilities?: Record<string, string>;
     defaults: Record<string, string>;
-    groups: Array<{ id: string; title: string; keys: string[] }>;
+    groups: Array<{
+      id: string;
+      title: string;
+      keys: string[];
+      sections?: Array<{ id: string; title: string; keys: string[] }>;
+    }>;
     featured_keys: string[];
     fields?: Record<string, OptionFieldMeta>;
     dialog_field_count?: number;
@@ -643,6 +648,7 @@ export function deployFirewall(
     activate?: boolean;
     compile_first?: boolean;
     dry_run?: boolean;
+    compress?: boolean;
   },
 ) {
   return api<{

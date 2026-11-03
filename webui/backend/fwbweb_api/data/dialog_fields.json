@@ -1178,6 +1178,26 @@
             "mgmt_ssh",
             "mgmt_addr"
           ],
+          "sections": [
+            {
+              "id": "frame114",
+              "keys": [
+                "ignore_empty_groups",
+                "check_shading",
+                "iosacl_use_object_groups"
+              ],
+              "title": "Policy Compiler Options"
+            },
+            {
+              "id": "other",
+              "keys": [
+                "output_file",
+                "mgmt_ssh",
+                "mgmt_addr"
+              ],
+              "title": "Other"
+            }
+          ],
           "title": "Compiler Options"
         },
         {
@@ -1204,6 +1224,27 @@
             "filesystem",
             "firewall_dir"
           ],
+          "sections": [
+            {
+              "id": "groupBox2",
+              "keys": [
+                "admUser",
+                "altAddress",
+                "sshArgs",
+                "scpArgs"
+              ],
+              "title": "Built-in installer"
+            },
+            {
+              "id": "other",
+              "keys": [
+                "use_scp",
+                "filesystem",
+                "firewall_dir"
+              ],
+              "title": "Other"
+            }
+          ],
           "title": "Installer"
         },
         {
@@ -1226,6 +1267,35 @@
             "iosacl_logging_console",
             "iosacl_logging_buffered_level",
             "iosacl_logging_console_level"
+          ],
+          "sections": [
+            {
+              "id": "syslog_controls",
+              "keys": [
+                "iosacl_syslog_host",
+                "iosacl_syslog_facility",
+                "iosacl_logging_trap_level",
+                "iosacl_logging_timestamp"
+              ],
+              "title": "Syslog"
+            },
+            {
+              "id": "other_logging_controls",
+              "keys": [
+                "iosacl_logging_buffered",
+                "iosacl_logging_console",
+                "iosacl_logging_buffered_level",
+                "iosacl_logging_console_level"
+              ],
+              "title": "Other logging destinations and levels:"
+            },
+            {
+              "id": "other",
+              "keys": [
+                "iosacl_generate_logging_commands"
+              ],
+              "title": "Other"
+            }
           ],
           "title": "Logging"
         }
@@ -1499,6 +1569,20 @@
             "activationCmd",
             "sshArgs",
             "scpArgs"
+          ],
+          "sections": [
+            {
+              "id": "groupBox2",
+              "keys": [
+                "firewall_dir",
+                "admUser",
+                "altAddress",
+                "activationCmd",
+                "sshArgs",
+                "scpArgs"
+              ],
+              "title": "Built-in installer"
+            }
           ],
           "title": "Installer"
         },
@@ -2161,6 +2245,20 @@
             "sshArgs",
             "scpArgs"
           ],
+          "sections": [
+            {
+              "id": "groupBox4",
+              "keys": [
+                "firewall_dir",
+                "admUser",
+                "altAddress",
+                "activationCmd",
+                "sshArgs",
+                "scpArgs"
+              ],
+              "title": "Built-in installer"
+            }
+          ],
           "title": "Installer"
         },
         {
@@ -2351,6 +2449,20 @@
             "activationCmd",
             "sshArgs",
             "scpArgs"
+          ],
+          "sections": [
+            {
+              "id": "groupBox2",
+              "keys": [
+                "firewall_dir",
+                "admUser",
+                "altAddress",
+                "activationCmd",
+                "sshArgs",
+                "scpArgs"
+              ],
+              "title": "Built-in installer"
+            }
           ],
           "title": "Installer"
         },
@@ -2786,6 +2898,20 @@
             "sshArgs",
             "scpArgs"
           ],
+          "sections": [
+            {
+              "id": "groupBox2",
+              "keys": [
+                "firewall_dir",
+                "admUser",
+                "altAddress",
+                "activationCmd",
+                "sshArgs",
+                "scpArgs"
+              ],
+              "title": "Built-in installer"
+            }
+          ],
           "title": "Installer"
         },
         {
@@ -3043,6 +3169,24 @@
             "check_shading",
             "filter_prefix"
           ],
+          "sections": [
+            {
+              "id": "frame114",
+              "keys": [
+                "ignore_empty_groups",
+                "check_shading"
+              ],
+              "title": "Policy Compiler Options"
+            },
+            {
+              "id": "other",
+              "keys": [
+                "output_file",
+                "filter_prefix"
+              ],
+              "title": "Other"
+            }
+          ],
           "title": "Compiler Options"
         },
         {
@@ -3062,6 +3206,27 @@
             "altAddress",
             "sshArgs",
             "scpArgs"
+          ],
+          "sections": [
+            {
+              "id": "groupBox2",
+              "keys": [
+                "admUser",
+                "altAddress",
+                "sshArgs",
+                "scpArgs"
+              ],
+              "title": "Built-in installer"
+            },
+            {
+              "id": "other",
+              "keys": [
+                "use_scp",
+                "filesystem",
+                "firewall_dir"
+              ],
+              "title": "Other"
+            }
           ],
           "title": "Installer"
         },
@@ -3085,6 +3250,35 @@
             "junosacl_logging_console",
             "junosacl_logging_buffered_level",
             "junosacl_logging_console_level"
+          ],
+          "sections": [
+            {
+              "id": "syslog_controls",
+              "keys": [
+                "junosacl_syslog_host",
+                "junosacl_syslog_facility",
+                "junosacl_logging_trap_level",
+                "junosacl_logging_timestamp"
+              ],
+              "title": "Syslog"
+            },
+            {
+              "id": "other_logging_controls",
+              "keys": [
+                "junosacl_logging_buffered",
+                "junosacl_logging_console",
+                "junosacl_logging_buffered_level",
+                "junosacl_logging_console_level"
+              ],
+              "title": "Other logging destinations and levels:"
+            },
+            {
+              "id": "other",
+              "keys": [
+                "junosacl_generate_logging_commands"
+              ],
+              "title": "Other"
+            }
           ],
           "title": "Logging"
         }
@@ -3934,6 +4128,26 @@
             "mgmt_ssh",
             "mgmt_addr"
           ],
+          "sections": [
+            {
+              "id": "frame114",
+              "keys": [
+                "ignore_empty_groups",
+                "check_shading",
+                "nxosacl_use_object_groups"
+              ],
+              "title": "Policy Compiler Options"
+            },
+            {
+              "id": "other",
+              "keys": [
+                "output_file",
+                "mgmt_ssh",
+                "mgmt_addr"
+              ],
+              "title": "Other"
+            }
+          ],
           "title": "Compiler Options"
         },
         {
@@ -3961,6 +4175,28 @@
             "scpArgs",
             "use_nxos_session"
           ],
+          "sections": [
+            {
+              "id": "groupBox2",
+              "keys": [
+                "admUser",
+                "altAddress",
+                "sshArgs",
+                "scpArgs"
+              ],
+              "title": "Built-in installer"
+            },
+            {
+              "id": "other",
+              "keys": [
+                "use_scp",
+                "filesystem",
+                "firewall_dir",
+                "use_nxos_session"
+              ],
+              "title": "Other"
+            }
+          ],
           "title": "Installer"
         },
         {
@@ -3983,6 +4219,35 @@
             "nxosacl_logging_console",
             "nxosacl_logging_buffered_level",
             "nxosacl_logging_console_level"
+          ],
+          "sections": [
+            {
+              "id": "syslog_controls",
+              "keys": [
+                "nxosacl_syslog_host",
+                "nxosacl_syslog_facility",
+                "nxosacl_logging_trap_level",
+                "nxosacl_logging_timestamp"
+              ],
+              "title": "Syslog"
+            },
+            {
+              "id": "other_logging_controls",
+              "keys": [
+                "nxosacl_logging_buffered",
+                "nxosacl_logging_console",
+                "nxosacl_logging_buffered_level",
+                "nxosacl_logging_console_level"
+              ],
+              "title": "Other logging destinations and levels:"
+            },
+            {
+              "id": "other",
+              "keys": [
+                "nxosacl_generate_logging_commands"
+              ],
+              "title": "Other"
+            }
           ],
           "title": "Logging"
         }
@@ -4738,6 +5003,39 @@
             "mgmt_ssh",
             "mgmt_addr"
           ],
+          "sections": [
+            {
+              "id": "groupBox_4",
+              "keys": [
+                "output_file",
+                "conf1_file"
+              ],
+              "title": "Names of generated files"
+            },
+            {
+              "id": "groupBox_2",
+              "keys": [
+                "script_name_on_firewall",
+                "conf_file_name_on_firewall"
+              ],
+              "title": "Names of the files on the firewall"
+            },
+            {
+              "id": "other",
+              "keys": [
+                "compiler",
+                "cmdline",
+                "accept_new_tcp_with_no_syn",
+                "check_shading",
+                "pf_modulate_state",
+                "ignore_empty_groups",
+                "preserve_group_names",
+                "mgmt_ssh",
+                "mgmt_addr"
+              ],
+              "title": "Other"
+            }
+          ],
           "title": "Compiler"
         },
         {
@@ -4774,6 +5072,34 @@
             "pf_set_debug",
             "pf_state_policy",
             "pf_block_policy"
+          ],
+          "sections": [
+            {
+              "id": "groupBox_6",
+              "keys": [
+                "pf_do_limit_frags",
+                "pf_limit_frags",
+                "pf_do_limit_states",
+                "pf_limit_states",
+                "pf_do_limit_src_nodes",
+                "pf_limit_src_nodes",
+                "pf_do_limit_tables",
+                "pf_limit_tables",
+                "pf_do_limit_table_entries",
+                "pf_limit_table_entries"
+              ],
+              "title": "Limits"
+            },
+            {
+              "id": "groupBox_7",
+              "keys": [
+                "pf_optimization",
+                "pf_set_debug",
+                "pf_state_policy",
+                "pf_block_policy"
+              ],
+              "title": "Options"
+            }
           ],
           "title": "Options"
         },
@@ -4816,6 +5142,79 @@
             "pf_do_timeout_frag",
             "pf_timeout_frag"
           ],
+          "sections": [
+            {
+              "id": "groupBox1",
+              "keys": [
+                "pf_set_tcp_first",
+                "pf_tcp_first",
+                "pf_set_tcp_opening",
+                "pf_tcp_opening",
+                "pf_set_tcp_established",
+                "pf_tcp_established",
+                "pf_tcp_closing",
+                "pf_set_tcp_closing",
+                "pf_tcp_finwait",
+                "pf_set_tcp_finwait",
+                "pf_tcp_closed",
+                "pf_set_tcp_closed"
+              ],
+              "title": "TCP"
+            },
+            {
+              "id": "groupBox2",
+              "keys": [
+                "pf_set_udp_first",
+                "pf_udp_first",
+                "pf_set_udp_single",
+                "pf_udp_single",
+                "pf_set_udp_multiple",
+                "pf_udp_multiple"
+              ],
+              "title": "UDP"
+            },
+            {
+              "id": "groupBox4",
+              "keys": [
+                "pf_set_other_first",
+                "pf_other_first",
+                "pf_set_other_single",
+                "pf_set_other_multiple",
+                "pf_other_single",
+                "pf_other_multiple"
+              ],
+              "title": "Other Protocols"
+            },
+            {
+              "id": "groupBox3",
+              "keys": [
+                "pf_icmp_first",
+                "pf_icmp_error",
+                "pf_set_icmp_first",
+                "pf_set_icmp_error"
+              ],
+              "title": "ICMP"
+            },
+            {
+              "id": "groupBox6",
+              "keys": [
+                "pf_set_adaptive",
+                "pf_adaptive_start",
+                "pf_adaptive_end"
+              ],
+              "title": "Adaptive scaling"
+            },
+            {
+              "id": "groupBox5",
+              "keys": [
+                "pf_do_timeout_interval",
+                "pf_timeout_interval",
+                "pf_do_timeout_frag",
+                "pf_timeout_frag"
+              ],
+              "title": "Fragments"
+            }
+          ],
           "title": "Timeouts"
         },
         {
@@ -4827,6 +5226,20 @@
             "activationCmd",
             "sshArgs",
             "scpArgs"
+          ],
+          "sections": [
+            {
+              "id": "groupBox2_2",
+              "keys": [
+                "firewall_dir",
+                "admUser",
+                "altAddress",
+                "activationCmd",
+                "sshArgs",
+                "scpArgs"
+              ],
+              "title": "Built-in installer"
+            }
           ],
           "title": "Installer"
         },
@@ -4860,6 +5273,30 @@
             "configure_bridge_interfaces",
             "manage_virtual_addr",
             "pf_flush_states"
+          ],
+          "sections": [
+            {
+              "id": "groupBox_3",
+              "keys": [
+                "generate_shell_script",
+                "generate_rc_conf_file"
+              ],
+              "title": "System configuration and firewall initialization script format"
+            },
+            {
+              "id": "groupBox_5",
+              "keys": [
+                "debug",
+                "configure_interfaces",
+                "configure_carp_interfaces",
+                "configure_pfsync_interfaces",
+                "configure_vlan_interfaces",
+                "configure_bridge_interfaces",
+                "manage_virtual_addr",
+                "pf_flush_states"
+              ],
+              "title": "Enable auxiliary sections in the generated script"
+            }
           ],
           "title": "Script"
         }
@@ -5435,6 +5872,46 @@
             "mgmt_ssh",
             "mgmt_addr"
           ],
+          "sections": [
+            {
+              "id": "frame114",
+              "keys": [
+                "pix_assume_fw_part_of_any",
+                "check_shading",
+                "pix_emulate_out_acl",
+                "pix_generate_out_acl",
+                "ignore_empty_groups",
+                "pix_optimize_default_nat"
+              ],
+              "title": "Policy Compiler Options"
+            },
+            {
+              "id": "groupBox_2",
+              "keys": [
+                "pix_replace_natted_objects"
+              ],
+              "title": "Address Translation"
+            },
+            {
+              "id": "frame153",
+              "keys": [
+                "pix_check_duplicate_nat",
+                "pix_check_overlapping_statics",
+                "pix_check_overlapping_global_pools",
+                "pix_check_overlapping_global_statics"
+              ],
+              "title": "Verification of NAT rules"
+            },
+            {
+              "id": "other",
+              "keys": [
+                "output_file",
+                "mgmt_ssh",
+                "mgmt_addr"
+              ],
+              "title": "Other"
+            }
+          ],
           "title": "Compiler"
         },
         {
@@ -5447,6 +5924,27 @@
             "use_scp",
             "filesystem",
             "firewall_dir"
+          ],
+          "sections": [
+            {
+              "id": "groupBox2",
+              "keys": [
+                "admUser",
+                "altAddress",
+                "sshArgs",
+                "scpArgs"
+              ],
+              "title": "Built-in installer"
+            },
+            {
+              "id": "other",
+              "keys": [
+                "use_scp",
+                "filesystem",
+                "firewall_dir"
+              ],
+              "title": "Other"
+            }
           ],
           "title": "Installer"
         },
@@ -5508,6 +6006,30 @@
             "pix_logging_buffered_level",
             "pix_logging_console",
             "pix_logging_console_level"
+          ],
+          "sections": [
+            {
+              "id": "frame172",
+              "keys": [
+                "pix_logging_buffered",
+                "pix_logging_buffered_level",
+                "pix_logging_console",
+                "pix_logging_console_level"
+              ],
+              "title": "Other logging destinations and levels:"
+            },
+            {
+              "id": "other",
+              "keys": [
+                "pix_syslog_host",
+                "pix_syslog_queue_size",
+                "pix_syslog_facility",
+                "pix_logging_trap_level",
+                "pix_emblem_log_format",
+                "pix_logging_timestamp"
+              ],
+              "title": "Other"
+            }
           ],
           "title": "Logging"
         },
@@ -5692,6 +6214,20 @@
             "pix_ntp3",
             "pix_ntp1_pref"
           ],
+          "sections": [
+            {
+              "id": "ntp_servers_group",
+              "keys": [
+                "pix_ntp1",
+                "pix_ntp2",
+                "pix_ntp3_pref",
+                "pix_ntp2_pref",
+                "pix_ntp3",
+                "pix_ntp1_pref"
+              ],
+              "title": "NTP Servers:"
+            }
+          ],
           "title": "NTP"
         },
         {
@@ -5704,6 +6240,27 @@
             "pix_snmp_poll_traps_1",
             "pix_snmp_poll_traps_2",
             "pix_enable_snmp_traps"
+          ],
+          "sections": [
+            {
+              "id": "frame149",
+              "keys": [
+                "pix_snmp_server1",
+                "pix_snmp_server2",
+                "pix_snmp_poll_traps_1",
+                "pix_snmp_poll_traps_2"
+              ],
+              "title": "SNMP servers"
+            },
+            {
+              "id": "other",
+              "keys": [
+                "pix_disable_snmp_agent",
+                "pix_set_communities_from_object_data",
+                "pix_enable_snmp_traps"
+              ],
+              "title": "Other"
+            }
           ],
           "title": "SNMP"
         },
@@ -5946,6 +6503,25 @@
             "mgmt_ssh",
             "mgmt_addr"
           ],
+          "sections": [
+            {
+              "id": "frame114",
+              "keys": [
+                "ignore_empty_groups",
+                "check_shading"
+              ],
+              "title": "Policy Compiler Options"
+            },
+            {
+              "id": "other",
+              "keys": [
+                "output_file",
+                "mgmt_ssh",
+                "mgmt_addr"
+              ],
+              "title": "Other"
+            }
+          ],
           "title": "Compiler Options"
         },
         {
@@ -5971,6 +6547,27 @@
             "filesystem",
             "firewall_dir"
           ],
+          "sections": [
+            {
+              "id": "groupBox2",
+              "keys": [
+                "admUser",
+                "altAddress",
+                "sshArgs",
+                "scpArgs"
+              ],
+              "title": "Built-in installer"
+            },
+            {
+              "id": "other",
+              "keys": [
+                "use_scp",
+                "filesystem",
+                "firewall_dir"
+              ],
+              "title": "Other"
+            }
+          ],
           "title": "Installer"
         },
         {
@@ -5993,6 +6590,35 @@
             "procurve_acl_logging_console",
             "procurve_acl_logging_buffered_level",
             "procurve_acl_logging_console_level"
+          ],
+          "sections": [
+            {
+              "id": "syslog_controls",
+              "keys": [
+                "procurve_acl_syslog_host",
+                "procurve_acl_syslog_facility",
+                "procurve_acl_logging_trap_level",
+                "procurve_acl_logging_timestamp"
+              ],
+              "title": "Syslog"
+            },
+            {
+              "id": "other_logging_controls",
+              "keys": [
+                "procurve_acl_logging_buffered",
+                "procurve_acl_logging_console",
+                "procurve_acl_logging_buffered_level",
+                "procurve_acl_logging_console_level"
+              ],
+              "title": "Other logging destinations and levels:"
+            },
+            {
+              "id": "other",
+              "keys": [
+                "procurve_acl_generate_logging_commands"
+              ],
+              "title": "Other"
+            }
           ],
           "title": "Logging"
         }
@@ -6324,6 +6950,18 @@
             "scpArgs",
             "altAddress",
             "activationCmd"
+          ],
+          "sections": [
+            {
+              "id": "groupBox2",
+              "keys": [
+                "sshArgs",
+                "scpArgs",
+                "altAddress",
+                "activationCmd"
+              ],
+              "title": "Built-in installer"
+            }
           ],
           "title": "Installer"
         },

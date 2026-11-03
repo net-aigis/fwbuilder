@@ -38,7 +38,8 @@ const FALLBACK_FEATURED = [
   "epilog_script",
 ];
 
-type Group = { id: string; title: string; keys: string[] };
+type GroupSection = { id: string; title: string; keys: string[] };
+type Group = { id: string; title: string; keys: string[]; sections?: GroupSection[] };
 
 function groupStorageKey(platform: string, hostOs: string) {
   return `fwbweb.optionGroup.${platform || "unknown"}.${hostOs || ""}`;
@@ -65,6 +66,7 @@ export function FirewallExtras({
   const [identityFile, setIdentityFile] = useState("");
   const [activate, setActivate] = useState(true);
   const [dryRun, setDryRun] = useState(true);
+  const [compress, setCompress] = useState(false);
   const [log, setLog] = useState<string | null>(null);
   const [showAll, setShowAll] = useState(false);
   const [groups, setGroups] = useState<Group[]>([]);
@@ -150,6 +152,19 @@ export function FirewallExtras({
   const activeGroupMeta = groups.find((g) => g.id === activeGroup) || null;
   const activeGroupIndex = groups.findIndex((g) => g.id === activeGroup);
 
+  const optionSections = useMemo(() => {
+    if (filter.trim() || showAll || !activeGroupMeta?.sections?.length) {
+      return [{ id: "all", title: "", keys }];
+    }
+    const keySet = new Set(keys);
+    const out: GroupSection[] = [];
+    for (const sec of activeGroupMeta.sections) {
+      const secKeys = sec.keys.filter((k) => keySet.has(k));
+      if (secKeys.length) out.push({ ...sec, keys: secKeys });
+    }
+    return out.length ? out : [{ id: "all", title: "", keys }];
+  }, [filter, showAll, activeGroupMeta, keys]);
+
   function cycleGroup(delta: number) {
     if (!groups.length) return;
     const idx = activeGroupIndex < 0 ? 0 : activeGroupIndex;
@@ -228,6 +243,7 @@ export function FirewallExtras({
         compile_first: true,
         dry_run: dryRun,
         activate,
+        compress,
       });
       const deployAny = res.deploy as typeof res.deploy & {
         plan?: string[];
@@ -411,19 +427,25 @@ export function FirewallExtras({
         </label>
       </div>
 
-      <div className="typed-grid options-grid">
-        {keys.map((key) => (
-          <OptionField
-            key={key}
-            name={key}
-            value={options[key] ?? ""}
-            meta={fields[key]}
-            disabled={busy}
-            onChange={(v) => setOptions((prev) => ({ ...prev, [key]: v }))}
-          />
-        ))}
-        {!keys.length ? <p className="muted">No keys in this group.</p> : null}
-      </div>
+      {optionSections.map((sec) => (
+        <div key={sec.id || "all"} className="option-section">
+          {sec.title ? <h4 className="option-section-title">{sec.title}</h4> : null}
+          <div className="typed-grid options-grid">
+            {sec.keys.map((key) => (
+              <OptionField
+                key={key}
+                name={key}
+                value={options[key] ?? ""}
+                meta={fields[key]}
+                disabled={busy}
+                onChange={(v) => setOptions((prev) => ({ ...prev, [key]: v }))}
+              />
+            ))}
+            {!sec.keys.length ? <p className="muted">No keys in this group.</p> : null}
+          </div>
+        </div>
+      ))}
+      {!keys.length ? <p className="muted">No keys in this group.</p> : null}
 
       <header className="panel-header">
         <h3>Management / deploy</h3>
@@ -481,6 +503,15 @@ export function FirewallExtras({
             onChange={(e) => setActivate(e.target.checked)}
           />
           Activate after copy
+        </label>
+        <label className="check" title="Maps to desktop Installer compressScript preference">
+          <input
+            type="checkbox"
+            checked={compress}
+            disabled={busy}
+            onChange={(e) => setCompress(e.target.checked)}
+          />
+          Compress script
         </label>
         <button type="button" disabled={busy} onClick={() => void onDeploy()}>
           Compile + deploy
