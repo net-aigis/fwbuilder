@@ -51,6 +51,10 @@ function deployPrefsKey(firewallId: string) {
   return `fwbweb.deployPrefs.${firewallId}`;
 }
 
+function deployPlanKey(firewallId: string) {
+  return `fwbweb.deployPlan.${firewallId}`;
+}
+
 export function FirewallExtras({
   sessionId,
   firewallId,
@@ -136,6 +140,11 @@ export function FirewallExtras({
           if (typeof prefs.deployHost === "string" && prefs.deployHost) setDeployHost(prefs.deployHost);
           if (typeof prefs.deployUser === "string") setDeployUser(prefs.deployUser);
           if (typeof prefs.remoteDir === "string" && prefs.remoteDir) setRemoteDir(prefs.remoteDir);
+        }
+        const planRaw = sessionStorage.getItem(deployPlanKey(firewallId));
+        if (planRaw) {
+          const storedPlan = JSON.parse(planRaw) as string[];
+          if (Array.isArray(storedPlan) && storedPlan.length) setLastPlan(storedPlan);
         }
       } catch {
         /* ignore */
@@ -369,6 +378,11 @@ export function FirewallExtras({
       };
       const plan = (deployAny.plan && deployAny.plan.length ? deployAny.plan : []) as string[];
       setLastPlan(plan);
+      try {
+        sessionStorage.setItem(deployPlanKey(firewallId), JSON.stringify(plan));
+      } catch {
+        /* ignore */
+      }
       setLog(
         [
           res.deploy.note || "",

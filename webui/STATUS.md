@@ -297,19 +297,20 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Interactive flags for Cisco/Juniper/… | done | pix/junos/nxos/procurve; E2E phase154 |
 | App mode= log + interactive live confirm | done | E2E phase155 |
 | Installer capabilities API + UI hint | done | `GET /installer-capabilities`; E2E phase156 |
+| Persist last deploy plan | done | sessionStorage; E2E phase157 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Soft-complete (feature/webui polish track)
 
-WebUI on `feature/webui` remains soft-complete for the polish track; hard-gap slices continue:
+WebUI on `feature/webui` remains soft-complete for the polish track; hard-gap slices continue through phase156+:
 
-- Deploy now follows FirewallInstallerUnx-style **manifest copy** (still no expect/SSHSession)
-- Options UI shows **.ui labels** where extractable (still no pixel Qt layout)
+- Deploy: manifest `# files:`, OS configlets, external PolicyInstallScript, copyFWB, use_scp/compress, capabilities API (still **no** expect/SSHSession)
+- Options: .ui labels, QRadio bool, QGroupBox sections, tooltips (still **no** pixel Qt layout)
 
 Still open:
 
 - Full Qt AdvancedDialog **pixel** layout parity
-- Full desktop **FirewallInstaller** expect/SSHSession (Cisco/Juniper/Procurve interactive); Unix path now covers manifest, configlets, external install script, copyFWB
+- Full desktop **FirewallInstaller** expect/SSHSession for Cisco/Juniper/Procurve interactive installers
 
 ## Phase 3 — compile / deploy
 
@@ -476,6 +477,7 @@ Still open:
 | Local E2E phase154 (interactive Cisco/…) | done | `e2e-phase154.sh` **OK** |
 | Local E2E phase155 (mode log / confirm) | done | `e2e-phase155.sh` **OK** |
 | Local E2E phase156 (installer capabilities) | done | `e2e-phase156.sh` **OK** |
+| Local E2E phase157 (persist deploy plan) | done | `e2e-phase157.sh` **OK** |
 
 ## Local commands
 
@@ -641,6 +643,7 @@ bash webui/scripts/e2e-phase153.sh
 bash webui/scripts/e2e-phase154.sh
 bash webui/scripts/e2e-phase155.sh
 bash webui/scripts/e2e-phase156.sh
+bash webui/scripts/e2e-phase157.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```
