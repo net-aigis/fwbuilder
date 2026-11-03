@@ -2716,7 +2716,8 @@ export function App() {
     if (!sessionId || !target) return;
     if (
       !window.confirm(
-        "LIVE deploy will run scp/ssh against the management host. Continue?",
+        "LIVE deploy will run scp/ssh against the management host. " +
+          "Interactive Cisco/Juniper installers are not fully supported. Continue?",
       )
     ) {
       return;
@@ -2734,6 +2735,7 @@ export function App() {
         firewall_id: target,
         dry_run: false,
         compile_first: true,
+        force_limited_installer: true,
       });
       const cmds = (res.deploy?.commands || []).join("\n");
       const plan = (res.deploy?.plan || []).join("\n");
