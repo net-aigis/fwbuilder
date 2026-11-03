@@ -313,14 +313,15 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Persist Qt grid placement pref | done | sessionStorage; E2E phase170 |
 | Expandable expect desktop steps | done | FirewallExtras details; E2E phase171 |
 | Page-local QGridLayout positions | done | extract per tab page; E2E phase172 |
+| Dynamic CSS grid template from .ui extents | done | FirewallExtras; E2E phase173 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Soft-complete (feature/webui polish track)
 
-WebUI on `feature/webui` remains soft-complete for the polish track; hard-gap slices continue through phase172+:
+WebUI on `feature/webui` remains soft-complete for the polish track; hard-gap slices continue through phase173+:
 
 - Deploy: manifest `# files:`, OS configlets, external PolicyInstallScript, copyFWB, use_scp/compress, capabilities API, live gate + force_limited, expect stub + UI steps (still **no** expect/SSHSession runtime)
-- Options: .ui labels, QRadio bool, QGroupBox sections, tooltips, page-local QGridLayout hints + toggle (still **not** full pixel Qt layout)
+- Options: .ui labels, QRadio bool, QGroupBox sections, tooltips, page-local QGridLayout + dynamic CSS template (still **not** full pixel Qt layout)
 
 Still open (hard backlog):
 
@@ -510,6 +511,7 @@ Still open (hard backlog):
 | Local E2E phase170 (qt grid pref) | done | `e2e-phase170.sh` **OK** |
 | Local E2E phase171 (expect steps details) | done | `e2e-phase171.sh` **OK** |
 | Local E2E phase172 (page-local grids) | done | `e2e-phase172.sh` **OK** |
+| Local E2E phase173 (dynamic grid template) | done | `e2e-phase173.sh` **OK** |
 
 ## Local commands
 
@@ -691,6 +693,7 @@ bash webui/scripts/e2e-phase169.sh
 bash webui/scripts/e2e-phase170.sh
 bash webui/scripts/e2e-phase171.sh
 bash webui/scripts/e2e-phase172.sh
+bash webui/scripts/e2e-phase173.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```
