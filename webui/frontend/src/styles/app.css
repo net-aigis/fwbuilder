@@ -638,6 +638,10 @@ button.linkish:disabled {
   overflow: auto;
 }
 
+.compile-log.nowrap {
+  white-space: pre;
+}
+
 .firewall-extras {
   margin-top: 1.25rem;
   padding-top: 1rem;

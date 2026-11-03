@@ -126,7 +126,20 @@ export function App() {
     name: string;
     platform?: string;
     host_OS?: string;
+    lastCompiled?: string;
+    lastInstalled?: string;
+    lastModified?: string;
   } | null>(null);
+  const [compileLogWrap, setCompileLogWrap] = useState(() => {
+    try {
+      const v = sessionStorage.getItem("fwbweb.compileLogWrap");
+      if (v === "0") return false;
+      if (v === "1") return true;
+    } catch {
+      /* ignore */
+    }
+    return true;
+  });
   const [rulesetId, setRulesetId] = useState<string | null>(null);
   const [rulesetList, setRulesetList] = useState<RulesetListEntry[]>([]);
   const [rules, setRules] = useState<AnyRule[]>([]);
@@ -397,6 +410,14 @@ export function App() {
   }, [compileLog]);
 
   useEffect(() => {
+    try {
+      sessionStorage.setItem("fwbweb.compileLogWrap", compileLogWrap ? "1" : "0");
+    } catch {
+      /* ignore */
+    }
+  }, [compileLogWrap]);
+
+  useEffect(() => {
     void refreshObjectPath(selected?.id ?? null);
   }, [sessionId, selected?.id]);
 
@@ -435,6 +456,32 @@ export function App() {
         JSON.stringify({ fwId, which, rulesetId: rsId }),
       );
       sessionStorage.setItem("fwbweb.rulesWhich", which);
+    } catch {
+      /* ignore */
+    }
+  }
+
+  function metaFromFirewall(fw: {
+    name?: string;
+    attrs?: Record<string, string | number | undefined> | null;
+  }) {
+    const a = fw.attrs ?? {};
+    return {
+      name: fw.name || "",
+      platform: a.platform != null ? String(a.platform) : undefined,
+      host_OS: a.host_OS != null ? String(a.host_OS) : undefined,
+      lastCompiled: a.lastCompiled != null ? String(a.lastCompiled) : undefined,
+      lastInstalled: a.lastInstalled != null ? String(a.lastInstalled) : undefined,
+      lastModified: a.lastModified != null ? String(a.lastModified) : undefined,
+    };
+  }
+
+  async function refreshRulesFwMeta(fwId?: string | null) {
+    const id = fwId || rulesFwId;
+    if (!sessionId || !id) return;
+    try {
+      const fw = await fetchObject(sessionId, id);
+      setRulesFwMeta(metaFromFirewall(fw));
     } catch {
       /* ignore */
     }
@@ -605,6 +652,7 @@ export function App() {
           try {
             const fw = await fetchObject(sessionId, fwId);
             setRulesetList(fw.ruleset_list ?? []);
+            setRulesFwMeta(metaFromFirewall(fw));
           } catch {
             setRulesetList([]);
           }
@@ -642,11 +690,7 @@ export function App() {
       setRules(data.rules ?? []);
       setRulesetName(chosen?.name || data.name || which);
       setRulesFwId(fwId);
-      setRulesFwMeta({
-        name: fw.name || "",
-        platform: fw.attrs?.platform != null ? String(fw.attrs.platform) : undefined,
-        host_OS: fw.attrs?.host_OS != null ? String(fw.attrs.host_OS) : undefined,
-      });
+      setRulesFwMeta(metaFromFirewall(fw));
       setRulesetId(targetId);
       setRulesWhich(which);
       persistRulesCtx(fwId, which, targetId);
@@ -1029,6 +1073,25 @@ export function App() {
       if (mod && e.shiftKey && e.key.toLowerCase() === "y" && selected) {
         e.preventDefault();
         onCopySelectedObjectTsv();
+        return;
+      }
+      if (mod && e.shiftKey && e.key.toLowerCase() === "m" && selected) {
+        e.preventDefault();
+        const text = selected.comment ?? "";
+        void navigator.clipboard.writeText(text).then(
+          () => setStatus(text ? "Copied object comment" : "Object has no comment"),
+          () => setError("Clipboard write failed"),
+        );
+        return;
+      }
+      if (mod && !e.shiftKey && e.key === "[" && sessionId) {
+        e.preventDefault();
+        void onCollapseTree();
+        return;
+      }
+      if (mod && !e.shiftKey && e.key === "]" && sessionId) {
+        e.preventDefault();
+        void onExpandTree();
         return;
       }
       if (mod && e.shiftKey && e.key.toLowerCase() === "p" && objectPath.length) {
@@ -2584,6 +2647,7 @@ export function App() {
         `${res.compiler} → ${res.destdir}\noutputs: ${res.outputs.join(", ") || "(none)"}\n\n${res.log}`,
       );
       setStatus(`Compiled ${res.firewall} (${res.platform})`);
+      if (target === rulesFwId || !rulesFwId) await refreshRulesFwMeta(target);
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
@@ -2656,6 +2720,7 @@ export function App() {
           `${res.compile?.log || ""}`,
       );
       setStatus(`Deployed ${res.firewall} → ${res.deploy?.host || "?"}`);
+      if (target === rulesFwId || !rulesFwId) await refreshRulesFwMeta(target);
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
@@ -3084,7 +3149,7 @@ export function App() {
               className="ghost"
               disabled={!sessionId || busy}
               onClick={() => void onCollapseTree()}
-              title="Reload tree at depth 1"
+              title="Reload tree at depth 1 (Ctrl+[)"
             >
               Collapse
             </button>
@@ -3093,7 +3158,7 @@ export function App() {
               className="ghost"
               disabled={!sessionId || busy}
               onClick={() => void onExpandTree()}
-              title="Reload tree at depth 5"
+              title="Reload tree at depth 5 (Ctrl+])"
             >
               Expand
             </button>
@@ -3477,6 +3542,26 @@ export function App() {
                       Copy TSV
                     </button>
                   ) : null}
+                  {selected ? (
+                    <button
+                      type="button"
+                      className="ghost"
+                      disabled={busy}
+                      title="Copy object comment (Ctrl+Shift+M)"
+                      onClick={() => {
+                        const text = selected.comment ?? "";
+                        void navigator.clipboard.writeText(text).then(
+                          () =>
+                            setStatus(
+                              text ? "Copied object comment" : "Object has no comment",
+                            ),
+                          () => setError("Clipboard write failed"),
+                        );
+                      }}
+                    >
+                      Copy comment
+                    </button>
+                  ) : null}
                 </nav>
               ) : null}
             <ObjectDetail
@@ -3710,6 +3795,12 @@ export function App() {
                       · {rulesFwMeta.name}
                       {rulesFwMeta.platform ? ` · ${rulesFwMeta.platform}` : ""}
                       {rulesFwMeta.host_OS ? `/${rulesFwMeta.host_OS}` : ""}
+                      {rulesFwMeta.lastCompiled
+                        ? ` · compiled ${rulesFwMeta.lastCompiled}`
+                        : ""}
+                      {rulesFwMeta.lastInstalled
+                        ? ` · installed ${rulesFwMeta.lastInstalled}`
+                        : ""}
                     </span>
                   ) : null}
                   {rules.length ? (
@@ -3752,6 +3843,21 @@ export function App() {
                       }}
                     >
                       Copy fw id
+                    </button>
+                  ) : null}
+                  {rulesFwMeta?.name ? (
+                    <button
+                      type="button"
+                      className="ghost"
+                      title="Copy firewall name"
+                      onClick={() => {
+                        void navigator.clipboard.writeText(rulesFwMeta.name).then(
+                          () => setStatus(`Copied firewall name ${rulesFwMeta.name}`),
+                          () => setError("Clipboard write failed"),
+                        );
+                      }}
+                    >
+                      Copy fw name
                     </button>
                   ) : null}
                   {rulesFwId ? (
@@ -4415,8 +4521,28 @@ export function App() {
                     >
                       Clear log
                     </button>
+                    <button
+                      type="button"
+                      className="ghost"
+                      title="Toggle soft-wrap for compile log"
+                      onClick={() => {
+                        setCompileLogWrap((v) => !v);
+                        setStatus(
+                          compileLogWrap
+                            ? "Compile log: no wrap"
+                            : "Compile log: soft wrap",
+                        );
+                      }}
+                    >
+                      {compileLogWrap ? "No wrap" : "Wrap"}
+                    </button>
                   </div>
-                  <pre ref={compileLogRef} className="compile-log pad">
+                  <pre
+                    ref={compileLogRef}
+                    className={
+                      compileLogWrap ? "compile-log pad" : "compile-log pad nowrap"
+                    }
+                  >
                     {compileLog}
                   </pre>
                 </>

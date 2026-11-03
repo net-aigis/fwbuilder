@@ -254,6 +254,11 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Copy object TSV | done | Ctrl+Shift+Y; E2E phase109 |
 | Persist unused/trash type filters | done | sessionStorage; E2E phase110 |
 | Scroll compile log into view | done | after update; E2E phase111 |
+| Rules header compile/install times | done | lastCompiled/lastInstalled; E2E phase112 |
+| Compile log wrap toggle | done | sessionStorage; E2E phase113 |
+| Tree expand/collapse shortcuts | done | Ctrl+[ / Ctrl+]; E2E phase114 |
+| Copy object comment | done | Ctrl+Shift+M; E2E phase115 |
+| Copy firewall name | done | rules header; E2E phase116 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Phase 3 — compile / deploy
@@ -376,6 +381,11 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase109 (object TSV) | done | `e2e-phase109.sh` **OK** |
 | Local E2E phase110 (unused/trash filters) | done | `e2e-phase110.sh` **OK** |
 | Local E2E phase111 (compile log scroll) | done | `e2e-phase111.sh` **OK** |
+| Local E2E phase112 (fw timestamps) | done | `e2e-phase112.sh` **OK** |
+| Local E2E phase113 (log wrap) | done | `e2e-phase113.sh` **OK** |
+| Local E2E phase114 (tree shortcuts) | done | `e2e-phase114.sh` **OK** |
+| Local E2E phase115 (copy comment) | done | `e2e-phase115.sh` **OK** |
+| Local E2E phase116 (copy fw name) | done | `e2e-phase116.sh` **OK** |
 
 ## Local commands
 
@@ -496,6 +506,11 @@ bash webui/scripts/e2e-phase108.sh
 bash webui/scripts/e2e-phase109.sh
 bash webui/scripts/e2e-phase110.sh
 bash webui/scripts/e2e-phase111.sh
+bash webui/scripts/e2e-phase112.sh
+bash webui/scripts/e2e-phase113.sh
+bash webui/scripts/e2e-phase114.sh
+bash webui/scripts/e2e-phase115.sh
+bash webui/scripts/e2e-phase116.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```
