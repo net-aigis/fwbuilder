@@ -871,6 +871,11 @@ export function App() {
         void onFindUnused();
         return;
       }
+      if (mod && e.shiftKey && e.key.toLowerCase() === "k" && compileLog) {
+        e.preventDefault();
+        onCopyCompileLog();
+        return;
+      }
       if (mod && !e.shiftKey && e.key === "1") {
         e.preventDefault();
         setTab("object");
@@ -1108,6 +1113,7 @@ export function App() {
     ruleGroupFilter,
     ruleActionFilter,
     objectPath,
+    compileLog,
   ]);
 
   async function onApplyObject(patch: {
@@ -1544,6 +1550,14 @@ export function App() {
     a.click();
     URL.revokeObjectURL(url);
     setStatus("Downloaded compile log");
+  }
+
+  function onCopyCompileLog() {
+    if (!compileLog) return;
+    void navigator.clipboard.writeText(compileLog).then(
+      () => setStatus("Copied compile/deploy log"),
+      () => setError("Clipboard write failed"),
+    );
   }
 
   async function onFindUnused() {
@@ -4049,6 +4063,14 @@ export function App() {
               {compileLog ? (
                 <>
                   <div className="btn-row pad">
+                    <button
+                      type="button"
+                      className="ghost"
+                      onClick={onCopyCompileLog}
+                      title="Copy compile/deploy log (Ctrl+Shift+K)"
+                    >
+                      Copy log
+                    </button>
                     <button
                       type="button"
                       className="ghost"

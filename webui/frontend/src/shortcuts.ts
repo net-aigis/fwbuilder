@@ -16,6 +16,7 @@ export const SHORTCUTS: ShortcutEntry[] = [
   { keys: "Ctrl+1", action: "Object tab" },
   { keys: "Ctrl+2", action: "Rules tab" },
   { keys: "Ctrl+Shift+U", action: "Find unused objects" },
+  { keys: "Ctrl+Shift+K", action: "Copy compile/deploy log" },
   { keys: "F2", action: "Rename selected object", scope: "object" },
   { keys: "/", action: "Focus object search" },
   { keys: "i", action: "Copy selected rule id", scope: "rules" },
