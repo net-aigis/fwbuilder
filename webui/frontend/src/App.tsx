@@ -866,6 +866,11 @@ export function App() {
         setTheme((t) => (t === "dark" ? "light" : "dark"));
         return;
       }
+      if (mod && e.shiftKey && e.key.toLowerCase() === "u" && sessionId) {
+        e.preventDefault();
+        void onFindUnused();
+        return;
+      }
       if (mod && !e.shiftKey && e.key === "1") {
         e.preventDefault();
         setTab("object");
@@ -887,6 +892,25 @@ export function App() {
         e.preventDefault();
         void navigator.clipboard.writeText(selectedRuleId).then(
           () => setStatus(`Copied rule id ${selectedRuleId}`),
+          () => setError("Clipboard write failed"),
+        );
+        return;
+      }
+      if (
+        tab === "rules" &&
+        !mod &&
+        !e.altKey &&
+        e.key.toLowerCase() === "p" &&
+        selectedRuleId &&
+        !typing
+      ) {
+        e.preventDefault();
+        const rule = visibleRules.find((r) => r.id === selectedRuleId) ||
+          rules.find((r) => r.id === selectedRuleId);
+        if (!rule) return;
+        const pos = String(rule.position ?? "");
+        void navigator.clipboard.writeText(pos).then(
+          () => setStatus(`Copied rule position ${pos}`),
           () => setError("Clipboard write failed"),
         );
         return;
@@ -2856,7 +2880,7 @@ export function App() {
               className="ghost"
               disabled={!canOperate}
               onClick={() => void onFindUnused()}
-              title="Find Address/Service/Interval objects with no references"
+              title="Find unused objects (Ctrl+Shift+U)"
             >
               Unused
             </button>
