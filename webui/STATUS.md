@@ -296,6 +296,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Absolute remote_dir validation | done | E2E phase153 |
 | Interactive flags for Cisco/Juniper/… | done | pix/junos/nxos/procurve; E2E phase154 |
 | App mode= log + interactive live confirm | done | E2E phase155 |
+| Installer capabilities API + UI hint | done | `GET /installer-capabilities`; E2E phase156 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Soft-complete (feature/webui polish track)
@@ -474,6 +475,7 @@ Still open:
 | Local E2E phase153 (absolute remote_dir) | done | `e2e-phase153.sh` **OK** |
 | Local E2E phase154 (interactive Cisco/…) | done | `e2e-phase154.sh` **OK** |
 | Local E2E phase155 (mode log / confirm) | done | `e2e-phase155.sh` **OK** |
+| Local E2E phase156 (installer capabilities) | done | `e2e-phase156.sh` **OK** |
 
 ## Local commands
 
@@ -638,6 +640,7 @@ bash webui/scripts/e2e-phase152.sh
 bash webui/scripts/e2e-phase153.sh
 bash webui/scripts/e2e-phase154.sh
 bash webui/scripts/e2e-phase155.sh
+bash webui/scripts/e2e-phase156.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

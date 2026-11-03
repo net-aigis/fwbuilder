@@ -84,6 +84,25 @@ def get_installer_configlets(
     return list_installer_configlets(host_os)
 
 
+@router.get("/installer-capabilities")
+def get_installer_capabilities(
+    host_os: str = Query(..., min_length=1),
+    _: str = Depends(require_token),
+) -> dict[str, Any]:
+    """Honest WebUI vs desktop FirewallInstaller capability summary for host_OS."""
+    listing = list_installer_configlets(host_os)
+    modes = listing.get("webui_modes") or {}
+    return {
+        **listing,
+        "desktop_full_installer": listing.get("interactive_installer"),
+        "recommended_webui_mode": (
+            "external_install_script"
+            if not (modes.get("scp_ssh") or modes.get("scp_ssh_limited"))
+            else ("scp_ssh_limited" if modes.get("scp_ssh_limited") else "scp_ssh")
+        ),
+    }
+
+
 @router.get("/installer-configlet")
 def get_installer_configlet(
     host_os: str = Query(..., min_length=1),

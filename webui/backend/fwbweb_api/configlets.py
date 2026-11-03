@@ -69,12 +69,20 @@ def list_installer_configlets(host_os: str) -> dict[str, Any]:
             "installer_commands_post_config",
         )
     )
+    has_root = "installer_commands_root" in names
+    has_reg = "installer_commands_reg_user" in names
     return {
         "host_os": host_os,
         "family": os_family(host_os),
         "configlet_dir": str(directory) if directory else None,
         "names": names,
         "interactive_installer": interactive,
+        "webui_modes": {
+            "scp_ssh": bool(has_reg or has_root) and not interactive,
+            "scp_ssh_limited": bool(has_reg or has_root) and interactive,
+            "external_install_script": True,
+            "expect_sshsession": False,
+        },
         "note": (
             "Desktop FirewallInstaller uses expect/SSHSession with pre/post configlets; "
             "WebUI scp/ssh deploy only expands the activation configlet."

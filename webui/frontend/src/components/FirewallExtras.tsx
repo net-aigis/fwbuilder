@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   deployFirewall,
+  fetchInstallerCapabilities,
   fetchInstallerConfiglet,
   fetchInstallerConfiglets,
   fetchManagement,
@@ -86,6 +87,7 @@ export function FirewallExtras({
   const [dialogName, setDialogName] = useState<string>("");
   const [activeGroup, setActiveGroup] = useState<string>("platform");
   const [installerNote, setInstallerNote] = useState<string | null>(null);
+  const [installerMode, setInstallerMode] = useState<string | null>(null);
 
   async function reload() {
     onBusy?.(true);
@@ -97,7 +99,9 @@ export function FirewallExtras({
         fetchManagement(sessionId, firewallId),
         fetchOptionSchema(plat, hostOs || "").catch(() => null),
         hostOs
-          ? fetchInstallerConfiglets(hostOs).catch(() => null)
+          ? fetchInstallerCapabilities(hostOs).catch(() =>
+              fetchInstallerConfiglets(hostOs).catch(() => null),
+            )
           : Promise.resolve(null),
       ]);
       setOptions(o.options ?? {});
@@ -136,12 +140,19 @@ export function FirewallExtras({
       } catch {
         /* ignore */
       }
-      if (cfgList?.interactive_installer) {
-        setInstallerNote(
-          cfgList.note ||
-            "This OS uses interactive FirewallInstaller pre/post configlets; WebUI scp/ssh deploy is limited.",
-        );
+      if (cfgList) {
+        const caps = cfgList as typeof cfgList & { recommended_webui_mode?: string };
+        setInstallerMode(caps.recommended_webui_mode || null);
+        if (cfgList.interactive_installer) {
+          setInstallerNote(
+            cfgList.note ||
+              "This OS uses interactive FirewallInstaller pre/post configlets; WebUI scp/ssh deploy is limited.",
+          );
+        } else {
+          setInstallerNote(null);
+        }
       } else {
+        setInstallerMode(null);
         setInstallerNote(null);
       }
       if (schema) {
@@ -566,6 +577,11 @@ export function FirewallExtras({
       <header className="panel-header">
         <h3>Management / deploy</h3>
       </header>
+      {installerMode ? (
+        <p className="muted pad-tight" role="status">
+          Recommended WebUI installer mode: <code>{installerMode}</code>
+        </p>
+      ) : null}
       {installerNote ? (
         <p className="warn pad-tight" role="status">
           {installerNote}

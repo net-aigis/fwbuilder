@@ -635,7 +635,20 @@ export function fetchInstallerConfiglets(hostOs: string) {
     names: string[];
     interactive_installer?: boolean;
     note?: string | null;
+    webui_modes?: Record<string, boolean>;
   }>(`/api/v1/installer-configlets?${q.toString()}`);
+}
+
+export function fetchInstallerCapabilities(hostOs: string) {
+  const q = new URLSearchParams({ host_os: hostOs });
+  return api<{
+    host_os: string;
+    family?: string;
+    interactive_installer?: boolean;
+    recommended_webui_mode?: string;
+    webui_modes?: Record<string, boolean>;
+    note?: string | null;
+  }>(`/api/v1/installer-capabilities?${q.toString()}`);
 }
 
 export function deployFirewall(
