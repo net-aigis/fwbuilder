@@ -1945,6 +1945,37 @@
           "layouts": {
             "QGridLayout": 3
           },
+          "sections": [
+            {
+              "id": "page_vlan",
+              "keys": [
+                "vlan_id"
+              ],
+              "stack": "options_stack",
+              "stack_index": 2,
+              "stacked": true,
+              "title": "page_vlan"
+            },
+            {
+              "id": "page_bridge",
+              "keys": [
+                "enable_stp"
+              ],
+              "stack": "options_stack",
+              "stack_index": 3,
+              "stacked": true,
+              "title": "page_bridge"
+            },
+            {
+              "id": "other",
+              "keys": [
+                "iface_configure_mtu",
+                "iface_mtu",
+                "iface_options"
+              ],
+              "title": "Other"
+            }
+          ],
           "spacers": [
             {
               "colspan": 1,
@@ -4411,6 +4442,45 @@
           "layouts": {
             "QGridLayout": 4
           },
+          "sections": [
+            {
+              "id": "WStackPage0",
+              "keys": [
+                "log_tcp_seq",
+                "log_ip_opt",
+                "use_numeric_log_levels",
+                "log_level",
+                "log_tcp_opt"
+              ],
+              "stack": "logTargetStack",
+              "stack_index": 0,
+              "stacked": true,
+              "title": "WStackPage0"
+            },
+            {
+              "id": "WStackPage1",
+              "keys": [
+                "ulog_cprange",
+                "ulog_qthreshold",
+                "ulog_nlgroup"
+              ],
+              "stack": "logTargetStack",
+              "stack_index": 1,
+              "stacked": true,
+              "title": "WStackPage1"
+            },
+            {
+              "id": "other",
+              "keys": [
+                "use_ULOG",
+                "log_prefix",
+                "limit_value",
+                "limit_suffix",
+                "log_all"
+              ],
+              "title": "Other"
+            }
+          ],
           "spacers": [
             {
               "colspan": 1,
@@ -8431,6 +8501,32 @@
               "title": "buttonGroup1"
             },
             {
+              "id": "WStackPage0",
+              "keys": [
+                "log_tcp_seq",
+                "log_ip_opt",
+                "use_numeric_log_levels",
+                "log_level",
+                "log_tcp_opt"
+              ],
+              "stack": "logTargetStack",
+              "stack_index": 0,
+              "stacked": true,
+              "title": "WStackPage0"
+            },
+            {
+              "id": "WStackPage1",
+              "keys": [
+                "ulog_cprange",
+                "ulog_qthreshold",
+                "ulog_nlgroup"
+              ],
+              "stack": "logTargetStack",
+              "stack_index": 1,
+              "stacked": true,
+              "title": "WStackPage1"
+            },
+            {
               "id": "other",
               "keys": [
                 "log_prefix",
@@ -11121,6 +11217,40 @@
           "layouts": {
             "QGridLayout": 4
           },
+          "sections": [
+            {
+              "id": "page_lan",
+              "keys": [
+                "vlan_id"
+              ],
+              "stack": "options_stack",
+              "stack_index": 1,
+              "stacked": true,
+              "title": "page_lan"
+            },
+            {
+              "id": "page_bridge",
+              "keys": [
+                "enable_stp"
+              ],
+              "stack": "options_stack",
+              "stack_index": 2,
+              "stacked": true,
+              "title": "page_bridge"
+            },
+            {
+              "id": "page_bonding",
+              "keys": [
+                "bonding_policy",
+                "xmit_hash_policy",
+                "bondng_driver_options"
+              ],
+              "stack": "options_stack",
+              "stack_index": 3,
+              "stacked": true,
+              "title": "page_bonding"
+            }
+          ],
           "spacers": [
             {
               "colspan": 1,
@@ -17981,6 +18111,18 @@
           "layouts": {
             "QGridLayout": 2
           },
+          "sections": [
+            {
+              "id": "page_vlan",
+              "keys": [
+                "vlan_id"
+              ],
+              "stack": "options_stack",
+              "stack_index": 1,
+              "stacked": true,
+              "title": "page_vlan"
+            }
+          ],
           "spacers": [
             {
               "colspan": 1,
@@ -20022,6 +20164,32 @@
               "title": "buttonGroup1"
             },
             {
+              "id": "WStackPage0",
+              "keys": [
+                "log_tcp_seq",
+                "log_ip_opt",
+                "use_numeric_log_levels",
+                "log_level",
+                "log_tcp_opt"
+              ],
+              "stack": "logTargetStack",
+              "stack_index": 0,
+              "stacked": true,
+              "title": "WStackPage0"
+            },
+            {
+              "id": "WStackPage1",
+              "keys": [
+                "ulog_cprange",
+                "ulog_qthreshold",
+                "ulog_nlgroup"
+              ],
+              "stack": "logTargetStack",
+              "stack_index": 1,
+              "stacked": true,
+              "title": "WStackPage1"
+            },
+            {
               "id": "other",
               "keys": [
                 "log_prefix",
@@ -20341,6 +20509,28 @@
           "layouts": {
             "QGridLayout": 2
           },
+          "sections": [
+            {
+              "id": "page_1",
+              "keys": [
+                "vlan_id"
+              ],
+              "stack": "options_stack",
+              "stack_index": 1,
+              "stacked": true,
+              "title": "page_1"
+            },
+            {
+              "id": "other",
+              "keys": [
+                "iface_mtu",
+                "iface_options",
+                "iface_disableboot",
+                "iface_disablearp"
+              ],
+              "title": "Other"
+            }
+          ],
           "spacers": [
             {
               "colspan": 1,

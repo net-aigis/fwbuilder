@@ -65,6 +65,9 @@ type GroupSection = {
   checkable?: boolean;
   checked?: boolean;
   enabled?: boolean;
+  stacked?: boolean;
+  stack?: string;
+  stack_index?: number;
 };
 type Group = {
   id: string;
@@ -824,12 +827,15 @@ export function FirewallExtras({
               sec.flat ? "option-section-flat" : "",
               sec.checkable ? "option-section-checkable" : "",
               sec.enabled === false ? "option-section-disabled" : "",
+              sec.stacked ? "option-section-stacked" : "",
             ]
               .filter(Boolean)
               .join(" ")}
             data-flat={sec.flat ? "1" : undefined}
             data-checkable={sec.checkable ? "1" : undefined}
             data-enabled={sec.enabled === false ? "0" : undefined}
+            data-stacked={sec.stacked ? "1" : undefined}
+            data-stack={sec.stack}
           >
             {sec.title ? (
               <h4 className="option-section-title">
@@ -838,8 +844,16 @@ export function FirewallExtras({
                     ☐{" "}
                   </span>
                 ) : null}
+                {sec.stacked ? (
+                  <span className="muted" title="QStackedWidget page in .ui">
+                    ▤{" "}
+                  </span>
+                ) : null}
                 {sec.title}
                 {sec.flat ? <span className="muted"> · flat</span> : null}
+                {sec.stacked && sec.stack_index != null ? (
+                  <span className="muted"> · stack[{sec.stack_index}]</span>
+                ) : null}
               </h4>
             ) : null}
             <div className={grid.className} style={grid.style}>

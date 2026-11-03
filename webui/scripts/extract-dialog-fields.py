@@ -612,6 +612,47 @@ def _bool_prop(widget: ET.Element, name: str) -> bool | None:
     return el.text.strip().lower() in {"true", "1"}
 
 
+def parse_stacked_sections(page: ET.Element) -> list[dict]:
+    """QStackedWidget pages on a tab page as synthetic sections (layout hint)."""
+    sections: list[dict] = []
+    for stack in page.iter("widget"):
+        if stack.get("class") != "QStackedWidget":
+            continue
+        stack_name = stack.get("name") or f"stack{len(sections)}"
+        page_idx = 0
+        for child in list(stack):
+            if child.tag != "widget" or child.get("class") != "QWidget":
+                continue
+            title_el = None
+            for attr in child.findall("attribute"):
+                if attr.get("name") == "title":
+                    title_el = attr.find("string")
+            title = (title_el.text or "").strip() if title_el is not None else ""
+            if not title:
+                title = child.get("name") or f"{stack_name} page {page_idx}"
+            widgets: list[str] = []
+            for c in child.iter("widget"):
+                name = c.get("name")
+                cls = c.get("class") or ""
+                if name and cls in CONTROL_CLASSES:
+                    widgets.append(name)
+            if not widgets:
+                page_idx += 1
+                continue
+            sections.append(
+                {
+                    "id": child.get("name") or f"{stack_name}_{page_idx}",
+                    "title": title,
+                    "widgets": widgets,
+                    "stacked": True,
+                    "stack": stack_name,
+                    "stack_index": page_idx,
+                }
+            )
+            page_idx += 1
+    return sections
+
+
 def parse_groupbox_sections(page: ET.Element) -> list[dict]:
     """QGroupBox subgroups on a tab page: {id, title, widgets:[…], flat?, checkable?}."""
     sections: list[dict] = []
@@ -701,11 +742,12 @@ def parse_pages(root: ET.Element | None) -> list[dict]:
                 cls = w.get("class") or ""
                 if name and cls in CONTROL_CLASSES:
                     widgets.append(name)
+            sections = parse_groupbox_sections(page) + parse_stacked_sections(page)
             page_entry: dict[str, Any] = {
                 "id": page.get("name") or f"page{len(pages)}",
                 "title": title or page.get("name") or f"Page {len(pages)+1}",
                 "widgets": widgets,
-                "sections": parse_groupbox_sections(page),
+                "sections": sections,
             }
             spacers = _spacers_in_subtree(page)
             if spacers:
@@ -838,7 +880,7 @@ def pages_with_keys(pages: list[dict], fields: dict[str, dict]) -> list[dict]:
                 "title": sec["title"],
                 "keys": sec_keys,
             }
-            for flag in ("flat", "checkable", "checked", "enabled"):
+            for flag in ("flat", "checkable", "checked", "enabled", "stacked", "stack", "stack_index"):
                 if flag in sec:
                     sec_entry[flag] = sec[flag]
             sections_out.append(sec_entry)

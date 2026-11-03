@@ -527,6 +527,9 @@ export function fetchOptionSchema(platform: string, hostOs = "") {
         checkable?: boolean;
         checked?: boolean;
         enabled?: boolean;
+        stacked?: boolean;
+        stack?: string;
+        stack_index?: number;
       }>;
       layout_tree?: unknown[];
       spacers?: Array<{
