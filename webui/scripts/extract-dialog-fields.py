@@ -175,6 +175,23 @@ def parse_widget_labels(root: ET.Element | None) -> dict[str, str]:
     return labels
 
 
+def parse_widget_tooltips(root: ET.Element | None) -> dict[str, str]:
+    """Map widget objectName → toolTip / whatsThis from .ui."""
+    tips: dict[str, str] = {}
+    if root is None:
+        return tips
+    for w in root.iter("widget"):
+        name = w.get("name")
+        if not name:
+            continue
+        for prop_name in ("toolTip", "whatsThis"):
+            prop = w.find(f"./property[@name='{prop_name}']/string")
+            if prop is not None and (prop.text or "").strip():
+                tips[name] = prop.text.strip()
+                break
+    return tips
+
+
 def parse_groupbox_sections(page: ET.Element) -> list[dict]:
     """QGroupBox subgroups on a tab page: {id, title, widgets:[…]}."""
     sections: list[dict] = []
@@ -241,6 +258,7 @@ def parse_pages(root: ET.Element | None) -> list[dict]:
 def extract_cpp(cpp_path: Path, ui_root: ET.Element | None, ui_widgets: dict[str, str]) -> dict[str, dict]:
     src = cpp_path.read_text(encoding="utf-8", errors="replace")
     labels = parse_widget_labels(ui_root)
+    tips = parse_widget_tooltips(ui_root)
     fields: dict[str, dict] = {}
     for m in REG_OPT.finditer(src):
         widget, key, _mapping = m.group(1), m.group(2), m.group(3)
@@ -249,6 +267,8 @@ def extract_cpp(cpp_path: Path, ui_root: ET.Element | None, ui_widgets: dict[str
         field: dict = {"key": key, "widget": widget, "widget_class": cls or None, "type": ftype}
         if widget in labels:
             field["label"] = labels[widget]
+        if widget in tips:
+            field["tooltip"] = tips[widget]
         if ftype == "enum":
             choices = parse_combo_items(ui_root, widget) or KNOWN_ENUMS.get(key, [])
             if choices:

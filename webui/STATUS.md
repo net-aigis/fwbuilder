@@ -291,6 +291,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | External PolicyInstallScript deploy | done | local run like Unx; E2E phase147–148 |
 | copyFWB (.fwb with policy) | done | deploy body/UI; E2E phase149 |
 | Deploy mode + host prefs persistence | done | scp_ssh/external; E2E phase150 |
+| .ui tooltips on option fields | done | extract + OptionField title; E2E phase151 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Soft-complete (feature/webui polish track)
@@ -464,6 +465,7 @@ Still open:
 | Local E2E phase148 (external install UI) | done | `e2e-phase148.sh` **OK** |
 | Local E2E phase149 (copyFWB) | done | `e2e-phase149.sh` **OK** |
 | Local E2E phase150 (deploy mode/prefs) | done | `e2e-phase150.sh` **OK** |
+| Local E2E phase151 (.ui tooltips) | done | `e2e-phase151.sh` **OK** |
 
 ## Local commands
 
@@ -623,6 +625,7 @@ bash webui/scripts/e2e-phase147.sh
 bash webui/scripts/e2e-phase148.sh
 bash webui/scripts/e2e-phase149.sh
 bash webui/scripts/e2e-phase150.sh
+bash webui/scripts/e2e-phase151.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

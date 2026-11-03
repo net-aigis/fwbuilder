@@ -482,6 +482,7 @@ export type OptionFieldMeta = {
   type?: string;
   choices?: string[];
   label?: string;
+  tooltip?: string;
   widget?: string;
   widget_class?: string;
 };

@@ -2,6 +2,7 @@ type FieldMeta = {
   type?: string;
   choices?: string[];
   label?: string;
+  tooltip?: string;
   widget?: string;
   widget_class?: string;
 };
@@ -22,12 +23,14 @@ export function OptionField({ name, value, meta, disabled, onChange }: Props) {
   const type = meta?.type || "string";
   const label = (meta?.label || "").trim() || name;
   const showKeyHint = Boolean(meta?.label && meta.label.trim() && meta.label.trim() !== name);
+  const tip = (meta?.tooltip || "").trim();
+  const title = tip || (showKeyHint ? name : undefined);
 
   const keyHint = showKeyHint ? <span className="muted option-key-hint"> {name}</span> : null;
 
   if (type === "bool") {
     return (
-      <label className="field block check-field" title={showKeyHint ? name : undefined}>
+      <label className="field block check-field" title={title}>
         <span className="check">
           <input
             type="checkbox"
@@ -48,7 +51,7 @@ export function OptionField({ name, value, meta, disabled, onChange }: Props) {
     const choices = meta.choices;
     const known = choices.includes(value) ? value : choices[0] || value;
     return (
-      <label className="field block" title={showKeyHint ? name : undefined}>
+      <label className="field block" title={title}>
         <span>
           {label}
           {keyHint}
@@ -73,7 +76,7 @@ export function OptionField({ name, value, meta, disabled, onChange }: Props) {
 
   if (type === "text") {
     return (
-      <label className="field block" title={showKeyHint ? name : undefined}>
+      <label className="field block" title={title}>
         <span>
           {label}
           {keyHint}
@@ -90,7 +93,7 @@ export function OptionField({ name, value, meta, disabled, onChange }: Props) {
 
   if (type === "int" || type === "number") {
     return (
-      <label className="field block" title={showKeyHint ? name : undefined}>
+      <label className="field block" title={title}>
         <span>
           {label}
           {keyHint}
@@ -106,7 +109,7 @@ export function OptionField({ name, value, meta, disabled, onChange }: Props) {
   }
 
   return (
-    <label className="field block" title={showKeyHint ? name : undefined}>
+    <label className="field block" title={title}>
       <span>
         {label}
         {keyHint}

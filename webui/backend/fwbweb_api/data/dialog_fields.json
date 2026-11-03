@@ -269,18 +269,21 @@
         },
         "hashlimit_expire": {
           "key": "hashlimit_expire",
+          "tooltip": "After how many milliseconds do hash entries expire (omit this option in the generated script if set to 0)",
           "type": "int",
           "widget": "ipt_hashlimit_expire",
           "widget_class": "QSpinBox"
         },
         "hashlimit_gcinterval": {
           "key": "hashlimit_gcinterval",
+          "tooltip": "How many milliseconds between garbage collection intervals (omit this option in generated script if set to 0)",
           "type": "int",
           "widget": "ipt_hashlimit_gcinterval",
           "widget_class": "QSpinBox"
         },
         "hashlimit_max": {
           "key": "hashlimit_max",
+          "tooltip": "Maximum number of entries in the hash (omit this option in generated script if set to 0)",
           "type": "int",
           "widget": "ipt_hashlimit_max",
           "widget_class": "QSpinBox"
@@ -321,6 +324,7 @@
         },
         "hashlimit_size": {
           "key": "hashlimit_size",
+          "tooltip": "The number of buckets of the hash table (omit this option in generated script if set to 0)",
           "type": "int",
           "widget": "ipt_hashlimit_size",
           "widget_class": "QSpinBox"
@@ -589,6 +593,7 @@
         "pf_no_sync": {
           "key": "pf_no_sync",
           "label": "Prevent state changes for states created by this rule from appearing on the pfsync interface.",
+          "tooltip": "Available in OpenBSD 4.5 and later",
           "type": "bool",
           "widget": "pf_no_sync",
           "widget_class": "QCheckBox"
@@ -596,6 +601,7 @@
         "pf_pflow": {
           "key": "pf_pflow",
           "label": "States created by this rule are exported on the pflow interface.",
+          "tooltip": "Available in OpenBSD 4.5 and later",
           "type": "bool",
           "widget": "pf_pflow",
           "widget_class": "QCheckBox"
@@ -639,6 +645,7 @@
         },
         "pf_rule_max_state": {
           "key": "pf_rule_max_state",
+          "tooltip": "When this limit is reached, further packets matching the rule that would create state are dropped, until existing states time out.",
           "type": "int",
           "widget": "pf_rule_max_state",
           "widget_class": "QSpinBox"
@@ -653,6 +660,7 @@
         "pf_source_tracking": {
           "key": "pf_source_tracking",
           "label": "Activate source tracking.",
+          "tooltip": "When this option is checked, the number of states per source IP is tracked",
           "type": "bool",
           "widget": "pf_source_tracking",
           "widget_class": "QCheckBox"
@@ -784,6 +792,7 @@
         },
         "iface_options": {
           "key": "iface_options",
+          "tooltip": "additional arguments for ifconfig",
           "type": "string",
           "widget": "iface_options",
           "widget_class": "QLineEdit"
@@ -974,6 +983,7 @@
         "check_shading": {
           "key": "check_shading",
           "label": "Detect rule shadowing in the policy",
+          "tooltip": "Shadowing happens because a rule is a superset of a subsequent rule and any packets potentially matched by the subsequent rule have already been matched by the prior rule.",
           "type": "bool",
           "widget": "iosacl_check_shadowing",
           "widget_class": "QCheckBox"
@@ -993,6 +1003,7 @@
         "ignore_empty_groups": {
           "key": "ignore_empty_groups",
           "label": "Ignore empty groups in rules",
+          "tooltip": "If the option is deactivated, compiler treats empty groups as an error and aborts processing the policy. If this option is activated, compiler removes all empty groups from all rule elements. If rule element becomes 'any' after the last empty group has been removed, the whole rule will be ignored. Use this option only if you fully understand how it works!",
           "type": "bool",
           "widget": "iosacl_ignore_empty_groups",
           "widget_class": "QCheckBox"
@@ -1046,6 +1057,7 @@
         "iosacl_include_comments": {
           "key": "iosacl_include_comments",
           "label": "Comment the code",
+          "tooltip": "Insert comments into generated IOSACL configuration file",
           "type": "bool",
           "widget": "iosacl_include_comments",
           "widget_class": "QCheckBox"
@@ -1098,6 +1110,7 @@
         "iosacl_regroup_commands": {
           "key": "iosacl_regroup_commands",
           "label": "Group similar commands together",
+          "tooltip": "Group IOSACL commands in the script so that similar commands appear next to each other, just like IOSACL does it when you use 'show config'",
           "type": "bool",
           "widget": "iosacl_regroup_commands",
           "widget_class": "QCheckBox"
@@ -1117,6 +1130,7 @@
         "iosacl_use_acl_remarks": {
           "key": "iosacl_use_acl_remarks",
           "label": "Use ACL remarks",
+          "tooltip": "Insert comments into generated IOSACL configuration file",
           "type": "bool",
           "widget": "iosacl_use_acl_remarks",
           "widget_class": "QCheckBox"
@@ -1722,6 +1736,7 @@
             "Off"
           ],
           "key": "linux24_log_martians",
+          "tooltip": "whats this text",
           "type": "enum",
           "widget": "linux24_log_martians",
           "widget_class": "QComboBox"
@@ -1970,6 +1985,7 @@
         "check_shading": {
           "key": "check_shading",
           "label": "Detect rule shadowing in policy",
+          "tooltip": "Shadowing happens because a rule is a superset of a subsequent rule and any packets potentially matched by the subsequent rule have already been matched by the prior rule.",
           "type": "bool",
           "widget": "ipf_check_shadowing",
           "widget_class": "QCheckBox"
@@ -2029,6 +2045,7 @@
         "ignore_empty_groups": {
           "key": "ignore_empty_groups",
           "label": "Ignore empty groups in rules",
+          "tooltip": "If the option is deactivated, compiler treats empty groups as an error and aborts processing the policy. If this option is activated, compiler removes all empty groups from all rule elements. If rule element becomes 'any' after the last empty group has been removed, the whole rule will be ignored. Use this option only if you fully understand how it works!",
           "type": "bool",
           "widget": "ipf_ignore_empty_groups",
           "widget_class": "QCheckBox"
@@ -2164,6 +2181,7 @@
         "optimize": {
           "key": "optimize",
           "label": "Optimization",
+          "tooltip": "If this option is on, policy compiler adds virtual addresses to the interfaces to make the firewall answer to ARP queries for addresses used in NAT rules.",
           "type": "bool",
           "widget": "ipf_optimize",
           "widget_class": "QCheckBox"
@@ -2324,6 +2342,7 @@
         "check_shading": {
           "key": "check_shading",
           "label": "Detect rule shadowing in policy",
+          "tooltip": "Shadowing happens because a rule is a superset of a subsequent rule and any packets potentially matched by the subsequent rule have already been matched by the prior rule.",
           "type": "bool",
           "widget": "ipfw_check_shadowing",
           "widget_class": "QCheckBox"
@@ -2369,6 +2388,7 @@
         "ignore_empty_groups": {
           "key": "ignore_empty_groups",
           "label": "Ignore empty groups in rules",
+          "tooltip": "If the option is deactivated, compiler treats empty groups as an error and aborts processing the policy. If this option is activated, compiler removes all empty groups from all rule elements. If rule element becomes 'any' after the last empty group has been removed, the whole rule will be ignored. Use this option only if you fully understand how it works!",
           "type": "bool",
           "widget": "ipfw_ignore_empty_groups",
           "widget_class": "QCheckBox"
@@ -2525,6 +2545,7 @@
         "add_rules_for_ipv6_neighbor_discovery": {
           "key": "add_rules_for_ipv6_neighbor_discovery",
           "label": "Add rules to accept IPv6 Neighbor Discovery\npackets to IPv6 policies",
+          "tooltip": "Compiler will automatically generate rules to permit ICMP6 packets used in IPv6\nNeighbor Discovery after the rules that accept ESTABLISHED,RELATE and before \nthe rule that drops packets in state INVALID.",
           "type": "bool",
           "widget": "ipv6NeighborDiscovery",
           "widget_class": "QCheckBox"
@@ -2558,6 +2579,7 @@
         "clamp_mss_to_mtu": {
           "key": "clamp_mss_to_mtu",
           "label": "Clamp MSS to MTU",
+          "tooltip": "This adds a rule on top of the policy with iptables target TCPMSS\nand option --clamp-mss-to-pmtu. Generation of this command is\nversion-dependent and also depends on the setting of ip or ipv6 forwarding\nin host settings dialog.",
           "type": "bool",
           "widget": "clampMSStoMTU",
           "widget_class": "QCheckBox"
@@ -2644,6 +2666,7 @@
         },
         "hooks_profile": {
           "key": "hooks_profile",
+          "tooltip": "Optional explicit profile name under profiles/<name>/ in the central hooks directory. Leave empty to use profiles.map or no profile. Never inferred from the hostname.",
           "type": "string",
           "widget": "hooks_profile",
           "widget_class": "QLineEdit"
@@ -2827,6 +2850,7 @@
         "use_iptables_restore": {
           "key": "use_iptables_restore",
           "label": "Use iptables-restore to activate policy",
+          "tooltip": "iptables-restore replaces firewall policy in one atomic transaction",
           "type": "bool",
           "widget": "iptablesRestoreActivation",
           "widget_class": "QCheckBox"
@@ -3010,6 +3034,7 @@
         "check_shading": {
           "key": "check_shading",
           "label": "Detect rule shadowing in the policy",
+          "tooltip": "Shadowing happens because a rule is a superset of a subsequent rule and any packets potentially matched by the subsequent rule have already been matched by the prior rule.",
           "type": "bool",
           "widget": "junosacl_check_shadowing",
           "widget_class": "QCheckBox"
@@ -3035,6 +3060,7 @@
         "ignore_empty_groups": {
           "key": "ignore_empty_groups",
           "label": "Ignore empty groups in rules",
+          "tooltip": "If the option is deactivated, compiler treats empty groups as an error and aborts processing the policy. If this option is activated, compiler removes all empty groups from all rule elements. If rule element becomes 'any' after the last empty group has been removed, the whole rule will be ignored. Use this option only if you fully understand how it works!",
           "type": "bool",
           "widget": "junosacl_ignore_empty_groups",
           "widget_class": "QCheckBox"
@@ -3061,6 +3087,7 @@
         "junosacl_include_comments": {
           "key": "junosacl_include_comments",
           "label": "Comment the code",
+          "tooltip": "Insert comments into generated JUNOSACL configuration file",
           "type": "bool",
           "widget": "junosacl_include_comments",
           "widget_class": "QCheckBox"
@@ -3408,12 +3435,14 @@
         },
         "linux24_conntrack_hashsize": {
           "key": "linux24_conntrack_hashsize",
+          "tooltip": "the size of the hash table storing the lists of conntrack entries",
           "type": "int",
           "widget": "conntrack_hashsize",
           "widget_class": "QSpinBox"
         },
         "linux24_conntrack_max": {
           "key": "linux24_conntrack_max",
+          "tooltip": "CONNTRACK_MAX is the maximum number of \"sessions\" (connection tracking entries)\nthat can be handled simultaneously by netfilter in kernel memory.",
           "type": "int",
           "widget": "conntrack_max",
           "widget_class": "QSpinBox"
@@ -3502,6 +3531,7 @@
             "Off"
           ],
           "key": "linux24_log_martians",
+          "tooltip": "whats this text",
           "type": "enum",
           "widget": "linux24_log_martians",
           "widget_class": "QComboBox"
@@ -3917,6 +3947,7 @@
         "check_shading": {
           "key": "check_shading",
           "label": "Detect rule shadowing in the policy",
+          "tooltip": "Shadowing happens because a rule is a superset of a subsequent rule and any packets potentially matched by the subsequent rule have already been matched by the prior rule.",
           "type": "bool",
           "widget": "nxosacl_check_shadowing",
           "widget_class": "QCheckBox"
@@ -3936,6 +3967,7 @@
         "ignore_empty_groups": {
           "key": "ignore_empty_groups",
           "label": "Ignore empty groups in rules",
+          "tooltip": "If the option is deactivated, compiler treats empty groups as an error and aborts processing the policy. If this option is activated, compiler removes all empty groups from all rule elements. If rule element becomes 'any' after the last empty group has been removed, the whole rule will be ignored. Use this option only if you fully understand how it works!",
           "type": "bool",
           "widget": "nxosacl_ignore_empty_groups",
           "widget_class": "QCheckBox"
@@ -4002,6 +4034,7 @@
         "nxosacl_include_comments": {
           "key": "nxosacl_include_comments",
           "label": "Comment the code",
+          "tooltip": "Insert comments into generated NX-OSACL configuration file",
           "type": "bool",
           "widget": "nxosacl_include_comments",
           "widget_class": "QCheckBox"
@@ -4054,6 +4087,7 @@
         "nxosacl_regroup_commands": {
           "key": "nxosacl_regroup_commands",
           "label": "Group similar commands together",
+          "tooltip": "Group NX-OSACL commands in the script so that similar commands appear next to each other, just like NX-OSACL does it when you use 'show config'",
           "type": "bool",
           "widget": "nxosacl_regroup_commands",
           "widget_class": "QCheckBox"
@@ -4073,6 +4107,7 @@
         "nxosacl_use_acl_remarks": {
           "key": "nxosacl_use_acl_remarks",
           "label": "Use ACL remarks",
+          "tooltip": "Insert comments into generated NX-OSACL configuration file",
           "type": "bool",
           "widget": "nxosacl_use_acl_remarks",
           "widget_class": "QCheckBox"
@@ -4392,6 +4427,7 @@
         "check_shading": {
           "key": "check_shading",
           "label": "Detect rule shadowing",
+          "tooltip": "Shadowing happens because a rule is a superset of \na subsequent rule and any packets potentially matched \nby the subsequent rule have already been matched by \nthe prior rule.",
           "type": "bool",
           "widget": "pf_check_shadowing",
           "widget_class": "QCheckBox"
@@ -4498,6 +4534,7 @@
         "ignore_empty_groups": {
           "key": "ignore_empty_groups",
           "label": "Ignore empty groups",
+          "tooltip": "If the option is deactivated, compiler treats empty groups as\nan error and aborts processing the policy. If this option is \nactivated, compiler removes all empty groups from all rule \nelements. If rule element becomes 'any' after the last empty \ngroup has been removed, the whole rule will be ignored. Use \nthis option only if you fully understand how it works!",
           "type": "bool",
           "widget": "pf_ignore_empty_groups",
           "widget_class": "QCheckBox"
@@ -4536,12 +4573,14 @@
         },
         "pf_adaptive_end": {
           "key": "pf_adaptive_end",
+          "tooltip": "When reaching this number of state entries, all timeout values become zero, effectively purging all state entries immediately.",
           "type": "int",
           "widget": "pf_adaptive_end",
           "widget_class": "QSpinBox"
         },
         "pf_adaptive_start": {
           "key": "pf_adaptive_start",
+          "tooltip": "When the number of state entries exceeds this value, adaptive scaling begins.",
           "type": "int",
           "widget": "pf_adaptive_start",
           "widget_class": "QSpinBox"
@@ -4552,6 +4591,7 @@
             "return"
           ],
           "key": "pf_block_policy",
+          "tooltip": "The block-policy option sets the default behaviour for the packet block action:\n\ndrop      Packet is silently dropped.\nreturn    A TCP RST is returned for blocked TCP packets, an ICMP\n             UNREACHABLE is returned for blocked UDP packets, and\n             all other packets are silently dropped.",
           "type": "enum",
           "widget": "pf_block_policy",
           "widget_class": "QComboBox"
@@ -4601,6 +4641,7 @@
         "pf_do_timeout_frag": {
           "key": "pf_do_timeout_frag",
           "label": "seconds before an unassembled fragment is expired",
+          "tooltip": "translates into 'set timeout frag'",
           "type": "bool",
           "widget": "pf_do_timeout_frag",
           "widget_class": "QCheckBox"
@@ -4608,6 +4649,7 @@
         "pf_do_timeout_interval": {
           "key": "pf_do_timeout_interval",
           "label": "interval between purging expired states and fragments",
+          "tooltip": "translates into 'set timeout interval'",
           "type": "bool",
           "widget": "pf_do_timeout_interval",
           "widget_class": "QCheckBox"
@@ -4621,42 +4663,49 @@
         },
         "pf_icmp_error": {
           "key": "pf_icmp_error",
+          "tooltip": "The state after an ICMP error came back in response to an ICMP packet.",
           "type": "int",
           "widget": "pf_icmp_error",
           "widget_class": "QSpinBox"
         },
         "pf_icmp_first": {
           "key": "pf_icmp_first",
+          "tooltip": "The state after the first packet.",
           "type": "int",
           "widget": "pf_icmp_first",
           "widget_class": "QSpinBox"
         },
         "pf_limit_frags": {
           "key": "pf_limit_frags",
+          "tooltip": "maximum number of entries in the memory pool used for packet reassembly",
           "type": "int",
           "widget": "pf_limit_frags",
           "widget_class": "QSpinBox"
         },
         "pf_limit_src_nodes": {
           "key": "pf_limit_src_nodes",
+          "tooltip": "maximum number of entries in the memory pool used for tracking source IP addresses",
           "type": "int",
           "widget": "pf_limit_src_nodes",
           "widget_class": "QSpinBox"
         },
         "pf_limit_states": {
           "key": "pf_limit_states",
+          "tooltip": "maximum number of entries in the memory pool used for state table entries",
           "type": "int",
           "widget": "pf_limit_states",
           "widget_class": "QSpinBox"
         },
         "pf_limit_table_entries": {
           "key": "pf_limit_table_entries",
+          "tooltip": "maximum number of addresses that canbe stored in tables",
           "type": "int",
           "widget": "pf_limit_table_entries",
           "widget_class": "QSpinBox"
         },
         "pf_limit_tables": {
           "key": "pf_limit_tables",
+          "tooltip": "maximum number of tables that can exist in the memory simultaneously",
           "type": "int",
           "widget": "pf_limit_tables",
           "widget_class": "QSpinBox"
@@ -4670,24 +4719,28 @@
         },
         "pf_optimization": {
           "key": "pf_optimization",
+          "tooltip": "Optimize state timeouts. See man pf.conf for more details.",
           "type": "string",
           "widget": "pf_optimization",
           "widget_class": "QComboBox"
         },
         "pf_other_first": {
           "key": "pf_other_first",
+          "tooltip": "The state after the first packet.",
           "type": "int",
           "widget": "pf_other_first",
           "widget_class": "QSpinBox"
         },
         "pf_other_multiple": {
           "key": "pf_other_multiple",
+          "tooltip": "The state after the first packet.",
           "type": "int",
           "widget": "pf_other_multiple",
           "widget_class": "QSpinBox"
         },
         "pf_other_single": {
           "key": "pf_other_single",
+          "tooltip": "The state after the first packet.",
           "type": "int",
           "widget": "pf_other_single",
           "widget_class": "QSpinBox"
@@ -4695,6 +4748,7 @@
         "pf_scrub_fragm_crop": {
           "key": "pf_scrub_fragm_crop",
           "label": "Drop duplicate fragments, do not buffer and reassemble",
+          "tooltip": "Causes duplicate fragments to be dropped and any overlaps to be cropped.  In PF 4.5 and earlier.",
           "type": "bool",
           "widget": "pf_scrub_fragm_crop",
           "widget_class": "QRadioButton"
@@ -4702,18 +4756,21 @@
         "pf_scrub_fragm_drop_ovl": {
           "key": "pf_scrub_fragm_drop_ovl",
           "label": "Drop duplicate and subsequent fragments",
+          "tooltip": "Similar to 'Drop duplicate fragments' except that all duplicate or overlapping fragments will be dropped as well as any further corresponding fragments.  In PF 4.5 and earlier.",
           "type": "bool",
           "widget": "pf_scrub_fragm_drop_ovl",
           "widget_class": "QRadioButton"
         },
         "pf_scrub_maxmss": {
           "key": "pf_scrub_maxmss",
+          "tooltip": "Enforces a maximum Maximum Segment Size (MSS) in TCP packet headers.",
           "type": "int",
           "widget": "pf_scrub_maxmss",
           "widget_class": "QSpinBox"
         },
         "pf_scrub_minttl": {
           "key": "pf_scrub_minttl",
+          "tooltip": "Enforces a minimum Time To Live (TTL) in IP packet headers.",
           "type": "int",
           "widget": "pf_scrub_minttl",
           "widget_class": "QSpinBox"
@@ -4721,6 +4778,7 @@
         "pf_scrub_no_df": {
           "key": "pf_scrub_no_df",
           "label": "Clear DF bit",
+          "tooltip": "Clears the don't fragment bit from the IP packet header.",
           "type": "bool",
           "widget": "pf_scrub_no_df",
           "widget_class": "QCheckBox"
@@ -4728,6 +4786,7 @@
         "pf_scrub_random_id": {
           "key": "pf_scrub_random_id",
           "label": "Use random ID",
+          "tooltip": "Replaces the IP identification field of outgoing packets with random values to compensate for operating systems that use predictable values.",
           "type": "bool",
           "widget": "pf_scrub_random_id",
           "widget_class": "QCheckBox"
@@ -4735,6 +4794,7 @@
         "pf_scrub_reassemble": {
           "key": "pf_scrub_reassemble",
           "label": "Buffer and reassemble fragments (default)",
+          "tooltip": "Buffers incoming packet fragments and reassembles them into a complete packet before passing them to the filter engine. In PF 4.5 and earlier.",
           "type": "bool",
           "widget": "pf_scrub_reassemble",
           "widget_class": "QRadioButton"
@@ -4742,6 +4802,7 @@
         "pf_scrub_reassemble_tcp": {
           "key": "pf_scrub_reassemble_tcp",
           "label": "Reassemble TCP",
+          "tooltip": "Statefully normalises TCP connections.",
           "type": "bool",
           "widget": "pf_scrub_reassemble_tcp",
           "widget_class": "QRadioButton"
@@ -4769,6 +4830,7 @@
         },
         "pf_set_debug": {
           "key": "pf_set_debug",
+          "tooltip": "Set the debug level, which limits the severity of log messages\nprinted by pf(4).  This should be a keyword from the following\nordered list (highest to lowest): emerg, alert, crit, err,\nwarning, notice, info, and debug.  The last keyword, debug, must\nbe quoted.  These keywords correspond to the similar (LOG_)\nvalues specified to the syslog(3) library routine.",
           "type": "string",
           "widget": "pf_set_debug",
           "widget_class": "QComboBox"
@@ -4873,72 +4935,84 @@
         },
         "pf_state_policy": {
           "key": "pf_state_policy",
+          "tooltip": "States can be bound to interfaces or match packets \non any interface. The latter can be useful in case of \nan assymmetric routing.",
           "type": "string",
           "widget": "pf_state_policy",
           "widget_class": "QComboBox"
         },
         "pf_tcp_closed": {
           "key": "pf_tcp_closed",
+          "tooltip": "The state after one endpoint sends an RST.",
           "type": "int",
           "widget": "pf_tcp_closed",
           "widget_class": "QSpinBox"
         },
         "pf_tcp_closing": {
           "key": "pf_tcp_closing",
+          "tooltip": "The state after the first FIN has been sent.",
           "type": "int",
           "widget": "pf_tcp_closing",
           "widget_class": "QSpinBox"
         },
         "pf_tcp_established": {
           "key": "pf_tcp_established",
+          "tooltip": "The fully established state.",
           "type": "int",
           "widget": "pf_tcp_established",
           "widget_class": "QSpinBox"
         },
         "pf_tcp_finwait": {
           "key": "pf_tcp_finwait",
+          "tooltip": "The state after both FINs have been exchanged and the connection is closed.",
           "type": "int",
           "widget": "pf_tcp_finwait",
           "widget_class": "QSpinBox"
         },
         "pf_tcp_first": {
           "key": "pf_tcp_first",
+          "tooltip": "The state after the first packet.",
           "type": "int",
           "widget": "pf_tcp_first",
           "widget_class": "QSpinBox"
         },
         "pf_tcp_opening": {
           "key": "pf_tcp_opening",
+          "tooltip": "The state before the destination host ever sends a packet.",
           "type": "int",
           "widget": "pf_tcp_opening",
           "widget_class": "QSpinBox"
         },
         "pf_timeout_frag": {
           "key": "pf_timeout_frag",
+          "tooltip": "translates into 'set timeout frag'",
           "type": "int",
           "widget": "pf_timeout_frag",
           "widget_class": "QSpinBox"
         },
         "pf_timeout_interval": {
           "key": "pf_timeout_interval",
+          "tooltip": "translates into 'set timeout interval'",
           "type": "int",
           "widget": "pf_timeout_interval",
           "widget_class": "QSpinBox"
         },
         "pf_udp_first": {
           "key": "pf_udp_first",
+          "tooltip": "The state after the first packet.",
           "type": "int",
           "widget": "pf_udp_first",
           "widget_class": "QSpinBox"
         },
         "pf_udp_multiple": {
           "key": "pf_udp_multiple",
+          "tooltip": "The state if both hosts have sent packets.",
           "type": "int",
           "widget": "pf_udp_multiple",
           "widget_class": "QSpinBox"
         },
         "pf_udp_single": {
           "key": "pf_udp_single",
+          "tooltip": "The state if the source host sends more than one packet but the destination host has never sent one back.",
           "type": "int",
           "widget": "pf_udp_single",
           "widget_class": "QSpinBox"
@@ -5321,6 +5395,7 @@
         "check_shading": {
           "key": "check_shading",
           "label": "Detect rule shadowing in the policy",
+          "tooltip": "Shadowing happens because a rule is a superset of a subsequent rule and any packets potentially matched by the subsequent rule have already been matched by the prior rule.",
           "type": "bool",
           "widget": "pix_check_shadowing",
           "widget_class": "QCheckBox"
@@ -5394,6 +5469,7 @@
         "ignore_empty_groups": {
           "key": "ignore_empty_groups",
           "label": "Ignore empty groups in rules",
+          "tooltip": "If the option is deactivated, compiler treats empty groups as an error and aborts processing the policy. If this option is activated, compiler removes all empty groups from all rule elements. If rule element becomes 'any' after the last empty group has been removed, the whole rule will be ignored. Use this option only if you fully understand how it works!",
           "type": "bool",
           "widget": "pix_ignore_empty_groups",
           "widget_class": "QCheckBox"
@@ -5459,6 +5535,7 @@
         "pix_assume_fw_part_of_any": {
           "key": "pix_assume_fw_part_of_any",
           "label": "Assume firewall is part of 'any'",
+          "tooltip": "Generate rules assuming the firewall is part of \"Any\". This makes a difference in rules that use services 'ssh' and 'telnet' since PIX uses special commands to control ssh and telnet access to the firewall machine",
           "type": "bool",
           "widget": "pix_assume_fw_part_of_any",
           "widget_class": "QCheckBox"
@@ -5501,6 +5578,7 @@
         "pix_emb_limit": {
           "key": "pix_emb_limit",
           "label": "maximum number of embryonic connections per host",
+          "tooltip": "Specifies the maximum number of embryonic connections per host. An embryonic connection is a connection request that has not finished the necessary handshake between source and destination. Set a small value for slower systems, and a higher value for faster systems. The default is 0, which means unlimited embryonic connections.",
           "type": "int",
           "widget": "emb_limit",
           "widget_class": "QSpinBox"
@@ -5508,6 +5586,7 @@
         "pix_emblem_log_format": {
           "key": "pix_emblem_log_format",
           "label": "Use 'EMBLEM' format for syslog messages",
+          "tooltip": "PIX Firewall Version 6.3 introduces support for EMBLEM format, which is required when using the CiscoWorks Resource Manager Essentials (RME) syslog analyzer.",
           "type": "bool",
           "widget": "emblem_log_format",
           "widget_class": "QCheckBox"
@@ -5515,6 +5594,7 @@
         "pix_emulate_out_acl": {
           "key": "pix_emulate_out_acl",
           "label": "Emulate outbound ACLs",
+          "tooltip": "Normally PIX does not support outbound ACL, however policy compiler can emulate them if this option is turned on",
           "type": "bool",
           "widget": "pix_emulate_out_acl",
           "widget_class": "QCheckBox"
@@ -5542,6 +5622,7 @@
         "pix_generate_out_acl": {
           "key": "pix_generate_out_acl",
           "label": "Generate outbound ACLs",
+          "tooltip": "Normally PIX does not support ouotbound ACL, however policy compiler can emulate them if this option is turned on",
           "type": "bool",
           "widget": "pix_generate_out_acl",
           "widget_class": "QCheckBox"
@@ -5549,6 +5630,7 @@
         "pix_include_comments": {
           "key": "pix_include_comments",
           "label": "Comment the code",
+          "tooltip": "Insert comments into generated PIX configuration file",
           "type": "bool",
           "widget": "pix_include_comments",
           "widget_class": "QCheckBox"
@@ -5595,6 +5677,7 @@
         "pix_max_conns": {
           "key": "pix_max_conns",
           "label": "maximum number of simultaneous TCP and UDP connections",
+          "tooltip": "Specifies the maximum number of simultaneous TCP and UDP connections for the entire subnet. The default is 0, which means unlimited connections. (Idle connections are closed after the idle timeout specified by the timeout conn command.)",
           "type": "int",
           "widget": "max_conns",
           "widget_class": "QSpinBox"
@@ -5616,6 +5699,7 @@
         "pix_optimize_default_nat": {
           "key": "pix_optimize_default_nat",
           "label": "Optimize 'default nat' rules",
+          "tooltip": "In nat rules where network zone object is used in OSrc, ODst and OSrv are 'any' and TSrc defines a global pool for the translation, replace object in OSrc with 'any' to produce PIX command \"nat (interface) N 0.0.0.0 0.0.0.0\"",
           "type": "bool",
           "widget": "pix_optimize_default_nat",
           "widget_class": "QCheckBox"
@@ -5629,6 +5713,7 @@
         "pix_regroup_commands": {
           "key": "pix_regroup_commands",
           "label": "Group similar commands together",
+          "tooltip": "Group PIX commands in the script so that similar commands appear next to each other, just like PIX does it when you use 'show config'",
           "type": "bool",
           "widget": "pix_regroup_commands",
           "widget_class": "QCheckBox"
@@ -5636,6 +5721,7 @@
         "pix_replace_natted_objects": {
           "key": "pix_replace_natted_objects",
           "label": "Replace NAT'ted objects with their translations in policy rules",
+          "tooltip": "PIX inspects packets with ACLs before it does NAT, while many other firewalls do NAT first and then apply ACLs. Policy compiler can emulate the latter behaviour if this options is turned on.",
           "type": "bool",
           "widget": "pix_replace_natted_objects",
           "widget_class": "QCheckBox"
@@ -5694,6 +5780,7 @@
         "pix_use_acl_remarks": {
           "key": "pix_use_acl_remarks",
           "label": "Use ACL remarks",
+          "tooltip": "Use ACL remarks to relate ACL commands and policy rules in the GUI",
           "type": "bool",
           "widget": "pix_use_acl_remarks",
           "widget_class": "QCheckBox"
@@ -6314,6 +6401,7 @@
         "check_shading": {
           "key": "check_shading",
           "label": "Detect rule shadowing in the policy",
+          "tooltip": "Shadowing happens because a rule is a superset of a subsequent rule and any packets potentially matched by the subsequent rule have already been matched by the prior rule.",
           "type": "bool",
           "widget": "procurve_acl_check_shadowing",
           "widget_class": "QCheckBox"
@@ -6333,6 +6421,7 @@
         "ignore_empty_groups": {
           "key": "ignore_empty_groups",
           "label": "Ignore empty groups in rules",
+          "tooltip": "If the option is deactivated, compiler treats empty groups as an error and aborts processing the policy. If this option is activated, compiler removes all empty groups from all rule elements. If rule element becomes 'any' after the last empty group has been removed, the whole rule will be ignored. Use this option only if you fully understand how it works!",
           "type": "bool",
           "widget": "procurve_acl_ignore_empty_groups",
           "widget_class": "QCheckBox"
@@ -6405,6 +6494,7 @@
         "procurve_acl_include_comments": {
           "key": "procurve_acl_include_comments",
           "label": "Comment the code",
+          "tooltip": "Insert comments into generated IOSACL configuration file",
           "type": "bool",
           "widget": "procurve_acl_include_comments",
           "widget_class": "QCheckBox"
@@ -6469,6 +6559,7 @@
         "procurve_acl_use_acl_remarks": {
           "key": "procurve_acl_use_acl_remarks",
           "label": "Use ACL remarks",
+          "tooltip": "Insert comments into generated IOSACL configuration file",
           "type": "bool",
           "widget": "procurve_acl_use_acl_remarks",
           "widget_class": "QCheckBox"
@@ -6691,6 +6782,7 @@
         "clamp_mss_to_mtu": {
           "key": "clamp_mss_to_mtu",
           "label": "Clamp MSS to MTU",
+          "tooltip": "This adds a rule on top of the policy with iptables target TCPMSS\nand option --clamp-mss-to-pmtu. Generation of this command is\nversion-dependent and also depends on the setting of ip or ipv6 forwarding\nin host settings dialog.",
           "type": "bool",
           "widget": "clampMSStoMTU",
           "widget_class": "QCheckBox"
@@ -6901,6 +6993,7 @@
         "use_iptables_restore": {
           "key": "use_iptables_restore",
           "label": "Use iptables-restore to activate policy",
+          "tooltip": "iptables-restore replaces firewall policy in one atomic transaction",
           "type": "bool",
           "widget": "iptablesRestoreActivation",
           "widget_class": "QCheckBox"
@@ -7157,6 +7250,7 @@
             "Off"
           ],
           "key": "linux24_log_martians",
+          "tooltip": "whats this text",
           "type": "enum",
           "widget": "linux24_log_martians",
           "widget_class": "QComboBox"
@@ -7265,12 +7359,14 @@
         },
         "secuwall_dns_domains": {
           "key": "secuwall_dns_domains",
+          "tooltip": "Enter DNS search domains here. One search domain per line",
           "type": "text",
           "widget": "secuwall_dns_domains",
           "widget_class": "QTextEdit"
         },
         "secuwall_dns_hosts": {
           "key": "secuwall_dns_hosts",
+          "tooltip": "Enter Hosts entries here. One IP-Address/Name pair per line. These entries will be written to /etc/hosts file on the firewall",
           "type": "text",
           "widget": "secuwall_dns_hosts",
           "widget_class": "QTextEdit"
@@ -7360,36 +7456,42 @@
         },
         "secuwall_mgmt_confpart": {
           "key": "secuwall_mgmt_confpart",
+          "tooltip": "Enter name for local config partition",
           "type": "string",
           "widget": "secuwall_mgmt_confpart",
           "widget_class": "QLineEdit"
         },
         "secuwall_mgmt_loggingaddr": {
           "key": "secuwall_mgmt_loggingaddr",
+          "tooltip": "Enter IP addresses of logging servers",
           "type": "string",
           "widget": "secuwall_mgmt_loggingaddr",
           "widget_class": "QLineEdit"
         },
         "secuwall_mgmt_mgmtaddr": {
           "key": "secuwall_mgmt_mgmtaddr",
+          "tooltip": "Enter the IP addresses or networks of the secunet wall management zone",
           "type": "string",
           "widget": "secuwall_mgmt_mgmtaddr",
           "widget_class": "QLineEdit"
         },
         "secuwall_mgmt_nagiosaddr": {
           "key": "secuwall_mgmt_nagiosaddr",
+          "tooltip": "Enter IP addresses or networks for Nagios access",
           "type": "string",
           "widget": "secuwall_mgmt_nagiosaddr",
           "widget_class": "QLineEdit"
         },
         "secuwall_mgmt_ntpaddr": {
           "key": "secuwall_mgmt_ntpaddr",
+          "tooltip": "Enter IP addresses of NTP servers",
           "type": "string",
           "widget": "secuwall_mgmt_ntpaddr",
           "widget_class": "QLineEdit"
         },
         "secuwall_mgmt_rosnmp": {
           "key": "secuwall_mgmt_rosnmp",
+          "tooltip": "Enter community string for read only SNMP access",
           "type": "string",
           "widget": "secuwall_mgmt_rosnmp",
           "widget_class": "QLineEdit"
@@ -7397,18 +7499,21 @@
         "secuwall_mgmt_rules_disable": {
           "key": "secuwall_mgmt_rules_disable",
           "label": "Don't create firewall rules",
+          "tooltip": "Disable auto-generation of firewall rules for management services",
           "type": "bool",
           "widget": "secuwall_mgmt_rules_disable",
           "widget_class": "QCheckBox"
         },
         "secuwall_mgmt_snmpaddr": {
           "key": "secuwall_mgmt_snmpaddr",
+          "tooltip": "Enter IP addresses or networks where SNMP requests to this firewall come from",
           "type": "string",
           "widget": "secuwall_mgmt_snmpaddr",
           "widget_class": "QLineEdit"
         },
         "secuwall_mgmt_varpart": {
           "key": "secuwall_mgmt_varpart",
+          "tooltip": "Enter name for partition that will be mounted to /var",
           "type": "string",
           "widget": "secuwall_mgmt_varpart",
           "widget_class": "QLineEdit"
