@@ -6,7 +6,13 @@ import {
   type OptionFieldMeta,
 } from "../api/client";
 import { OptionField } from "./OptionField";
-import { qtGridStyle, qtSpacerStyle, type QtGridAnnotation, type QtGridSpacer } from "../qtGrid";
+import {
+  qtGridStyle,
+  qtSpacerStyle,
+  type QtGridAnnotation,
+  type QtGridSpacing,
+  type QtGridSpacer,
+} from "../qtGrid";
 
 type Props = {
   sessionId: string;
@@ -25,6 +31,7 @@ type Group = {
   spacers?: QtGridSpacer[];
   column_stretch?: number[];
   annotations?: QtGridAnnotation[];
+  spacing?: QtGridSpacing;
 };
 
 function metaFor(key: string, value: string, fields: Record<string, OptionFieldMeta>) {
@@ -174,7 +181,8 @@ export function RuleOptions({
           const spacers = (!showAll && page?.spacers) || [];
           const stretch = (!showAll && page?.column_stretch) || [];
           const notes = (!showAll && page?.annotations) || [];
-          const grid = qtGridStyle(shown, fields, spacers, stretch, notes);
+          const spacing = (!showAll && page?.spacing) || {};
+          const grid = qtGridStyle(shown, fields, spacers, stretch, notes, spacing);
           return (
             <div className={grid.className} style={grid.style}>
               {spacers.map((sp, i) => (
