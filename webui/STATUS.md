@@ -272,6 +272,11 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Deploy reads compiler `# files:` manifest | done | multi-file scp + main activate; E2E phase127 |
 | Qt .ui field labels in options UI | done | extract-dialog-fields + OptionField; E2E phase128 |
 | activationCmd macros + IPv6 scp host | done | `{{$fwdir}}`/`{{$fwscript}}`; E2E phase129 |
+| OS installer configlets for activate | done | linux24/… configlets; plan lines; E2E phase130 |
+| QRadioButton as bool + .ui label | done | extract + OptionField; E2E phase131 |
+| Option key hint beside .ui label | done | OptionField; E2E phase132 |
+| Installer configlet preview API | done | `GET /installer-configlet`; E2E phase133 |
+| Deploy plan in App compile log | done | dry-run/live; E2E phase134 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Soft-complete (feature/webui polish track)
@@ -294,7 +299,7 @@ Still open:
 | Download compile outputs | done | `GET …/compile/outputs/{file}` |
 | Local E2E phase3 (rule ops + compile) | done | `e2e-phase3.sh` **OK** → `nft-test.fw` |
 | FirewallOptions + Management address | done | `options` / `management` bridge cmds + UI |
-| Deploy via system `scp`/`ssh` (dry-run default) | done | Manifest `# files:` multi-copy + activate; remote_dir/identity; **not** full expect/SSHSession installer |
+| Deploy via system `scp`/`ssh` (dry-run default) | done | Manifest + OS installer configlets + plan; **not** full expect/SSHSession installer |
 | Local E2E phase4 | done | `e2e-phase4.sh` **OK** |
 | Platform catalog from resources XML | done | `GET /api/v1/platforms` |
 | Compilers `fwb_pf` / `fwb_ipf` / `fwb_ipfw` | done | local Podman build; compile via XML `<compiler>` |
@@ -424,6 +429,11 @@ Still open:
 | Local E2E phase127 (deploy manifest) | done | `e2e-phase127.sh` **OK** |
 | Local E2E phase128 (ui labels) | done | `e2e-phase128.sh` **OK** |
 | Local E2E phase129 (activation macros) | done | `e2e-phase129.sh` **OK** |
+| Local E2E phase130 (installer configlets) | done | `e2e-phase130.sh` **OK** |
+| Local E2E phase131 (QRadioButton bool) | done | `e2e-phase131.sh` **OK** |
+| Local E2E phase132 (option key hint) | done | `e2e-phase132.sh` **OK** |
+| Local E2E phase133 (configlet preview) | done | `e2e-phase133.sh` **OK** |
+| Local E2E phase134 (deploy plan log) | done | `e2e-phase134.sh` **OK** |
 
 ## Local commands
 
@@ -562,6 +572,11 @@ bash webui/scripts/e2e-phase126.sh
 bash webui/scripts/e2e-phase127.sh
 bash webui/scripts/e2e-phase128.sh
 bash webui/scripts/e2e-phase129.sh
+bash webui/scripts/e2e-phase130.sh
+bash webui/scripts/e2e-phase131.sh
+bash webui/scripts/e2e-phase132.sh
+bash webui/scripts/e2e-phase133.sh
+bash webui/scripts/e2e-phase134.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

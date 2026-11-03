@@ -161,6 +161,8 @@ def plan_and_deploy(
     remote_name: str | None = None,
     activate: bool = True,
     activation_cmd: str = "",
+    host_os: str = "",
+    firewall_name: str = "",
     ssh_args: str = "",
     scp_args: str = "",
     identity_file: str | None = None,
@@ -194,16 +196,34 @@ def plan_and_deploy(
 
     scp_cmds: list[list[str]] = []
     commands: list[str] = []
+    plan_lines = ["Installation plan:"]
     for local_path, remote_path in copies:
+        plan_lines.append(f"Copy file: {local_path.name} --> {remote_path}")
         scp_cmd = [*base_scp, str(local_path), f"{scp_target}:{remote_path}"]
         scp_cmds.append(scp_cmd)
         commands.append(" ".join(shlex.quote(c) for c in scp_cmd))
 
     act = (activation_cmd or "").strip()
+    activation_source: str | None = None
     if activate:
         if not act:
-            # Same idea as GUI installer for regular users: run the copied script.
-            act = f"sudo {main_remote}" if user and user != "root" else main_remote
+            from .configlets import default_activation_cmd
+
+            conf = default_activation_cmd(
+                host_os=host_os,
+                user=user,
+                fwdir=fwdir,
+                fwscript=fwscript,
+                remote_path=main_remote,
+                firewall_name=firewall_name,
+            )
+            if conf.get("ok") and conf.get("command"):
+                act = str(conf["command"])
+                activation_source = conf.get("source")
+            else:
+                # Fallback: same idea as GUI for regular users.
+                act = f"sudo {main_remote}" if user and user != "root" else main_remote
+                activation_source = "fallback"
         else:
             act = expand_activation_cmd(
                 act,
@@ -211,10 +231,13 @@ def plan_and_deploy(
                 fwscript=fwscript,
                 remote_path=main_remote,
             )
+            activation_source = "activationCmd"
+        plan_lines.append(f"Activate: {act}")
         ssh_cmd = [*base_ssh, ssh_target, act]
         commands.append(" ".join(shlex.quote(c) for c in ssh_cmd))
     else:
         ssh_cmd = None
+        plan_lines.append("Activate: (skipped)")
 
     manifest = parse_fw_manifest(local_script)
     result: dict[str, Any] = {
@@ -227,16 +250,22 @@ def plan_and_deploy(
         "files": [{"local": str(lp), "remote": rp} for lp, rp in copies],
         "manifest": manifest,
         "activation_cmd": act if activate else "",
+        "activation_source": activation_source,
+        "plan": plan_lines,
         "commands": commands,
         "log": "",
         "note": (
-            "WebUI installer (ssh/scp) with FirewallInstaller-style manifest copy. "
-            "Not the full desktop expect/SSHSession installer."
+            "WebUI installer (ssh/scp) with FirewallInstaller-style manifest copy "
+            "and OS installer configlets. Not the full desktop expect/SSHSession installer."
         ),
     }
 
     if dry_run:
-        result["log"] = "dry_run: commands not executed\n" + "\n".join(commands)
+        result["log"] = (
+            "\n".join(plan_lines)
+            + "\n\ndry_run: commands not executed\n"
+            + "\n".join(commands)
+        )
         return result
 
     env = {**os.environ}

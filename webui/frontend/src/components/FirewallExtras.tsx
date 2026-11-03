@@ -228,12 +228,24 @@ export function FirewallExtras({
         dry_run: dryRun,
         activate,
       });
+      const deployAny = res.deploy as typeof res.deploy & {
+        plan?: string[];
+        activation_source?: string;
+        activation_cmd?: string;
+      };
       setLog(
         [
           res.deploy.note || "",
           `host=${res.deploy.host} user=${res.deploy.user || "(none)"}`,
           `remote=${res.deploy.remote_path}`,
           `dry_run=${res.deploy.dry_run}`,
+          deployAny.activation_source
+            ? `activation_source=${deployAny.activation_source}`
+            : "",
+          "",
+          ...((deployAny.plan && deployAny.plan.length
+            ? deployAny.plan
+            : []) as string[]),
           "",
           ...(res.deploy.commands || []),
           "",

@@ -23,6 +23,8 @@ export function OptionField({ name, value, meta, disabled, onChange }: Props) {
   const label = (meta?.label || "").trim() || name;
   const showKeyHint = Boolean(meta?.label && meta.label.trim() && meta.label.trim() !== name);
 
+  const keyHint = showKeyHint ? <span className="muted option-key-hint"> {name}</span> : null;
+
   if (type === "bool") {
     return (
       <label className="field block check-field" title={showKeyHint ? name : undefined}>
@@ -33,7 +35,10 @@ export function OptionField({ name, value, meta, disabled, onChange }: Props) {
             disabled={disabled}
             onChange={(e) => onChange(e.target.checked ? "True" : "False")}
           />
-          {label}
+          <span>
+            {label}
+            {keyHint}
+          </span>
         </span>
       </label>
     );
@@ -44,7 +49,10 @@ export function OptionField({ name, value, meta, disabled, onChange }: Props) {
     const known = choices.includes(value) ? value : choices[0] || value;
     return (
       <label className="field block" title={showKeyHint ? name : undefined}>
-        {label}
+        <span>
+          {label}
+          {keyHint}
+        </span>
         <select
           value={known}
           disabled={disabled}
@@ -66,7 +74,10 @@ export function OptionField({ name, value, meta, disabled, onChange }: Props) {
   if (type === "text") {
     return (
       <label className="field block" title={showKeyHint ? name : undefined}>
-        {label}
+        <span>
+          {label}
+          {keyHint}
+        </span>
         <textarea
           rows={5}
           value={value}
@@ -80,7 +91,10 @@ export function OptionField({ name, value, meta, disabled, onChange }: Props) {
   if (type === "int" || type === "number") {
     return (
       <label className="field block" title={showKeyHint ? name : undefined}>
-        {label}
+        <span>
+          {label}
+          {keyHint}
+        </span>
         <input
           type="number"
           value={value}
@@ -93,7 +107,10 @@ export function OptionField({ name, value, meta, disabled, onChange }: Props) {
 
   return (
     <label className="field block" title={showKeyHint ? name : undefined}>
-      {label}
+      <span>
+        {label}
+        {keyHint}
+      </span>
       <input value={value} disabled={disabled} onChange={(e) => onChange(e.target.value)} />
     </label>
   );

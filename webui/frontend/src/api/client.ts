@@ -612,6 +612,11 @@ export function deployFirewall(
       commands: string[];
       log: string;
       note?: string;
+      plan?: string[];
+      activation_source?: string;
+      activation_cmd?: string;
+      files?: Array<{ local: string; remote: string }>;
+      manifest?: Array<{ local: string; remote: string; main?: boolean }>;
     };
   }>(`/api/v1/projects/${sessionId}/deploy`, {
     method: "POST",

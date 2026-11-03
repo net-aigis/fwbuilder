@@ -90,6 +90,7 @@ UI_MAP = {
 
 WIDGET_TYPE = {
     "QCheckBox": "bool",
+    "QRadioButton": "bool",
     "QComboBox": "enum",
     "QSpinBox": "int",
     "QDoubleSpinBox": "number",
@@ -157,7 +158,7 @@ def parse_widget_labels(root: ET.Element | None) -> dict[str, str]:
         cls = w.get("class") or ""
         if not name:
             continue
-        if cls == "QCheckBox":
+        if cls in {"QCheckBox", "QRadioButton"}:
             prop = w.find("./property[@name='text']/string")
             if prop is not None and (prop.text or "").strip():
                 labels[name] = prop.text.strip()

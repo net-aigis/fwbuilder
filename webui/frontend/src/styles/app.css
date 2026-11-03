@@ -688,6 +688,11 @@ button.linkish:disabled {
   justify-content: center;
 }
 
+.option-key-hint {
+  font-size: 0.7rem;
+  margin-left: 0.25rem;
+}
+
 .rule-options {
   margin-top: 1rem;
   padding-top: 0.75rem;

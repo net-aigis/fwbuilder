@@ -51,7 +51,8 @@
       "fields": {
         "asa8_nat_auto": {
           "key": "asa8_nat_auto",
-          "type": "string",
+          "label": "Automatically detect NAT type \"static\" or \"dynamic\". This rule is currently set to type \"%1\"",
+          "type": "bool",
           "widget": "asa8_nat_auto",
           "widget_class": "QRadioButton"
         },
@@ -64,13 +65,15 @@
         },
         "asa8_nat_dynamic": {
           "key": "asa8_nat_dynamic",
-          "type": "string",
+          "label": "Force rule to be NAT type \"dynamic\". Note, rules with destination translation defined cannot be \"dynamic\"",
+          "type": "bool",
           "widget": "asa8_nat_dynamic",
           "widget_class": "QRadioButton"
         },
         "asa8_nat_static": {
           "key": "asa8_nat_static",
-          "type": "string",
+          "label": "Force rule to be NAT type \"static\".",
+          "type": "bool",
           "widget": "asa8_nat_static",
           "widget_class": "QRadioButton"
         },
@@ -104,31 +107,36 @@
         },
         "pf_bitmask": {
           "key": "pf_bitmask",
-          "type": "string",
+          "label": "bitmask",
+          "type": "bool",
           "widget": "pf_bitmask",
           "widget_class": "QRadioButton"
         },
         "pf_pool_type_none": {
           "key": "pf_pool_type_none",
-          "type": "string",
+          "label": "default",
+          "type": "bool",
           "widget": "pf_pool_type_none",
           "widget_class": "QRadioButton"
         },
         "pf_random": {
           "key": "pf_random",
-          "type": "string",
+          "label": "random",
+          "type": "bool",
           "widget": "pf_random",
           "widget_class": "QRadioButton"
         },
         "pf_round_robin": {
           "key": "pf_round_robin",
-          "type": "string",
+          "label": "round-robin",
+          "type": "bool",
           "widget": "pf_round_robin",
           "widget_class": "QRadioButton"
         },
         "pf_source_hash": {
           "key": "pf_source_hash",
-          "type": "string",
+          "label": "source-hash",
+          "type": "bool",
           "widget": "pf_source_hash",
           "widget_class": "QRadioButton"
         },
@@ -998,21 +1006,21 @@
         "iosacl_acl_basic": {
           "key": "iosacl_acl_basic",
           "label": "Clear all access lists then install new ones. This method may interrupt access to the firewall if you manage it remotely via IPSEC tunnel. This is the way access lists were generated in older versions of Firewall Builder for IOSACL.",
-          "type": "string",
+          "type": "bool",
           "widget": "iosacl_acl_basic",
           "widget_class": "QRadioButton"
         },
         "iosacl_acl_no_clear": {
           "key": "iosacl_acl_no_clear",
           "label": "Do not clear access lists and object group, just generate IOSACL commands for the new ones. Use this option if you have your own policy installation scripts.",
-          "type": "string",
+          "type": "bool",
           "widget": "iosacl_acl_no_clear",
           "widget_class": "QRadioButton"
         },
         "iosacl_acl_substitution": {
           "key": "iosacl_acl_substitution",
           "label": "\"Safety net\" method:\n\nFirst, create temporary access list to permit connections from the management subnet specified below to the firewall and assign it to outside interface. This temporary ACL helps maintain session between management station and the firewall while access lists are reloaded in case connection comes over IPSEC tunnel. Then clear permanent lists, recreate them and assign to interfaces. This method ensures that remote access to the firewall is maintained without interruption  at a cost of slightly larger configuration.",
-          "type": "string",
+          "type": "bool",
           "widget": "iosacl_acl_substitution",
           "widget_class": "QRadioButton"
         },
@@ -1178,7 +1186,10 @@
             "iosacl_include_comments",
             "iosacl_use_acl_remarks",
             "iosacl_regroup_commands",
-            "iosacl_acl_temp_addr"
+            "iosacl_acl_temp_addr",
+            "iosacl_acl_basic",
+            "iosacl_acl_no_clear",
+            "iosacl_acl_substitution"
           ],
           "title": "Script Options"
         },
@@ -1440,7 +1451,8 @@
         },
         "use_ULOG": {
           "key": "use_ULOG",
-          "type": "string",
+          "label": "use ULOG",
+          "type": "bool",
           "widget": "useULOG",
           "widget_class": "QRadioButton"
         },
@@ -1501,6 +1513,7 @@
         {
           "id": "tab3",
           "keys": [
+            "use_ULOG",
             "log_tcp_seq",
             "log_ip_opt",
             "use_numeric_log_levels",
@@ -2694,7 +2707,8 @@
         },
         "use_ULOG": {
           "key": "use_ULOG",
-          "type": "string",
+          "label": "use ULOG",
+          "type": "bool",
           "widget": "useULOG",
           "widget_class": "QRadioButton"
         },
@@ -2787,6 +2801,7 @@
         {
           "id": "tab3",
           "keys": [
+            "use_ULOG",
             "log_tcp_seq",
             "log_ip_opt",
             "use_numeric_log_levels",
@@ -3753,21 +3768,21 @@
         "nxosacl_acl_basic": {
           "key": "nxosacl_acl_basic",
           "label": "Clear all access lists then install new ones. This method may interrupt access to the firewall if you manage it remotely via IPSEC tunnel. This is the way access lists were generated in older versions of Firewall Builder for NX-OSACL.",
-          "type": "string",
+          "type": "bool",
           "widget": "nxosacl_acl_basic",
           "widget_class": "QRadioButton"
         },
         "nxosacl_acl_no_clear": {
           "key": "nxosacl_acl_no_clear",
           "label": "Do not clear access lists and object group, just generate NX-OSACL commands for the new ones. Use this option if you have your own policy installation scripts.",
-          "type": "string",
+          "type": "bool",
           "widget": "nxosacl_acl_no_clear",
           "widget_class": "QRadioButton"
         },
         "nxosacl_acl_substitution": {
           "key": "nxosacl_acl_substitution",
           "label": "\"Safety net\" method:\n\nFirst, create temporary access list to permit connections from the management subnet specified below to the firewall and assign it to outside interface. This temporary ACL helps maintain session between management station and the firewall while access lists are reloaded in case connection comes over IPSEC tunnel. Then clear permanent lists, recreate them and assign to interfaces. This method ensures that remote access to the firewall is maintained without interruption  at a cost of slightly larger configuration.",
-          "type": "string",
+          "type": "bool",
           "widget": "nxosacl_acl_substitution",
           "widget_class": "QRadioButton"
         },
@@ -3927,7 +3942,10 @@
             "nxosacl_include_comments",
             "nxosacl_use_acl_remarks",
             "nxosacl_regroup_commands",
-            "nxosacl_acl_temp_addr"
+            "nxosacl_acl_temp_addr",
+            "nxosacl_acl_basic",
+            "nxosacl_acl_no_clear",
+            "nxosacl_acl_substitution"
           ],
           "title": "Script Options"
         },
@@ -4200,13 +4218,15 @@
         },
         "generate_rc_conf_file": {
           "key": "generate_rc_conf_file",
-          "type": "string",
+          "label": "file in rc.conf format",
+          "type": "bool",
           "widget": "generateRcConfFile",
           "widget_class": "QRadioButton"
         },
         "generate_shell_script": {
           "key": "generate_shell_script",
-          "type": "string",
+          "label": "shell script with extension .fw",
+          "type": "bool",
           "widget": "generateShellScript",
           "widget_class": "QRadioButton"
         },
@@ -4409,13 +4429,15 @@
         },
         "pf_scrub_fragm_crop": {
           "key": "pf_scrub_fragm_crop",
-          "type": "string",
+          "label": "Drop duplicate fragments, do not buffer and reassemble",
+          "type": "bool",
           "widget": "pf_scrub_fragm_crop",
           "widget_class": "QRadioButton"
         },
         "pf_scrub_fragm_drop_ovl": {
           "key": "pf_scrub_fragm_drop_ovl",
-          "type": "string",
+          "label": "Drop duplicate and subsequent fragments",
+          "type": "bool",
           "widget": "pf_scrub_fragm_drop_ovl",
           "widget_class": "QRadioButton"
         },
@@ -4447,13 +4469,15 @@
         },
         "pf_scrub_reassemble": {
           "key": "pf_scrub_reassemble",
-          "type": "string",
+          "label": "Buffer and reassemble fragments (default)",
+          "type": "bool",
           "widget": "pf_scrub_reassemble",
           "widget_class": "QRadioButton"
         },
         "pf_scrub_reassemble_tcp": {
           "key": "pf_scrub_reassemble_tcp",
-          "type": "string",
+          "label": "Reassemble TCP",
+          "type": "bool",
           "widget": "pf_scrub_reassemble_tcp",
           "widget_class": "QRadioButton"
         },
@@ -4725,7 +4749,11 @@
             "pf_scrub_minttl",
             "pf_scrub_use_maxmss",
             "pf_scrub_maxmss",
-            "pf_do_scrub"
+            "pf_do_scrub",
+            "pf_scrub_reassemble",
+            "pf_scrub_fragm_crop",
+            "pf_scrub_fragm_drop_ovl",
+            "pf_scrub_reassemble_tcp"
           ],
           "title": "Scrub"
         },
@@ -4822,6 +4850,8 @@
         {
           "id": "tab8",
           "keys": [
+            "generate_shell_script",
+            "generate_rc_conf_file",
             "debug",
             "configure_interfaces",
             "configure_carp_interfaces",
@@ -4959,21 +4989,21 @@
         "pix_acl_basic": {
           "key": "pix_acl_basic",
           "label": "Clear all access lists then install new ones. This method may interrupt access to the firewall if you manage it remotely via IPSEC tunnel. This is the way access lists were generated in older versions of Firewall Builder for PIX.",
-          "type": "string",
+          "type": "bool",
           "widget": "pix_acl_basic",
           "widget_class": "QRadioButton"
         },
         "pix_acl_no_clear": {
           "key": "pix_acl_no_clear",
           "label": "Do not clear access lists and object group, just generate PIX commands for the new ones. Use this option if you have your own policy installation scripts.",
-          "type": "string",
+          "type": "bool",
           "widget": "pix_acl_no_clear",
           "widget_class": "QRadioButton"
         },
         "pix_acl_substitution": {
           "key": "pix_acl_substitution",
           "label": "\"Safety net\" method:\n\nFirst, create temporary access list to permit connections from the management subnet specified below to the firewall and assign it to outside interface. This temporary ACL helps maintain session between management station and the firewall while access lists are reloaded in case connection comes over IPSEC tunnel. Then clear permanent lists, recreate them and assign to interfaces. This method ensures that remote access to the firewall is maintained without interruption  at a cost of slightly larger configuration.",
-          "type": "string",
+          "type": "bool",
           "widget": "pix_acl_substitution",
           "widget_class": "QRadioButton"
         },
@@ -5314,7 +5344,7 @@
         },
         "uauth_abs": {
           "key": "uauth_abs",
-          "type": "string",
+          "type": "bool",
           "widget": "uauth_abs",
           "widget_class": "QRadioButton"
         },
@@ -5326,7 +5356,7 @@
         },
         "uauth_inact": {
           "key": "uauth_inact",
-          "type": "string",
+          "type": "bool",
           "widget": "uauth_inact",
           "widget_class": "QRadioButton"
         },
@@ -5459,7 +5489,9 @@
             "half-closed_mm",
             "half-closed_hh",
             "pix_ssh_timeout",
-            "pix_telnet_timeout"
+            "pix_telnet_timeout",
+            "uauth_abs",
+            "uauth_inact"
           ],
           "title": "Timeouts"
         },
@@ -5482,7 +5514,10 @@
         {
           "id": "tab1",
           "keys": [
-            "pix_acl_temp_addr"
+            "pix_acl_basic",
+            "pix_acl_no_clear",
+            "pix_acl_temp_addr",
+            "pix_acl_substitution"
           ],
           "title": "Script"
         },
@@ -5548,7 +5583,7 @@
         },
         "pix_ntp1_pref": {
           "key": "pix_ntp1_pref",
-          "type": "string",
+          "type": "bool",
           "widget": "ntp1_pref",
           "widget_class": "QRadioButton"
         },
@@ -5560,7 +5595,7 @@
         },
         "pix_ntp2_pref": {
           "key": "pix_ntp2_pref",
-          "type": "string",
+          "type": "bool",
           "widget": "ntp2_pref",
           "widget_class": "QRadioButton"
         },
@@ -5572,7 +5607,7 @@
         },
         "pix_ntp3_pref": {
           "key": "pix_ntp3_pref",
-          "type": "string",
+          "type": "bool",
           "widget": "ntp3_pref",
           "widget_class": "QRadioButton"
         },
@@ -5652,7 +5687,10 @@
           "keys": [
             "pix_ntp1",
             "pix_ntp2",
-            "pix_ntp3"
+            "pix_ntp3_pref",
+            "pix_ntp2_pref",
+            "pix_ntp3",
+            "pix_ntp1_pref"
           ],
           "title": "NTP"
         },
@@ -5770,21 +5808,21 @@
         "procurve_acl_acl_basic": {
           "key": "procurve_acl_acl_basic",
           "label": "Clear all access lists then install new ones. This method may interrupt access to the firewall if you manage it remotely via tunnel.",
-          "type": "string",
+          "type": "bool",
           "widget": "procurve_acl_acl_basic",
           "widget_class": "QRadioButton"
         },
         "procurve_acl_acl_no_clear": {
           "key": "procurve_acl_acl_no_clear",
           "label": "Do not clear access lists, just generate commands for the new ones. Use this option if you have your own policy installation scripts.",
-          "type": "string",
+          "type": "bool",
           "widget": "procurve_acl_acl_no_clear",
           "widget_class": "QRadioButton"
         },
         "procurve_acl_acl_substitution": {
           "key": "procurve_acl_acl_substitution",
           "label": "\"Safety net\" method:\n\nFirst, create temporary access list to permit connections from the management subnet specified below to the firewall and assign it to outside interface. This temporary ACL helps maintain session between management station and the firewall while access lists are reloaded in case connection comes over IPSEC tunnel. Then clear permanent lists, recreate them and assign to interfaces. This method ensures that remote access to the firewall is maintained without interruption  at a cost of slightly larger configuration.",
-          "type": "string",
+          "type": "bool",
           "widget": "procurve_acl_acl_substitution",
           "widget_class": "QRadioButton"
         },
@@ -5913,6 +5951,9 @@
         {
           "id": "script_options_tab",
           "keys": [
+            "procurve_acl_acl_basic",
+            "procurve_acl_acl_no_clear",
+            "procurve_acl_acl_substitution",
             "procurve_acl_acl_temp_addr",
             "procurve_acl_include_comments",
             "procurve_acl_use_acl_remarks"
@@ -6226,7 +6267,8 @@
         },
         "use_ULOG": {
           "key": "use_ULOG",
-          "type": "string",
+          "label": "use ULOG",
+          "type": "bool",
           "widget": "useULOG",
           "widget_class": "QRadioButton"
         },
@@ -6297,6 +6339,7 @@
         {
           "id": "tab3",
           "keys": [
+            "use_ULOG",
             "log_tcp_seq",
             "log_ip_opt",
             "use_numeric_log_levels",

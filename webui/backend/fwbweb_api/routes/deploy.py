@@ -130,6 +130,7 @@ def deploy_firewall(
     local_script = Path(compile_result["destdir"]) / script_name
 
     try:
+        host_os = str((fw.get("attrs") or {}).get("host_OS") or "")
         deploy_result = plan_and_deploy(
             local_script=local_script,
             host=host,
@@ -140,6 +141,8 @@ def deploy_firewall(
             remote_name=body.remote_name,
             activate=body.activate,
             activation_cmd=activation,
+            host_os=host_os,
+            firewall_name=name,
             ssh_args=options.get("sshArgs") or "",
             scp_args=options.get("scpArgs") or "",
             identity_file=body.identity_file,

@@ -2688,11 +2688,16 @@ export function App() {
         compile_first: true,
       });
       const cmds = (res.deploy?.commands || []).join("\n");
+      const plan = (res.deploy?.plan || []).join("\n");
       setCompileOutputs(res.compile?.outputs ?? []);
       setCompileLog(
         `Deploy dry-run ${res.firewall} (${res.platform})\n` +
           `host=${res.deploy?.host || "(unset)"} user=${res.deploy?.user || "(unset)"}\n` +
-          `remote=${res.deploy?.remote_path || ""}\n\n` +
+          `remote=${res.deploy?.remote_path || ""}\n` +
+          (res.deploy?.activation_source
+            ? `activation_source=${res.deploy.activation_source}\n`
+            : "") +
+          `\n${plan ? `${plan}\n\n` : ""}` +
           `${cmds}\n\n` +
           `${res.deploy?.log || ""}\n` +
           `${res.compile?.log || ""}`,
@@ -2730,11 +2735,16 @@ export function App() {
         compile_first: true,
       });
       const cmds = (res.deploy?.commands || []).join("\n");
+      const plan = (res.deploy?.plan || []).join("\n");
       setCompileOutputs(res.compile?.outputs ?? []);
       setCompileLog(
         `Deploy LIVE ${res.firewall} (${res.platform})\n` +
           `host=${res.deploy?.host || "(unset)"} user=${res.deploy?.user || "(unset)"}\n` +
-          `remote=${res.deploy?.remote_path || ""}\n\n` +
+          `remote=${res.deploy?.remote_path || ""}\n` +
+          (res.deploy?.activation_source
+            ? `activation_source=${res.deploy.activation_source}\n`
+            : "") +
+          `\n${plan ? `${plan}\n\n` : ""}` +
           `${cmds}\n\n` +
           `${res.deploy?.log || ""}\n` +
           `${res.compile?.log || ""}`,
