@@ -699,6 +699,22 @@ export function App() {
         }
         return;
       }
+      if (e.altKey && !mod && e.key.toLowerCase() === "p") {
+        // Cycle Policy → NAT → Routing for current firewall.
+        e.preventDefault();
+        const fwId =
+          selected && (selected.type === "Firewall" || selected.type === "Cluster")
+            ? selected.id
+            : rulesFwId;
+        if (!fwId) return;
+        const order: RulesWhich[] = ["policy", "nat", "routing"];
+        const cur =
+          fwId === rulesFwId ? rulesWhich : ("policy" as RulesWhich);
+        const next = order[(order.indexOf(cur) + 1) % order.length] ?? "policy";
+        void loadRules(fwId, next);
+        setStatus(`Rules: ${next}`);
+        return;
+      }
       if (e.altKey && !mod && e.key.toLowerCase() === "d" && (rulesFwId || selected)) {
         e.preventDefault();
         const fw =
@@ -963,6 +979,7 @@ export function App() {
     sessionsOpen,
     helpOpen,
     rulesFwId,
+    rulesWhich,
   ]);
 
   async function onApplyObject(patch: {
@@ -3240,6 +3257,23 @@ export function App() {
                       {w}
                     </button>
                   ))}
+                  {rulesFwId ? (
+                    <button
+                      type="button"
+                      className="ghost"
+                      disabled={busy}
+                      title="Cycle Policy → NAT → Routing (Alt+P)"
+                      onClick={() => {
+                        const order: RulesWhich[] = ["policy", "nat", "routing"];
+                        const next =
+                          order[(order.indexOf(rulesWhich) + 1) % order.length] ?? "policy";
+                        void loadRules(rulesFwId, next);
+                        setStatus(`Rules: ${next}`);
+                      }}
+                    >
+                      Cycle ruleset
+                    </button>
+                  ) : null}
                   {rulesetList.filter((r) => {
                     const want =
                       rulesWhich === "nat"
