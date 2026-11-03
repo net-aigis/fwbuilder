@@ -39,6 +39,28 @@ def health() -> dict[str, str]:
     return {"status": "ok"}
 
 
+@app.get("/api/v1/res-status")
+def res_status(_: str = Depends(require_token)) -> dict[str, object]:
+    """Report FWBUILDER_RES_DIR / configlets availability for installer features."""
+    from .configlets import configlets_root
+    from .platforms import res_dir
+
+    root = res_dir()
+    cfg = configlets_root()
+    dirs: list[str] = []
+    if cfg.is_dir():
+        dirs = sorted(p.name for p in cfg.iterdir() if p.is_dir())
+    return {
+        "status": "ok" if root.is_dir() else "missing_res",
+        "res_dir": str(root),
+        "res_ok": root.is_dir(),
+        "configlets_dir": str(cfg),
+        "configlets_ok": cfg.is_dir(),
+        "configlet_os_count": len(dirs),
+        "configlet_os": dirs,
+    }
+
+
 @app.get("/api/v1/me")
 def me(_: str = Depends(require_token)) -> dict[str, str]:
     return {"auth": "ok"}
