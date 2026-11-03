@@ -127,7 +127,11 @@ export function qtSpacerStyle(spacer: QtGridSpacer): CSSProperties | undefined {
   return style;
 }
 
-export type QtGridAnnotation = QtGridSpacer & { text: string; alignment?: string };
+export type QtGridAnnotation = QtGridSpacer & {
+  text: string;
+  alignment?: string;
+  buddy?: string;
+};
 
 /** Map .ui Qt::Align* flags to CSS text/self alignment. */
 export function qtAlignmentStyle(alignment?: string): CSSProperties | undefined {

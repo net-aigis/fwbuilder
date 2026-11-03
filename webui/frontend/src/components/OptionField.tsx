@@ -13,6 +13,7 @@ type FieldMeta = {
   minimum_size?: { width?: number; height?: number };
   maximum_size?: { width?: number; height?: number };
   alignment?: string;
+  external_label?: boolean;
 };
 
 type Props = {
@@ -56,13 +57,19 @@ function sizePolicyClass(meta?: FieldMeta): string {
 
 export function OptionField({ name, value, meta, disabled, onChange }: Props) {
   const type = meta?.type || "string";
-  const label = (meta?.label || "").trim() || name;
-  const showKeyHint = Boolean(meta?.label && meta.label.trim() && meta.label.trim() !== name);
-  const tip = (meta?.tooltip || "").trim();
-  const title = tip || (showKeyHint ? name : undefined);
+  const external = Boolean(meta?.external_label);
+  // When .ui puts caption in a separate buddy QLabel cell, avoid duplicating it on the control.
+  const label = external ? "" : (meta?.label || "").trim() || name;
+  const showKeyHint = Boolean(
+    !external && meta?.label && meta.label.trim() && meta.label.trim() !== name,
+  );
+  const tip = (meta?.tooltip || "").trim() || (external ? (meta?.label || "").trim() : "");
+  const title = tip || (showKeyHint ? name : undefined) || (external ? name : undefined);
   const style = fieldStyle(meta);
   const sizeClass = sizePolicyClass(meta);
-  const fieldClass = ["field", "block", sizeClass].filter(Boolean).join(" ");
+  const fieldClass = ["field", "block", sizeClass, external ? "external-label" : ""]
+    .filter(Boolean)
+    .join(" ");
 
   const keyHint = showKeyHint ? <span className="muted option-key-hint"> {name}</span> : null;
 
@@ -76,10 +83,14 @@ export function OptionField({ name, value, meta, disabled, onChange }: Props) {
             disabled={disabled}
             onChange={(e) => onChange(e.target.checked ? "True" : "False")}
           />
-          <span>
-            {label}
-            {keyHint}
-          </span>
+          {label || keyHint ? (
+            <span>
+              {label}
+              {keyHint}
+            </span>
+          ) : (
+            <span className="sr-only">{name}</span>
+          )}
         </span>
       </label>
     );

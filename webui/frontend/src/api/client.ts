@@ -490,6 +490,7 @@ export type OptionFieldMeta = {
   minimum_size?: { width?: number; height?: number };
   maximum_size?: { width?: number; height?: number };
   alignment?: string;
+  external_label?: boolean;
 };
 
 export function fetchOptionSchema(platform: string, hostOs = "") {
@@ -502,6 +503,7 @@ export function fetchOptionSchema(platform: string, hostOs = "") {
     description?: string;
     window_title?: string;
     geometry?: { width?: number; height?: number };
+    tab_position?: string;
     supported_os?: string[];
     capabilities?: Record<string, string>;
     defaults: Record<string, string>;
@@ -548,6 +550,16 @@ export function fetchOptionSchema(platform: string, hostOs = "") {
         name?: string;
         alignment?: string;
       }>;
+      buddy_labels?: Array<{
+        text: string;
+        buddy: string;
+        row?: number;
+        column?: number;
+        rowspan?: number;
+        colspan?: number;
+        name?: string;
+        alignment?: string;
+      }>;
     }>;
     featured_keys: string[];
     fields?: Record<string, OptionFieldMeta>;
@@ -582,6 +594,16 @@ type SchemaGroup = {
   };
   annotations?: Array<{
     text: string;
+    row?: number;
+    column?: number;
+    rowspan?: number;
+    colspan?: number;
+    name?: string;
+    alignment?: string;
+  }>;
+  buddy_labels?: Array<{
+    text: string;
+    buddy: string;
     row?: number;
     column?: number;
     rowspan?: number;

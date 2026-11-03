@@ -33,6 +33,7 @@ type Group = {
   column_stretch?: number[];
   row_stretch?: number[];
   annotations?: QtGridAnnotation[];
+  buddy_labels?: QtGridAnnotation[];
   spacing?: QtGridSpacing;
 };
 
@@ -198,8 +199,17 @@ export function InterfaceOptions({
           const stretch = page?.column_stretch || [];
           const rowStretch = page?.row_stretch || [];
           const notes = page?.annotations || [];
+          const buddyLabels = page?.buddy_labels || [];
           const spacing = page?.spacing || {};
-          const grid = qtGridStyle(keys, fields, spacers, stretch, notes, spacing, rowStretch);
+          const grid = qtGridStyle(
+            keys,
+            fields,
+            spacers,
+            stretch,
+            [...notes, ...buddyLabels],
+            spacing,
+            rowStretch,
+          );
           return (
             <div className={grid.className} style={grid.style}>
               {spacers.map((sp, i) => (
@@ -218,6 +228,16 @@ export function InterfaceOptions({
                   style={{ ...qtSpacerStyle(note), ...qtAlignmentStyle(note.alignment) }}
                 >
                   {note.text}
+                </p>
+              ))}
+              {buddyLabels.map((bl, i) => (
+                <p
+                  key={bl.name || `buddy-${i}`}
+                  className="qt-annotation qt-buddy-label muted"
+                  data-buddy={bl.buddy}
+                  style={{ ...qtSpacerStyle(bl), ...qtAlignmentStyle(bl.alignment) }}
+                >
+                  {bl.text}
                 </p>
               ))}
               {keys.map((key) => (

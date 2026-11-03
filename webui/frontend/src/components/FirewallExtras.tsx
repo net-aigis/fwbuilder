@@ -74,6 +74,7 @@ type Group = {
   layouts?: Record<string, number>;
   layout_tree?: unknown[];
   annotations?: QtGridAnnotation[];
+  buddy_labels?: QtGridAnnotation[];
   spacing?: QtGridSpacing;
 };
 
@@ -139,6 +140,7 @@ export function FirewallExtras({
   const [dialogGeometry, setDialogGeometry] = useState<{ width?: number; height?: number } | null>(
     null,
   );
+  const [tabPosition, setTabPosition] = useState<string>("");
   const [activeGroup, setActiveGroup] = useState<string>("platform");
   const [installerNote, setInstallerNote] = useState<string | null>(null);
   const [installerMode, setInstallerMode] = useState<string | null>(null);
@@ -284,6 +286,7 @@ export function FirewallExtras({
         setDialogName(schema.dialog || "");
         setDialogTitle(schema.window_title || "");
         setDialogGeometry(schema.geometry || null);
+        setTabPosition(schema.tab_position || "");
         setFields(schema.fields ?? {});
         setDefaults(schema.defaults ?? {});
         let preferred = nextGroups[0]?.id || "platform";
@@ -643,6 +646,7 @@ export function FirewallExtras({
               · {dialogGeometry.width}×{dialogGeometry.height}
             </span>
           ) : null}
+          {tabPosition ? <span className="muted"> · tabs {tabPosition}</span> : null}
         </h3>
         <div className="btn-row">
           <button type="button" className="ghost" disabled={busy} onClick={() => void reload()}>
@@ -762,6 +766,8 @@ export function FirewallExtras({
           useQtGridLayout && secIdx === 0 ? activeGroupMeta?.row_stretch || [] : [];
         const pageNotes =
           useQtGridLayout && secIdx === 0 ? activeGroupMeta?.annotations || [] : [];
+        const pageBuddyLabels =
+          useQtGridLayout && secIdx === 0 ? activeGroupMeta?.buddy_labels || [] : [];
         const pageSpacing =
           useQtGridLayout && secIdx === 0 ? activeGroupMeta?.spacing || {} : {};
         const grid = useQtGridLayout
@@ -770,7 +776,7 @@ export function FirewallExtras({
               fields,
               pageSpacers,
               pageStretch,
-              pageNotes,
+              [...pageNotes, ...pageBuddyLabels],
               pageSpacing,
               pageRowStretch,
             )
@@ -816,6 +822,16 @@ export function FirewallExtras({
                   style={{ ...qtSpacerStyle(note), ...qtAlignmentStyle(note.alignment) }}
                 >
                   {note.text}
+                </p>
+              ))}
+              {pageBuddyLabels.map((bl, i) => (
+                <p
+                  key={bl.name || `buddy-${i}`}
+                  className="qt-annotation qt-buddy-label muted"
+                  data-buddy={bl.buddy}
+                  style={{ ...qtSpacerStyle(bl), ...qtAlignmentStyle(bl.alignment) }}
+                >
+                  {bl.text}
                 </p>
               ))}
               {sec.keys.map((key) => (

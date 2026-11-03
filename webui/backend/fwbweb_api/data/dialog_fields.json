@@ -2645,6 +2645,7 @@
           "widget_class": null
         },
         "iosacl_acl_basic": {
+          "external_label": true,
           "grid": {
             "colspan": 1,
             "column": 0,
@@ -2662,6 +2663,7 @@
           "widget_class": "QRadioButton"
         },
         "iosacl_acl_no_clear": {
+          "external_label": true,
           "grid": {
             "colspan": 1,
             "column": 0,
@@ -2679,6 +2681,7 @@
           "widget_class": "QRadioButton"
         },
         "iosacl_acl_substitution": {
+          "external_label": true,
           "grid": {
             "colspan": 1,
             "column": 0,
@@ -3114,6 +3117,38 @@
               "row": 0,
               "rowspan": 1,
               "text": "Temporary access list should permit access from this address or subnet (use prefix notation to specify subnet, e.g. 192.0.2.0/24):"
+            }
+          ],
+          "buddy_labels": [
+            {
+              "alignment": "AlignVCenter",
+              "buddy": "iosacl_acl_basic",
+              "colspan": 1,
+              "column": 1,
+              "name": "textLabel2_3",
+              "row": 0,
+              "rowspan": 1,
+              "text": "Clear all access lists then install new ones. This method may interrupt access to the firewall if you manage it remotely via IPSEC tunnel. This is the way access lists were generated in older versions of Firewall Builder for IOSACL."
+            },
+            {
+              "alignment": "AlignVCenter",
+              "buddy": "iosacl_acl_no_clear",
+              "colspan": 1,
+              "column": 1,
+              "name": "textLabel3",
+              "row": 1,
+              "rowspan": 1,
+              "text": "Do not clear access lists and object group, just generate IOSACL commands for the new ones. Use this option if you have your own policy installation scripts."
+            },
+            {
+              "alignment": "AlignVCenter",
+              "buddy": "iosacl_acl_substitution",
+              "colspan": 1,
+              "column": 1,
+              "name": "textLabel4",
+              "row": 2,
+              "rowspan": 1,
+              "text": "\"Safety net\" method:\n\nFirst, create temporary access list to permit connections from the management subnet specified below to the firewall and assign it to outside interface. This temporary ACL helps maintain session between management station and the firewall while access lists are reloaded in case connection comes over IPSEC tunnel. Then clear permanent lists, recreate them and assign to interfaces. This method ensures that remote access to the firewall is maintained without interruption  at a cost of slightly larger configuration."
             }
           ],
           "id": "script_options_tab",
@@ -11641,6 +11676,7 @@
           "widget_class": null
         },
         "nxosacl_acl_basic": {
+          "external_label": true,
           "grid": {
             "colspan": 1,
             "column": 0,
@@ -11658,6 +11694,7 @@
           "widget_class": "QRadioButton"
         },
         "nxosacl_acl_no_clear": {
+          "external_label": true,
           "grid": {
             "colspan": 1,
             "column": 0,
@@ -11675,6 +11712,7 @@
           "widget_class": "QRadioButton"
         },
         "nxosacl_acl_substitution": {
+          "external_label": true,
           "grid": {
             "colspan": 1,
             "column": 0,
@@ -12087,6 +12125,38 @@
               "row": 0,
               "rowspan": 1,
               "text": "Temporary access list should permit access from this address or subnet (use prefix notation to specify subnet, e.g. 192.0.2.0/24):"
+            }
+          ],
+          "buddy_labels": [
+            {
+              "alignment": "AlignVCenter",
+              "buddy": "nxosacl_acl_basic",
+              "colspan": 1,
+              "column": 1,
+              "name": "textLabel2_3",
+              "row": 0,
+              "rowspan": 1,
+              "text": "Clear all access lists then install new ones. This method may interrupt access to the firewall if you manage it remotely via IPSEC tunnel. This is the way access lists were generated in older versions of Firewall Builder for NX-OSACL."
+            },
+            {
+              "alignment": "AlignVCenter",
+              "buddy": "nxosacl_acl_no_clear",
+              "colspan": 1,
+              "column": 1,
+              "name": "textLabel3",
+              "row": 1,
+              "rowspan": 1,
+              "text": "Do not clear access lists and object group, just generate NX-OSACL commands for the new ones. Use this option if you have your own policy installation scripts."
+            },
+            {
+              "alignment": "AlignVCenter",
+              "buddy": "nxosacl_acl_substitution",
+              "colspan": 1,
+              "column": 1,
+              "name": "textLabel4",
+              "row": 2,
+              "rowspan": 1,
+              "text": "\"Safety net\" method:\n\nFirst, create temporary access list to permit connections from the management subnet specified below to the firewall and assign it to outside interface. This temporary ACL helps maintain session between management station and the firewall while access lists are reloaded in case connection comes over IPSEC tunnel. Then clear permanent lists, recreate them and assign to interfaces. This method ensures that remote access to the firewall is maintained without interruption  at a cost of slightly larger configuration."
             }
           ],
           "id": "script_options_tab",
@@ -15605,6 +15675,7 @@
           "widget_class": "QCheckBox"
         },
         "pix_emb_limit": {
+          "external_label": true,
           "grid": {
             "colspan": 1,
             "column": 1,
@@ -15797,6 +15868,7 @@
           "widget_class": "QComboBox"
         },
         "pix_max_conns": {
+          "external_label": true,
           "grid": {
             "colspan": 1,
             "column": 1,
@@ -16098,6 +16170,7 @@
           "widget_class": "QSpinBox"
         },
         "sip_media_hh": {
+          "external_label": true,
           "grid": {
             "colspan": 1,
             "column": 1,
@@ -16752,6 +16825,18 @@
               "text": "Absolute"
             }
           ],
+          "buddy_labels": [
+            {
+              "alignment": "AlignCenter",
+              "buddy": "sip_media_hh",
+              "colspan": 1,
+              "column": 0,
+              "name": "label467",
+              "row": 7,
+              "rowspan": 1,
+              "text": "sip&media"
+            }
+          ],
           "id": "label584",
           "keys": [
             "xlate_hh",
@@ -17198,6 +17283,28 @@
               "text": "(The default for both parameters is 0, which means unlimited number of connections.)"
             }
           ],
+          "buddy_labels": [
+            {
+              "alignment": "AlignLeading|AlignLeft|AlignVCenter",
+              "buddy": "max_conns",
+              "colspan": 1,
+              "column": 0,
+              "name": "label715",
+              "row": 11,
+              "rowspan": 1,
+              "text": "maximum number of simultaneous TCP and UDP connections"
+            },
+            {
+              "alignment": "AlignLeading|AlignLeft|AlignVCenter",
+              "buddy": "emb_limit",
+              "colspan": 1,
+              "column": 0,
+              "name": "label716",
+              "row": 12,
+              "rowspan": 1,
+              "text": "maximum number of embryonic connections per host"
+            }
+          ],
           "id": "pix_options",
           "keys": [
             "pix_resetinbound",
@@ -17259,6 +17366,7 @@
           "title": "PIX Options"
         }
       ],
+      "tab_position": "North",
       "ui": "pixadvanceddialog_q.ui",
       "window_title": "PIX Firewall Settings"
     },
@@ -18064,6 +18172,7 @@
           "widget_class": null
         },
         "procurve_acl_acl_basic": {
+          "external_label": true,
           "grid": {
             "colspan": 1,
             "column": 0,
@@ -18081,6 +18190,7 @@
           "widget_class": "QRadioButton"
         },
         "procurve_acl_acl_no_clear": {
+          "external_label": true,
           "grid": {
             "colspan": 1,
             "column": 0,
@@ -18098,6 +18208,7 @@
           "widget_class": "QRadioButton"
         },
         "procurve_acl_acl_substitution": {
+          "external_label": true,
           "grid": {
             "colspan": 1,
             "column": 0,
@@ -18449,6 +18560,38 @@
               "row": 0,
               "rowspan": 1,
               "text": "Temporary access list should permit access from this address or subnet (use prefix notation to specify subnet, e.g. 192.0.2.0/24):"
+            }
+          ],
+          "buddy_labels": [
+            {
+              "alignment": "AlignVCenter",
+              "buddy": "procurve_acl_acl_basic",
+              "colspan": 1,
+              "column": 1,
+              "name": "textLabel2_3",
+              "row": 0,
+              "rowspan": 1,
+              "text": "Clear all access lists then install new ones. This method may interrupt access to the firewall if you manage it remotely via tunnel."
+            },
+            {
+              "alignment": "AlignVCenter",
+              "buddy": "procurve_acl_acl_no_clear",
+              "colspan": 1,
+              "column": 1,
+              "name": "textLabel3",
+              "row": 1,
+              "rowspan": 1,
+              "text": "Do not clear access lists, just generate commands for the new ones. Use this option if you have your own policy installation scripts."
+            },
+            {
+              "alignment": "AlignVCenter",
+              "buddy": "procurve_acl_acl_substitution",
+              "colspan": 1,
+              "column": 1,
+              "name": "textLabel4",
+              "row": 2,
+              "rowspan": 1,
+              "text": "\"Safety net\" method:\n\nFirst, create temporary access list to permit connections from the management subnet specified below to the firewall and assign it to outside interface. This temporary ACL helps maintain session between management station and the firewall while access lists are reloaded in case connection comes over IPSEC tunnel. Then clear permanent lists, recreate them and assign to interfaces. This method ensures that remote access to the firewall is maintained without interruption  at a cost of slightly larger configuration."
             }
           ],
           "id": "script_options_tab",

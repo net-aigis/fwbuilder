@@ -454,6 +454,20 @@ def _layout_summary(node: ET.Element) -> dict[str, int]:
     return counts
 
 
+def _qlabel_alignment(child: ET.Element) -> str | None:
+    align_el = child.find("./property[@name='alignment']/set")
+    if align_el is None or not (align_el.text or "").strip():
+        return None
+    parts: list[str] = []
+    for part in align_el.text.strip().split("|"):
+        part = part.strip()
+        if part.startswith("Qt::"):
+            part = part[4:]
+        if part and part not in parts:
+            parts.append(part)
+    return "|".join(parts) if parts else None
+
+
 def _annotations_in_subtree(node: ET.Element) -> list[dict[str, Any]]:
     """Free QLabel text cells (not buddy labels) with optional QGrid position."""
     annotations: list[dict[str, Any]] = []
@@ -473,7 +487,7 @@ def _annotations_in_subtree(node: ET.Element) -> list[dict[str, Any]]:
                     continue
                 buddy = child.find("./property[@name='buddy']/cstring")
                 if buddy is not None and (buddy.text or "").strip():
-                    continue  # field caption, already mapped via labels
+                    continue  # field caption — see _buddy_labels_in_subtree
                 text_el = child.find("./property[@name='text']/string")
                 text = (text_el.text or "").strip() if text_el is not None else ""
                 if not text or text in {":", "..."}:
@@ -488,19 +502,54 @@ def _annotations_in_subtree(node: ET.Element) -> list[dict[str, Any]]:
                 name = child.get("name")
                 if name:
                     entry["name"] = name
-                align_el = child.find("./property[@name='alignment']/set")
-                if align_el is not None and (align_el.text or "").strip():
-                    parts: list[str] = []
-                    for part in align_el.text.strip().split("|"):
-                        part = part.strip()
-                        if part.startswith("Qt::"):
-                            part = part[4:]
-                        if part and part not in parts:
-                            parts.append(part)
-                    if parts:
-                        entry["alignment"] = "|".join(parts)
+                align = _qlabel_alignment(child)
+                if align:
+                    entry["alignment"] = align
                 annotations.append(entry)
     return annotations
+
+
+def _buddy_labels_in_subtree(node: ET.Element) -> list[dict[str, Any]]:
+    """QLabel cells with buddy= pointing at a control (separate grid caption/description)."""
+    labels: list[dict[str, Any]] = []
+    for lay in node.iter("layout"):
+        if lay.get("class") != "QGridLayout":
+            continue
+        for item in lay.findall("item"):
+            try:
+                row = int(item.get("row") or 0)
+                col = int(item.get("column") or 0)
+            except ValueError:
+                continue
+            rowspan = int(item.get("rowspan") or 1)
+            colspan = int(item.get("colspan") or 1)
+            for child in list(item):
+                if child.tag != "widget" or child.get("class") != "QLabel":
+                    continue
+                buddy_el = child.find("./property[@name='buddy']/cstring")
+                buddy = (buddy_el.text or "").strip() if buddy_el is not None else ""
+                if not buddy:
+                    continue
+                text_el = child.find("./property[@name='text']/string")
+                text = (text_el.text or "").strip() if text_el is not None else ""
+                if not text:
+                    continue
+                entry: dict[str, Any] = {
+                    "text": text,
+                    "buddy": buddy,
+                    "row": row,
+                    "column": col,
+                    "rowspan": rowspan,
+                    "colspan": colspan,
+                }
+                name = child.get("name")
+                if name:
+                    entry["name"] = name
+                align = _qlabel_alignment(child)
+                if align:
+                    entry["alignment"] = align
+                labels.append(entry)
+    return labels
 
 
 def parse_grid_positions(root: ET.Element | None) -> dict[str, dict[str, int]]:
@@ -644,6 +693,9 @@ def parse_pages(root: ET.Element | None) -> list[dict]:
             annotations = _annotations_in_subtree(page)
             if annotations:
                 page_entry["annotations"] = annotations
+            buddy_labels = _buddy_labels_in_subtree(page)
+            if buddy_labels:
+                page_entry["buddy_labels"] = buddy_labels
             pages.append(page_entry)
         if pages:
             break  # primary tab widget only
@@ -659,6 +711,13 @@ def extract_cpp(cpp_path: Path, ui_root: ET.Element | None, ui_widgets: dict[str
     min_sizes = parse_widget_minimum_sizes(ui_root)
     max_sizes = parse_widget_maximum_sizes(ui_root)
     alignments = parse_widget_alignments(ui_root)
+    # Widgets that have a separate grid QLabel buddy cell (caption lives there).
+    external_label_widgets: set[str] = set()
+    if ui_root is not None:
+        for bl in _buddy_labels_in_subtree(ui_root):
+            buddy = (bl.get("buddy") or "").strip()
+            if buddy:
+                external_label_widgets.add(buddy)
     fields: dict[str, dict] = {}
     for m in REG_OPT.finditer(src):
         widget, key, _mapping = m.group(1), m.group(2), m.group(3)
@@ -667,6 +726,8 @@ def extract_cpp(cpp_path: Path, ui_root: ET.Element | None, ui_widgets: dict[str
         field: dict = {"key": key, "widget": widget, "widget_class": cls or None, "type": ftype}
         if widget in labels:
             field["label"] = labels[widget]
+        if widget in external_label_widgets:
+            field["external_label"] = True
         if widget in tips:
             field["tooltip"] = tips[widget]
         if widget in grid:
@@ -762,12 +823,14 @@ def pages_with_keys(pages: list[dict], fields: dict[str, dict]) -> list[dict]:
                 entry["layout_tree"] = page["layout_tree"]
             if page.get("annotations"):
                 entry["annotations"] = page["annotations"]
+            if page.get("buddy_labels"):
+                entry["buddy_labels"] = page["buddy_labels"]
             out.append(entry)
     return out
 
 
 def parse_dialog_chrome(root: ET.Element | None) -> dict[str, Any]:
-    """Top-level dialog windowTitle + geometry from .ui (pixel hint, not parity)."""
+    """Top-level dialog windowTitle + geometry + tabPosition from .ui (pixel hint)."""
     out: dict[str, Any] = {}
     if root is None:
         return out
@@ -786,6 +849,16 @@ def parse_dialog_chrome(root: ET.Element | None) -> dict[str, Any]:
                 out["geometry"] = {"width": w, "height": h}
         except ValueError:
             pass
+    for tw in root.iter("widget"):
+        if tw.get("class") != "QTabWidget":
+            continue
+        pos_el = tw.find("./property[@name='tabPosition']/enum")
+        if pos_el is not None and (pos_el.text or "").strip():
+            raw = pos_el.text.strip()
+            if "::" in raw:
+                raw = raw.split("::", 1)[-1]
+            out["tab_position"] = raw
+        break
     return out
 
 

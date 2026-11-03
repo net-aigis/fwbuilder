@@ -727,6 +727,27 @@ pre.configlet-preview {
   font-style: italic;
 }
 
+.options-grid.qt-grid .qt-buddy-label {
+  font-size: 0.8rem;
+  line-height: 1.35;
+}
+
+.field.external-label.check-field .check {
+  gap: 0.25rem;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* .ui QSizePolicy hints (approximate CSS mapping). */
 .field.size-h-Expanding,
 .field.size-h-MinimumExpanding {

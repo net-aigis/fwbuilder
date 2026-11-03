@@ -255,6 +255,8 @@ def dialog_chrome_for(platform: str) -> dict[str, Any]:
         out["window_title"] = info["window_title"]
     if info.get("geometry"):
         out["geometry"] = info["geometry"]
+    if info.get("tab_position"):
+        out["tab_position"] = info["tab_position"]
     return out
 
 
@@ -355,6 +357,8 @@ def option_schema(platform: str, host_os: str = "") -> dict[str, Any]:
                 g["layout_tree"] = p["layout_tree"]
             if p.get("annotations"):
                 g["annotations"] = p["annotations"]
+            if p.get("buddy_labels"):
+                g["buddy_labels"] = p["buddy_labels"]
             groups.append(g)
         # Append any installer/script keys missing from pages so deploy still editable.
         page_keys = {k for p in pages for k in p.get("keys") or []}
@@ -457,6 +461,8 @@ def _groups_from_pages(pages: list[dict[str, Any]]) -> list[dict[str, Any]]:
             g["layout_tree"] = p["layout_tree"]
         if p.get("annotations"):
             g["annotations"] = p["annotations"]
+        if p.get("buddy_labels"):
+            g["buddy_labels"] = p["buddy_labels"]
         groups.append(g)
     return groups
 

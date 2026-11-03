@@ -33,6 +33,7 @@ type Group = {
   column_stretch?: number[];
   row_stretch?: number[];
   annotations?: QtGridAnnotation[];
+  buddy_labels?: QtGridAnnotation[];
   spacing?: QtGridSpacing;
 };
 
@@ -184,8 +185,17 @@ export function RuleOptions({
           const stretch = (!showAll && page?.column_stretch) || [];
           const rowStretch = (!showAll && page?.row_stretch) || [];
           const notes = (!showAll && page?.annotations) || [];
+          const buddyLabels = (!showAll && page?.buddy_labels) || [];
           const spacing = (!showAll && page?.spacing) || {};
-          const grid = qtGridStyle(shown, fields, spacers, stretch, notes, spacing, rowStretch);
+          const grid = qtGridStyle(
+            shown,
+            fields,
+            spacers,
+            stretch,
+            [...notes, ...buddyLabels],
+            spacing,
+            rowStretch,
+          );
           return (
             <div className={grid.className} style={grid.style}>
               {spacers.map((sp, i) => (
@@ -204,6 +214,16 @@ export function RuleOptions({
                   style={{ ...qtSpacerStyle(note), ...qtAlignmentStyle(note.alignment) }}
                 >
                   {note.text}
+                </p>
+              ))}
+              {buddyLabels.map((bl, i) => (
+                <p
+                  key={bl.name || `buddy-${i}`}
+                  className="qt-annotation qt-buddy-label muted"
+                  data-buddy={bl.buddy}
+                  style={{ ...qtSpacerStyle(bl), ...qtAlignmentStyle(bl.alignment) }}
+                >
+                  {bl.text}
                 </p>
               ))}
               {shown.map((key) => (
