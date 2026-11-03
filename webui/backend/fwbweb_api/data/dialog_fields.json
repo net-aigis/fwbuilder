@@ -1202,6 +1202,13 @@
               "rowspan": 1
             }
           ],
+          "spacing": {
+            "margin_bottom": 12,
+            "margin_left": 12,
+            "margin_right": 12,
+            "margin_top": 12,
+            "spacing": 12
+          },
           "title": "General"
         },
         {
@@ -1254,6 +1261,13 @@
               "rowspan": 1
             }
           ],
+          "spacing": {
+            "margin_bottom": 12,
+            "margin_left": 12,
+            "margin_right": 12,
+            "margin_top": 12,
+            "spacing": 12
+          },
           "title": "Logging"
         },
         {
@@ -1325,6 +1339,13 @@
               "rowspan": 1
             }
           ],
+          "spacing": {
+            "margin_bottom": 12,
+            "margin_left": 12,
+            "margin_right": 12,
+            "margin_top": 12,
+            "spacing": 12
+          },
           "title": "limit"
         },
         {
@@ -1402,6 +1423,13 @@
               "rowspan": 1
             }
           ],
+          "spacing": {
+            "margin_bottom": 12,
+            "margin_left": 12,
+            "margin_right": 12,
+            "margin_top": 12,
+            "spacing": 12
+          },
           "title": "connlimit"
         },
         {
@@ -1460,6 +1488,12 @@
               "rowspan": 1
             }
           ],
+          "spacing": {
+            "margin_bottom": 12,
+            "margin_left": 12,
+            "margin_right": 12,
+            "vertical": 8
+          },
           "title": "hashlimit"
         },
         {
@@ -1498,6 +1532,13 @@
               "rowspan": 1
             }
           ],
+          "spacing": {
+            "margin_bottom": 12,
+            "margin_left": 12,
+            "margin_right": 12,
+            "margin_top": 12,
+            "spacing": 12
+          },
           "title": "Tag"
         },
         {
@@ -1536,6 +1577,13 @@
               "rowspan": 1
             }
           ],
+          "spacing": {
+            "margin_bottom": 12,
+            "margin_left": 12,
+            "margin_right": 12,
+            "margin_top": 12,
+            "spacing": 12
+          },
           "title": "Classify"
         },
         {
@@ -1626,6 +1674,9 @@
               "rowspan": 1
             }
           ],
+          "spacing": {
+            "spacing": 12
+          },
           "title": "Route"
         }
       ],
@@ -2763,6 +2814,9 @@
               "rowspan": 1
             }
           ],
+          "spacing": {
+            "vertical": 20
+          },
           "title": "Compiler Options"
         },
         {
@@ -2820,6 +2874,9 @@
               "rowspan": 1
             }
           ],
+          "spacing": {
+            "vertical": 20
+          },
           "title": "Script Options"
         },
         {
@@ -2954,6 +3011,12 @@
               "rowspan": 1
             }
           ],
+          "spacing": {
+            "margin_bottom": 20,
+            "margin_left": 20,
+            "margin_right": 20,
+            "margin_top": 12
+          },
           "title": "Prolog/Epilog"
         },
         {
@@ -3610,6 +3673,11 @@
               "rowspan": 1
             }
           ],
+          "spacing": {
+            "margin_bottom": 12,
+            "margin_left": 12,
+            "margin_right": 12
+          },
           "title": "Compiler"
         },
         {
@@ -3824,6 +3892,9 @@
               "rowspan": 1
             }
           ],
+          "spacing": {
+            "spacing": 10
+          },
           "title": "Logging"
         },
         {
@@ -7223,6 +7294,9 @@
               "rowspan": 1
             }
           ],
+          "spacing": {
+            "vertical": 6
+          },
           "title": "Installer"
         },
         {
@@ -7279,6 +7353,9 @@
               "rowspan": 1
             }
           ],
+          "spacing": {
+            "vertical": 6
+          },
           "title": "Prolog/Epilog"
         },
         {
@@ -7374,6 +7451,9 @@
               "rowspan": 1
             }
           ],
+          "spacing": {
+            "vertical": 6
+          },
           "title": "Logging"
         },
         {
@@ -7911,6 +7991,9 @@
               "rowspan": 1
             }
           ],
+          "spacing": {
+            "vertical": 20
+          },
           "title": "Compiler Options"
         },
         {
@@ -7931,6 +8014,9 @@
               "rowspan": 1
             }
           ],
+          "spacing": {
+            "vertical": 20
+          },
           "title": "Script Options"
         },
         {
@@ -8012,6 +8098,12 @@
               "rowspan": 1
             }
           ],
+          "spacing": {
+            "margin_bottom": 4,
+            "margin_left": 4,
+            "margin_right": 4,
+            "margin_top": 4
+          },
           "title": "Installer"
         },
         {
@@ -8057,6 +8149,12 @@
               "rowspan": 1
             }
           ],
+          "spacing": {
+            "margin_bottom": 6,
+            "margin_left": 6,
+            "margin_right": 6,
+            "margin_top": 6
+          },
           "title": "Prolog/Epilog"
         },
         {
@@ -8147,6 +8245,12 @@
               "rowspan": 1
             }
           ],
+          "spacing": {
+            "margin_bottom": 12,
+            "margin_left": 12,
+            "margin_right": 12,
+            "margin_top": 12
+          },
           "title": "Logging"
         }
       ],
@@ -9832,6 +9936,12 @@
               "rowspan": 1
             }
           ],
+          "spacing": {
+            "margin_bottom": 0,
+            "margin_left": 0,
+            "margin_right": 0,
+            "margin_top": 0
+          },
           "title": "Options"
         },
         {
@@ -9892,6 +10002,12 @@
               "rowspan": 1
             }
           ],
+          "spacing": {
+            "margin_bottom": 0,
+            "margin_left": 0,
+            "margin_right": 0,
+            "margin_top": 0
+          },
           "title": "Path"
         }
       ],
@@ -10488,6 +10604,9 @@
               "rowspan": 1
             }
           ],
+          "spacing": {
+            "vertical": 20
+          },
           "title": "Compiler Options"
         },
         {
@@ -10545,6 +10664,13 @@
               "rowspan": 1
             }
           ],
+          "spacing": {
+            "margin_bottom": 12,
+            "margin_left": 12,
+            "margin_right": 12,
+            "margin_top": 12,
+            "spacing": 6
+          },
           "title": "Script Options"
         },
         {
@@ -10636,6 +10762,12 @@
               "rowspan": 1
             }
           ],
+          "spacing": {
+            "margin_bottom": 4,
+            "margin_left": 4,
+            "margin_right": 4,
+            "margin_top": 4
+          },
           "title": "Installer"
         },
         {
@@ -10681,6 +10813,12 @@
               "rowspan": 1
             }
           ],
+          "spacing": {
+            "margin_bottom": 6,
+            "margin_left": 6,
+            "margin_right": 6,
+            "margin_top": 6
+          },
           "title": "Prolog/Epilog"
         },
         {
@@ -10771,6 +10909,12 @@
               "rowspan": 1
             }
           ],
+          "spacing": {
+            "margin_bottom": 12,
+            "margin_left": 12,
+            "margin_right": 12,
+            "margin_top": 12
+          },
           "title": "Logging"
         }
       ],
@@ -12649,6 +12793,9 @@
               "rowspan": 1
             }
           ],
+          "spacing": {
+            "vertical": 6
+          },
           "title": "Scrub"
         },
         {
@@ -12970,6 +13117,9 @@
               "rowspan": 1
             }
           ],
+          "spacing": {
+            "spacing": 20
+          },
           "title": "Installer"
         },
         {
@@ -13031,6 +13181,13 @@
               "rowspan": 1
             }
           ],
+          "spacing": {
+            "margin_bottom": 20,
+            "margin_left": 20,
+            "margin_right": 20,
+            "margin_top": 12,
+            "spacing": 20
+          },
           "title": "Prolog/Epilog"
         },
         {
@@ -13082,6 +13239,13 @@
               "rowspan": 1
             }
           ],
+          "spacing": {
+            "margin_bottom": 20,
+            "margin_left": 20,
+            "margin_right": 20,
+            "margin_top": 12,
+            "spacing": 20
+          },
           "title": "Logging"
         },
         {
@@ -14639,6 +14803,13 @@
               "rowspan": 1
             }
           ],
+          "spacing": {
+            "margin_bottom": 0,
+            "margin_left": 5,
+            "margin_right": 5,
+            "margin_top": 0,
+            "vertical": 4
+          },
           "title": "Timeouts"
         },
         {
@@ -14915,6 +15086,9 @@
               "rowspan": 1
             }
           ],
+          "spacing": {
+            "vertical": 12
+          },
           "title": "PIX Options"
         }
       ],
@@ -15168,6 +15342,9 @@
               "rowspan": 1
             }
           ],
+          "spacing": {
+            "spacing": 6
+          },
           "title": "General"
         },
         {
@@ -15256,6 +15433,9 @@
               "rowspan": 1
             }
           ],
+          "spacing": {
+            "spacing": 6
+          },
           "title": "NTP"
         },
         {
@@ -15336,6 +15516,9 @@
               "rowspan": 1
             }
           ],
+          "spacing": {
+            "spacing": 6
+          },
           "title": "SNMP"
         },
         {
@@ -15373,6 +15556,9 @@
               "rowspan": 1
             }
           ],
+          "spacing": {
+            "spacing": 6
+          },
           "title": "Options"
         }
       ],
@@ -15953,6 +16139,9 @@
               "rowspan": 1
             }
           ],
+          "spacing": {
+            "vertical": 20
+          },
           "title": "Compiler Options"
         },
         {
@@ -16002,6 +16191,9 @@
               "rowspan": 1
             }
           ],
+          "spacing": {
+            "vertical": 5
+          },
           "title": "Script Options"
         },
         {
@@ -16129,6 +16321,12 @@
               "rowspan": 1
             }
           ],
+          "spacing": {
+            "margin_bottom": 20,
+            "margin_left": 20,
+            "margin_right": 20,
+            "margin_top": 12
+          },
           "title": "Prolog/Epilog"
         },
         {
@@ -17014,6 +17212,9 @@
               "rowspan": 1
             }
           ],
+          "spacing": {
+            "vertical": 6
+          },
           "title": "Installer"
         },
         {
@@ -17061,6 +17262,9 @@
               "rowspan": 1
             }
           ],
+          "spacing": {
+            "vertical": 6
+          },
           "title": "Prolog/Epilog"
         },
         {
@@ -17156,6 +17360,9 @@
               "rowspan": 1
             }
           ],
+          "spacing": {
+            "vertical": 6
+          },
           "title": "Logging"
         },
         {
@@ -18853,6 +19060,9 @@
               "rowspan": 1
             }
           ],
+          "spacing": {
+            "spacing": 6
+          },
           "title": "Options"
         },
         {
@@ -18913,6 +19123,9 @@
               "rowspan": 1
             }
           ],
+          "spacing": {
+            "spacing": 6
+          },
           "title": "Path"
         }
       ],

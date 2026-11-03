@@ -21,6 +21,7 @@ import {
   qtGridStyle,
   qtSpacerStyle,
   type QtGridAnnotation,
+  type QtGridSpacing,
   type QtGridSpacer,
 } from "../qtGrid";
 
@@ -61,6 +62,7 @@ type Group = {
   column_stretch?: number[];
   layouts?: Record<string, number>;
   annotations?: QtGridAnnotation[];
+  spacing?: QtGridSpacing;
 };
 
 function groupStorageKey(platform: string, hostOs: string) {
@@ -730,8 +732,10 @@ export function FirewallExtras({
           useQtGridLayout && secIdx === 0 ? activeGroupMeta?.column_stretch || [] : [];
         const pageNotes =
           useQtGridLayout && secIdx === 0 ? activeGroupMeta?.annotations || [] : [];
+        const pageSpacing =
+          useQtGridLayout && secIdx === 0 ? activeGroupMeta?.spacing || {} : {};
         const grid = useQtGridLayout
-          ? qtGridStyle(sec.keys, fields, pageSpacers, pageStretch, pageNotes)
+          ? qtGridStyle(sec.keys, fields, pageSpacers, pageStretch, pageNotes, pageSpacing)
           : { className: "typed-grid options-grid" };
         return (
           <div key={sec.id || "all"} className="option-section">

@@ -370,6 +370,41 @@ def _row_stretch_in_subtree(node: ET.Element) -> list[int]:
     return best
 
 
+def _grid_spacing_in_subtree(node: ET.Element) -> dict[str, int]:
+    """Spacing/margins from the busiest QGridLayout under a page."""
+    best: dict[str, int] = {}
+    best_n = -1
+    for lay in node.iter("layout"):
+        if lay.get("class") != "QGridLayout":
+            continue
+        n = len(lay.findall("item"))
+        if n < best_n:
+            continue
+        entry: dict[str, int] = {}
+        for prop, key in (
+            ("spacing", "spacing"),
+            ("horizontalSpacing", "horizontal"),
+            ("verticalSpacing", "vertical"),
+            ("leftMargin", "margin_left"),
+            ("topMargin", "margin_top"),
+            ("rightMargin", "margin_right"),
+            ("bottomMargin", "margin_bottom"),
+        ):
+            el = lay.find(f"./property[@name='{prop}']/number")
+            if el is None or not (el.text or "").strip():
+                continue
+            try:
+                val = int(el.text.strip())
+            except ValueError:
+                continue
+            if val >= 0:
+                entry[key] = val
+        if entry:
+            best_n = n
+            best = entry
+    return best
+
+
 def _layout_summary(node: ET.Element) -> dict[str, int]:
     """Count layout classes under a page (nested layout hint, not pixel geometry)."""
     counts: dict[str, int] = {}
@@ -503,6 +538,9 @@ def parse_pages(root: ET.Element | None) -> list[dict]:
             row_stretch = _row_stretch_in_subtree(page)
             if row_stretch:
                 page_entry["row_stretch"] = row_stretch
+            spacing = _grid_spacing_in_subtree(page)
+            if spacing:
+                page_entry["spacing"] = spacing
             layouts = _layout_summary(page)
             if layouts:
                 page_entry["layouts"] = layouts
@@ -610,6 +648,8 @@ def pages_with_keys(pages: list[dict], fields: dict[str, dict]) -> list[dict]:
                 entry["column_stretch"] = page["column_stretch"]
             if page.get("row_stretch"):
                 entry["row_stretch"] = page["row_stretch"]
+            if page.get("spacing"):
+                entry["spacing"] = page["spacing"]
             if page.get("layouts"):
                 entry["layouts"] = page["layouts"]
             if page.get("annotations"):

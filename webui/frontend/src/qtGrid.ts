@@ -20,12 +20,23 @@ function columnsFromStretch(maxCol: number, stretch: number[]): string {
 }
 
 /** Build CSS grid template extents from .ui QGridLayout metadata. */
+export type QtGridSpacing = {
+  spacing?: number;
+  horizontal?: number;
+  vertical?: number;
+  margin_left?: number;
+  margin_top?: number;
+  margin_right?: number;
+  margin_bottom?: number;
+};
+
 export function qtGridStyle(
   keys: string[],
   fields: Record<string, OptionFieldMeta | undefined>,
   spacers: QtGridSpacer[] = [],
   columnStretch: number[] = [],
   annotations: QtGridSpacer[] = [],
+  spacing: QtGridSpacing = {},
 ): { className: string; style?: CSSProperties } {
   const useQt =
     keys.some((k) => fields[k]?.grid) || spacers.length > 0 || annotations.length > 0;
@@ -47,12 +58,27 @@ export function qtGridStyle(
     columnStretch.length > 0
       ? columnsFromStretch(maxCol, columnStretch)
       : `repeat(${maxCol + 1}, minmax(8rem, 1fr))`;
+  const colGap = spacing.horizontal ?? spacing.spacing;
+  const rowGap = spacing.vertical ?? spacing.spacing;
+  const style: CSSProperties = {
+    gridTemplateColumns: cols,
+    gridTemplateRows: `repeat(${maxRow + 1}, auto)`,
+  };
+  if (colGap != null || rowGap != null) {
+    style.gap =
+      rowGap != null && colGap != null
+        ? `${rowGap}px ${colGap}px`
+        : `${colGap ?? rowGap}px`;
+  }
+  const pad: string[] = [];
+  for (const key of ["margin_top", "margin_right", "margin_bottom", "margin_left"] as const) {
+    const v = spacing[key];
+    pad.push(v != null ? `${v}px` : "0");
+  }
+  if (pad.some((p) => p !== "0")) style.padding = pad.join(" ");
   return {
     className: "typed-grid options-grid qt-grid",
-    style: {
-      gridTemplateColumns: cols,
-      gridTemplateRows: `repeat(${maxRow + 1}, auto)`,
-    },
+    style,
   };
 }
 

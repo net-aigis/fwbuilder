@@ -519,6 +519,15 @@ export function fetchOptionSchema(platform: string, hostOs = "") {
       }>;
       column_stretch?: number[];
       layouts?: Record<string, number>;
+      spacing?: {
+        spacing?: number;
+        horizontal?: number;
+        vertical?: number;
+        margin_left?: number;
+        margin_top?: number;
+        margin_right?: number;
+        margin_bottom?: number;
+      };
       annotations?: Array<{
         text: string;
         row?: number;
