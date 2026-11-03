@@ -63,6 +63,7 @@ import { ObjectTree } from "./components/ObjectTree";
 import { RuleGrid } from "./components/RuleGrid";
 import { RuleMeta } from "./components/RuleMeta";
 import { RuleOptions } from "./components/RuleOptions";
+import { SHORTCUTS, shortcutsAsText } from "./shortcuts";
 
 type Theme = "light" | "dark";
 type MainTab = "object" | "rules";
@@ -141,6 +142,7 @@ export function App() {
   const [sessionCount, setSessionCount] = useState(0);
   const [sessionsOpen, setSessionsOpen] = useState(false);
   const [sessionList, setSessionList] = useState<ProjectSessionInfo[]>([]);
+  const [helpOpen, setHelpOpen] = useState(false);
   const [objectPath, setObjectPath] = useState<ObjectPathEntry[]>([]);
   const [stats, setStats] = useState<ProjectStats | null>(null);
   const [statsFirewalls, setStatsFirewalls] = useState<TreeNode[]>([]);
@@ -628,7 +630,6 @@ export function App() {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (!sessionId || busy) return;
       const target = e.target as HTMLElement | null;
       const typing =
         target &&
@@ -637,6 +638,17 @@ export function App() {
           target.tagName === "SELECT" ||
           target.isContentEditable);
       const mod = e.ctrlKey || e.metaKey;
+      if (!typing && !mod && !e.altKey && e.key === "?") {
+        e.preventDefault();
+        setHelpOpen((v) => !v);
+        return;
+      }
+      if (e.key === "Escape" && !typing && helpOpen) {
+        e.preventDefault();
+        setHelpOpen(false);
+        return;
+      }
+      if (!sessionId || busy) return;
       if (mod && e.key.toLowerCase() === "s") {
         e.preventDefault();
         void onSave(e.shiftKey);
@@ -900,6 +912,7 @@ export function App() {
     searchQ,
     stats,
     sessionsOpen,
+    helpOpen,
     rulesFwId,
   ]);
 
@@ -2194,6 +2207,7 @@ export function App() {
       setUnusedHits([]);
       setUnusedTypeFilter("");
       setSessionsOpen(false);
+      setHelpOpen(false);
       setWhereUsedCount(null);
       setStatus("Closed");
       await refreshSessionCount();
@@ -2364,6 +2378,14 @@ export function App() {
             onClick={() => setTheme((t) => (t === "dark" ? "light" : "dark"))}
           >
             {theme === "dark" ? "Light" : "Dark"}
+          </button>
+          <button
+            type="button"
+            className="ghost"
+            title="Keyboard shortcuts (?)"
+            onClick={() => setHelpOpen(true)}
+          >
+            Help
           </button>
         </div>
       </header>
@@ -3772,6 +3794,51 @@ export function App() {
           onRemove={(id) => void onRemoveRef(id)}
           onCancel={() => setPicker(null)}
         />
+      ) : null}
+
+      {helpOpen ? (
+        <div className="stats-overlay" role="dialog" aria-label="Keyboard shortcuts">
+          <div className="stats-panel help-panel">
+            <header className="panel-header">
+              <h2>Keyboard shortcuts</h2>
+              <div className="btn-row">
+                <button
+                  type="button"
+                  className="ghost"
+                  title="Copy shortcuts as text"
+                  onClick={() => {
+                    void navigator.clipboard.writeText(shortcutsAsText()).then(
+                      () => setStatus("Copied shortcuts"),
+                      () => setStatus("Copy failed"),
+                    );
+                  }}
+                >
+                  Copy
+                </button>
+                <button type="button" className="ghost" onClick={() => setHelpOpen(false)}>
+                  Close
+                </button>
+              </div>
+            </header>
+            <div className="help-list pad">
+              <table className="help-table">
+                <tbody>
+                  {SHORTCUTS.map((s) => (
+                    <tr key={`${s.keys}-${s.action}`}>
+                      <th scope="row">
+                        <kbd>{s.keys}</kbd>
+                      </th>
+                      <td>
+                        {s.action}
+                        {s.scope ? <span className="muted"> · {s.scope}</span> : null}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       ) : null}
 
       {sessionsOpen ? (

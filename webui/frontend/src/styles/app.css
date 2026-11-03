@@ -266,6 +266,48 @@ button.linkish:disabled {
   box-shadow: 0 12px 40px color-mix(in srgb, #000 25%, transparent);
 }
 
+.stats-panel.help-panel {
+  width: min(40rem, 100%);
+  max-height: min(90vh, 40rem);
+  display: flex;
+  flex-direction: column;
+}
+
+.help-list {
+  overflow: auto;
+  flex: 1;
+  min-height: 0;
+}
+
+.help-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.help-table th {
+  text-align: left;
+  font-weight: 600;
+  white-space: nowrap;
+  padding: 0.25rem 0.75rem 0.25rem 0;
+  vertical-align: top;
+  width: 11rem;
+}
+
+.help-table td {
+  padding: 0.25rem 0;
+  vertical-align: top;
+}
+
+.help-table kbd {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.85em;
+  padding: 0.1rem 0.35rem;
+  border: 1px solid var(--line);
+  border-radius: 0.25rem;
+  background: color-mix(in srgb, var(--panel) 80%, var(--line));
+}
+
 .stats-grid {
   display: grid;
   grid-template-columns: 1fr auto;
