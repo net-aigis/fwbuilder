@@ -665,7 +665,25 @@ export function App() {
         if (selected && (selected.type === "Firewall" || selected.type === "Cluster")) {
           void loadRules(selected.id, "policy");
         } else if (rulesFwId) {
-          void loadRules(rulesFwId, rulesWhich);
+          void loadRules(rulesFwId, "policy");
+        }
+        return;
+      }
+      if (e.altKey && !mod && e.key.toLowerCase() === "n") {
+        e.preventDefault();
+        if (selected && (selected.type === "Firewall" || selected.type === "Cluster")) {
+          void loadRules(selected.id, "nat");
+        } else if (rulesFwId) {
+          void loadRules(rulesFwId, "nat");
+        }
+        return;
+      }
+      if (e.altKey && !mod && e.key.toLowerCase() === "g") {
+        e.preventDefault();
+        if (selected && (selected.type === "Firewall" || selected.type === "Cluster")) {
+          void loadRules(selected.id, "routing");
+        } else if (rulesFwId) {
+          void loadRules(rulesFwId, "routing");
         }
         return;
       }
@@ -2959,6 +2977,7 @@ export function App() {
                           type="button"
                           className="ghost"
                           disabled={busy}
+                          title="Open NAT rules (Alt+N)"
                           onClick={() => void loadRules(selected.id, "nat")}
                         >
                           Open NAT
@@ -2967,6 +2986,7 @@ export function App() {
                           type="button"
                           className="ghost"
                           disabled={busy}
+                          title="Open Routing rules (Alt+G)"
                           onClick={() => void loadRules(selected.id, "routing")}
                         >
                           Open Routing
