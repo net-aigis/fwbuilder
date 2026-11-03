@@ -200,8 +200,21 @@ export function App() {
       return "";
     }
   });
-  const [unusedTypeFilter, setUnusedTypeFilter] = useState("");
-  const [trashTypeFilter, setTrashTypeFilter] = useState("");
+  const [unusedTypeFilter, setUnusedTypeFilter] = useState(() => {
+    try {
+      return sessionStorage.getItem("fwbweb.unusedTypeFilter") || "";
+    } catch {
+      return "";
+    }
+  });
+  const [trashTypeFilter, setTrashTypeFilter] = useState(() => {
+    try {
+      return sessionStorage.getItem("fwbweb.trashTypeFilter") || "";
+    } catch {
+      return "";
+    }
+  });
+  const compileLogRef = useRef<HTMLPreElement>(null);
   const [trashCount, setTrashCount] = useState(0);
   const [trashOpen, setTrashOpen] = useState(false);
   const [trashItems, setTrashItems] = useState<
@@ -361,6 +374,27 @@ export function App() {
       /* ignore */
     }
   }, [searchType]);
+
+  useEffect(() => {
+    try {
+      sessionStorage.setItem("fwbweb.unusedTypeFilter", unusedTypeFilter);
+    } catch {
+      /* ignore */
+    }
+  }, [unusedTypeFilter]);
+
+  useEffect(() => {
+    try {
+      sessionStorage.setItem("fwbweb.trashTypeFilter", trashTypeFilter);
+    } catch {
+      /* ignore */
+    }
+  }, [trashTypeFilter]);
+
+  useEffect(() => {
+    if (!compileLog) return;
+    compileLogRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }, [compileLog]);
 
   useEffect(() => {
     void refreshObjectPath(selected?.id ?? null);
@@ -625,13 +659,36 @@ export function App() {
     }
   }
 
-  async function refreshRules() {
+  async function refreshRules(opts?: { announce?: boolean }) {
     if (!sessionId || !rulesFwId) return;
     const target = rulesetId || rulesFwId;
     const data = await fetchRuleset(sessionId, target, rulesWhich);
     setRules(data.rules ?? []);
     setRulesetName(data.name || rulesWhich);
-    setStatus(`${rulesWhich} · ${data.rules?.length ?? 0} rules`);
+    const msg = `${rulesWhich} · ${data.rules?.length ?? 0} rules`;
+    setStatus(opts?.announce ? `Refreshed ${msg}` : msg);
+  }
+
+  function onCopySelectedObjectTsv() {
+    if (!selected) return;
+    const line = [selected.type, selected.name || "", selected.id]
+      .map((c) => String(c).replace(/\t|\n/g, " "))
+      .join("\t");
+    void navigator.clipboard.writeText(line).then(
+      () => setStatus(`Copied object TSV ${selected.id}`),
+      () => setError("Clipboard write failed"),
+    );
+  }
+
+  function onDownloadShortcuts() {
+    const blob = new Blob([shortcutsAsText()], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "fwbweb-shortcuts.txt";
+    a.click();
+    URL.revokeObjectURL(url);
+    setStatus("Downloaded shortcuts");
   }
 
   async function onSave(writeThrough = false) {
@@ -969,6 +1026,11 @@ export function App() {
         );
         return;
       }
+      if (mod && e.shiftKey && e.key.toLowerCase() === "y" && selected) {
+        e.preventDefault();
+        onCopySelectedObjectTsv();
+        return;
+      }
       if (mod && e.shiftKey && e.key.toLowerCase() === "p" && objectPath.length) {
         e.preventDefault();
         const text = objectPath.map((p) => p.name || p.type).join(" / ");
@@ -1091,6 +1153,11 @@ export function App() {
         return;
       }
       if (tab !== "rules" || typing) return;
+      if (!mod && !e.altKey && e.key.toLowerCase() === "r" && rulesFwId) {
+        e.preventDefault();
+        void refreshRules({ announce: true });
+        return;
+      }
       if (e.altKey && selectedRuleId && (e.key === "ArrowUp" || e.key === "ArrowDown")) {
         e.preventDefault();
         void onMoveRule(e.key === "ArrowUp" ? "up" : "down");
@@ -3399,6 +3466,17 @@ export function App() {
                       Copy name
                     </button>
                   ) : null}
+                  {selected ? (
+                    <button
+                      type="button"
+                      className="ghost"
+                      disabled={busy}
+                      title="Copy type/name/id as TSV (Ctrl+Shift+Y)"
+                      onClick={onCopySelectedObjectTsv}
+                    >
+                      Copy TSV
+                    </button>
+                  ) : null}
                 </nav>
               ) : null}
             <ObjectDetail
@@ -3674,6 +3752,17 @@ export function App() {
                       }}
                     >
                       Copy fw id
+                    </button>
+                  ) : null}
+                  {rulesFwId ? (
+                    <button
+                      type="button"
+                      className="ghost"
+                      disabled={busy}
+                      title="Reload rules from bridge (r)"
+                      onClick={() => void refreshRules({ announce: true })}
+                    >
+                      Refresh
                     </button>
                   ) : null}
                   {(["policy", "nat", "routing"] as RulesWhich[]).map((w) => (
@@ -4327,7 +4416,9 @@ export function App() {
                       Clear log
                     </button>
                   </div>
-                  <pre className="compile-log pad">{compileLog}</pre>
+                  <pre ref={compileLogRef} className="compile-log pad">
+                    {compileLog}
+                  </pre>
                 </>
               ) : (
                 <p className="muted pad">
@@ -4408,6 +4499,14 @@ export function App() {
                   }}
                 >
                   Copy
+                </button>
+                <button
+                  type="button"
+                  className="ghost"
+                  title="Download shortcuts as text file"
+                  onClick={onDownloadShortcuts}
+                >
+                  Download
                 </button>
                 <button type="button" className="ghost" onClick={() => setHelpOpen(false)}>
                   Close

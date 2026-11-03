@@ -249,6 +249,11 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Persist tree/search filters | done | sessionStorage; E2E phase104 |
 | Rules restore status message | done | after open; E2E phase105 |
 | Copy name button | done | object path bar; E2E phase106 |
+| Refresh ruleset | done | Refresh / `r`; E2E phase107 |
+| Download shortcuts file | done | Help Download; E2E phase108 |
+| Copy object TSV | done | Ctrl+Shift+Y; E2E phase109 |
+| Persist unused/trash type filters | done | sessionStorage; E2E phase110 |
+| Scroll compile log into view | done | after update; E2E phase111 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Phase 3 — compile / deploy
@@ -366,6 +371,11 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase104 (tree/search persist) | done | `e2e-phase104.sh` **OK** |
 | Local E2E phase105 (restore status) | done | `e2e-phase105.sh` **OK** |
 | Local E2E phase106 (copy name button) | done | `e2e-phase106.sh` **OK** |
+| Local E2E phase107 (refresh rules) | done | `e2e-phase107.sh` **OK** |
+| Local E2E phase108 (shortcuts download) | done | `e2e-phase108.sh` **OK** |
+| Local E2E phase109 (object TSV) | done | `e2e-phase109.sh` **OK** |
+| Local E2E phase110 (unused/trash filters) | done | `e2e-phase110.sh` **OK** |
+| Local E2E phase111 (compile log scroll) | done | `e2e-phase111.sh` **OK** |
 
 ## Local commands
 
@@ -481,6 +491,11 @@ bash webui/scripts/e2e-phase103.sh
 bash webui/scripts/e2e-phase104.sh
 bash webui/scripts/e2e-phase105.sh
 bash webui/scripts/e2e-phase106.sh
+bash webui/scripts/e2e-phase107.sh
+bash webui/scripts/e2e-phase108.sh
+bash webui/scripts/e2e-phase109.sh
+bash webui/scripts/e2e-phase110.sh
+bash webui/scripts/e2e-phase111.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```
