@@ -10,6 +10,7 @@ type FieldMeta = {
   grid?: { row?: number; column?: number; rowspan?: number; colspan?: number };
   size_policy?: { horizontal?: string; vertical?: string };
   minimum_size?: { width?: number; height?: number };
+  maximum_size?: { width?: number; height?: number };
 };
 
 type Props = {
@@ -35,6 +36,9 @@ function fieldStyle(meta?: FieldMeta): CSSProperties | undefined {
   const ms = meta?.minimum_size;
   if (ms?.width && ms.width > 0) style.minWidth = ms.width;
   if (ms?.height && ms.height > 0) style.minHeight = ms.height;
+  const xs = meta?.maximum_size;
+  if (xs?.width && xs.width > 0) style.maxWidth = xs.width;
+  if (xs?.height && xs.height > 0) style.maxHeight = xs.height;
   return Object.keys(style).length ? style : undefined;
 }
 

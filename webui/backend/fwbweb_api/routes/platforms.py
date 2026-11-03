@@ -100,6 +100,14 @@ def get_installer_capabilities(
         **listing,
         "desktop_full_installer": listing.get("interactive_installer"),
         "expect_installer": expect,
+        "expect_install_plan": {
+            "available": True,
+            "executable": False,
+            "path": "/api/v1/expect-install-plan",
+            "run_path": "/api/v1/expect-install-plan/run",
+            "run_status": 501,
+            "note": "GET returns ordered preview; POST /run always refuses with 501.",
+        },
         "ssh_auth": ssh_auth_capabilities(),
         "recommended_webui_mode": (
             "external_install_script"

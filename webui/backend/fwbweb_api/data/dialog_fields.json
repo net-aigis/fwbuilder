@@ -402,6 +402,10 @@
         },
         "hashlimit_burst": {
           "key": "hashlimit_burst",
+          "maximum_size": {
+            "height": 32767,
+            "width": 80
+          },
           "minimum_size": {
             "height": 25
           },
@@ -510,6 +514,10 @@
             "/second"
           ],
           "key": "hashlimit_suffix",
+          "maximum_size": {
+            "height": 32767,
+            "width": 200
+          },
           "minimum_size": {
             "height": 25
           },
@@ -523,6 +531,10 @@
         },
         "hashlimit_value": {
           "key": "hashlimit_value",
+          "maximum_size": {
+            "height": 32767,
+            "width": 80
+          },
           "minimum_size": {
             "height": 25
           },
@@ -564,6 +576,9 @@
             "rowspan": 1
           },
           "key": "ipf_log_facility",
+          "maximum_size": {
+            "width": 200
+          },
           "size_policy": {
             "horizontal": "Expanding",
             "vertical": "Fixed"
@@ -745,6 +760,10 @@
             "rowspan": 1
           },
           "key": "limit_suffix",
+          "maximum_size": {
+            "height": 32767,
+            "width": 200
+          },
           "size_policy": {
             "horizontal": "Preferred",
             "vertical": "Fixed"
@@ -913,6 +932,10 @@
             "rowspan": 1
           },
           "key": "pf_max_src_conn_rate_num",
+          "maximum_size": {
+            "height": 32767,
+            "width": 80
+          },
           "size_policy": {
             "horizontal": "Fixed",
             "vertical": "Fixed"
@@ -929,6 +952,10 @@
             "rowspan": 1
           },
           "key": "pf_max_src_conn_rate_seconds",
+          "maximum_size": {
+            "height": 32767,
+            "width": 80
+          },
           "size_policy": {
             "horizontal": "Fixed",
             "vertical": "Fixed"
@@ -2340,6 +2367,10 @@
             "rowspan": 1
           },
           "key": "iosacl_acl_temp_addr",
+          "maximum_size": {
+            "height": 32767,
+            "width": 120
+          },
           "minimum_size": {
             "width": 200
           },
@@ -2550,6 +2581,10 @@
             "rowspan": 1
           },
           "key": "mgmt_addr",
+          "maximum_size": {
+            "height": 22,
+            "width": 32767
+          },
           "minimum_size": {
             "width": 300
           },
@@ -2582,6 +2617,10 @@
             "rowspan": 1
           },
           "key": "output_file",
+          "maximum_size": {
+            "height": 22,
+            "width": 32767
+          },
           "minimum_size": {
             "width": 300
           },
@@ -3083,6 +3122,10 @@
             "rowspan": 1
           },
           "key": "cmdline",
+          "maximum_size": {
+            "height": 22,
+            "width": 32767
+          },
           "type": "string",
           "widget": "compilerArgs",
           "widget_class": "QLineEdit"
@@ -3095,6 +3138,10 @@
             "rowspan": 1
           },
           "key": "compiler",
+          "maximum_size": {
+            "height": 22,
+            "width": 32767
+          },
           "type": "string",
           "widget": "compiler",
           "widget_class": "QLineEdit"
@@ -3298,6 +3345,10 @@
             "rowspan": 1
           },
           "key": "mgmt_addr",
+          "maximum_size": {
+            "height": 32767,
+            "width": 32767
+          },
           "size_policy": {
             "horizontal": "Expanding",
             "vertical": "Fixed"
@@ -3327,6 +3378,10 @@
             "rowspan": 1
           },
           "key": "output_file",
+          "maximum_size": {
+            "height": 22,
+            "width": 32767
+          },
           "type": "string",
           "widget": "outputFileName",
           "widget_class": "QLineEdit"
@@ -4626,6 +4681,10 @@
             "rowspan": 1
           },
           "key": "action_on_reject",
+          "maximum_size": {
+            "height": 32767,
+            "width": 400
+          },
           "size_policy": {
             "horizontal": "Expanding",
             "vertical": "Fixed"
@@ -4704,6 +4763,10 @@
             "rowspan": 1
           },
           "key": "cmdline",
+          "maximum_size": {
+            "height": 32767,
+            "width": 32767
+          },
           "type": "string",
           "widget": "compilerArgs",
           "widget_class": "QLineEdit"
@@ -4716,6 +4779,10 @@
             "rowspan": 1
           },
           "key": "compiler",
+          "maximum_size": {
+            "height": 32767,
+            "width": 32767
+          },
           "type": "string",
           "widget": "compiler",
           "widget_class": "QLineEdit"
@@ -4822,6 +4889,10 @@
             "rowspan": 1
           },
           "key": "ipf_conf_file_name_on_firewall",
+          "maximum_size": {
+            "height": 22,
+            "width": 32767
+          },
           "type": "string",
           "widget": "ipfConfFileNameOnFw",
           "widget_class": "QLineEdit"
@@ -5027,6 +5098,10 @@
             "rowspan": 1
           },
           "key": "mgmt_addr",
+          "maximum_size": {
+            "height": 32767,
+            "width": 32767
+          },
           "size_policy": {
             "horizontal": "Expanding",
             "vertical": "Fixed"
@@ -5056,6 +5131,10 @@
             "rowspan": 1
           },
           "key": "nat_conf_file_name_on_firewall",
+          "maximum_size": {
+            "height": 22,
+            "width": 32767
+          },
           "type": "string",
           "widget": "natConfFileNameOnFw",
           "widget_class": "QLineEdit"
@@ -5082,6 +5161,10 @@
             "rowspan": 1
           },
           "key": "output_file",
+          "maximum_size": {
+            "height": 32767,
+            "width": 32767
+          },
           "type": "string",
           "widget": "outputFileName",
           "widget_class": "QLineEdit"
@@ -5119,6 +5202,10 @@
             "rowspan": 1
           },
           "key": "script_name_on_firewall",
+          "maximum_size": {
+            "height": 22,
+            "width": 32767
+          },
           "type": "string",
           "widget": "fileNameOnFw",
           "widget_class": "QLineEdit"
@@ -5624,6 +5711,10 @@
             "rowspan": 1
           },
           "key": "cmdline",
+          "maximum_size": {
+            "height": 32767,
+            "width": 32767
+          },
           "type": "string",
           "widget": "compilerArgs",
           "widget_class": "QLineEdit"
@@ -5636,6 +5727,10 @@
             "rowspan": 1
           },
           "key": "compiler",
+          "maximum_size": {
+            "height": 32767,
+            "width": 32767
+          },
           "type": "string",
           "widget": "compiler",
           "widget_class": "QLineEdit"
@@ -5727,6 +5822,10 @@
         },
         "mgmt_addr": {
           "key": "mgmt_addr",
+          "maximum_size": {
+            "height": 32767,
+            "width": 32767
+          },
           "size_policy": {
             "horizontal": "Expanding",
             "vertical": "Fixed"
@@ -5750,6 +5849,10 @@
             "rowspan": 1
           },
           "key": "output_file",
+          "maximum_size": {
+            "height": 32767,
+            "width": 32767
+          },
           "type": "string",
           "widget": "outputFileName",
           "widget_class": "QLineEdit"
@@ -5787,6 +5890,10 @@
             "rowspan": 1
           },
           "key": "script_name_on_firewall",
+          "maximum_size": {
+            "height": 22,
+            "width": 32767
+          },
           "type": "string",
           "widget": "fileNameOnFw",
           "widget_class": "QLineEdit"
@@ -6257,6 +6364,10 @@
             "rowspan": 1
           },
           "key": "cmdline",
+          "maximum_size": {
+            "height": 22,
+            "width": 32767
+          },
           "minimum_size": {
             "height": 25
           },
@@ -6272,6 +6383,10 @@
             "rowspan": 1
           },
           "key": "compiler",
+          "maximum_size": {
+            "height": 22,
+            "width": 32767
+          },
           "minimum_size": {
             "height": 25,
             "width": 300
@@ -6624,6 +6739,10 @@
         },
         "mgmt_addr": {
           "key": "mgmt_addr",
+          "maximum_size": {
+            "height": 32767,
+            "width": 32767
+          },
           "size_policy": {
             "horizontal": "Expanding",
             "vertical": "Fixed"
@@ -6647,6 +6766,10 @@
             "rowspan": 1
           },
           "key": "output_file",
+          "maximum_size": {
+            "height": 22,
+            "width": 32767
+          },
           "minimum_size": {
             "height": 25,
             "width": 300
@@ -6709,6 +6832,10 @@
             "rowspan": 1
           },
           "key": "script_name_on_firewall",
+          "maximum_size": {
+            "height": 22,
+            "width": 32767
+          },
           "minimum_size": {
             "height": 25,
             "width": 300
@@ -7601,6 +7728,10 @@
             "rowspan": 1
           },
           "key": "output_file",
+          "maximum_size": {
+            "height": 22,
+            "width": 32767
+          },
           "minimum_size": {
             "width": 300
           },
@@ -8314,6 +8445,9 @@
             "rowspan": 1
           },
           "key": "linux24_conntrack_hashsize",
+          "maximum_size": {
+            "width": 64
+          },
           "size_policy": {
             "horizontal": "Fixed",
             "vertical": "Fixed"
@@ -8331,6 +8465,9 @@
             "rowspan": 1
           },
           "key": "linux24_conntrack_max",
+          "maximum_size": {
+            "width": 64
+          },
           "tooltip": "CONNTRACK_MAX is the maximum number of \"sessions\" (connection tracking entries)\nthat can be handled simultaneously by netfilter in kernel memory.",
           "type": "int",
           "widget": "conntrack_max",
@@ -9820,6 +9957,10 @@
             "rowspan": 1
           },
           "key": "mgmt_addr",
+          "maximum_size": {
+            "height": 22,
+            "width": 32767
+          },
           "minimum_size": {
             "width": 300
           },
@@ -9909,6 +10050,10 @@
             "rowspan": 1
           },
           "key": "nxosacl_acl_temp_addr",
+          "maximum_size": {
+            "height": 32767,
+            "width": 120
+          },
           "minimum_size": {
             "width": 200
           },
@@ -10119,6 +10264,10 @@
             "rowspan": 1
           },
           "key": "output_file",
+          "maximum_size": {
+            "height": 22,
+            "width": 32767
+          },
           "minimum_size": {
             "width": 300
           },
@@ -10948,6 +11097,10 @@
             "rowspan": 1
           },
           "key": "cmdline",
+          "maximum_size": {
+            "height": 22,
+            "width": 32767
+          },
           "type": "string",
           "widget": "compilerArgs",
           "widget_class": "QLineEdit"
@@ -10960,6 +11113,10 @@
             "rowspan": 1
           },
           "key": "compiler",
+          "maximum_size": {
+            "height": 22,
+            "width": 32767
+          },
           "type": "string",
           "widget": "compiler",
           "widget_class": "QLineEdit"
@@ -10972,6 +11129,10 @@
             "rowspan": 1
           },
           "key": "conf1_file",
+          "maximum_size": {
+            "height": 22,
+            "width": 32767
+          },
           "type": "string",
           "widget": "confFileName",
           "widget_class": "QLineEdit"
@@ -10984,6 +11145,10 @@
             "rowspan": 1
           },
           "key": "conf_file_name_on_firewall",
+          "maximum_size": {
+            "height": 22,
+            "width": 32767
+          },
           "type": "string",
           "widget": "confFileNameOnFw",
           "widget_class": "QLineEdit"
@@ -11182,6 +11347,10 @@
         },
         "mgmt_addr": {
           "key": "mgmt_addr",
+          "maximum_size": {
+            "height": 22,
+            "width": 32767
+          },
           "size_policy": {
             "horizontal": "Expanding",
             "vertical": "Fixed"
@@ -11209,6 +11378,10 @@
             "rowspan": 1
           },
           "key": "output_file",
+          "maximum_size": {
+            "height": 22,
+            "width": 32767
+          },
           "type": "string",
           "widget": "outputFileName",
           "widget_class": "QLineEdit"
@@ -12177,6 +12350,10 @@
             "rowspan": 1
           },
           "key": "script_name_on_firewall",
+          "maximum_size": {
+            "height": 22,
+            "width": 32767
+          },
           "type": "string",
           "widget": "fileNameOnFw",
           "widget_class": "QLineEdit"
@@ -13061,6 +13238,10 @@
             "rowspan": 1
           },
           "key": "mgmt_addr",
+          "maximum_size": {
+            "height": 22,
+            "width": 32767
+          },
           "minimum_size": {
             "width": 200
           },
@@ -13093,6 +13274,10 @@
             "rowspan": 1
           },
           "key": "output_file",
+          "maximum_size": {
+            "height": 22,
+            "width": 32767
+          },
           "type": "string",
           "widget": "outputFileName",
           "widget_class": "QLineEdit"
@@ -13144,6 +13329,10 @@
             "rowspan": 1
           },
           "key": "pix_acl_temp_addr",
+          "maximum_size": {
+            "height": 32767,
+            "width": 120
+          },
           "minimum_size": {
             "width": 200
           },
@@ -13253,6 +13442,9 @@
           },
           "key": "pix_emb_limit",
           "label": "maximum number of embryonic connections per host",
+          "maximum_size": {
+            "width": 64
+          },
           "tooltip": "Specifies the maximum number of embryonic connections per host. An embryonic connection is a connection request that has not finished the necessary handshake between source and destination. Set a small value for slower systems, and a higher value for faster systems. The default is 0, which means unlimited embryonic connections.",
           "type": "int",
           "widget": "emb_limit",
@@ -13442,6 +13634,9 @@
           },
           "key": "pix_max_conns",
           "label": "maximum number of simultaneous TCP and UDP connections",
+          "maximum_size": {
+            "width": 64
+          },
           "tooltip": "Specifies the maximum number of simultaneous TCP and UDP connections for the entire subnet. The default is 0, which means unlimited connections. (Idle connections are closed after the idle timeout specified by the timeout conn command.)",
           "type": "int",
           "widget": "max_conns",
@@ -15239,6 +15434,10 @@
             "rowspan": 1
           },
           "key": "mgmt_addr",
+          "maximum_size": {
+            "height": 22,
+            "width": 32767
+          },
           "minimum_size": {
             "width": 300
           },
@@ -15271,6 +15470,10 @@
             "rowspan": 1
           },
           "key": "output_file",
+          "maximum_size": {
+            "height": 22,
+            "width": 32767
+          },
           "minimum_size": {
             "width": 300
           },
@@ -15343,6 +15546,10 @@
             "rowspan": 1
           },
           "key": "procurve_acl_acl_temp_addr",
+          "maximum_size": {
+            "height": 32767,
+            "width": 500
+          },
           "minimum_size": {
             "width": 199
           },
@@ -16065,6 +16272,10 @@
             "rowspan": 1
           },
           "key": "cmdline",
+          "maximum_size": {
+            "height": 22,
+            "width": 32767
+          },
           "type": "string",
           "widget": "compilerArgs",
           "widget_class": "QLineEdit"
@@ -16077,6 +16288,10 @@
             "rowspan": 1
           },
           "key": "compiler",
+          "maximum_size": {
+            "height": 22,
+            "width": 32767
+          },
           "type": "string",
           "widget": "compiler",
           "widget_class": "QLineEdit"
@@ -16343,6 +16558,10 @@
             "rowspan": 1
           },
           "key": "mgmt_addr",
+          "maximum_size": {
+            "height": 32767,
+            "width": 32767
+          },
           "size_policy": {
             "horizontal": "Expanding",
             "vertical": "Fixed"
@@ -17442,6 +17661,9 @@
             "rowspan": 1
           },
           "key": "secuwall_dns_domains",
+          "maximum_size": {
+            "height": 120
+          },
           "size_policy": {
             "horizontal": "Expanding",
             "vertical": "Fixed"
@@ -17473,6 +17695,9 @@
             "DB"
           ],
           "key": "secuwall_dns_reso1",
+          "maximum_size": {
+            "width": 60
+          },
           "type": "enum",
           "widget": "secuwall_dns_reso1",
           "widget_class": "QComboBox"
@@ -17486,6 +17711,9 @@
             "DB"
           ],
           "key": "secuwall_dns_reso2",
+          "maximum_size": {
+            "width": 60
+          },
           "type": "enum",
           "widget": "secuwall_dns_reso2",
           "widget_class": "QComboBox"
@@ -17499,6 +17727,9 @@
             "DB"
           ],
           "key": "secuwall_dns_reso3",
+          "maximum_size": {
+            "width": 60
+          },
           "type": "enum",
           "widget": "secuwall_dns_reso3",
           "widget_class": "QComboBox"
@@ -17512,6 +17743,9 @@
             "DB"
           ],
           "key": "secuwall_dns_reso4",
+          "maximum_size": {
+            "width": 60
+          },
           "type": "enum",
           "widget": "secuwall_dns_reso4",
           "widget_class": "QComboBox"
@@ -17525,6 +17759,9 @@
             "DB"
           ],
           "key": "secuwall_dns_reso5",
+          "maximum_size": {
+            "width": 60
+          },
           "type": "enum",
           "widget": "secuwall_dns_reso5",
           "widget_class": "QComboBox"

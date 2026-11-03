@@ -287,6 +287,8 @@ def _infer_type(key: str, value: str, meta: dict[str, Any] | None) -> dict[str, 
             out["size_policy"] = meta.get("size_policy")
         if meta.get("minimum_size"):
             out["minimum_size"] = meta.get("minimum_size")
+        if meta.get("maximum_size"):
+            out["maximum_size"] = meta.get("maximum_size")
         return out
 
     low = (value or "").strip().lower()

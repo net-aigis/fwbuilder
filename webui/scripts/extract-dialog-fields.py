@@ -217,8 +217,8 @@ def parse_widget_size_policies(root: ET.Element | None) -> dict[str, dict[str, s
     return out
 
 
-def parse_widget_minimum_sizes(root: ET.Element | None) -> dict[str, dict[str, int]]:
-    """Map widget objectName → {width, height} minimumSize from .ui."""
+def _parse_size_prop(root: ET.Element | None, prop_name: str) -> dict[str, dict[str, int]]:
+    """Map widget objectName → {width, height} for a .ui size property."""
     out: dict[str, dict[str, int]] = {}
     if root is None:
         return out
@@ -226,7 +226,7 @@ def parse_widget_minimum_sizes(root: ET.Element | None) -> dict[str, dict[str, i
         name = w.get("name")
         if not name:
             continue
-        prop = w.find("./property[@name='minimumSize']/size")
+        prop = w.find(f"./property[@name='{prop_name}']/size")
         if prop is None:
             continue
         width_el = prop.find("width")
@@ -244,6 +244,16 @@ def parse_widget_minimum_sizes(root: ET.Element | None) -> dict[str, dict[str, i
                 entry["height"] = height
             out[name] = entry
     return out
+
+
+def parse_widget_minimum_sizes(root: ET.Element | None) -> dict[str, dict[str, int]]:
+    """Map widget objectName → {width, height} minimumSize from .ui."""
+    return _parse_size_prop(root, "minimumSize")
+
+
+def parse_widget_maximum_sizes(root: ET.Element | None) -> dict[str, dict[str, int]]:
+    """Map widget objectName → {width, height} maximumSize from .ui."""
+    return _parse_size_prop(root, "maximumSize")
 
 
 def _grids_in_subtree(node: ET.Element) -> dict[str, dict[str, int]]:
@@ -512,6 +522,7 @@ def extract_cpp(cpp_path: Path, ui_root: ET.Element | None, ui_widgets: dict[str
     grid = parse_grid_positions(ui_root)
     size_policies = parse_widget_size_policies(ui_root)
     min_sizes = parse_widget_minimum_sizes(ui_root)
+    max_sizes = parse_widget_maximum_sizes(ui_root)
     fields: dict[str, dict] = {}
     for m in REG_OPT.finditer(src):
         widget, key, _mapping = m.group(1), m.group(2), m.group(3)
@@ -528,6 +539,17 @@ def extract_cpp(cpp_path: Path, ui_root: ET.Element | None, ui_widgets: dict[str
             field["size_policy"] = size_policies[widget]
         if widget in min_sizes:
             field["minimum_size"] = min_sizes[widget]
+        if widget in max_sizes:
+            # Qt often uses 16777215 as "no limit"; skip that noise.
+            mx = max_sizes[widget]
+            if mx.get("width", 0) < 1000000 or mx.get("height", 0) < 1000000:
+                cleaned = {
+                    k: v
+                    for k, v in mx.items()
+                    if isinstance(v, int) and 0 < v < 1000000
+                }
+                if cleaned:
+                    field["maximum_size"] = cleaned
         if ftype == "enum":
             choices = parse_combo_items(ui_root, widget) or KNOWN_ENUMS.get(key, [])
             if choices:
