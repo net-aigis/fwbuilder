@@ -3,7 +3,7 @@ export type ShortcutEntry = { keys: string; action: string; scope?: string };
 
 export const SHORTCUTS: ShortcutEntry[] = [
   { keys: "?", action: "Show this shortcuts help" },
-  { keys: "Esc", action: "Close overlay / clear search / clear rule filters" },
+  { keys: "Esc", action: "Close overlay / clear search / clear rule filters / clear compile log" },
   { keys: "Ctrl+S", action: "Save" },
   { keys: "Ctrl+Shift+S", action: "Save as" },
   { keys: "Ctrl+E", action: "Compile current firewall", scope: "rules" },
@@ -17,6 +17,8 @@ export const SHORTCUTS: ShortcutEntry[] = [
   { keys: "Ctrl+2", action: "Rules tab" },
   { keys: "Ctrl+Shift+U", action: "Find unused objects" },
   { keys: "Ctrl+Shift+K", action: "Copy compile/deploy log" },
+  { keys: "Ctrl+Shift+D", action: "Download compile/deploy log" },
+  { keys: "Ctrl+Shift+X", action: "Clear compile/deploy log" },
   { keys: "F2", action: "Rename selected object", scope: "object" },
   { keys: "/", action: "Focus object search" },
   { keys: "i", action: "Copy selected rule id", scope: "rules" },

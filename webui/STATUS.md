@@ -239,6 +239,10 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Unused shortcut | done | Ctrl+Shift+U; E2E phase94 |
 | Copy rule position | done | `p`; E2E phase95 |
 | Copy compile/deploy log | done | Ctrl+Shift+K; E2E phase96 |
+| Persist rules context | done | sessionStorage `rulesCtx`; restore on open; E2E phase97 |
+| Persist rule filters | done | sessionStorage `ruleFilters`; E2E phase98 |
+| Clear compile/deploy log | done | Clear log / Ctrl+Shift+X / Esc; E2E phase99 |
+| Download compile log shortcut | done | Ctrl+Shift+D; E2E phase100 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Phase 3 — compile / deploy
@@ -346,6 +350,10 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase94 (unused shortcut) | done | `e2e-phase94.sh` **OK** |
 | Local E2E phase95 (rule position) | done | `e2e-phase95.sh` **OK** |
 | Local E2E phase96 (copy compile log) | done | `e2e-phase96.sh` **OK** |
+| Local E2E phase97 (rulesCtx) | done | `e2e-phase97.sh` **OK** |
+| Local E2E phase98 (ruleFilters) | done | `e2e-phase98.sh` **OK** |
+| Local E2E phase99 (clear compile log) | done | `e2e-phase99.sh` **OK** |
+| Local E2E phase100 (download log shortcut) | done | `e2e-phase100.sh` **OK** |
 
 ## Local commands
 
@@ -451,6 +459,10 @@ bash webui/scripts/e2e-phase93.sh
 bash webui/scripts/e2e-phase94.sh
 bash webui/scripts/e2e-phase95.sh
 bash webui/scripts/e2e-phase96.sh
+bash webui/scripts/e2e-phase97.sh
+bash webui/scripts/e2e-phase98.sh
+bash webui/scripts/e2e-phase99.sh
+bash webui/scripts/e2e-phase100.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

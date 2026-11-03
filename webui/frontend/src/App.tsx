@@ -131,11 +131,54 @@ export function App() {
   const [compileLog, setCompileLog] = useState<string | null>(null);
   const [compileOutputs, setCompileOutputs] = useState<string[]>([]);
   const [dirty, setDirty] = useState(false);
-  const [hideDisabled, setHideDisabled] = useState(false);
-  const [onlyDisabled, setOnlyDisabled] = useState(false);
-  const [ruleActionFilter, setRuleActionFilter] = useState("");
-  const [ruleGroupFilter, setRuleGroupFilter] = useState("");
-  const [ruleTextFilter, setRuleTextFilter] = useState("");
+  const [hideDisabled, setHideDisabled] = useState(() => {
+    try {
+      const raw = sessionStorage.getItem("fwbweb.ruleFilters");
+      if (!raw) return false;
+      return Boolean(JSON.parse(raw).hideDisabled);
+    } catch {
+      return false;
+    }
+  });
+  const [onlyDisabled, setOnlyDisabled] = useState(() => {
+    try {
+      const raw = sessionStorage.getItem("fwbweb.ruleFilters");
+      if (!raw) return false;
+      return Boolean(JSON.parse(raw).onlyDisabled);
+    } catch {
+      return false;
+    }
+  });
+  const [ruleActionFilter, setRuleActionFilter] = useState(() => {
+    try {
+      const raw = sessionStorage.getItem("fwbweb.ruleFilters");
+      if (!raw) return "";
+      const v = JSON.parse(raw).ruleActionFilter;
+      return typeof v === "string" ? v : "";
+    } catch {
+      return "";
+    }
+  });
+  const [ruleGroupFilter, setRuleGroupFilter] = useState(() => {
+    try {
+      const raw = sessionStorage.getItem("fwbweb.ruleFilters");
+      if (!raw) return "";
+      const v = JSON.parse(raw).ruleGroupFilter;
+      return typeof v === "string" ? v : "";
+    } catch {
+      return "";
+    }
+  });
+  const [ruleTextFilter, setRuleTextFilter] = useState(() => {
+    try {
+      const raw = sessionStorage.getItem("fwbweb.ruleFilters");
+      if (!raw) return "";
+      const v = JSON.parse(raw).ruleTextFilter;
+      return typeof v === "string" ? v : "";
+    } catch {
+      return "";
+    }
+  });
   const [treeFilter, setTreeFilter] = useState("");
   const [unusedTypeFilter, setUnusedTypeFilter] = useState("");
   const [trashTypeFilter, setTrashTypeFilter] = useState("");
@@ -259,6 +302,40 @@ export function App() {
   }, [theme]);
 
   useEffect(() => {
+    try {
+      sessionStorage.setItem(
+        "fwbweb.ruleFilters",
+        JSON.stringify({
+          hideDisabled,
+          onlyDisabled,
+          ruleActionFilter,
+          ruleGroupFilter,
+          ruleTextFilter,
+        }),
+      );
+    } catch {
+      /* ignore */
+    }
+  }, [hideDisabled, onlyDisabled, ruleActionFilter, ruleGroupFilter, ruleTextFilter]);
+
+  useEffect(() => {
+    try {
+      sessionStorage.setItem(
+        "fwbweb.ruleFilters",
+        JSON.stringify({
+          hideDisabled,
+          onlyDisabled,
+          ruleActionFilter,
+          ruleGroupFilter,
+          ruleTextFilter,
+        }),
+      );
+    } catch {
+      /* ignore */
+    }
+  }, [hideDisabled, onlyDisabled, ruleActionFilter, ruleGroupFilter, ruleTextFilter]);
+
+  useEffect(() => {
     void refreshObjectPath(selected?.id ?? null);
   }, [sessionId, selected?.id]);
 
@@ -287,6 +364,36 @@ export function App() {
       localStorage.setItem("fwbweb.recent", JSON.stringify(next));
     } catch {
       /* ignore quota */
+    }
+  }
+
+  function persistRulesCtx(fwId: string, which: RulesWhich, rsId: string | null) {
+    try {
+      sessionStorage.setItem(
+        "fwbweb.rulesCtx",
+        JSON.stringify({ fwId, which, rulesetId: rsId }),
+      );
+      sessionStorage.setItem("fwbweb.rulesWhich", which);
+    } catch {
+      /* ignore */
+    }
+  }
+
+  async function tryRestoreRulesCtx(sid: string) {
+    try {
+      const raw = sessionStorage.getItem("fwbweb.rulesCtx");
+      if (!raw) return;
+      const ctx = JSON.parse(raw) as {
+        fwId?: string;
+        which?: string;
+        rulesetId?: string | null;
+      };
+      if (!ctx.fwId) return;
+      if (ctx.which !== "policy" && ctx.which !== "nat" && ctx.which !== "routing") return;
+      await fetchObject(sid, ctx.fwId);
+      await loadRules(ctx.fwId, ctx.which, ctx.rulesetId || undefined);
+    } catch {
+      /* stale or missing firewall — ignore */
     }
   }
 
@@ -333,6 +440,7 @@ export function App() {
       setToken(token);
       const opened = await openProject(path);
       await applyOpened(opened, "Open");
+      await tryRestoreRulesCtx(opened.session_id);
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
@@ -430,6 +538,7 @@ export function App() {
         setRulesFwId(fwId ?? full.id);
         setRulesetId(full.id);
         setRulesWhich(which);
+        persistRulesCtx(fwId ?? full.id, which, full.id);
         if (fwId) {
           try {
             const fw = await fetchObject(sessionId, fwId);
@@ -478,11 +587,7 @@ export function App() {
       });
       setRulesetId(targetId);
       setRulesWhich(which);
-      try {
-        sessionStorage.setItem("fwbweb.rulesWhich", which);
-      } catch {
-        /* ignore */
-      }
+      persistRulesCtx(fwId, which, targetId);
       setTab("rules");
       setStatus(`${chosen?.name || which} · ${data.rules?.length ?? 0} rules`);
     } catch (err) {
@@ -814,6 +919,11 @@ export function App() {
           setStatus("Filters cleared");
           return;
         }
+        if (compileLog) {
+          e.preventDefault();
+          onClearCompileLog();
+          return;
+        }
       }
       if (mod && e.shiftKey && e.key.toLowerCase() === "c" && selected) {
         e.preventDefault();
@@ -874,6 +984,16 @@ export function App() {
       if (mod && e.shiftKey && e.key.toLowerCase() === "k" && compileLog) {
         e.preventDefault();
         onCopyCompileLog();
+        return;
+      }
+      if (mod && e.shiftKey && e.key.toLowerCase() === "x" && compileLog) {
+        e.preventDefault();
+        onClearCompileLog();
+        return;
+      }
+      if (mod && e.shiftKey && e.key.toLowerCase() === "d" && compileLog) {
+        e.preventDefault();
+        onDownloadCompileLog();
         return;
       }
       if (mod && !e.shiftKey && e.key === "1") {
@@ -1558,6 +1678,13 @@ export function App() {
       () => setStatus("Copied compile/deploy log"),
       () => setError("Clipboard write failed"),
     );
+  }
+
+  function onClearCompileLog() {
+    if (!compileLog && !compileOutputs.length) return;
+    setCompileLog(null);
+    setCompileOutputs([]);
+    setStatus("Cleared compile/deploy log");
   }
 
   async function onFindUnused() {
@@ -4075,9 +4202,17 @@ export function App() {
                       type="button"
                       className="ghost"
                       onClick={onDownloadCompileLog}
-                      title="Save compile log as text file"
+                      title="Save compile log as text file (Ctrl+Shift+D)"
                     >
                       Download log
+                    </button>
+                    <button
+                      type="button"
+                      className="ghost"
+                      onClick={onClearCompileLog}
+                      title="Clear compile/deploy log (Ctrl+Shift+X)"
+                    >
+                      Clear log
                     </button>
                   </div>
                   <pre className="compile-log pad">{compileLog}</pre>
