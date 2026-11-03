@@ -125,6 +125,33 @@ def _run(cmd: list[str], *, timeout: float, env: dict[str, str] | None = None) -
     return proc.returncode, out
 
 
+def expand_activation_cmd(
+    cmd: str,
+    *,
+    fwdir: str,
+    fwscript: str,
+    remote_path: str,
+) -> str:
+    """Expand FirewallInstaller-style macros in activationCmd."""
+    out = cmd
+    for src, dst in (
+        ("{{$fwdir}}", fwdir),
+        ("{{$fwscript}}", fwscript),
+        ("{{$remote_script}}", remote_path),
+        ("%FWDIR%", fwdir),
+        ("%FWSCRIPT%", fwscript),
+    ):
+        out = out.replace(src, dst)
+    return out
+
+
+def _scp_host(host: str) -> str:
+    """Bracket IPv6 literals for scp (same idea as FirewallInstaller::packSCPArgs)."""
+    if ":" in host and not host.startswith("["):
+        return f"[{host}]"
+    return host
+
+
 def plan_and_deploy(
     *,
     local_script: Path,
@@ -150,7 +177,10 @@ def plan_and_deploy(
         remote_dir=remote_dir,
         remote_name_override=remote_name,
     )
-    target = f"{user}@{host}" if user else host
+    ssh_target = f"{user}@{host}" if user else host
+    scp_target = f"{user}@{_scp_host(host)}" if user else _scp_host(host)
+    fwdir = str(Path(main_remote).parent).replace("\\", "/") or remote_dir.rstrip("/") or "/etc"
+    fwscript = Path(main_remote).name
 
     ssh_extra = shlex.split(ssh_args) if ssh_args.strip() else []
     scp_extra = shlex.split(scp_args) if scp_args.strip() else []
@@ -165,7 +195,7 @@ def plan_and_deploy(
     scp_cmds: list[list[str]] = []
     commands: list[str] = []
     for local_path, remote_path in copies:
-        scp_cmd = [*base_scp, str(local_path), f"{target}:{remote_path}"]
+        scp_cmd = [*base_scp, str(local_path), f"{scp_target}:{remote_path}"]
         scp_cmds.append(scp_cmd)
         commands.append(" ".join(shlex.quote(c) for c in scp_cmd))
 
@@ -174,7 +204,14 @@ def plan_and_deploy(
         if not act:
             # Same idea as GUI installer for regular users: run the copied script.
             act = f"sudo {main_remote}" if user and user != "root" else main_remote
-        ssh_cmd = [*base_ssh, target, act]
+        else:
+            act = expand_activation_cmd(
+                act,
+                fwdir=fwdir,
+                fwscript=fwscript,
+                remote_path=main_remote,
+            )
+        ssh_cmd = [*base_ssh, ssh_target, act]
         commands.append(" ".join(shlex.quote(c) for c in ssh_cmd))
     else:
         ssh_cmd = None

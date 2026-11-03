@@ -271,6 +271,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Copy project path | done | Ctrl+Shift+G; E2E phase126 |
 | Deploy reads compiler `# files:` manifest | done | multi-file scp + main activate; E2E phase127 |
 | Qt .ui field labels in options UI | done | extract-dialog-fields + OptionField; E2E phase128 |
+| activationCmd macros + IPv6 scp host | done | `{{$fwdir}}`/`{{$fwscript}}`; E2E phase129 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Soft-complete (feature/webui polish track)
@@ -422,6 +423,7 @@ Still open:
 | Local E2E phase126 (copy project path) | done | `e2e-phase126.sh` **OK** |
 | Local E2E phase127 (deploy manifest) | done | `e2e-phase127.sh` **OK** |
 | Local E2E phase128 (ui labels) | done | `e2e-phase128.sh` **OK** |
+| Local E2E phase129 (activation macros) | done | `e2e-phase129.sh` **OK** |
 
 ## Local commands
 
@@ -559,6 +561,7 @@ bash webui/scripts/e2e-phase125.sh
 bash webui/scripts/e2e-phase126.sh
 bash webui/scripts/e2e-phase127.sh
 bash webui/scripts/e2e-phase128.sh
+bash webui/scripts/e2e-phase129.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```
