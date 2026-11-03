@@ -397,24 +397,32 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | soft_fertig_honesty_track on /hard-gaps | done | E2E phase254 |
 | 253/254 wiring | done | E2E phase255 |
 | Soft-fertig honesty track (phase256) | done | E2E phase256 |
+| Spacer sizeHint extract | done | E2E phase257 |
+| Spacer sizeHint CSS | done | E2E phase258 |
+| row_stretch in qtGridStyle | done | E2E phase259 |
+| Qt alignment extract + CSS | done | E2E phase260 |
+| Expect plan reg_user + safety_net_acl | done | E2E phase261 |
+| 257–261 wiring | done | E2E phase262 |
+| Soft marker 264 | done | E2E phase263 |
+| Soft-complete STATUS through 264 | done | E2E phase264 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Soft-complete (feature/webui polish track)
 
 WebUI on `feature/webui` remains soft-complete for the polish track.
 
-### Hard-gap honesty/preview track — soft-fertig (phase256)
+### Hard-gap honesty/preview track — soft-fertig (phase256); preview slices through 264
 
-`WEBUI_SOFT_COMPLETE_PHASE=256`; `/hard-gaps` sets `soft_fertig_honesty_track: true`.
+`WEBUI_SOFT_COMPLETE_PHASE=264`; `/hard-gaps` sets `soft_fertig_honesty_track: true`.
 
-- Deploy: manifest `# files:`, OS configlets, external PolicyInstallScript, copyFWB, use_scp, gzip transfer on compress (plan shows −%), capabilities API (+ expect_install_plan pointer), live gate + force_limited, expect stub + raw/expanded configlet preview + ordered expect plan (download + sessionStorage); `POST …/run` → 501 (still **no** expect/SSHSession runtime)
-- Options: .ui labels, free QLabel annotations, QRadio bool, QGroupBox sections, tooltips, page-local QGridLayout + spacers + columnstretch + spacing/margins (CSS + page hint) + sizePolicy + min/max size + layout hints + dialog windowTitle/geometry (header WxH + CSS max-height) + shared `qtGridStyle` on Firewall/Rule/Interface (still **not** full pixel Qt layout)
+- Deploy: manifest `# files:`, OS configlets, external PolicyInstallScript, copyFWB, use_scp, gzip transfer on compress (plan shows −%), capabilities API (+ expect_install_plan pointer), live gate + force_limited, expect stub + raw/expanded configlet preview + ordered expect plan (reg_user + safety_net_acl + download + sessionStorage); `POST …/run` → 501 (still **no** expect/SSHSession runtime)
+- Options: .ui labels, free QLabel annotations (+ alignment), QRadio bool, QGroupBox sections, tooltips, page-local QGridLayout + spacers (sizeHint) + column/row stretch + spacing/margins (CSS + page hint) + sizePolicy + min/max size + layout hints + dialog windowTitle/geometry (header WxH + CSS max-height) + shared `qtGridStyle` on Firewall/Rule/Interface (still **not** full pixel Qt layout)
 - SSH: BatchMode only; `GET /ssh-auth`, capabilities.ssh_auth, deploy plan line, and `allow_password_auth` → 400
 - Honesty: UI lists `hard_gap_open` + note via `fetchHardGaps`; `GET /hard-gaps` documents remaining gaps
 
 Still open (hard backlog — **not** soft-fertig):
 
-- Full Qt AdvancedDialog **pixel** layout parity (exact geometry; dialog size + grid spacing since phase226/241; row/col + spacers + stretch + annotations + sizePolicy/min/max size since phase165/177/181/189/205/209/213)
+- Full Qt AdvancedDialog **pixel** layout parity (exact geometry; dialog size + grid spacing since phase226/241; row/col + spacers/sizeHint + stretch + annotations/alignment + sizePolicy/min/max size since phase165/177/181/189/205/209/213/257–260)
 - Full desktop **FirewallInstaller** expect/SSHSession for Cisco/Juniper/Procurve (plan/preview/download; run endpoint refuses with 501)
 - Password/keyboard-interactive SSH (API refuses `allow_password_auth`; BatchMode only)
 
@@ -683,6 +691,14 @@ Still open (hard backlog — **not** soft-fertig):
 | Local E2E phase254 (soft_fertig flag) | done | `e2e-phase254.sh` **OK** |
 | Local E2E phase255 (wiring) | done | `e2e-phase255.sh` **OK** |
 | Local E2E phase256 (STATUS soft-fertig) | done | `e2e-phase256.sh` **OK** |
+| Local E2E phase257 (spacer sizeHint) | done | `e2e-phase257.sh` **OK** |
+| Local E2E phase258 (sizeHint CSS) | done | `e2e-phase258.sh` **OK** |
+| Local E2E phase259 (row_stretch) | done | `e2e-phase259.sh` **OK** |
+| Local E2E phase260 (alignment) | done | `e2e-phase260.sh` **OK** |
+| Local E2E phase261 (expect plan extras) | done | `e2e-phase261.sh` **OK** |
+| Local E2E phase262 (wiring) | done | `e2e-phase262.sh` **OK** |
+| Local E2E phase263 (soft marker 264) | done | `e2e-phase263.sh` **OK** |
+| Local E2E phase264 (STATUS soft-complete) | done | `e2e-phase264.sh` **OK** |
 
 ## Local commands
 
@@ -948,6 +964,14 @@ bash webui/scripts/e2e-phase253.sh
 bash webui/scripts/e2e-phase254.sh
 bash webui/scripts/e2e-phase255.sh
 bash webui/scripts/e2e-phase256.sh
+bash webui/scripts/e2e-phase257.sh
+bash webui/scripts/e2e-phase258.sh
+bash webui/scripts/e2e-phase259.sh
+bash webui/scripts/e2e-phase260.sh
+bash webui/scripts/e2e-phase261.sh
+bash webui/scripts/e2e-phase262.sh
+bash webui/scripts/e2e-phase263.sh
+bash webui/scripts/e2e-phase264.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

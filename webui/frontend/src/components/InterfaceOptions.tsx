@@ -7,6 +7,7 @@ import {
 } from "../api/client";
 import { OptionField } from "./OptionField";
 import {
+  qtAlignmentStyle,
   qtGridStyle,
   qtSpacerStyle,
   type QtGridAnnotation,
@@ -30,6 +31,7 @@ type Group = {
   keys: string[];
   spacers?: QtGridSpacer[];
   column_stretch?: number[];
+  row_stretch?: number[];
   annotations?: QtGridAnnotation[];
   spacing?: QtGridSpacing;
 };
@@ -194,9 +196,10 @@ export function InterfaceOptions({
           const page = groups.find((g) => g.id === activeGroup);
           const spacers = page?.spacers || [];
           const stretch = page?.column_stretch || [];
+          const rowStretch = page?.row_stretch || [];
           const notes = page?.annotations || [];
           const spacing = page?.spacing || {};
-          const grid = qtGridStyle(keys, fields, spacers, stretch, notes, spacing);
+          const grid = qtGridStyle(keys, fields, spacers, stretch, notes, spacing, rowStretch);
           return (
             <div className={grid.className} style={grid.style}>
               {spacers.map((sp, i) => (
@@ -212,7 +215,7 @@ export function InterfaceOptions({
                 <p
                   key={note.name || `note-${i}`}
                   className="qt-annotation muted"
-                  style={qtSpacerStyle(note)}
+                  style={{ ...qtSpacerStyle(note), ...qtAlignmentStyle(note.alignment) }}
                 >
                   {note.text}
                 </p>

@@ -317,8 +317,48 @@ def _spacers_in_subtree(node: ET.Element) -> list[dict[str, Any]]:
                 name = child.get("name")
                 if name:
                     entry["name"] = name
+                sh = child.find("./property[@name='sizeHint']/size")
+                if sh is not None:
+                    try:
+                        sw = int((sh.findtext("width") or "0").strip())
+                        sh_h = int((sh.findtext("height") or "0").strip())
+                        if sw > 0 or sh_h > 0:
+                            hint: dict[str, int] = {}
+                            if sw > 0:
+                                hint["width"] = sw
+                            if sh_h > 0:
+                                hint["height"] = sh_h
+                            if hint:
+                                entry["size_hint"] = hint
+                    except ValueError:
+                        pass
                 spacers.append(entry)
     return spacers
+
+
+def parse_widget_alignments(root: ET.Element | None) -> dict[str, str]:
+    """Map widget objectName → Qt alignment set string (Qt:: prefix stripped)."""
+    out: dict[str, str] = {}
+    if root is None:
+        return out
+    for w in root.iter("widget"):
+        name = w.get("name")
+        if not name:
+            continue
+        prop = w.find("./property[@name='alignment']/set")
+        if prop is None or not (prop.text or "").strip():
+            continue
+        raw = prop.text.strip()
+        parts = []
+        for part in raw.split("|"):
+            part = part.strip()
+            if part.startswith("Qt::"):
+                part = part[4:]
+            if part and part not in parts:
+                parts.append(part)
+        if parts:
+            out[name] = "|".join(parts)
+    return out
 
 
 def _parse_stretch_list(raw: str | None) -> list[int]:
@@ -448,6 +488,17 @@ def _annotations_in_subtree(node: ET.Element) -> list[dict[str, Any]]:
                 name = child.get("name")
                 if name:
                     entry["name"] = name
+                align_el = child.find("./property[@name='alignment']/set")
+                if align_el is not None and (align_el.text or "").strip():
+                    parts: list[str] = []
+                    for part in align_el.text.strip().split("|"):
+                        part = part.strip()
+                        if part.startswith("Qt::"):
+                            part = part[4:]
+                        if part and part not in parts:
+                            parts.append(part)
+                    if parts:
+                        entry["alignment"] = "|".join(parts)
                 annotations.append(entry)
     return annotations
 
@@ -561,6 +612,7 @@ def extract_cpp(cpp_path: Path, ui_root: ET.Element | None, ui_widgets: dict[str
     size_policies = parse_widget_size_policies(ui_root)
     min_sizes = parse_widget_minimum_sizes(ui_root)
     max_sizes = parse_widget_maximum_sizes(ui_root)
+    alignments = parse_widget_alignments(ui_root)
     fields: dict[str, dict] = {}
     for m in REG_OPT.finditer(src):
         widget, key, _mapping = m.group(1), m.group(2), m.group(3)
@@ -575,6 +627,8 @@ def extract_cpp(cpp_path: Path, ui_root: ET.Element | None, ui_widgets: dict[str
             field["grid"] = grid[widget]
         if widget in size_policies:
             field["size_policy"] = size_policies[widget]
+        if widget in alignments:
+            field["alignment"] = alignments[widget]
         if widget in min_sizes:
             field["minimum_size"] = min_sizes[widget]
         if widget in max_sizes:

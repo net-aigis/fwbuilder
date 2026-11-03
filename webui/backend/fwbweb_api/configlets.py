@@ -53,14 +53,24 @@ def resolve_configlet_dir(host_os: str) -> Path | None:
     return None
 
 
+# Extra desktop-expect files (not installer_commands*) exposed for plan preview.
+_EXPECT_RELATED = frozenset({"safety_net_acl"})
+
+
 def list_installer_configlets(host_os: str) -> dict[str, Any]:
     directory = resolve_configlet_dir(host_os)
     names: list[str] = []
+    related: list[str] = []
     if directory and directory.is_dir():
         names = sorted(
             p.name
             for p in directory.iterdir()
             if p.is_file() and p.name.startswith("installer_commands")
+        )
+        related = sorted(
+            p.name
+            for p in directory.iterdir()
+            if p.is_file() and p.name in _EXPECT_RELATED
         )
     interactive = any(
         n in names
@@ -76,6 +86,7 @@ def list_installer_configlets(host_os: str) -> dict[str, Any]:
         "family": os_family(host_os),
         "configlet_dir": str(directory) if directory else None,
         "names": names,
+        "related_names": related,
         "interactive_installer": interactive,
         "webui_modes": {
             "scp_ssh": bool(has_reg or has_root) and not interactive,
@@ -118,22 +129,18 @@ def read_installer_configlet_file(
     compress: bool = False,
     use_scp: bool = True,
 ) -> dict[str, Any]:
-    """Read a named installer_commands* file (preview only; optional expand)."""
+    """Read a named installer_commands* / expect-related file (preview only)."""
     listing = list_installer_configlets(host_os)
     safe = (name or "").strip()
-    if (
-        not safe
-        or "/" in safe
-        or "\\" in safe
-        or ".." in safe
-        or not safe.startswith("installer_commands")
-    ):
+    allowed = safe.startswith("installer_commands") or safe in _EXPECT_RELATED
+    if not safe or "/" in safe or "\\" in safe or ".." in safe or not allowed:
         return {
             "ok": False,
             "error": "invalid_configlet_name",
             "host_os": host_os,
             "name": name,
             "names": listing.get("names") or [],
+            "related_names": listing.get("related_names") or [],
         }
     directory = resolve_configlet_dir(host_os)
     if directory is None:

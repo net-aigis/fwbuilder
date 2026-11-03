@@ -8,6 +8,7 @@ export type QtGridSpacer = {
   colspan?: number;
   orientation?: string;
   name?: string;
+  size_hint?: { width?: number; height?: number };
 };
 
 function columnsFromStretch(maxCol: number, stretch: number[]): string {
@@ -15,6 +16,15 @@ function columnsFromStretch(maxCol: number, stretch: number[]): string {
   for (let i = 0; i <= maxCol; i++) {
     const w = stretch[i] ?? 1;
     parts.push(`minmax(8rem, ${Math.max(w, 1)}fr)`);
+  }
+  return parts.join(" ");
+}
+
+function rowsFromStretch(maxRow: number, stretch: number[]): string {
+  const parts: string[] = [];
+  for (let i = 0; i <= maxRow; i++) {
+    const w = stretch[i] ?? 0;
+    parts.push(w > 0 ? `minmax(auto, ${w}fr)` : "auto");
   }
   return parts.join(" ");
 }
@@ -37,12 +47,13 @@ export function qtGridStyle(
   columnStretch: number[] = [],
   annotations: QtGridSpacer[] = [],
   spacing: QtGridSpacing = {},
+  rowStretch: number[] = [],
 ): { className: string; style?: CSSProperties } {
   const useQt =
     keys.some((k) => fields[k]?.grid) || spacers.length > 0 || annotations.length > 0;
   if (!useQt) return { className: "typed-grid options-grid" };
   let maxCol = Math.max(3, columnStretch.length - 1);
-  let maxRow = 0;
+  let maxRow = Math.max(0, rowStretch.length - 1);
   for (const k of keys) {
     const g = fields[k]?.grid;
     if (!g || g.row == null || g.column == null) continue;
@@ -58,11 +69,15 @@ export function qtGridStyle(
     columnStretch.length > 0
       ? columnsFromStretch(maxCol, columnStretch)
       : `repeat(${maxCol + 1}, minmax(8rem, 1fr))`;
+  const rows =
+    rowStretch.length > 0
+      ? rowsFromStretch(maxRow, rowStretch)
+      : `repeat(${maxRow + 1}, auto)`;
   const colGap = spacing.horizontal ?? spacing.spacing;
   const rowGap = spacing.vertical ?? spacing.spacing;
   const style: CSSProperties = {
     gridTemplateColumns: cols,
-    gridTemplateRows: `repeat(${maxRow + 1}, auto)`,
+    gridTemplateRows: rows,
   };
   if (colGap != null || rowGap != null) {
     style.gap =
@@ -85,7 +100,7 @@ export function qtGridStyle(
 /** CSS placement for a .ui QSpacerItem or free QLabel annotation cell. */
 export function qtSpacerStyle(spacer: QtGridSpacer): CSSProperties | undefined {
   if (spacer.row == null || spacer.column == null) return undefined;
-  return {
+  const style: CSSProperties = {
     gridRow:
       spacer.rowspan && spacer.rowspan > 1
         ? `${spacer.row + 1} / span ${spacer.rowspan}`
@@ -95,6 +110,42 @@ export function qtSpacerStyle(spacer: QtGridSpacer): CSSProperties | undefined {
         ? `${spacer.column + 1} / span ${spacer.colspan}`
         : spacer.column + 1,
   };
+  const hint = spacer.size_hint;
+  if (hint) {
+    const orient = (spacer.orientation || "").toLowerCase();
+    if (orient === "horizontal" && hint.width && hint.width > 0) {
+      style.minWidth = hint.width;
+      style.width = hint.width;
+    } else if (orient === "vertical" && hint.height && hint.height > 0) {
+      style.minHeight = hint.height;
+      style.height = hint.height;
+    } else {
+      if (hint.width && hint.width > 0) style.minWidth = hint.width;
+      if (hint.height && hint.height > 0) style.minHeight = hint.height;
+    }
+  }
+  return style;
 }
 
-export type QtGridAnnotation = QtGridSpacer & { text: string };
+export type QtGridAnnotation = QtGridSpacer & { text: string; alignment?: string };
+
+/** Map .ui Qt::Align* flags to CSS text/self alignment. */
+export function qtAlignmentStyle(alignment?: string): CSSProperties | undefined {
+  if (!alignment) return undefined;
+  const align = alignment.toLowerCase();
+  const style: CSSProperties = {};
+  if (align.includes("alignright") || align.includes("aligntrailing")) {
+    style.textAlign = "right";
+    style.justifySelf = "end";
+  } else if (align.includes("alignhcenter") || align.includes("aligncenter")) {
+    style.textAlign = "center";
+    style.justifySelf = "center";
+  } else if (align.includes("alignleft") || align.includes("alignleading")) {
+    style.textAlign = "left";
+    style.justifySelf = "start";
+  }
+  if (align.includes("alignvcenter")) style.alignSelf = "center";
+  else if (align.includes("aligntop")) style.alignSelf = "start";
+  else if (align.includes("alignbottom")) style.alignSelf = "end";
+  return Object.keys(style).length ? style : undefined;
+}

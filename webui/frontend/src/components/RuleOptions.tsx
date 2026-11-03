@@ -7,6 +7,7 @@ import {
 } from "../api/client";
 import { OptionField } from "./OptionField";
 import {
+  qtAlignmentStyle,
   qtGridStyle,
   qtSpacerStyle,
   type QtGridAnnotation,
@@ -30,6 +31,7 @@ type Group = {
   keys: string[];
   spacers?: QtGridSpacer[];
   column_stretch?: number[];
+  row_stretch?: number[];
   annotations?: QtGridAnnotation[];
   spacing?: QtGridSpacing;
 };
@@ -180,9 +182,10 @@ export function RuleOptions({
           const page = groups.find((g) => g.id === activeGroup);
           const spacers = (!showAll && page?.spacers) || [];
           const stretch = (!showAll && page?.column_stretch) || [];
+          const rowStretch = (!showAll && page?.row_stretch) || [];
           const notes = (!showAll && page?.annotations) || [];
           const spacing = (!showAll && page?.spacing) || {};
-          const grid = qtGridStyle(shown, fields, spacers, stretch, notes, spacing);
+          const grid = qtGridStyle(shown, fields, spacers, stretch, notes, spacing, rowStretch);
           return (
             <div className={grid.className} style={grid.style}>
               {spacers.map((sp, i) => (
@@ -198,7 +201,7 @@ export function RuleOptions({
                 <p
                   key={note.name || `note-${i}`}
                   className="qt-annotation muted"
-                  style={qtSpacerStyle(note)}
+                  style={{ ...qtSpacerStyle(note), ...qtAlignmentStyle(note.alignment) }}
                 >
                   {note.text}
                 </p>

@@ -489,6 +489,7 @@ export type OptionFieldMeta = {
   size_policy?: { horizontal?: string; vertical?: string };
   minimum_size?: { width?: number; height?: number };
   maximum_size?: { width?: number; height?: number };
+  alignment?: string;
 };
 
 export function fetchOptionSchema(platform: string, hostOs = "") {
@@ -516,8 +517,10 @@ export function fetchOptionSchema(platform: string, hostOs = "") {
         colspan?: number;
         orientation?: string;
         name?: string;
+        size_hint?: { width?: number; height?: number };
       }>;
       column_stretch?: number[];
+      row_stretch?: number[];
       layouts?: Record<string, number>;
       spacing?: {
         spacing?: number;
@@ -535,6 +538,7 @@ export function fetchOptionSchema(platform: string, hostOs = "") {
         rowspan?: number;
         colspan?: number;
         name?: string;
+        alignment?: string;
       }>;
     }>;
     featured_keys: string[];
@@ -554,8 +558,10 @@ type SchemaGroup = {
     colspan?: number;
     orientation?: string;
     name?: string;
+    size_hint?: { width?: number; height?: number };
   }>;
   column_stretch?: number[];
+  row_stretch?: number[];
   layouts?: Record<string, number>;
   spacing?: {
     spacing?: number;
@@ -573,6 +579,7 @@ type SchemaGroup = {
     rowspan?: number;
     colspan?: number;
     name?: string;
+    alignment?: string;
   }>;
 };
 

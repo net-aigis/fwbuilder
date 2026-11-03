@@ -18,6 +18,7 @@ import {
 } from "../api/client";
 import { OptionField } from "./OptionField";
 import {
+  qtAlignmentStyle,
   qtGridStyle,
   qtSpacerStyle,
   type QtGridAnnotation,
@@ -60,6 +61,7 @@ type Group = {
   sections?: GroupSection[];
   spacers?: QtGridSpacer[];
   column_stretch?: number[];
+  row_stretch?: number[];
   layouts?: Record<string, number>;
   annotations?: QtGridAnnotation[];
   spacing?: QtGridSpacing;
@@ -689,6 +691,9 @@ export function FirewallExtras({
             {activeGroupMeta.column_stretch?.length
               ? ` · stretch ${activeGroupMeta.column_stretch.join(":")}`
               : ""}
+            {activeGroupMeta.row_stretch?.length
+              ? ` · rows ${activeGroupMeta.row_stretch.join(":")}`
+              : ""}
             {activeGroupMeta.spacing &&
             (activeGroupMeta.spacing.vertical != null ||
               activeGroupMeta.spacing.horizontal != null ||
@@ -742,12 +747,22 @@ export function FirewallExtras({
           useQtGridLayout && secIdx === 0 ? activeGroupMeta?.spacers || [] : [];
         const pageStretch =
           useQtGridLayout && secIdx === 0 ? activeGroupMeta?.column_stretch || [] : [];
+        const pageRowStretch =
+          useQtGridLayout && secIdx === 0 ? activeGroupMeta?.row_stretch || [] : [];
         const pageNotes =
           useQtGridLayout && secIdx === 0 ? activeGroupMeta?.annotations || [] : [];
         const pageSpacing =
           useQtGridLayout && secIdx === 0 ? activeGroupMeta?.spacing || {} : {};
         const grid = useQtGridLayout
-          ? qtGridStyle(sec.keys, fields, pageSpacers, pageStretch, pageNotes, pageSpacing)
+          ? qtGridStyle(
+              sec.keys,
+              fields,
+              pageSpacers,
+              pageStretch,
+              pageNotes,
+              pageSpacing,
+              pageRowStretch,
+            )
           : { className: "typed-grid options-grid" };
         return (
           <div key={sec.id || "all"} className="option-section">
@@ -766,7 +781,7 @@ export function FirewallExtras({
                 <p
                   key={note.name || `note-${i}`}
                   className="qt-annotation muted"
-                  style={qtSpacerStyle(note)}
+                  style={{ ...qtSpacerStyle(note), ...qtAlignmentStyle(note.alignment) }}
                 >
                   {note.text}
                 </p>

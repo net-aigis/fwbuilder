@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react";
+import { qtAlignmentStyle } from "../qtGrid";
 
 type FieldMeta = {
   type?: string;
@@ -11,6 +12,7 @@ type FieldMeta = {
   size_policy?: { horizontal?: string; vertical?: string };
   minimum_size?: { width?: number; height?: number };
   maximum_size?: { width?: number; height?: number };
+  alignment?: string;
 };
 
 type Props = {
@@ -39,6 +41,7 @@ function fieldStyle(meta?: FieldMeta): CSSProperties | undefined {
   const xs = meta?.maximum_size;
   if (xs?.width && xs.width > 0) style.maxWidth = xs.width;
   if (xs?.height && xs.height > 0) style.maxHeight = xs.height;
+  Object.assign(style, qtAlignmentStyle(meta?.alignment) || {});
   return Object.keys(style).length ? style : undefined;
 }
 

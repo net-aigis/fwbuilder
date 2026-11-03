@@ -1170,6 +1170,7 @@
               "text": "Assume firewall is part of \"any\" for this rule only:"
             },
             {
+              "alignment": "AlignVCenter",
               "colspan": 3,
               "column": 0,
               "name": "textLabel7",
@@ -1191,7 +1192,10 @@
               "column": 2,
               "orientation": "Horizontal",
               "row": 0,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "width": 40
+              }
             },
             {
               "colspan": 1,
@@ -1199,7 +1203,11 @@
               "name": "verticalSpacer_3",
               "orientation": "Vertical",
               "row": 3,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 112,
+                "width": 20
+              }
             }
           ],
           "spacing": {
@@ -1222,6 +1230,7 @@
               "text": "Log prefix:"
             },
             {
+              "alignment": "AlignLeading|AlignLeft|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "textLabel2",
@@ -1251,14 +1260,20 @@
               "column": 4,
               "orientation": "Horizontal",
               "row": 1,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20
+              }
             },
             {
               "colspan": 1,
               "column": 2,
               "orientation": "Vertical",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "width": 20
+              }
             }
           ],
           "spacing": {
@@ -1273,6 +1288,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignVCenter",
               "colspan": 8,
               "column": 0,
               "name": "textLabel5",
@@ -1314,7 +1330,11 @@
               "name": "horizontalSpacer_4",
               "orientation": "Horizontal",
               "row": 1,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 40
+              }
             },
             {
               "colspan": 1,
@@ -1329,14 +1349,21 @@
               "name": "horizontalSpacer_5",
               "orientation": "Horizontal",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 886
+              }
             },
             {
               "colspan": 1,
               "column": 2,
               "orientation": "Vertical",
               "row": 3,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "width": 20
+              }
             }
           ],
           "spacing": {
@@ -1398,7 +1425,11 @@
               "column": 5,
               "orientation": "Horizontal",
               "row": 1,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 40
+              }
             },
             {
               "colspan": 1,
@@ -1406,21 +1437,32 @@
               "name": "horizontalSpacer_3",
               "orientation": "Horizontal",
               "row": 1,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 168
+              }
             },
             {
               "colspan": 6,
               "column": 3,
               "orientation": "Horizontal",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 2,
               "orientation": "Vertical",
               "row": 3,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "width": 20
+              }
             }
           ],
           "spacing": {
@@ -1451,6 +1493,7 @@
               "text": "Name:"
             },
             {
+              "alignment": "AlignVCenter",
               "colspan": 3,
               "column": 0,
               "name": "textLabel5_5",
@@ -1485,7 +1528,10 @@
               "column": 2,
               "orientation": "Vertical",
               "row": 6,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "width": 20
+              }
             }
           ],
           "spacing": {
@@ -1521,7 +1567,11 @@
               "name": "spacer",
               "orientation": "Horizontal",
               "row": 0,
-              "rowspan": 3
+              "rowspan": 3,
+              "size_hint": {
+                "height": 81,
+                "width": 615
+              }
             },
             {
               "colspan": 3,
@@ -1529,7 +1579,11 @@
               "name": "spacer_2",
               "orientation": "Vertical",
               "row": 3,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 108,
+                "width": 609
+              }
             }
           ],
           "spacing": {
@@ -1566,7 +1620,11 @@
               "name": "horizontalSpacer_6",
               "orientation": "Horizontal",
               "row": 1,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 928
+              }
             },
             {
               "colspan": 2,
@@ -1574,7 +1632,11 @@
               "name": "spacer_3",
               "orientation": "Vertical",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 169,
+                "width": 1105
+              }
             }
           ],
           "spacing": {
@@ -1647,7 +1709,11 @@
               "name": "horizontalSpacer_16",
               "orientation": "Horizontal",
               "row": 0,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 373
+              }
             },
             {
               "colspan": 1,
@@ -1655,7 +1721,11 @@
               "name": "verticalSpacer_4",
               "orientation": "Vertical",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 96,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
@@ -1663,7 +1733,11 @@
               "name": "verticalSpacer_7",
               "orientation": "Vertical",
               "row": 0,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 17,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
@@ -1671,7 +1745,11 @@
               "name": "horizontalSpacer_7",
               "orientation": "Horizontal",
               "row": 3,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 17,
+                "width": 328
+              }
             }
           ],
           "spacing": {
@@ -1799,14 +1877,22 @@
               "column": 2,
               "orientation": "Vertical",
               "row": 0,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 16,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 4,
               "orientation": "Horizontal",
               "row": 1,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 40
+              }
             },
             {
               "colspan": 1,
@@ -1814,14 +1900,22 @@
               "name": "horizontalSpacer_2",
               "orientation": "Horizontal",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 147
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Vertical",
               "row": 5,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 40,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
@@ -1829,7 +1923,11 @@
               "name": "horizontalSpacer",
               "orientation": "Horizontal",
               "row": 0,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 140
+              }
             },
             {
               "colspan": 1,
@@ -1837,7 +1935,11 @@
               "name": "verticalSpacer_2",
               "orientation": "Vertical",
               "row": 1,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 43,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
@@ -1845,7 +1947,11 @@
               "name": "verticalSpacer",
               "orientation": "Vertical",
               "row": 1,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 173,
+                "width": 20
+              }
             }
           ],
           "title": "Options"
@@ -2032,6 +2138,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 0,
               "name": "label544",
@@ -2040,6 +2147,7 @@
               "text": "IPv4 Packet forwarding"
             },
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 0,
               "name": "label544_2",
@@ -2048,6 +2156,7 @@
               "text": "IPv6 Packet forwarding"
             },
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 0,
               "name": "label546",
@@ -2056,6 +2165,7 @@
               "text": "Forward source routed packets"
             },
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 0,
               "name": "label547",
@@ -2080,14 +2190,22 @@
               "column": 0,
               "orientation": "Vertical",
               "row": 0,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 2,
               "orientation": "Horizontal",
               "row": 1,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 40
+              }
             },
             {
               "colspan": 1,
@@ -2095,7 +2213,11 @@
               "name": "verticalSpacer",
               "orientation": "Vertical",
               "row": 5,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 83,
+                "width": 20
+              }
             }
           ],
           "title": "Options"
@@ -2103,6 +2225,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignCenter",
               "colspan": 4,
               "column": 0,
               "name": "label576",
@@ -2111,6 +2234,7 @@
               "text": "Specify directory path and a file name for the following utilities on the OS your firewall machine is running. Leave these empty if you want to use default values."
             },
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 1,
               "name": "label594",
@@ -2119,6 +2243,7 @@
               "text": "ipfw:"
             },
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 1,
               "name": "label575",
@@ -2127,6 +2252,7 @@
               "text": "pfctl:"
             },
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 1,
               "name": "freebsd_path_ipf_label",
@@ -2135,6 +2261,7 @@
               "text": "ipf:"
             },
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 1,
               "name": "label578",
@@ -2143,6 +2270,7 @@
               "text": "ipnat:"
             },
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 1,
               "name": "label583",
@@ -2168,21 +2296,33 @@
               "column": 0,
               "orientation": "Horizontal",
               "row": 1,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 40
+              }
             },
             {
               "colspan": 1,
               "column": 3,
               "orientation": "Horizontal",
               "row": 1,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 40
+              }
             },
             {
               "colspan": 1,
               "column": 2,
               "orientation": "Vertical",
               "row": 6,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 40,
+                "width": 20
+              }
             }
           ],
           "title": "Path"
@@ -2190,6 +2330,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignCenter",
               "colspan": 3,
               "column": 0,
               "name": "label456_3",
@@ -2198,6 +2339,7 @@
               "text": "Specify directory where data files (e.g. run-time address table) are found on the firewall."
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label453_4",
@@ -2220,7 +2362,11 @@
               "name": "spacer_2",
               "orientation": "Vertical",
               "row": 0,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
@@ -2228,7 +2374,11 @@
               "name": "verticalSpacer_5",
               "orientation": "Vertical",
               "row": 3,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 155,
+                "width": 20
+              }
             }
           ],
           "title": "Data"
@@ -2287,7 +2437,11 @@
               "column": 0,
               "orientation": "Vertical",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 40,
+                "width": 20
+              }
             }
           ],
           "title": "General"
@@ -2757,6 +2911,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "textLabel1_5",
@@ -2804,14 +2959,22 @@
               "name": "horizontalSpacer_2",
               "orientation": "Horizontal",
               "row": 4,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 328
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Vertical",
               "row": 5,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 170,
+                "width": 20
+              }
             }
           ],
           "spacing": {
@@ -2822,6 +2985,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignVCenter",
               "colspan": 3,
               "column": 0,
               "name": "iosacl_acl_temp_lbl",
@@ -2850,28 +3014,44 @@
               "name": "verticalSpacer",
               "orientation": "Vertical",
               "row": 3,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 70,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 1,
               "orientation": "Vertical",
               "row": 3,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 2,
               "orientation": "Horizontal",
               "row": 1,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 120
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Horizontal",
               "row": 1,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 110
+              }
             }
           ],
           "spacing": {
@@ -2882,6 +3062,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignLeading|AlignLeft|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "textLabel1_2",
@@ -2890,6 +3071,7 @@
               "text": "User name used to authenticate to the firewall (leave this empty if you use putty session):"
             },
             {
+              "alignment": "AlignLeading|AlignLeft|AlignTop",
               "colspan": 1,
               "column": 0,
               "name": "textLabel1_3",
@@ -2955,7 +3137,11 @@
               "column": 0,
               "orientation": "Vertical",
               "row": 3,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
@@ -2963,7 +3149,11 @@
               "name": "horizontalSpacer",
               "orientation": "Horizontal",
               "row": 3,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 398
+              }
             }
           ],
           "title": "Installer"
@@ -2971,6 +3161,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "textLabel2",
@@ -2979,6 +3170,7 @@
               "text": "The following commands will be added verbatim on top of generated configuration"
             },
             {
+              "alignment": "AlignVCenter",
               "colspan": 2,
               "column": 0,
               "name": "textLabel2_2",
@@ -3001,14 +3193,22 @@
               "column": 0,
               "orientation": "Horizontal",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 40
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Horizontal",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 40
+              }
             }
           ],
           "spacing": {
@@ -3022,6 +3222,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label599",
@@ -3030,6 +3231,7 @@
               "text": "Syslog host (name or IP address):"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label598",
@@ -3038,6 +3240,7 @@
               "text": "syslog facility:"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label640",
@@ -3046,6 +3249,7 @@
               "text": "syslog level ('logging trap'):"
             },
             {
+              "alignment": "AlignVCenter",
               "colspan": 3,
               "column": 0,
               "name": "label641",
@@ -3104,7 +3308,11 @@
               "column": 0,
               "orientation": "Vertical",
               "row": 3,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 121,
+                "width": 675
+              }
             }
           ],
           "title": "Logging"
@@ -3606,6 +3814,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 2,
               "column": 0,
               "name": "compilerLabel",
@@ -3614,6 +3823,7 @@
               "text": "Compiler:"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 2,
               "column": 0,
               "name": "compilerArgsLabel",
@@ -3622,6 +3832,7 @@
               "text": "Command line options for the compiler:"
             },
             {
+              "alignment": "AlignVCenter",
               "colspan": 2,
               "column": 0,
               "name": "textLabel1_5",
@@ -3656,21 +3867,33 @@
               "column": 0,
               "orientation": "Horizontal",
               "row": 4,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 150,
+                "width": 30
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Horizontal",
               "row": 6,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 50,
+                "width": 30
+              }
             },
             {
               "colspan": 1,
               "column": 1,
               "orientation": "Vertical",
               "row": 7,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 20
+              }
             }
           ],
           "spacing": {
@@ -3683,6 +3906,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignLeading|AlignLeft|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label556",
@@ -3691,6 +3915,7 @@
               "text": "Directory on the firewall where script should be installed"
             },
             {
+              "alignment": "AlignLeading|AlignLeft|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "textLabel1_2",
@@ -3699,6 +3924,7 @@
               "text": "User name used to authenticate to the firewall (leave this empty if you use putty session):"
             },
             {
+              "alignment": "AlignLeading|AlignLeft|AlignTop",
               "colspan": 1,
               "column": 0,
               "name": "textLabel1_3",
@@ -3707,6 +3933,7 @@
               "text": "Alternative name or address used to communicate with the firewall (also putty session name on Windows)"
             },
             {
+              "alignment": "AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "textLabel1_4",
@@ -3748,7 +3975,11 @@
               "column": 0,
               "orientation": "Vertical",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 100,
+                "width": 20
+              }
             }
           ],
           "title": "Installer"
@@ -3756,6 +3987,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignVCenter",
               "colspan": 2,
               "column": 0,
               "name": "textLabel2_2_2",
@@ -3764,6 +3996,7 @@
               "text": "The following commands will be added verbatim after generated configuration"
             },
             {
+              "alignment": "AlignVCenter",
               "colspan": 2,
               "column": 0,
               "name": "textLabel2_2",
@@ -3786,7 +4019,11 @@
               "column": 0,
               "orientation": "Horizontal",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 40
+              }
             },
             {
               "colspan": 1,
@@ -3794,7 +4031,11 @@
               "name": "horizontalSpacer",
               "orientation": "Horizontal",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 40
+              }
             }
           ],
           "title": "Prolog/Epilog"
@@ -3875,21 +4116,33 @@
               "column": 4,
               "orientation": "Vertical",
               "row": 4,
-              "rowspan": 2
+              "rowspan": 2,
+              "size_hint": {
+                "height": 40,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Vertical",
               "row": 5,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 16,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Vertical",
               "row": 3,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 16,
+                "width": 20
+              }
             }
           ],
           "spacing": {
@@ -3900,6 +4153,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignVCenter",
               "colspan": 3,
               "column": 0,
               "name": "textLabel8",
@@ -3922,21 +4176,33 @@
               "column": 2,
               "orientation": "Horizontal",
               "row": 3,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 40
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Horizontal",
               "row": 1,
-              "rowspan": 4
+              "rowspan": 4,
+              "size_hint": {
+                "height": 120,
+                "width": 30
+              }
             },
             {
               "colspan": 1,
               "column": 1,
               "orientation": "Vertical",
               "row": 5,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 200,
+                "width": 20
+              }
             }
           ],
           "title": "Script"
@@ -4386,6 +4652,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 2,
               "column": 0,
               "name": "label368",
@@ -4394,6 +4661,7 @@
               "text": "IPv4 Packet forwarding"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 2,
               "column": 0,
               "name": "label368_2",
@@ -4402,6 +4670,7 @@
               "text": "IPv6 Packet forwarding"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 2,
               "column": 0,
               "name": "label369",
@@ -4410,6 +4679,7 @@
               "text": "Kernel anti-spoofing protection"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 2,
               "column": 0,
               "name": "label370",
@@ -4418,6 +4688,7 @@
               "text": "Ignore broadcast pings"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 2,
               "column": 0,
               "name": "label386",
@@ -4426,6 +4697,7 @@
               "text": "Ignore all pings"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 2,
               "column": 0,
               "name": "label371",
@@ -4434,6 +4706,7 @@
               "text": "Accept source route"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 2,
               "column": 0,
               "name": "label373",
@@ -4442,6 +4715,7 @@
               "text": "Accept ICMP redirects"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 2,
               "column": 0,
               "name": "label374",
@@ -4450,6 +4724,7 @@
               "text": "Ignore bogus ICMP errors"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 2,
               "column": 0,
               "name": "label375",
@@ -4458,6 +4733,7 @@
               "text": "Allow dynamic addresses"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 1,
               "name": "label380",
@@ -4488,28 +4764,44 @@
               "column": 0,
               "orientation": "Vertical",
               "row": 0,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 3,
               "orientation": "Horizontal",
               "row": 1,
-              "rowspan": 7
+              "rowspan": 7,
+              "size_hint": {
+                "height": 150,
+                "width": 40
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Horizontal",
               "row": 10,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 21,
+                "width": 141
+              }
             },
             {
               "colspan": 1,
               "column": 2,
               "orientation": "Vertical",
               "row": 11,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 21,
+                "width": 93
+              }
             }
           ],
           "title": "Options"
@@ -4517,6 +4809,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignCenter",
               "colspan": 4,
               "column": 0,
               "name": "network_tab_txt2",
@@ -4525,6 +4818,7 @@
               "text": "These parameters make sense for connections to or from the firewall host"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label379",
@@ -4533,6 +4827,7 @@
               "text": "TCP sack"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label378",
@@ -4541,6 +4836,7 @@
               "text": "TCP window scaling"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label383",
@@ -4549,6 +4845,7 @@
               "text": "TCP ECN"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label372",
@@ -4557,6 +4854,7 @@
               "text": "TCP SYN cookies"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label377",
@@ -4565,6 +4863,7 @@
               "text": "TCP keepalive time (sec)"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label384",
@@ -4573,6 +4872,7 @@
               "text": "TCP fack"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label385",
@@ -4581,6 +4881,7 @@
               "text": "TCP timestamps"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label376",
@@ -4609,28 +4910,44 @@
               "column": 1,
               "orientation": "Vertical",
               "row": 0,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 2,
               "orientation": "Vertical",
               "row": 10,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 30,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 3,
               "orientation": "Horizontal",
               "row": 2,
-              "rowspan": 3
+              "rowspan": 3,
+              "size_hint": {
+                "height": 50,
+                "width": 100
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Horizontal",
               "row": 10,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 150
+              }
             }
           ],
           "title": "TCP"
@@ -4638,6 +4955,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignCenter",
               "colspan": 3,
               "column": 0,
               "name": "label456",
@@ -4646,6 +4964,7 @@
               "text": "Specify directory path and a file name for each utility on your firewall machine. Leave these empty if you want to use default values."
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label453",
@@ -4662,6 +4981,7 @@
               "text": ":ip6tables"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label454",
@@ -4670,6 +4990,7 @@
               "text": "ip:"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label455_3",
@@ -4678,6 +4999,7 @@
               "text": "vconfig"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label455_4",
@@ -4686,6 +5008,7 @@
               "text": "brctl"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label455_2",
@@ -4694,6 +5017,7 @@
               "text": "ifenslave"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label455",
@@ -4702,6 +5026,7 @@
               "text": "logger:"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label458",
@@ -4710,6 +5035,7 @@
               "text": "modprobe:"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label459",
@@ -4718,6 +5044,7 @@
               "text": "lsmod"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label453_2",
@@ -4757,14 +5084,22 @@
               "column": 1,
               "orientation": "Vertical",
               "row": 0,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 2,
               "orientation": "Vertical",
               "row": 13,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 60,
+                "width": 20
+              }
             }
           ],
           "title": "Path"
@@ -5348,6 +5683,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 2,
               "column": 0,
               "name": "compilerLabel",
@@ -5356,6 +5692,7 @@
               "text": "Compiler:"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 2,
               "column": 0,
               "name": "compilerArgsLabel",
@@ -5364,6 +5701,7 @@
               "text": "Command line options for the compiler:"
             },
             {
+              "alignment": "AlignVCenter",
               "colspan": 4,
               "column": 0,
               "name": "textLabel1_5",
@@ -5404,6 +5742,7 @@
               "text": "nat.conf file name on the firewall"
             },
             {
+              "alignment": "AlignVCenter",
               "colspan": 1,
               "column": 1,
               "name": "textLabel9",
@@ -5438,7 +5777,11 @@
               "column": 1,
               "orientation": "Vertical",
               "row": 15,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 16,
+                "width": 20
+              }
             }
           ],
           "title": "Compiler"
@@ -5446,6 +5789,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignLeading|AlignLeft|AlignVCenter",
               "colspan": 2,
               "column": 0,
               "name": "label572",
@@ -5475,21 +5819,33 @@
               "column": 1,
               "orientation": "Vertical",
               "row": 0,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Horizontal",
               "row": 2,
-              "rowspan": 5
+              "rowspan": 5,
+              "size_hint": {
+                "height": 100,
+                "width": 40
+              }
             },
             {
               "colspan": 1,
               "column": 1,
               "orientation": "Vertical",
               "row": 11,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 270,
+                "width": 20
+              }
             }
           ],
           "title": "Protocol Helpers"
@@ -5497,6 +5853,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignLeading|AlignLeft|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label556",
@@ -5505,6 +5862,7 @@
               "text": "Directory on the firewall where configuration files should be installed"
             },
             {
+              "alignment": "AlignLeading|AlignLeft|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "textLabel1_2",
@@ -5513,6 +5871,7 @@
               "text": "User name used to authenticate to the firewall (leave this empty if you use putty session):"
             },
             {
+              "alignment": "AlignLeading|AlignLeft|AlignTop",
               "colspan": 1,
               "column": 0,
               "name": "textLabel1_3",
@@ -5521,6 +5880,7 @@
               "text": "Alternative name or address used to communicate with the firewall (also putty session name on Windows)"
             },
             {
+              "alignment": "AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "textLabel1_4",
@@ -5562,14 +5922,22 @@
               "column": 0,
               "orientation": "Vertical",
               "row": 1,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Vertical",
               "row": 4,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 20
+              }
             }
           ],
           "title": "Installer"
@@ -5577,6 +5945,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "textLabel2_2",
@@ -5585,6 +5954,7 @@
               "text": "The following commands will be added verbatim on top of generated configuration"
             },
             {
+              "alignment": "AlignVCenter",
               "colspan": 2,
               "column": 0,
               "name": "textLabel2_2_2",
@@ -5607,14 +5977,22 @@
               "column": 0,
               "orientation": "Horizontal",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 40
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Horizontal",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 40
+              }
             }
           ],
           "title": "Prolog/Epilog"
@@ -5654,35 +6032,55 @@
               "column": 2,
               "orientation": "Vertical",
               "row": 0,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Horizontal",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 130
+              }
             },
             {
               "colspan": 1,
               "column": 3,
               "orientation": "Horizontal",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 120
+              }
             },
             {
               "colspan": 1,
               "column": 2,
               "orientation": "Vertical",
               "row": 6,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 240,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 2,
               "orientation": "Vertical",
               "row": 3,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 20
+              }
             }
           ],
           "title": "Logging"
@@ -5690,6 +6088,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignVCenter",
               "colspan": 3,
               "column": 0,
               "name": "textLabel8",
@@ -5715,21 +6114,33 @@
               "column": 0,
               "orientation": "Horizontal",
               "row": 2,
-              "rowspan": 3
+              "rowspan": 3,
+              "size_hint": {
+                "height": 70,
+                "width": 40
+              }
             },
             {
               "colspan": 1,
               "column": 2,
               "orientation": "Vertical",
               "row": 0,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 1,
               "orientation": "Vertical",
               "row": 7,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 200,
+                "width": 20
+              }
             }
           ],
           "title": "Script Options"
@@ -6041,6 +6452,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "compilerLabel",
@@ -6049,6 +6461,7 @@
               "text": "Compiler:"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 2,
               "column": 0,
               "name": "compilerArgsLabel",
@@ -6057,6 +6470,7 @@
               "text": "Command line options for the compiler:"
             },
             {
+              "alignment": "AlignVCenter",
               "colspan": 3,
               "column": 0,
               "name": "textLabel1_5",
@@ -6111,14 +6525,22 @@
               "column": 0,
               "orientation": "Vertical",
               "row": 6,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 20
+              }
             },
             {
               "colspan": 2,
               "column": 1,
               "orientation": "Vertical",
               "row": 12,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 40,
+                "width": 20
+              }
             }
           ],
           "title": "Compiler"
@@ -6126,6 +6548,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignLeading|AlignLeft|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label556",
@@ -6134,6 +6557,7 @@
               "text": "Directory on the firewall where script should be installed"
             },
             {
+              "alignment": "AlignLeading|AlignLeft|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "textLabel1_2",
@@ -6142,6 +6566,7 @@
               "text": "User name used to authenticate to the firewall (leave this empty if you use putty session):"
             },
             {
+              "alignment": "AlignLeading|AlignLeft|AlignTop",
               "colspan": 1,
               "column": 0,
               "name": "textLabel1_3",
@@ -6150,6 +6575,7 @@
               "text": "Alternative name or address used to communicate with the firewall (also putty session name on Windows)"
             },
             {
+              "alignment": "AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "textLabel1_4",
@@ -6191,7 +6617,11 @@
               "column": 0,
               "orientation": "Vertical",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 20
+              }
             }
           ],
           "title": "Installer"
@@ -6199,6 +6629,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignVCenter",
               "colspan": 2,
               "column": 0,
               "name": "textLabel2_2_2",
@@ -6207,6 +6638,7 @@
               "text": "The following commands will be added verbatim after generated configuration"
             },
             {
+              "alignment": "AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "textLabel2_2",
@@ -6229,14 +6661,22 @@
               "column": 0,
               "orientation": "Horizontal",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 40
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Horizontal",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 40
+              }
             }
           ],
           "title": "Prolog/Epilog"
@@ -6244,6 +6684,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignVCenter",
               "colspan": 3,
               "column": 0,
               "name": "textLabel8",
@@ -6267,21 +6708,33 @@
               "column": 0,
               "orientation": "Horizontal",
               "row": 2,
-              "rowspan": 3
+              "rowspan": 3,
+              "size_hint": {
+                "height": 70,
+                "width": 40
+              }
             },
             {
               "colspan": 1,
               "column": 1,
               "orientation": "Vertical",
               "row": 6,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 230,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 2,
               "orientation": "Vertical",
               "row": 0,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 20
+              }
             }
           ],
           "title": "Script Options"
@@ -7131,6 +7584,7 @@
               "text": "Generated script can be copied to the firewall machine under different name. If this field is left blank, the file name does not change."
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "compilerLabel",
@@ -7139,6 +7593,7 @@
               "text": "Compiler:"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "compilerArgsLabel",
@@ -7147,6 +7602,7 @@
               "text": "Compiler command line options:"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "textLabel1_5",
@@ -7155,6 +7611,7 @@
               "text": "Output file name:"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label_2",
@@ -7202,7 +7659,11 @@
               "column": 1,
               "orientation": "Vertical",
               "row": 10,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
@@ -7210,7 +7671,11 @@
               "name": "horizontalSpacer_3",
               "orientation": "Horizontal",
               "row": 1,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 40
+              }
             },
             {
               "colspan": 1,
@@ -7218,7 +7683,11 @@
               "name": "horizontalSpacer",
               "orientation": "Horizontal",
               "row": 0,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 40
+              }
             }
           ],
           "title": "Compiler"
@@ -7226,6 +7695,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignLeading|AlignLeft|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label556",
@@ -7234,6 +7704,7 @@
               "text": "Directory on the firewall where script should be installed"
             },
             {
+              "alignment": "AlignLeading|AlignLeft|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "textLabel1_2",
@@ -7242,6 +7713,7 @@
               "text": "User name used to authenticate to the firewall (leave this empty if you use putty session):"
             },
             {
+              "alignment": "AlignLeading|AlignLeft|AlignTop",
               "colspan": 1,
               "column": 0,
               "name": "textLabel1_3",
@@ -7250,6 +7722,7 @@
               "text": "Alternative name or address used to communicate with the firewall (also putty session name on Windows)"
             },
             {
+              "alignment": "AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "textLabel1_4",
@@ -7291,7 +7764,11 @@
               "column": 0,
               "orientation": "Vertical",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 100,
+                "width": 20
+              }
             }
           ],
           "spacing": {
@@ -7302,6 +7779,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignVCenter",
               "colspan": 2,
               "column": 0,
               "name": "textLabel2_2_2",
@@ -7310,6 +7788,7 @@
               "text": "The following commands will be added verbatim after generated configuration"
             },
             {
+              "alignment": "AlignVCenter",
               "colspan": 3,
               "column": 0,
               "name": "textLabel2_2",
@@ -7350,7 +7829,11 @@
               "column": 0,
               "orientation": "Horizontal",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 40
+              }
             }
           ],
           "spacing": {
@@ -7434,21 +7917,33 @@
               "column": 4,
               "orientation": "Vertical",
               "row": 4,
-              "rowspan": 2
+              "rowspan": 2,
+              "size_hint": {
+                "height": 40,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Vertical",
               "row": 5,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 16,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Vertical",
               "row": 3,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 16,
+                "width": 20
+              }
             }
           ],
           "spacing": {
@@ -7505,7 +8000,11 @@
               "column": 0,
               "orientation": "Horizontal",
               "row": 0,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 30
+              }
             },
             {
               "colspan": 1,
@@ -7513,7 +8012,11 @@
               "name": "verticalSpacer_4",
               "orientation": "Vertical",
               "row": 1,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 18,
+                "width": 556
+              }
             },
             {
               "colspan": 1,
@@ -7521,7 +8024,11 @@
               "name": "verticalSpacer_3",
               "orientation": "Vertical",
               "row": 4,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 18,
+                "width": 556
+              }
             },
             {
               "colspan": 1,
@@ -7529,14 +8036,22 @@
               "name": "verticalSpacer_2",
               "orientation": "Vertical",
               "row": 13,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 40,
+                "width": 556
+              }
             },
             {
               "colspan": 1,
               "column": 1,
               "orientation": "Vertical",
               "row": 16,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 200,
+                "width": 20
+              }
             }
           ],
           "title": "Script"
@@ -7595,7 +8110,11 @@
               "column": 0,
               "orientation": "Vertical",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 40,
+                "width": 20
+              }
             }
           ],
           "title": "General"
@@ -7938,6 +8457,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "textLabel1_5",
@@ -7988,7 +8508,11 @@
               "column": 0,
               "orientation": "Vertical",
               "row": 4,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 170,
+                "width": 20
+              }
             }
           ],
           "spacing": {
@@ -8011,7 +8535,11 @@
               "name": "verticalSpacer",
               "orientation": "Vertical",
               "row": 1,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 70,
+                "width": 20
+              }
             }
           ],
           "spacing": {
@@ -8030,6 +8558,7 @@
               "text": "File system on the router where configuration file should be saved if it is copied with scp. Examples: \"/tmp\", \"/var/tmp\". If this input field is left blank, installer uses \"/tmp\"."
             },
             {
+              "alignment": "AlignLeading|AlignLeft|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "textLabel1_2",
@@ -8038,6 +8567,7 @@
               "text": "User name used to authenticate to the firewall (leave this empty if you use putty session):"
             },
             {
+              "alignment": "AlignLeading|AlignLeft|AlignTop",
               "colspan": 1,
               "column": 0,
               "name": "textLabel1_3",
@@ -8087,7 +8617,11 @@
               "column": 0,
               "orientation": "Vertical",
               "row": 3,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
@@ -8095,7 +8629,11 @@
               "name": "horizontalSpacer",
               "orientation": "Horizontal",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 398
+              }
             }
           ],
           "spacing": {
@@ -8109,6 +8647,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "textLabel2",
@@ -8117,6 +8656,7 @@
               "text": "The following commands will be added verbatim on top of generated configuration"
             },
             {
+              "alignment": "AlignVCenter",
               "colspan": 2,
               "column": 0,
               "name": "textLabel2_2",
@@ -8139,14 +8679,22 @@
               "column": 0,
               "orientation": "Horizontal",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 40
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Horizontal",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 40
+              }
             }
           ],
           "spacing": {
@@ -8160,6 +8708,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label599",
@@ -8168,6 +8717,7 @@
               "text": "Syslog host (name or IP address):"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label598",
@@ -8176,6 +8726,7 @@
               "text": "syslog facility:"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label640",
@@ -8184,6 +8735,7 @@
               "text": "syslog level ('logging trap'):"
             },
             {
+              "alignment": "AlignVCenter",
               "colspan": 3,
               "column": 0,
               "name": "label641",
@@ -8242,7 +8794,11 @@
               "column": 0,
               "orientation": "Vertical",
               "row": 3,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 121,
+                "width": 675
+              }
             }
           ],
           "spacing": {
@@ -8389,6 +8945,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignLeading|AlignLeft|AlignVCenter",
               "colspan": 4,
               "column": 0,
               "name": "label456",
@@ -8397,6 +8954,7 @@
               "text": "Specify directory path and a file name for each utility on your firewall machine. Leave these empty if you want to use default values."
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label453",
@@ -8405,6 +8963,7 @@
               "text": "iptables:"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label454",
@@ -8413,6 +8972,7 @@
               "text": "ip:"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label455",
@@ -8421,6 +8981,7 @@
               "text": "logger:"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label458",
@@ -8429,6 +8990,7 @@
               "text": "modprobe:"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label459",
@@ -8437,6 +8999,7 @@
               "text": "lsmod"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label455_3",
@@ -8445,6 +9008,7 @@
               "text": "vconfig"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label455_4",
@@ -8453,6 +9017,7 @@
               "text": "brctl"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label455_2",
@@ -8481,14 +9046,22 @@
               "column": 1,
               "orientation": "Vertical",
               "row": 0,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 2,
               "orientation": "Vertical",
               "row": 10,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 40,
+                "width": 20
+              }
             }
           ],
           "title": "Path"
@@ -8496,6 +9069,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignLeading|AlignLeft|AlignVCenter",
               "colspan": 4,
               "column": 0,
               "name": "textLabel1",
@@ -8504,6 +9078,7 @@
               "text": "Policy installer relies on the shell prompt on the firewall to execute commands. Installer tries both prompt string patterns configured here; it assumes that the firewall is ready to accept a command if either prompt matches. You should only need to change these string patterns if Sveasoft changes the shell prompt in the future releases of the software.\n<br>\n<br>\nThe default strings work for Sveasoft Alchemy pre-5.1 and pre-5.2"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label453_2_2",
@@ -8512,6 +9087,7 @@
               "text": "prompt 2"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label453_2",
@@ -8534,28 +9110,44 @@
               "column": 2,
               "orientation": "Vertical",
               "row": 5,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 80,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 3,
               "orientation": "Horizontal",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 30
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Horizontal",
               "row": 4,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 150
+              }
             },
             {
               "colspan": 1,
               "column": 1,
               "orientation": "Vertical",
               "row": 1,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 20
+              }
             }
           ],
           "title": "Prompts"
@@ -9082,6 +9674,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 2,
               "column": 0,
               "name": "label368",
@@ -9090,6 +9683,7 @@
               "text": "IPv4 Packet forwarding"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 2,
               "column": 0,
               "name": "label368_2",
@@ -9098,6 +9692,7 @@
               "text": "IPv6 Packet forwarding"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 2,
               "column": 0,
               "name": "label369",
@@ -9106,6 +9701,7 @@
               "text": "Kernel anti-spoofing protection"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 2,
               "column": 0,
               "name": "label370",
@@ -9114,6 +9710,7 @@
               "text": "Ignore broadcast pings"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 2,
               "column": 0,
               "name": "label386",
@@ -9122,6 +9719,7 @@
               "text": "Ignore all pings"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 2,
               "column": 0,
               "name": "label371",
@@ -9130,6 +9728,7 @@
               "text": "Accept source route"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 2,
               "column": 0,
               "name": "label373",
@@ -9138,6 +9737,7 @@
               "text": "Accept ICMP redirects"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 2,
               "column": 0,
               "name": "label374",
@@ -9146,6 +9746,7 @@
               "text": "Ignore bogus ICMP errors"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 2,
               "column": 0,
               "name": "label375",
@@ -9154,6 +9755,7 @@
               "text": "Allow dynamic addresses"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 1,
               "name": "label380",
@@ -9184,28 +9786,44 @@
               "column": 0,
               "orientation": "Vertical",
               "row": 0,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 3,
               "orientation": "Horizontal",
               "row": 1,
-              "rowspan": 7
+              "rowspan": 7,
+              "size_hint": {
+                "height": 150,
+                "width": 40
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Horizontal",
               "row": 10,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 21,
+                "width": 141
+              }
             },
             {
               "colspan": 1,
               "column": 2,
               "orientation": "Vertical",
               "row": 11,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 21,
+                "width": 93
+              }
             }
           ],
           "title": "Options"
@@ -9213,6 +9831,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignCenter",
               "colspan": 4,
               "column": 0,
               "name": "network_tab_txt2",
@@ -9221,6 +9840,7 @@
               "text": "These parameters make sense for connections to or from the firewall host"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label379",
@@ -9229,6 +9849,7 @@
               "text": "TCP sack"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label378",
@@ -9237,6 +9858,7 @@
               "text": "TCP window scaling"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label383",
@@ -9245,6 +9867,7 @@
               "text": "TCP ECN"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label372",
@@ -9253,6 +9876,7 @@
               "text": "TCP SYN cookies"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label377",
@@ -9261,6 +9885,7 @@
               "text": "TCP keepalive time (sec)"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label384",
@@ -9269,6 +9894,7 @@
               "text": "TCP fack"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label385",
@@ -9277,6 +9903,7 @@
               "text": "TCP timestamps"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label376",
@@ -9305,28 +9932,44 @@
               "column": 1,
               "orientation": "Vertical",
               "row": 0,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 2,
               "orientation": "Vertical",
               "row": 10,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 30,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 3,
               "orientation": "Horizontal",
               "row": 2,
-              "rowspan": 3
+              "rowspan": 3,
+              "size_hint": {
+                "height": 50,
+                "width": 100
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Horizontal",
               "row": 10,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 150
+              }
             }
           ],
           "title": "TCP"
@@ -9334,6 +9977,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignCenter",
               "colspan": 4,
               "column": 0,
               "name": "label456",
@@ -9342,6 +9986,7 @@
               "text": "Specify directory path and a file name for each utility on your firewall machine. Leave these empty if you want to use default values."
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label453",
@@ -9350,6 +9995,7 @@
               "text": "iptables:"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label",
@@ -9358,6 +10004,7 @@
               "text": "ip6tables:"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label454",
@@ -9366,6 +10013,7 @@
               "text": "ip:"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label455_2",
@@ -9374,6 +10022,7 @@
               "text": "logger:"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label455_3",
@@ -9382,6 +10031,7 @@
               "text": "vconfig:"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label455_4",
@@ -9390,6 +10040,7 @@
               "text": "brctl:"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label455",
@@ -9398,6 +10049,7 @@
               "text": "ifenslave:"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label458",
@@ -9406,6 +10058,7 @@
               "text": "modprobe:"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label459",
@@ -9414,6 +10067,7 @@
               "text": "lsmod:"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label_8",
@@ -9422,6 +10076,7 @@
               "text": "ipset:"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label453_2",
@@ -9430,6 +10085,7 @@
               "text": "iptables-restore:"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label_2",
@@ -9462,14 +10118,22 @@
               "column": 1,
               "orientation": "Vertical",
               "row": 0,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 2,
               "orientation": "Vertical",
               "row": 14,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 60,
+                "width": 20
+              }
             }
           ],
           "title": "Path"
@@ -9519,7 +10183,11 @@
               "name": "verticalSpacer",
               "orientation": "Vertical",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 3,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
@@ -9527,7 +10195,11 @@
               "name": "horizontalSpacer",
               "orientation": "Horizontal",
               "row": 1,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 242
+              }
             }
           ],
           "title": "conntrack"
@@ -9535,6 +10207,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignCenter",
               "colspan": 3,
               "column": 0,
               "name": "label456_2",
@@ -9543,6 +10216,7 @@
               "text": "Specify directory where data files (e.g. run-time address table) are found on the firewall."
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label453_3",
@@ -9565,7 +10239,11 @@
               "name": "spacer",
               "orientation": "Vertical",
               "row": 0,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
@@ -9573,7 +10251,11 @@
               "name": "verticalSpacer_3",
               "orientation": "Vertical",
               "row": 3,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 358,
+                "width": 20
+              }
             }
           ],
           "title": "Data"
@@ -9725,21 +10407,33 @@
               "column": 1,
               "orientation": "Vertical",
               "row": 0,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 16,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 2,
               "orientation": "Horizontal",
               "row": 1,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 40
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Vertical",
               "row": 3,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 40,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
@@ -9747,7 +10441,11 @@
               "name": "horizontalSpacer",
               "orientation": "Horizontal",
               "row": 0,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 140
+              }
             },
             {
               "colspan": 1,
@@ -9755,7 +10453,11 @@
               "name": "verticalSpacer_2",
               "orientation": "Vertical",
               "row": 1,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 43,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
@@ -9763,7 +10465,11 @@
               "name": "verticalSpacer",
               "orientation": "Vertical",
               "row": 1,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 173,
+                "width": 20
+              }
             }
           ],
           "title": "Options"
@@ -9873,6 +10579,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 0,
               "name": "label592",
@@ -9881,6 +10588,7 @@
               "text": "Generate ICMP redirects"
             },
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 0,
               "name": "label590",
@@ -9889,6 +10597,7 @@
               "text": "Packet forwarding"
             },
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 0,
               "name": "label591",
@@ -9912,28 +10621,44 @@
               "column": 0,
               "orientation": "Vertical",
               "row": 4,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 151
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Vertical",
               "row": 0,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 2,
               "orientation": "Vertical",
               "row": 1,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 40
+              }
             },
             {
               "colspan": 1,
               "column": 1,
               "orientation": "Vertical",
               "row": 4,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 40,
+                "width": 20
+              }
             }
           ],
           "spacing": {
@@ -9947,6 +10672,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 1,
               "name": "label594",
@@ -9955,6 +10681,7 @@
               "text": "ipfw:"
             },
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 1,
               "name": "label596",
@@ -9963,6 +10690,7 @@
               "text": "sysctl:"
             },
             {
+              "alignment": "AlignCenter",
               "colspan": 4,
               "column": 0,
               "name": "label593",
@@ -9985,21 +10713,33 @@
               "column": 3,
               "orientation": "Vertical",
               "row": 1,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 40
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Vertical",
               "row": 1,
-              "rowspan": 2
+              "rowspan": 2,
+              "size_hint": {
+                "height": 20,
+                "width": 40
+              }
             },
             {
               "colspan": 1,
               "column": 2,
               "orientation": "Vertical",
               "row": 3,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 40,
+                "width": 20
+              }
             }
           ],
           "spacing": {
@@ -10064,7 +10804,11 @@
               "column": 0,
               "orientation": "Vertical",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 40,
+                "width": 20
+              }
             }
           ],
           "title": "General"
@@ -10547,6 +11291,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "textLabel1_5",
@@ -10594,14 +11339,22 @@
               "name": "horizontalSpacer_2",
               "orientation": "Horizontal",
               "row": 4,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 328
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Vertical",
               "row": 5,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 170,
+                "width": 20
+              }
             }
           ],
           "spacing": {
@@ -10612,6 +11365,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignVCenter",
               "colspan": 3,
               "column": 0,
               "name": "nxosacl_acl_temp_lbl",
@@ -10640,28 +11394,44 @@
               "name": "verticalSpacer",
               "orientation": "Vertical",
               "row": 3,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 70,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 1,
               "orientation": "Vertical",
               "row": 3,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 2,
               "orientation": "Horizontal",
               "row": 1,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 120
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Horizontal",
               "row": 1,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 110
+              }
             }
           ],
           "spacing": {
@@ -10692,6 +11462,7 @@
               "text": "File system on the router where configuration file should be saved if it is copied with scp. Examples: \"nvram:\", \"slot0:\". Should end with a colon \":\". If this input field is left blank, installer uses \"volatile:\":"
             },
             {
+              "alignment": "AlignLeading|AlignLeft|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "textLabel1_2",
@@ -10700,6 +11471,7 @@
               "text": "User name used to authenticate to the firewall (leave this empty if you use putty session):"
             },
             {
+              "alignment": "AlignLeading|AlignLeft|AlignTop",
               "colspan": 1,
               "column": 0,
               "name": "textLabel1_3",
@@ -10751,7 +11523,11 @@
               "column": 0,
               "orientation": "Vertical",
               "row": 4,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
@@ -10759,7 +11535,11 @@
               "name": "horizontalSpacer",
               "orientation": "Horizontal",
               "row": 3,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 398
+              }
             }
           ],
           "spacing": {
@@ -10773,6 +11553,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "textLabel2",
@@ -10781,6 +11562,7 @@
               "text": "The following commands will be added verbatim on top of generated configuration"
             },
             {
+              "alignment": "AlignVCenter",
               "colspan": 2,
               "column": 0,
               "name": "textLabel2_2",
@@ -10803,14 +11585,22 @@
               "column": 0,
               "orientation": "Horizontal",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 40
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Horizontal",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 40
+              }
             }
           ],
           "spacing": {
@@ -10824,6 +11614,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label599",
@@ -10832,6 +11623,7 @@
               "text": "Syslog host (name or IP address):"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label598",
@@ -10840,6 +11632,7 @@
               "text": "syslog facility:"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label640",
@@ -10848,6 +11641,7 @@
               "text": "syslog level ('logging trap'):"
             },
             {
+              "alignment": "AlignVCenter",
               "colspan": 3,
               "column": 0,
               "name": "label641",
@@ -10906,7 +11700,11 @@
               "column": 0,
               "orientation": "Vertical",
               "row": 3,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 121,
+                "width": 675
+              }
             }
           ],
           "spacing": {
@@ -11063,6 +11861,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 0,
               "name": "label534",
@@ -11071,6 +11870,7 @@
               "text": "IPv4 Packet forwarding"
             },
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 0,
               "name": "label534_2",
@@ -11079,6 +11879,7 @@
               "text": "IPv6 Packet forwarding"
             },
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 0,
               "name": "label536",
@@ -11087,6 +11888,7 @@
               "text": "Enable directed broadcast"
             },
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 0,
               "name": "label538",
@@ -11095,6 +11897,7 @@
               "text": "Forward source routed packets"
             },
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 0,
               "name": "label539",
@@ -11120,28 +11923,44 @@
               "column": 0,
               "orientation": "Vertical",
               "row": 0,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 2,
               "orientation": "Horizontal",
               "row": 1,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 40
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Horizontal",
               "row": 6,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 231
+              }
             },
             {
               "colspan": 1,
               "column": 1,
               "orientation": "Vertical",
               "row": 6,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 51,
+                "width": 93
+              }
             }
           ],
           "title": "Options"
@@ -11149,6 +11968,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 1,
               "name": "label575",
@@ -11157,6 +11977,7 @@
               "text": "pfctl:"
             },
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 1,
               "name": "label582",
@@ -11165,6 +11986,7 @@
               "text": "sysctl:"
             },
             {
+              "alignment": "AlignCenter",
               "colspan": 4,
               "column": 0,
               "name": "label574",
@@ -11187,21 +12009,33 @@
               "column": 2,
               "orientation": "Vertical",
               "row": 3,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 40,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 3,
               "orientation": "Horizontal",
               "row": 1,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 40
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Horizontal",
               "row": 1,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 40
+              }
             }
           ],
           "title": "Path"
@@ -11209,6 +12043,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignCenter",
               "colspan": 3,
               "column": 0,
               "name": "label456_2",
@@ -11217,6 +12052,7 @@
               "text": "Specify directory where data files (e.g. run-time address table) are found on the firewall."
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label453_3",
@@ -11239,7 +12075,11 @@
               "name": "spacer",
               "orientation": "Vertical",
               "row": 0,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
@@ -11247,7 +12087,11 @@
               "name": "verticalSpacer_3",
               "orientation": "Vertical",
               "row": 3,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 118,
+                "width": 20
+              }
             }
           ],
           "title": "Data"
@@ -12629,6 +13473,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "compilerLabel",
@@ -12637,6 +13482,7 @@
               "text": "Compiler:"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 2,
               "column": 0,
               "name": "compilerArgsLabel",
@@ -12645,6 +13491,7 @@
               "text": "Command line options for the compiler:"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label_6",
@@ -12653,6 +13500,7 @@
               "text": "Initialization script name (can be full path):"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label_7",
@@ -12661,6 +13509,7 @@
               "text": "PF configuration file name (can be full path):"
             },
             {
+              "alignment": "AlignVCenter",
               "colspan": 2,
               "column": 0,
               "name": "textLabel1_5",
@@ -12753,7 +13602,11 @@
               "name": "verticalSpacer",
               "orientation": "Vertical",
               "row": 6,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 11,
+                "width": 20
+              }
             }
           ],
           "title": "Compiler"
@@ -12783,14 +13636,22 @@
               "column": 0,
               "orientation": "Vertical",
               "row": 0,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 1,
               "orientation": "Vertical",
               "row": 8,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 110,
+                "width": 20
+              }
             }
           ],
           "spacing": {
@@ -12801,6 +13662,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignLeading|AlignLeft|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "textLabel3",
@@ -12888,7 +13750,11 @@
               "name": "verticalSpacer_2",
               "orientation": "Vertical",
               "row": 1,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 308,
+                "width": 20
+              }
             }
           ],
           "title": "Options"
@@ -12896,6 +13762,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignVCenter",
               "colspan": 3,
               "column": 0,
               "name": "textLabel2",
@@ -12904,6 +13771,7 @@
               "text": "When a packet matches a stateful connection, the seconds to live for the connection will be updated to the value which corresponds to the connection state."
             },
             {
+              "alignment": "AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "textLabel1_11",
@@ -13033,7 +13901,11 @@
               "column": 1,
               "orientation": "Vertical",
               "row": 5,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
@@ -13041,7 +13913,11 @@
               "name": "horizontalSpacer_3",
               "orientation": "Horizontal",
               "row": 0,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 206
+              }
             }
           ],
           "title": "Timeouts"
@@ -13049,6 +13925,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignLeading|AlignLeft|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label556",
@@ -13057,6 +13934,7 @@
               "text": "Directory on the firewall where script should be installed"
             },
             {
+              "alignment": "AlignLeading|AlignLeft|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "textLabel1_2",
@@ -13065,6 +13943,7 @@
               "text": "User name used to authenticate to the firewall (leave this empty if you use putty session):"
             },
             {
+              "alignment": "AlignLeading|AlignLeft|AlignTop",
               "colspan": 1,
               "column": 0,
               "name": "textLabel1_3",
@@ -13073,6 +13952,7 @@
               "text": "Alternative name or address used to communicate with the firewall (also putty session name on Windows)"
             },
             {
+              "alignment": "AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "textLabel1_4",
@@ -13114,7 +13994,11 @@
               "column": 0,
               "orientation": "Vertical",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 80,
+                "width": 20
+              }
             }
           ],
           "spacing": {
@@ -13125,6 +14009,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignVCenter",
               "colspan": 2,
               "column": 0,
               "name": "textLabel2_2_2",
@@ -13133,6 +14018,7 @@
               "text": "The following commands will be added verbatim after generated configuration"
             },
             {
+              "alignment": "AlignVCenter",
               "colspan": 4,
               "column": 0,
               "name": "textLabel2_2",
@@ -13164,21 +14050,33 @@
               "column": 0,
               "orientation": "Horizontal",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 40
+              }
             },
             {
               "colspan": 2,
               "column": 2,
               "orientation": "Horizontal",
               "row": 0,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 40
+              }
             },
             {
               "colspan": 3,
               "column": 0,
               "orientation": "Horizontal",
               "row": 3,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 410
+              }
             }
           ],
           "spacing": {
@@ -13193,6 +14091,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 1,
               "name": "label584",
@@ -13215,28 +14114,44 @@
               "column": 2,
               "orientation": "Vertical",
               "row": 0,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Horizontal",
               "row": 1,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 70
+              }
             },
             {
               "colspan": 1,
               "column": 3,
               "orientation": "Horizontal",
               "row": 1,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 130
+              }
             },
             {
               "colspan": 1,
               "column": 2,
               "orientation": "Vertical",
               "row": 3,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 320,
+                "width": 20
+              }
             }
           ],
           "spacing": {
@@ -13305,14 +14220,22 @@
               "column": 1,
               "orientation": "Vertical",
               "row": 0,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Vertical",
               "row": 3,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 230,
+                "width": 20
+              }
             }
           ],
           "title": "Script"
@@ -14422,6 +15345,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignVCenter",
               "colspan": 2,
               "column": 0,
               "name": "textLabel1_5",
@@ -14505,14 +15429,22 @@
               "name": "horizontalSpacer_9",
               "orientation": "Horizontal",
               "row": 1,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 518
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Vertical",
               "row": 6,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 170,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
@@ -14520,7 +15452,11 @@
               "name": "horizontalSpacer_2",
               "orientation": "Horizontal",
               "row": 1,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 508
+              }
             }
           ],
           "title": "Compiler"
@@ -14528,6 +15464,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignLeading|AlignLeft|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "textLabel1_2",
@@ -14536,6 +15473,7 @@
               "text": "User name used to authenticate to the firewall (leave this empty if you use putty session):"
             },
             {
+              "alignment": "AlignLeading|AlignLeft|AlignTop",
               "colspan": 1,
               "column": 0,
               "name": "textLabel1_3",
@@ -14585,6 +15523,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignVCenter",
               "colspan": 2,
               "column": 0,
               "name": "textLabel2",
@@ -14593,6 +15532,7 @@
               "text": "The following commands will be added verbatim on top of generated configuration"
             },
             {
+              "alignment": "AlignVCenter",
               "colspan": 2,
               "column": 0,
               "name": "textLabel2_2",
@@ -14615,14 +15555,22 @@
               "column": 0,
               "orientation": "Horizontal",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 40
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Horizontal",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 40
+              }
             }
           ],
           "title": "Prolog/Epilog"
@@ -14630,6 +15578,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 0,
               "name": "label461",
@@ -14638,6 +15587,7 @@
               "text": "xlate"
             },
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 0,
               "name": "label462",
@@ -14646,6 +15596,7 @@
               "text": "conn"
             },
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 0,
               "name": "label463",
@@ -14654,6 +15605,7 @@
               "text": "udp"
             },
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 0,
               "name": "label464",
@@ -14662,6 +15614,7 @@
               "text": "rpc"
             },
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 0,
               "name": "label465",
@@ -14670,6 +15623,7 @@
               "text": "h323"
             },
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 0,
               "name": "label466",
@@ -14678,6 +15632,7 @@
               "text": "sip"
             },
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 0,
               "name": "label468",
@@ -14686,6 +15641,7 @@
               "text": "unauth"
             },
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 0,
               "name": "label578",
@@ -14694,6 +15650,7 @@
               "text": "telnet"
             },
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 0,
               "name": "label579",
@@ -14702,6 +15659,7 @@
               "text": "ssh"
             },
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 3,
               "name": "label471",
@@ -14710,6 +15668,7 @@
               "text": "ss"
             },
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 2,
               "name": "label470",
@@ -14718,6 +15677,7 @@
               "text": "mm"
             },
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 1,
               "name": "label469",
@@ -14726,6 +15686,7 @@
               "text": "hh"
             },
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 0,
               "name": "label642",
@@ -14734,6 +15695,7 @@
               "text": "half-closed"
             },
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 1,
               "name": "label589",
@@ -14742,6 +15704,7 @@
               "text": "Inactivity"
             },
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 0,
               "name": "label588",
@@ -14793,14 +15756,22 @@
               "column": 0,
               "orientation": "Horizontal",
               "row": 1,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 40
+              }
             },
             {
               "colspan": 1,
               "column": 1,
               "orientation": "Vertical",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 30,
+                "width": 20
+              }
             }
           ],
           "spacing": {
@@ -14815,6 +15786,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label599",
@@ -14823,6 +15795,7 @@
               "text": "Syslog host (IP address):"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label600",
@@ -14831,6 +15804,7 @@
               "text": "Syslog message queue size (messages):"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label598",
@@ -14839,6 +15813,7 @@
               "text": "syslog facility:"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label640",
@@ -14847,6 +15822,7 @@
               "text": "syslog level ('logging trap'):"
             },
             {
+              "alignment": "AlignVCenter",
               "colspan": 4,
               "column": 0,
               "name": "label641",
@@ -14901,14 +15877,22 @@
               "column": 0,
               "orientation": "Vertical",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 40,
+                "width": 20
+              }
             },
             {
               "colspan": 2,
               "column": 2,
               "orientation": "Horizontal",
               "row": 1,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 40
+              }
             },
             {
               "colspan": 1,
@@ -14916,7 +15900,11 @@
               "name": "horizontalSpacer_8",
               "orientation": "Horizontal",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 345
+              }
             },
             {
               "colspan": 1,
@@ -14924,14 +15912,22 @@
               "name": "horizontalSpacer_7",
               "orientation": "Horizontal",
               "row": 3,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 345
+              }
             },
             {
               "colspan": 2,
               "column": 1,
               "orientation": "Horizontal",
               "row": 0,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 40
+              }
             },
             {
               "colspan": 1,
@@ -14939,7 +15935,11 @@
               "name": "horizontalSpacer_6",
               "orientation": "Horizontal",
               "row": 1,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 387
+              }
             },
             {
               "colspan": 1,
@@ -14947,7 +15947,11 @@
               "name": "horizontalSpacer_4",
               "orientation": "Horizontal",
               "row": 0,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 488
+              }
             },
             {
               "colspan": 1,
@@ -14955,7 +15959,11 @@
               "name": "horizontalSpacer_5",
               "orientation": "Horizontal",
               "row": 1,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 488
+              }
             }
           ],
           "title": "Logging"
@@ -14963,6 +15971,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignVCenter",
               "colspan": 3,
               "column": 0,
               "name": "pix_acl_temp_lbl",
@@ -14989,21 +15998,33 @@
               "name": "verticalSpacer",
               "orientation": "Vertical",
               "row": 1,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 137,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Horizontal",
               "row": 1,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 110
+              }
             },
             {
               "colspan": 1,
               "column": 2,
               "orientation": "Horizontal",
               "row": 1,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 120
+              }
             }
           ],
           "title": "Script"
@@ -15036,6 +16057,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignLeading|AlignLeft|AlignVCenter",
               "colspan": 3,
               "column": 0,
               "name": "label717",
@@ -15044,6 +16066,7 @@
               "text": "The following parameters are used for all NAT rules:"
             },
             {
+              "alignment": "AlignLeading|AlignLeft|AlignVCenter",
               "colspan": 3,
               "column": 0,
               "name": "label718",
@@ -15076,14 +16099,22 @@
               "name": "horizontalSpacer_3",
               "orientation": "Horizontal",
               "row": 11,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 254
+              }
             },
             {
               "colspan": 3,
               "column": 0,
               "orientation": "Vertical",
               "row": 14,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 20
+              }
             }
           ],
           "spacing": {
@@ -15339,7 +16370,11 @@
               "column": 0,
               "orientation": "Vertical",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 40,
+                "width": 20
+              }
             }
           ],
           "spacing": {
@@ -15350,6 +16385,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 0,
               "name": "fwsm_ntp_warning",
@@ -15358,6 +16394,7 @@
               "text": "NTP cannot be configured on FWSM, because it takes its settings from the Switch."
             },
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 0,
               "name": "label580_2",
@@ -15366,6 +16403,7 @@
               "text": "Server 1:"
             },
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 0,
               "name": "label580_2_2",
@@ -15374,6 +16412,7 @@
               "text": "Server 2:"
             },
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 0,
               "name": "label580_2_3",
@@ -15382,6 +16421,7 @@
               "text": "Server 3:"
             },
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 2,
               "name": "label609",
@@ -15390,6 +16430,7 @@
               "text": "Preffered:"
             },
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 1,
               "name": "label610",
@@ -15430,7 +16471,11 @@
               "column": 0,
               "orientation": "Vertical",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 30,
+                "width": 20
+              }
             }
           ],
           "spacing": {
@@ -15441,6 +16486,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 2,
               "name": "label604",
@@ -15449,6 +16495,7 @@
               "text": "Enable:"
             },
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 1,
               "name": "label603",
@@ -15457,6 +16504,7 @@
               "text": "IP address:"
             },
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 0,
               "name": "label606",
@@ -15465,6 +16513,7 @@
               "text": "SNMP Server 1:"
             },
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 0,
               "name": "label607",
@@ -15513,7 +16562,11 @@
               "column": 0,
               "orientation": "Vertical",
               "row": 5,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 40,
+                "width": 20
+              }
             }
           ],
           "spacing": {
@@ -15524,6 +16577,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 2,
               "name": "label567",
@@ -15546,14 +16600,22 @@
               "column": 1,
               "orientation": "Vertical",
               "row": 1,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 162,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 3,
               "orientation": "Horizontal",
               "row": 0,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 20
+              }
             }
           ],
           "spacing": {
@@ -15618,14 +16680,22 @@
               "column": 1,
               "orientation": "Vertical",
               "row": 0,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 16,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 2,
               "orientation": "Horizontal",
               "row": 1,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 40
+              }
             },
             {
               "colspan": 1,
@@ -15633,7 +16703,11 @@
               "name": "horizontalSpacer",
               "orientation": "Horizontal",
               "row": 0,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 140
+              }
             },
             {
               "colspan": 1,
@@ -15641,7 +16715,11 @@
               "name": "verticalSpacer_2",
               "orientation": "Vertical",
               "row": 1,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 43,
+                "width": 20
+              }
             }
           ],
           "title": "Options"
@@ -16084,6 +17162,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "textLabel1_5",
@@ -16129,14 +17208,22 @@
               "name": "horizontalSpacer_2",
               "orientation": "Horizontal",
               "row": 4,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 328
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Vertical",
               "row": 5,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 170,
+                "width": 20
+              }
             }
           ],
           "spacing": {
@@ -16147,6 +17234,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignVCenter",
               "colspan": 3,
               "column": 0,
               "name": "procurve_acl_acl_temp_lbl",
@@ -16173,14 +17261,22 @@
               "column": 2,
               "orientation": "Horizontal",
               "row": 1,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 120
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Horizontal",
               "row": 1,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 110
+              }
             },
             {
               "colspan": 1,
@@ -16188,7 +17284,11 @@
               "name": "verticalSpacer",
               "orientation": "Vertical",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 137,
+                "width": 20
+              }
             }
           ],
           "spacing": {
@@ -16199,6 +17299,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignLeading|AlignLeft|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "textLabel1_2",
@@ -16207,6 +17308,7 @@
               "text": "User name used to authenticate to the firewall (leave this empty if you use putty session):"
             },
             {
+              "alignment": "AlignLeading|AlignLeft|AlignTop",
               "colspan": 1,
               "column": 0,
               "name": "textLabel1_3",
@@ -16273,7 +17375,11 @@
               "name": "horizontalSpacer",
               "orientation": "Horizontal",
               "row": 3,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 398
+              }
             }
           ],
           "title": "Installer"
@@ -16281,6 +17387,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "textLabel2",
@@ -16289,6 +17396,7 @@
               "text": "The following commands will be added verbatim on top of generated configuration"
             },
             {
+              "alignment": "AlignVCenter",
               "colspan": 2,
               "column": 0,
               "name": "textLabel2_2",
@@ -16311,14 +17419,22 @@
               "column": 0,
               "orientation": "Horizontal",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 40
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Horizontal",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 40
+              }
             }
           ],
           "spacing": {
@@ -16332,6 +17448,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label599",
@@ -16340,6 +17457,7 @@
               "text": "Syslog host (name or IP address):"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label598",
@@ -16348,6 +17466,7 @@
               "text": "syslog facility:"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label640",
@@ -16356,6 +17475,7 @@
               "text": "syslog level ('logging trap'):"
             },
             {
+              "alignment": "AlignVCenter",
               "colspan": 3,
               "column": 0,
               "name": "label641",
@@ -16414,7 +17534,11 @@
               "column": 0,
               "orientation": "Vertical",
               "row": 3,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 121,
+                "width": 675
+              }
             }
           ],
           "title": "Logging"
@@ -17076,6 +18200,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 3,
               "column": 0,
               "name": "compilerLabel",
@@ -17084,6 +18209,7 @@
               "text": "Compiler:"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 3,
               "column": 0,
               "name": "compilerArgsLabel",
@@ -17136,35 +18262,55 @@
               "column": 0,
               "orientation": "Horizontal",
               "row": 5,
-              "rowspan": 6
+              "rowspan": 6,
+              "size_hint": {
+                "height": 150,
+                "width": 30
+              }
             },
             {
               "colspan": 1,
               "column": 4,
               "orientation": "Horizontal",
               "row": 7,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 80
+              }
             },
             {
               "colspan": 1,
               "column": 4,
               "orientation": "Horizontal",
               "row": 13,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 72
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Horizontal",
               "row": 15,
-              "rowspan": 2
+              "rowspan": 2,
+              "size_hint": {
+                "height": 50,
+                "width": 30
+              }
             },
             {
               "colspan": 1,
               "column": 1,
               "orientation": "Vertical",
               "row": 18,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 20
+              }
             }
           ],
           "title": "Compiler"
@@ -17172,6 +18318,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignLeading|AlignLeft|AlignTop",
               "colspan": 1,
               "column": 0,
               "name": "textLabel1_3",
@@ -17209,7 +18356,11 @@
               "column": 0,
               "orientation": "Vertical",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 120,
+                "width": 20
+              }
             }
           ],
           "spacing": {
@@ -17220,6 +18371,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignVCenter",
               "colspan": 2,
               "column": 0,
               "name": "textLabel2_2_2",
@@ -17228,6 +18380,7 @@
               "text": "The following commands will be added verbatim after generated configuration"
             },
             {
+              "alignment": "AlignVCenter",
               "colspan": 3,
               "column": 0,
               "name": "textLabel2_2",
@@ -17259,7 +18412,11 @@
               "column": 0,
               "orientation": "Horizontal",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 40
+              }
             }
           ],
           "spacing": {
@@ -17343,21 +18500,33 @@
               "column": 4,
               "orientation": "Vertical",
               "row": 4,
-              "rowspan": 2
+              "rowspan": 2,
+              "size_hint": {
+                "height": 40,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Vertical",
               "row": 5,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 16,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Vertical",
               "row": 3,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 16,
+                "width": 20
+              }
             }
           ],
           "spacing": {
@@ -17426,7 +18595,11 @@
               "column": 0,
               "orientation": "Horizontal",
               "row": 0,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 30
+              }
             },
             {
               "colspan": 1,
@@ -17434,7 +18607,11 @@
               "name": "verticalSpacer_4",
               "orientation": "Vertical",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 18,
+                "width": 556
+              }
             },
             {
               "colspan": 1,
@@ -17442,7 +18619,11 @@
               "name": "verticalSpacer_3",
               "orientation": "Vertical",
               "row": 6,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 18,
+                "width": 556
+              }
             },
             {
               "colspan": 1,
@@ -17450,14 +18631,22 @@
               "name": "verticalSpacer_2",
               "orientation": "Vertical",
               "row": 12,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 40,
+                "width": 556
+              }
             },
             {
               "colspan": 1,
               "column": 1,
               "orientation": "Vertical",
               "row": 15,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 200,
+                "width": 20
+              }
             }
           ],
           "title": "Script"
@@ -17540,6 +18729,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignCenter",
               "colspan": 3,
               "column": 0,
               "name": "network_tab_txt2_3",
@@ -17597,14 +18787,22 @@
               "column": 0,
               "orientation": "Vertical",
               "row": 0,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 16,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Vertical",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 16,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
@@ -17612,21 +18810,33 @@
               "name": "horizontalSpacer_3",
               "orientation": "Horizontal",
               "row": 9,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 40
+              }
             },
             {
               "colspan": 1,
               "column": 1,
               "orientation": "Vertical",
               "row": 10,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Horizontal",
               "row": 11,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 40
+              }
             },
             {
               "colspan": 1,
@@ -17634,7 +18844,11 @@
               "name": "horizontalSpacer1",
               "orientation": "Horizontal",
               "row": 12,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 141
+              }
             },
             {
               "colspan": 1,
@@ -17642,7 +18856,11 @@
               "name": "horizontalSpacer_2",
               "orientation": "Horizontal",
               "row": 5,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 40
+              }
             },
             {
               "colspan": 1,
@@ -17650,7 +18868,11 @@
               "name": "horizontalSpacer_4",
               "orientation": "Horizontal",
               "row": 6,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 40
+              }
             },
             {
               "colspan": 1,
@@ -17658,7 +18880,11 @@
               "name": "verticalSpacer",
               "orientation": "Vertical",
               "row": 13,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 40,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
@@ -17666,7 +18892,11 @@
               "name": "horizontalSpacer",
               "orientation": "Horizontal",
               "row": 0,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 140
+              }
             }
           ],
           "title": "Options"
@@ -18276,6 +19506,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignCenter",
               "colspan": 3,
               "column": 0,
               "name": "label456",
@@ -18284,6 +19515,7 @@
               "text": "Specify secunet wall Management settings below. \nPlease use commas to separate a list of IP addresses."
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label453",
@@ -18300,6 +19532,7 @@
               "text": "Syslog servers"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label454",
@@ -18308,6 +19541,7 @@
               "text": "SNMP access"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label455",
@@ -18316,6 +19550,7 @@
               "text": "RO-SNMP string"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label458",
@@ -18332,6 +19567,7 @@
               "text": "Nagios access"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label459",
@@ -18340,6 +19576,7 @@
               "text": "Local /var partition"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label453_2",
@@ -18369,35 +19606,55 @@
               "column": 1,
               "orientation": "Vertical",
               "row": 0,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 16,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Vertical",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 16,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 2,
               "orientation": "Horizontal",
               "row": 7,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 40
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Horizontal",
               "row": 12,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 170
+              }
             },
             {
               "colspan": 1,
               "column": 1,
               "orientation": "Vertical",
               "row": 13,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 40,
+                "width": 20
+              }
             }
           ],
           "title": "Management"
@@ -18405,6 +19662,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignCenter",
               "colspan": 4,
               "column": 0,
               "name": "label456_2",
@@ -18468,42 +19726,66 @@
               "column": 3,
               "orientation": "Vertical",
               "row": 0,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 16,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Vertical",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 16,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Horizontal",
               "row": 5,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 170
+              }
             },
             {
               "colspan": 2,
               "column": 2,
               "orientation": "Horizontal",
               "row": 6,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 40
+              }
             },
             {
               "colspan": 2,
               "column": 1,
               "orientation": "Vertical",
               "row": 8,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 16,
+                "width": 20
+              }
             },
             {
               "colspan": 2,
               "column": 1,
               "orientation": "Vertical",
               "row": 10,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 40,
+                "width": 20
+              }
             }
           ],
           "title": "DNS Client"
@@ -18511,6 +19793,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignCenter",
               "colspan": 3,
               "column": 0,
               "name": "network_tab_txt2_3",
@@ -18519,6 +19802,7 @@
               "text": "Specify secunet wall advanced iptables/routing options below"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label368_4",
@@ -18527,6 +19811,7 @@
               "text": "IPv4 Packet forwarding"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label368_3",
@@ -18535,6 +19820,7 @@
               "text": "IPv6 Packet forwarding"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label369_2",
@@ -18543,6 +19829,7 @@
               "text": "Kernel anti-spoofing protection"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label370_2",
@@ -18551,6 +19838,7 @@
               "text": "Ignore broadcast pings"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label386_2",
@@ -18559,6 +19847,7 @@
               "text": "Ignore all pings"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label371_2",
@@ -18567,6 +19856,7 @@
               "text": "Accept source route"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label373_2",
@@ -18575,6 +19865,7 @@
               "text": "Accept ICMP redirects"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label374_2",
@@ -18583,6 +19874,7 @@
               "text": "Ignore bogus ICMP errors"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label375_2",
@@ -18591,6 +19883,7 @@
               "text": "Allow dynamic addresses"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label380_2",
@@ -18621,35 +19914,55 @@
               "column": 2,
               "orientation": "Horizontal",
               "row": 7,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 40
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Vertical",
               "row": 14,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 40,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Vertical",
               "row": 0,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 16,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Vertical",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 16,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Horizontal",
               "row": 13,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 250
+              }
             }
           ],
           "title": "Options"
@@ -18657,6 +19970,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignCenter",
               "colspan": 3,
               "column": 0,
               "name": "network_tab_txt2_2",
@@ -18665,6 +19979,7 @@
               "text": "These parameters make sense for connections to or from the firewall host"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label376_2",
@@ -18673,6 +19988,7 @@
               "text": "TCP FIN timeout (sec)"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label377_2",
@@ -18681,6 +19997,7 @@
               "text": "TCP keepalive time (sec)"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label378_2",
@@ -18689,6 +20006,7 @@
               "text": "TCP window scaling"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label379_2",
@@ -18697,6 +20015,7 @@
               "text": "TCP sack"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label384_2",
@@ -18705,6 +20024,7 @@
               "text": "TCP fack"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label383_2",
@@ -18713,6 +20033,7 @@
               "text": "TCP ECN"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label372_2",
@@ -18721,6 +20042,7 @@
               "text": "TCP SYN cookies"
             },
             {
+              "alignment": "AlignRight|AlignTrailing|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "label385_2",
@@ -18749,35 +20071,55 @@
               "column": 1,
               "orientation": "Vertical",
               "row": 0,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 16,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 2,
               "orientation": "Horizontal",
               "row": 7,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 40
+              }
             },
             {
               "colspan": 1,
               "column": 1,
               "orientation": "Vertical",
               "row": 12,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 40,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 1,
               "orientation": "Vertical",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 16,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Horizontal",
               "row": 11,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 250
+              }
             }
           ],
           "title": "TCP"
@@ -18785,6 +20127,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 0,
               "name": "label_7",
@@ -18793,6 +20136,7 @@
               "text": "Enable support for additional files here. Files in the selected templates directory will be added to the configuration of this Firewall."
             },
             {
+              "alignment": "AlignLeading|AlignLeft|AlignVCenter",
               "colspan": 1,
               "column": 0,
               "name": "templdir_label",
@@ -18815,35 +20159,55 @@
               "column": 0,
               "orientation": "Vertical",
               "row": 0,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 16,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Vertical",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 16,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Vertical",
               "row": 4,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 231,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Horizontal",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 61
+              }
             },
             {
               "colspan": 1,
               "column": 3,
               "orientation": "Horizontal",
               "row": 2,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 31
+              }
             }
           ],
           "title": "Files"
@@ -18979,6 +20343,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 0,
               "name": "label553",
@@ -18987,6 +20352,7 @@
               "text": "Ignore ICMP redirects"
             },
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 0,
               "name": "label555",
@@ -18995,6 +20361,7 @@
               "text": "Forward directed broadcasts"
             },
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 0,
               "name": "label554",
@@ -19003,6 +20370,7 @@
               "text": "Respond to echo broadcast"
             },
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 0,
               "name": "label551",
@@ -19011,6 +20379,7 @@
               "text": "Packet forwarding"
             },
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 0,
               "name": "label552",
@@ -19036,28 +20405,44 @@
               "column": 0,
               "orientation": "Horizontal",
               "row": 6,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 151
+              }
             },
             {
               "colspan": 1,
               "column": 0,
               "orientation": "Vertical",
               "row": 0,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 20
+              }
             },
             {
               "colspan": 1,
               "column": 2,
               "orientation": "Horizontal",
               "row": 1,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 40
+              }
             },
             {
               "colspan": 1,
               "column": 1,
               "orientation": "Vertical",
               "row": 6,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 40,
+                "width": 20
+              }
             }
           ],
           "spacing": {
@@ -19068,6 +20453,7 @@
         {
           "annotations": [
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 1,
               "name": "label580",
@@ -19076,6 +20462,7 @@
               "text": "ipf:"
             },
             {
+              "alignment": "AlignCenter",
               "colspan": 1,
               "column": 1,
               "name": "label581",
@@ -19084,6 +20471,7 @@
               "text": "ipnat:"
             },
             {
+              "alignment": "AlignCenter",
               "colspan": 4,
               "column": 0,
               "name": "label579",
@@ -19106,21 +20494,33 @@
               "column": 0,
               "orientation": "Horizontal",
               "row": 1,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 40
+              }
             },
             {
               "colspan": 1,
               "column": 3,
               "orientation": "Horizontal",
               "row": 1,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 20,
+                "width": 40
+              }
             },
             {
               "colspan": 1,
               "column": 2,
               "orientation": "Vertical",
               "row": 3,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_hint": {
+                "height": 40,
+                "width": 20
+              }
             }
           ],
           "spacing": {

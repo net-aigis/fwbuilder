@@ -21,13 +21,17 @@ _BASE_STEPS = (
 
 
 def _desktop_steps(names: list[str]) -> list[str]:
-    """Build step list from which installer_commands_* files exist."""
+    """Build step list from which installer / related configlet files exist."""
     steps: list[str] = [
         "open SSH session (password/keyboard-interactive or key)",
     ]
     if "installer_commands_pre_config" in names:
         steps.append("run installer_commands_pre_config")
+    if "installer_commands_reg_user" in names:
+        steps.append("run installer_commands_reg_user")
     steps.append("enter enable / configure mode as required by platform")
+    if "safety_net_acl" in names:
+        steps.append("apply safety_net_acl")
     steps.append("push or paste generated config (scp or terminal)")
     if "installer_commands_post_config" in names:
         steps.append("run installer_commands_post_config / activation")
@@ -41,6 +45,8 @@ def expect_installer_status(host_os: str) -> dict[str, Any]:
     listing = list_installer_configlets(host_os)
     interactive = bool(listing.get("interactive_installer"))
     names = list(listing.get("names") or [])
+    related = list(listing.get("related_names") or [])
+    plan_names = names + [n for n in related if n not in names]
     return {
         "host_os": host_os,
         "implemented": False,
@@ -48,9 +54,12 @@ def expect_installer_status(host_os: str) -> dict[str, Any]:
         "interactive_installer": interactive,
         "configlet_dir": listing.get("configlet_dir"),
         "names": names,
+        "related_names": related,
         "has_pre_config": "installer_commands_pre_config" in names,
         "has_post_config": "installer_commands_post_config" in names,
-        "desktop_steps": _desktop_steps(names) if interactive else list(_BASE_STEPS)[:0],
+        "has_reg_user": "installer_commands_reg_user" in names,
+        "has_safety_net_acl": "safety_net_acl" in plan_names,
+        "desktop_steps": _desktop_steps(plan_names) if interactive else list(_BASE_STEPS)[:0],
         "webui_alternative": (
             "dry_run preview of activation configlet + optional force_limited_installer "
             "scp/ssh (incomplete vs desktop)"
@@ -84,6 +93,8 @@ def expect_install_plan(
     """Ordered desktop expect steps with expanded configlet previews (not executable)."""
     status = expect_installer_status(host_os)
     names = list(status.get("names") or [])
+    related = list(status.get("related_names") or [])
+    plan_names = names + [n for n in related if n not in names]
     steps: list[dict[str, Any]] = [
         {
             "id": "ssh_open",
@@ -92,7 +103,7 @@ def expect_install_plan(
             "detail": "password/keyboard-interactive or key (WebUI: BatchMode key/agent only)",
         },
     ]
-    if "installer_commands_pre_config" in names:
+    if "installer_commands_pre_config" in plan_names:
         pre = read_installer_configlet_file(
             host_os,
             "installer_commands_pre_config",
@@ -109,6 +120,24 @@ def expect_install_plan(
                 "preview": pre.get("expanded_text") or pre.get("text") or "",
             }
         )
+    if "installer_commands_reg_user" in plan_names:
+        reg = read_installer_configlet_file(
+            host_os,
+            "installer_commands_reg_user",
+            expand=True,
+            fwdir=fwdir,
+            fwscript=fwscript,
+        )
+        steps.append(
+            {
+                "id": "reg_user",
+                "title": "Run installer_commands_reg_user",
+                "implemented": False,
+                "configlet": "installer_commands_reg_user",
+                "preview": reg.get("expanded_text") or reg.get("text") or "",
+                "detail": "Desktop may run as regular user before enable/root; WebUI does not",
+            }
+        )
     steps.append(
         {
             "id": "enable_mode",
@@ -117,6 +146,24 @@ def expect_install_plan(
             "detail": "platform-specific; not implemented in WebUI",
         }
     )
+    if "safety_net_acl" in plan_names:
+        safety = read_installer_configlet_file(
+            host_os,
+            "safety_net_acl",
+            expand=True,
+            fwdir=fwdir,
+            fwscript=fwscript,
+        )
+        steps.append(
+            {
+                "id": "safety_net_acl",
+                "title": "Apply safety_net_acl",
+                "implemented": False,
+                "configlet": "safety_net_acl",
+                "preview": safety.get("expanded_text") or safety.get("text") or "",
+                "detail": "Desktop temporary ACL during install; WebUI does not apply it",
+            }
+        )
     steps.append(
         {
             "id": "push_config",
@@ -125,7 +172,7 @@ def expect_install_plan(
             "detail": "scp or terminal paste on desktop; WebUI can scp with force_limited_installer only",
         }
     )
-    if "installer_commands_post_config" in names:
+    if "installer_commands_post_config" in plan_names:
         post = read_installer_configlet_file(
             host_os,
             "installer_commands_post_config",
