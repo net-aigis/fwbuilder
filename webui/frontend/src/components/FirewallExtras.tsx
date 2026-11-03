@@ -134,6 +134,7 @@ export function FirewallExtras({
   const [expectPlanText, setExpectPlanText] = useState<string | null>(null);
   const [sshAuthNote, setSshAuthNote] = useState<string | null>(null);
   const [hardGaps, setHardGaps] = useState<string[]>([]);
+  const [hardGapsNote, setHardGapsNote] = useState<string | null>(null);
   const [resHint, setResHint] = useState<string | null>(null);
 
   async function reload() {
@@ -159,6 +160,7 @@ export function FirewallExtras({
       if (gaps?.hard_gap_open?.length) setHardGaps(gaps.hard_gap_open);
       else if (resSt?.hard_gap_open?.length) setHardGaps(resSt.hard_gap_open);
       else setHardGaps([]);
+      setHardGapsNote(gaps?.note || null);
       if (resSt?.configlets_ok) {
         const phase = resSt.soft_complete_phase
           ? ` · soft-complete phase${resSt.soft_complete_phase}`
@@ -1124,9 +1126,12 @@ export function FirewallExtras({
         ) : null}
       </div>
       {hardGaps.length ? (
-        <p className="muted pad-tight" title="hard_gap_open from /res-status">
-          Hard gaps still open: <code>{hardGaps.join(", ")}</code>
-        </p>
+        <div className="pad-tight">
+          <p className="muted" title="hard_gap_open from /hard-gaps">
+            Hard gaps still open: <code>{hardGaps.join(", ")}</code>
+          </p>
+          {hardGapsNote ? <p className="muted">{hardGapsNote}</p> : null}
+        </div>
       ) : null}
       <p className="muted pad">
         Dialog pages come from libgui AdvancedDialog <code>.ui</code> tabs. Pixel-perfect Qt layout
