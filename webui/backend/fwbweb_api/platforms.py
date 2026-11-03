@@ -238,6 +238,26 @@ def dialog_fields_for(platform: str, host_os: str = "") -> dict[str, dict[str, A
     return fields
 
 
+def dialog_chrome_for(platform: str) -> dict[str, Any]:
+    """windowTitle / geometry from the platform AdvancedDialog .ui."""
+    cat = _dialog_catalog()
+    dialogs = cat.get("dialogs") or {}
+    try:
+        plat = get_platform(platform)
+        stem = _dialog_stem(plat.get("dialog") or platform)
+    except KeyError:
+        stem = _dialog_stem(platform)
+    if not stem or stem not in dialogs:
+        return {}
+    info = dialogs[stem]
+    out: dict[str, Any] = {}
+    if info.get("window_title"):
+        out["window_title"] = info["window_title"]
+    if info.get("geometry"):
+        out["geometry"] = info["geometry"]
+    return out
+
+
 def dialog_pages_for(platform: str, host_os: str = "") -> list[dict[str, Any]]:
     """Qt AdvancedDialog tab pages with option keys (platform dialog preferred)."""
     cat = _dialog_catalog()
@@ -381,6 +401,7 @@ def option_schema(platform: str, host_os: str = "") -> dict[str, Any]:
     for key in seen:
         fields[key] = _infer_type(key, defaults.get(key, ""), field_meta.get(key))
 
+    chrome = dialog_chrome_for(platform)
     return {
         "platform": plat["name"],
         "host_os": host_os or None,
@@ -389,6 +410,7 @@ def option_schema(platform: str, host_os: str = "") -> dict[str, Any]:
         "description": plat.get("description"),
         "supported_os": plat.get("supported_os"),
         "capabilities": plat.get("capabilities"),
+        **chrome,
         "defaults": defaults,
         "groups": groups,
         "featured_keys": featured,

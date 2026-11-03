@@ -618,6 +618,29 @@ def pages_with_keys(pages: list[dict], fields: dict[str, dict]) -> list[dict]:
     return out
 
 
+def parse_dialog_chrome(root: ET.Element | None) -> dict[str, Any]:
+    """Top-level dialog windowTitle + geometry from .ui (pixel hint, not parity)."""
+    out: dict[str, Any] = {}
+    if root is None:
+        return out
+    top = root.find("widget")
+    if top is None:
+        return out
+    title_el = top.find("./property[@name='windowTitle']/string")
+    if title_el is not None and (title_el.text or "").strip():
+        out["window_title"] = title_el.text.strip()
+    geom = top.find("./property[@name='geometry']/rect")
+    if geom is not None:
+        try:
+            w = int((geom.findtext("width") or "0").strip())
+            h = int((geom.findtext("height") or "0").strip())
+            if w > 0 and h > 0:
+                out["geometry"] = {"width": w, "height": h}
+        except ValueError:
+            pass
+    return out
+
+
 def extract_one(cpp: Path) -> dict:
     stem = cpp.stem
     ui_path = LIBGUI / UI_MAP.get(stem, f"{stem.lower()}_q.ui")
@@ -638,12 +661,15 @@ def extract_one(cpp: Path) -> dict:
                 "keys": sorted(fields.keys()),
             }
         ]
-    return {
+    result: dict[str, Any] = {
         "ui": ui_path.name if ui_path.is_file() else None,
         "field_count": len(fields),
         "fields": fields,
         "pages": pages,
     }
+    chrome = parse_dialog_chrome(ui_root)
+    result.update(chrome)
+    return result
 
 
 def main() -> None:

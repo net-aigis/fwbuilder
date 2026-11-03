@@ -232,6 +232,10 @@
           "widget_class": "QCheckBox"
         }
       },
+      "geometry": {
+        "height": 345,
+        "width": 942
+      },
       "pages": [
         {
           "id": "main",
@@ -254,7 +258,8 @@
           "title": "Interface"
         }
       ],
-      "ui": "natruleoptionsdialog_q.ui"
+      "ui": "natruleoptionsdialog_q.ui",
+      "window_title": "NAT Rule Options"
     },
     "RoutingRuleOptionsDialog": {
       "field_count": 2,
@@ -286,6 +291,10 @@
           "widget_class": "QCheckBox"
         }
       },
+      "geometry": {
+        "height": 161,
+        "width": 562
+      },
       "pages": [
         {
           "id": "main",
@@ -296,7 +305,8 @@
           "title": "Interface"
         }
       ],
-      "ui": "routingruleoptionsdialog_q.ui"
+      "ui": "routingruleoptionsdialog_q.ui",
+      "window_title": "Routing Rule Options"
     },
     "RuleOptionsDialog": {
       "field_count": 66,
@@ -1144,6 +1154,10 @@
           "widget_class": "QSpinBox"
         }
       },
+      "geometry": {
+        "height": 357,
+        "width": 1412
+      },
       "pages": [
         {
           "annotations": [
@@ -1615,7 +1629,8 @@
           "title": "Route"
         }
       ],
-      "ui": "ruleoptionsdialog_q.ui"
+      "ui": "ruleoptionsdialog_q.ui",
+      "window_title": "Rule Options for ipt"
     },
     "bsdIfaceOptsDialog": {
       "field_count": 5,
@@ -1683,6 +1698,10 @@
           "widget": "vlan_id",
           "widget_class": "QSpinBox"
         }
+      },
+      "geometry": {
+        "height": 318,
+        "width": 376
       },
       "pages": [
         {
@@ -1781,7 +1800,8 @@
           "title": "Options"
         }
       ],
-      "ui": "bsdifaceoptsdialog_q.ui"
+      "ui": "bsdifaceoptsdialog_q.ui",
+      "window_title": "BSD: interface settings"
     },
     "freebsdAdvancedDialog": {
       "field_count": 10,
@@ -1952,6 +1972,10 @@
           "widget": "freebsd_path_sysctl",
           "widget_class": "QLineEdit"
         }
+      },
+      "geometry": {
+        "height": 363,
+        "width": 507
       },
       "pages": [
         {
@@ -2159,7 +2183,8 @@
           "title": "Data"
         }
       ],
-      "ui": "freebsdadvanceddialog_q.ui"
+      "ui": "freebsdadvanceddialog_q.ui",
+      "window_title": "FreeBSD: advanced settings"
     },
     "iosAdvancedDialog": {
       "field_count": 2,
@@ -2191,6 +2216,10 @@
           "widget_class": "QCheckBox"
         }
       },
+      "geometry": {
+        "height": 188,
+        "width": 597
+      },
       "pages": [
         {
           "id": "TabPage",
@@ -2213,7 +2242,8 @@
           "title": "General"
         }
       ],
-      "ui": "iosadvanceddialog_q.ui"
+      "ui": "iosadvanceddialog_q.ui",
+      "window_title": "IOS Advanced Configuration Options"
     },
     "iosaclAdvancedDialog": {
       "field_count": 32,
@@ -2668,6 +2698,10 @@
           "widget_class": "QCheckBox"
         }
       },
+      "geometry": {
+        "height": 600,
+        "width": 743
+      },
       "pages": [
         {
           "annotations": [
@@ -3013,7 +3047,8 @@
           "title": "Logging"
         }
       ],
-      "ui": "iosacladvanceddialog_q.ui"
+      "ui": "iosacladvanceddialog_q.ui",
+      "window_title": "IOS ACL Firewall Settings"
     },
     "ipcopAdvancedDialog": {
       "field_count": 35,
@@ -3500,6 +3535,10 @@
           "widget_class": "QCheckBox"
         }
       },
+      "geometry": {
+        "height": 710,
+        "width": 726
+      },
       "pages": [
         {
           "annotations": [
@@ -3832,7 +3871,8 @@
           "title": "Script"
         }
       ],
-      "ui": "ipcopadvanceddialog_q.ui"
+      "ui": "ipcopadvanceddialog_q.ui",
+      "window_title": "ipcop advanced settings"
     },
     "ipcoposAdvancedDialog": {
       "field_count": 29,
@@ -4267,6 +4307,10 @@
           "widget_class": "QComboBox"
         }
       },
+      "geometry": {
+        "height": 625,
+        "width": 499
+      },
       "pages": [
         {
           "annotations": [
@@ -4655,7 +4699,8 @@
           "title": "Path"
         }
       ],
-      "ui": "ipcoposadvanceddialog_q.ui"
+      "ui": "ipcoposadvanceddialog_q.ui",
+      "window_title": "IPCOP: advanced settings"
     },
     "ipfAdvancedDialog": {
       "field_count": 40,
@@ -5224,6 +5269,10 @@
           "widget_class": "QLineEdit"
         }
       },
+      "geometry": {
+        "height": 567,
+        "width": 689
+      },
       "pages": [
         {
           "annotations": [
@@ -5615,7 +5664,8 @@
           "title": "Script Options"
         }
       ],
-      "ui": "ipfadvanceddialog_q.ui"
+      "ui": "ipfadvanceddialog_q.ui",
+      "window_title": "ipf: advanced settings"
     },
     "ipfwAdvancedDialog": {
       "field_count": 20,
@@ -5912,6 +5962,10 @@
           "widget_class": "QLineEdit"
         }
       },
+      "geometry": {
+        "height": 565,
+        "width": 818
+      },
       "pages": [
         {
           "annotations": [
@@ -6162,7 +6216,8 @@
           "title": "Script Options"
         }
       ],
-      "ui": "ipfwadvanceddialog_q.ui"
+      "ui": "ipfwadvanceddialog_q.ui",
+      "window_title": "ipfw: advanced settings"
     },
     "iptAdvancedDialog": {
       "field_count": 54,
@@ -6981,6 +7036,10 @@
           "widget_class": "QCheckBox"
         }
       },
+      "geometry": {
+        "height": 628,
+        "width": 1054
+      },
       "pages": [
         {
           "annotations": [
@@ -7403,7 +7462,8 @@
           "title": "Script"
         }
       ],
-      "ui": "iptadvanceddialog_q.ui"
+      "ui": "iptadvanceddialog_q.ui",
+      "window_title": "iptables: advanced settings"
     },
     "junosAdvancedDialog": {
       "field_count": 2,
@@ -7435,6 +7495,10 @@
           "widget_class": "QCheckBox"
         }
       },
+      "geometry": {
+        "height": 188,
+        "width": 597
+      },
       "pages": [
         {
           "id": "TabPage",
@@ -7457,7 +7521,8 @@
           "title": "General"
         }
       ],
-      "ui": "junosadvanceddialog_q.ui"
+      "ui": "junosadvanceddialog_q.ui",
+      "window_title": "JUNOS Advanced Configuration Options"
     },
     "junosaclAdvancedDialog": {
       "field_count": 26,
@@ -7785,6 +7850,10 @@
           "widget_class": "QCheckBox"
         }
       },
+      "geometry": {
+        "height": 600,
+        "width": 743
+      },
       "pages": [
         {
           "annotations": [
@@ -8081,7 +8150,8 @@
           "title": "Logging"
         }
       ],
-      "ui": "junosacladvanceddialog_q.ui"
+      "ui": "junosacladvanceddialog_q.ui",
+      "window_title": "jun-OS ACL Firewall Settings"
     },
     "linksysAdvancedDialog": {
       "field_count": 10,
@@ -8206,6 +8276,10 @@
           "widget": "linksys_prompt2",
           "widget_class": "QLineEdit"
         }
+      },
+      "geometry": {
+        "height": 548,
+        "width": 504
       },
       "pages": [
         {
@@ -8383,7 +8457,8 @@
           "title": "Prompts"
         }
       ],
-      "ui": "linksysadvanceddialog_q.ui"
+      "ui": "linksysadvanceddialog_q.ui",
+      "window_title": "Linksys/Sveasoft: advanced settings"
     },
     "linux24AdvancedDialog": {
       "field_count": 34,
@@ -8895,6 +8970,10 @@
           "widget_class": "QComboBox"
         }
       },
+      "geometry": {
+        "height": 566,
+        "width": 493
+      },
       "pages": [
         {
           "annotations": [
@@ -9396,7 +9475,8 @@
           "title": "Data"
         }
       ],
-      "ui": "linux24advanceddialog_q.ui"
+      "ui": "linux24advanceddialog_q.ui",
+      "window_title": "Linux 2.4: advanced settings"
     },
     "linux24IfaceOptsDialog": {
       "field_count": 5,
@@ -9475,6 +9555,10 @@
           "widget": "xmit_hash_policy",
           "widget_class": "QComboBox"
         }
+      },
+      "geometry": {
+        "height": 322,
+        "width": 418
       },
       "pages": [
         {
@@ -9581,7 +9665,8 @@
           "title": "Options"
         }
       ],
-      "ui": "linux24ifaceoptsdialog_q.ui"
+      "ui": "linux24ifaceoptsdialog_q.ui",
+      "window_title": "Linux: interface settings"
     },
     "macosxAdvancedDialog": {
       "field_count": 5,
@@ -9675,6 +9760,10 @@
           "widget": "macosx_path_sysctl",
           "widget_class": "QLineEdit"
         }
+      },
+      "geometry": {
+        "height": 237,
+        "width": 389
       },
       "pages": [
         {
@@ -9806,7 +9895,8 @@
           "title": "Path"
         }
       ],
-      "ui": "macosxadvanceddialog_q.ui"
+      "ui": "macosxadvanceddialog_q.ui",
+      "window_title": "MacOS X: advanced settings"
     },
     "nxosAdvancedDialog": {
       "field_count": 2,
@@ -9838,6 +9928,10 @@
           "widget_class": "QCheckBox"
         }
       },
+      "geometry": {
+        "height": 188,
+        "width": 597
+      },
       "pages": [
         {
           "id": "TabPage",
@@ -9860,7 +9954,8 @@
           "title": "General"
         }
       ],
-      "ui": "nxosadvanceddialog_q.ui"
+      "ui": "nxosadvanceddialog_q.ui",
+      "window_title": "NX-OS Advanced Configuration Options"
     },
     "nxosaclAdvancedDialog": {
       "field_count": 33,
@@ -10328,6 +10423,10 @@
           "widget_class": "QCheckBox"
         }
       },
+      "geometry": {
+        "height": 600,
+        "width": 743
+      },
       "pages": [
         {
           "annotations": [
@@ -10675,7 +10774,8 @@
           "title": "Logging"
         }
       ],
-      "ui": "nxosacladvanceddialog_q.ui"
+      "ui": "nxosacladvanceddialog_q.ui",
+      "window_title": "NX-OS ACL Firewall Settings"
     },
     "openbsdAdvancedDialog": {
       "field_count": 8,
@@ -10810,6 +10910,10 @@
           "widget": "openbsd_path_sysctl",
           "widget_class": "QLineEdit"
         }
+      },
+      "geometry": {
+        "height": 330,
+        "width": 433
       },
       "pages": [
         {
@@ -11005,7 +11109,8 @@
           "title": "Data"
         }
       ],
-      "ui": "openbsdadvanceddialog_q.ui"
+      "ui": "openbsdadvanceddialog_q.ui",
+      "window_title": "OpenBSD: advanced settings"
     },
     "pfAdvancedDialog": {
       "field_count": 94,
@@ -12372,6 +12477,10 @@
           "widget_class": "QLineEdit"
         }
       },
+      "geometry": {
+        "height": 600,
+        "width": 700
+      },
       "pages": [
         {
           "annotations": [
@@ -13045,7 +13154,8 @@
           "title": "Script"
         }
       ],
-      "ui": "pfadvanceddialog_q.ui"
+      "ui": "pfadvanceddialog_q.ui",
+      "window_title": "pf: advanced settings"
     },
     "pixAdvancedDialog": {
       "field_count": 85,
@@ -14140,6 +14250,10 @@
           "widget_class": "QSpinBox"
         }
       },
+      "geometry": {
+        "height": 596,
+        "width": 829
+      },
       "pages": [
         {
           "annotations": [
@@ -14804,7 +14918,8 @@
           "title": "PIX Options"
         }
       ],
-      "ui": "pixadvanceddialog_q.ui"
+      "ui": "pixadvanceddialog_q.ui",
+      "window_title": "PIX Firewall Settings"
     },
     "pixosAdvancedDialog": {
       "field_count": 17,
@@ -15029,6 +15144,10 @@
           "widget": "tcpmss_value",
           "widget_class": "QSpinBox"
         }
+      },
+      "geometry": {
+        "height": 402,
+        "width": 539
       },
       "pages": [
         {
@@ -15257,7 +15376,8 @@
           "title": "Options"
         }
       ],
-      "ui": "pixosadvanceddialog_q.ui"
+      "ui": "pixosadvanceddialog_q.ui",
+      "window_title": "PIX Advanced Configuration Options"
     },
     "pixosIfaceOptsDialog": {
       "field_count": 1,
@@ -15274,6 +15394,10 @@
           "widget": "vlan_id",
           "widget_class": "QSpinBox"
         }
+      },
+      "geometry": {
+        "height": 322,
+        "width": 418
       },
       "pages": [
         {
@@ -15337,7 +15461,8 @@
           "title": "Options"
         }
       ],
-      "ui": "pixosifaceoptsdialog_q.ui"
+      "ui": "pixosifaceoptsdialog_q.ui",
+      "window_title": "PIX: interface settings"
     },
     "procurveaclAdvancedDialog": {
       "field_count": 30,
@@ -15765,6 +15890,10 @@
           "widget_class": "QCheckBox"
         }
       },
+      "geometry": {
+        "height": 558,
+        "width": 743
+      },
       "pages": [
         {
           "annotations": [
@@ -16093,7 +16222,8 @@
           "title": "Logging"
         }
       ],
-      "ui": "procurveacladvanceddialog_q.ui"
+      "ui": "procurveacladvanceddialog_q.ui",
+      "window_title": "HP ProCurve ACL Firewall Settings"
     },
     "secuwallAdvancedDialog": {
       "field_count": 42,
@@ -16740,6 +16870,10 @@
           "widget_class": "QCheckBox"
         }
       },
+      "geometry": {
+        "height": 665,
+        "width": 762
+      },
       "pages": [
         {
           "annotations": [
@@ -17122,7 +17256,8 @@
           "title": "Script"
         }
       ],
-      "ui": "secuwalladvanceddialog_q.ui"
+      "ui": "secuwalladvanceddialog_q.ui",
+      "window_title": "iptables: advanced settings"
     },
     "secuwallIfaceOptsDialog": {
       "field_count": 5,
@@ -17189,6 +17324,10 @@
           "widget": "vlan_id",
           "widget_class": "QSpinBox"
         }
+      },
+      "geometry": {
+        "height": 438,
+        "width": 347
       },
       "pages": [
         {
@@ -17326,7 +17465,8 @@
           "title": "Options"
         }
       ],
-      "ui": "secuwallifaceoptsdialog_q.ui"
+      "ui": "secuwallifaceoptsdialog_q.ui",
+      "window_title": "secunet wall: interface settings"
     },
     "secuwallosAdvancedDialog": {
       "field_count": 39,
@@ -17921,6 +18061,10 @@
           "widget_class": "QLineEdit"
         }
       },
+      "geometry": {
+        "height": 568,
+        "width": 510
+      },
       "pages": [
         {
           "annotations": [
@@ -18498,7 +18642,8 @@
           "title": "Files"
         }
       ],
-      "ui": "secuwallosadvanceddialog_q.ui"
+      "ui": "secuwallosadvanceddialog_q.ui",
+      "window_title": "secunet wall: advanced settings"
     },
     "solarisAdvancedDialog": {
       "field_count": 7,
@@ -18618,6 +18763,10 @@
           "widget": "solaris_path_ipnat",
           "widget_class": "QLineEdit"
         }
+      },
+      "geometry": {
+        "height": 285,
+        "width": 388
       },
       "pages": [
         {
@@ -18767,13 +18916,19 @@
           "title": "Path"
         }
       ],
-      "ui": "solarisadvanceddialog_q.ui"
+      "ui": "solarisadvanceddialog_q.ui",
+      "window_title": "Solaris: advanced settings"
     },
     "vlanOnlyIfaceOptsDialog": {
       "field_count": 0,
       "fields": {},
+      "geometry": {
+        "height": 268,
+        "width": 310
+      },
       "pages": [],
-      "ui": "vlanonlyifaceoptsdialog_q.ui"
+      "ui": "vlanonlyifaceoptsdialog_q.ui",
+      "window_title": "Vlan interface settings"
     }
   }
 }

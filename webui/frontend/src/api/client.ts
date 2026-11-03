@@ -499,6 +499,8 @@ export function fetchOptionSchema(platform: string, hostOs = "") {
     compiler?: string;
     dialog?: string;
     description?: string;
+    window_title?: string;
+    geometry?: { width?: number; height?: number };
     supported_os?: string[];
     capabilities?: Record<string, string>;
     defaults: Record<string, string>;

@@ -116,6 +116,7 @@ export function FirewallExtras({
   const [featured, setFeatured] = useState<string[]>(FALLBACK_FEATURED);
   const [compiler, setCompiler] = useState<string>("");
   const [dialogName, setDialogName] = useState<string>("");
+  const [dialogTitle, setDialogTitle] = useState<string>("");
   const [activeGroup, setActiveGroup] = useState<string>("platform");
   const [installerNote, setInstallerNote] = useState<string | null>(null);
   const [installerMode, setInstallerMode] = useState<string | null>(null);
@@ -252,6 +253,7 @@ export function FirewallExtras({
         setFeatured(schema.featured_keys?.length ? schema.featured_keys : FALLBACK_FEATURED);
         setCompiler(schema.compiler || "");
         setDialogName(schema.dialog || "");
+        setDialogTitle(schema.window_title || "");
         setFields(schema.fields ?? {});
         setDefaults(schema.defaults ?? {});
         let preferred = nextGroups[0]?.id || "platform";
@@ -592,6 +594,7 @@ export function FirewallExtras({
           Platform / installer options
           {compiler ? <span className="muted"> · {compiler}</span> : null}
           {dialogName ? <span className="muted"> · {dialogName}</span> : null}
+          {dialogTitle ? <span className="muted"> · {dialogTitle}</span> : null}
         </h3>
         <div className="btn-row">
           <button type="button" className="ghost" disabled={busy} onClick={() => void reload()}>
