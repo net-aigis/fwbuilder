@@ -797,9 +797,19 @@ export function fetchHardGaps() {
     hard_gap_count?: number;
     hard_gap_notes?: Record<string, string>;
     hard_gap_closure?: Record<string, string>;
+    closure_path?: string;
     layout_fidelity_path?: string;
     note?: string;
   }>("/api/v1/hard-gaps");
+}
+
+export function fetchHardGapClosure() {
+  return api<{
+    soft_complete_phase: string;
+    hard_gap_open: string[];
+    hard_gap_closure: Record<string, string>;
+    note?: string;
+  }>("/api/v1/hard-gaps/closure");
 }
 
 export async function refuseExpectInstallStep(

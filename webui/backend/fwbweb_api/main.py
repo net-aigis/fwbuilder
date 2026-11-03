@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "336"
+WEBUI_SOFT_COMPLETE_PHASE = "344"
 
 HARD_GAPS_OPEN = (
     "full_qt_pixel_layout",
@@ -114,12 +114,27 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
         "hard_gap_count": len(HARD_GAPS_OPEN),
         "hard_gap_notes": dict(HARD_GAP_NOTES),
         "hard_gap_closure": dict(HARD_GAP_CLOSURE),
+        "closure_path": "/api/v1/hard-gaps/closure",
         "layout_fidelity_path": "/api/v1/layout-fidelity",
         "note": (
             "Honesty/preview track is soft-complete (soft_fertig); these items remain "
             "unimplemented (full Qt pixel layout, expect/SSHSession runtime, password SSH). "
             "GET /layout-fidelity reports extracted-signal coverage only. "
             "hard_gap_closure documents what would close each gap."
+        ),
+    }
+
+
+@app.get("/api/v1/hard-gaps/closure")
+def hard_gap_closure(_: str = Depends(require_token)) -> dict[str, object]:
+    """Closure criteria for each open hard gap (honesty track)."""
+    return {
+        "soft_complete_phase": WEBUI_SOFT_COMPLETE_PHASE,
+        "hard_gap_open": list(HARD_GAPS_OPEN),
+        "hard_gap_closure": dict(HARD_GAP_CLOSURE),
+        "note": (
+            "Criteria for closing each hard gap. Meeting layout-fidelity score alone "
+            "does not close full_qt_pixel_layout."
         ),
     }
 

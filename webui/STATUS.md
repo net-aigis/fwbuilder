@@ -477,15 +477,23 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Hard gaps+closure @ 336 | done | E2E phase334 |
 | Typecheck after closure | done | E2E phase335 |
 | Soft-complete STATUS through 336 | done | E2E phase336 |
+| GET /hard-gaps/closure | done | E2E phase337 |
+| Soft marker 344 + typecheck | done | E2E phase338 |
+| 337–338 wiring | done | E2E phase339 |
+| STATUS closure endpoint | done | E2E phase340 |
+| Hard gaps still 3 @ 344 | done | E2E phase341 |
+| e2e-all lists 337–344 | done | E2E phase342 |
+| Closure vs fidelity honesty | done | E2E phase343 |
+| Soft-complete STATUS through 344 | done | E2E phase344 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Soft-complete (feature/webui polish track)
 
 WebUI on `feature/webui` remains soft-complete for the polish track.
 
-### Hard-gap honesty/preview track — soft-fertig (phase256); preview slices through 336
+### Hard-gap honesty/preview track — soft-fertig (phase256); preview slices through 344
 
-`WEBUI_SOFT_COMPLETE_PHASE=336`; `/hard-gaps` sets `soft_fertig_honesty_track: true` + `hard_gap_notes` + `hard_gap_closure` + `layout_fidelity_path`; `GET /layout-fidelity` / option-schema + rule/iface schemas report heuristic `score_percent` (**not** pixel parity); Firewall/Rule/Interface headers show it.
+`WEBUI_SOFT_COMPLETE_PHASE=344`; `/hard-gaps` (+ `/hard-gaps/closure`) sets `soft_fertig_honesty_track: true` + `hard_gap_notes` + `hard_gap_closure` + `layout_fidelity_path`; `GET /layout-fidelity` / option-schema + rule/iface schemas report heuristic `score_percent` (**not** pixel parity); Firewall/Rule/Interface headers show it.
 
 - Deploy: manifest `# files:`, OS configlets, external PolicyInstallScript, copyFWB, use_scp, gzip transfer on compress (plan shows −%), capabilities API (+ expect_install_plan / walkthrough pointers), live gate + force_limited, expect stub + raw/expanded configlet preview + ordered expect plan (reg_user + safety_net_acl + download + sessionStorage) + dry walkthrough (preview_only + simulated_at timeline, sessionStorage + download); `POST …/run` (+ optional `step=`) → 501 / step_refused (still **no** expect/SSHSession runtime)
 - Options: .ui labels, free QLabel annotations (+ alignment), buddy_labels (external_label controls), enabled/visible respect, QRadio bool, QGroupBox sections (flat/checkable), tooltips, page-local QGridLayout + spacers (sizeHint) + column/row stretch + spacing/margins (CSS + page hint) + sizePolicy + min/max size + layout hints + layout_tree + dialog windowTitle/geometry/tab_position/sizeGrip (header WxH + tabs + CSS max-height) + shared `qtGridStyle` + layout-fidelity score on Firewall/Rule/Interface (still **not** full pixel Qt layout)
@@ -843,6 +851,14 @@ Still open (hard backlog — **not** soft-fertig):
 | Local E2E phase334 (gaps+closure) | done | `e2e-phase334.sh` **OK** |
 | Local E2E phase335 (typecheck) | done | `e2e-phase335.sh` **OK** |
 | Local E2E phase336 (STATUS soft-complete) | done | `e2e-phase336.sh` **OK** |
+| Local E2E phase337 (/hard-gaps/closure) | done | `e2e-phase337.sh` **OK** |
+| Local E2E phase338 (marker 344) | done | `e2e-phase338.sh` **OK** |
+| Local E2E phase339 (wiring) | done | `e2e-phase339.sh` **OK** |
+| Local E2E phase340 (STATUS mentions) | done | `e2e-phase340.sh` **OK** |
+| Local E2E phase341 (hard gaps @ 344) | done | `e2e-phase341.sh` **OK** |
+| Local E2E phase342 (e2e-all list) | done | `e2e-phase342.sh` **OK** |
+| Local E2E phase343 (closure honesty) | done | `e2e-phase343.sh` **OK** |
+| Local E2E phase344 (STATUS soft-complete) | done | `e2e-phase344.sh` **OK** |
 
 ## Local commands
 
@@ -1188,6 +1204,14 @@ bash webui/scripts/e2e-phase333.sh
 bash webui/scripts/e2e-phase334.sh
 bash webui/scripts/e2e-phase335.sh
 bash webui/scripts/e2e-phase336.sh
+bash webui/scripts/e2e-phase337.sh
+bash webui/scripts/e2e-phase338.sh
+bash webui/scripts/e2e-phase339.sh
+bash webui/scripts/e2e-phase340.sh
+bash webui/scripts/e2e-phase341.sh
+bash webui/scripts/e2e-phase342.sh
+bash webui/scripts/e2e-phase343.sh
+bash webui/scripts/e2e-phase344.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```
