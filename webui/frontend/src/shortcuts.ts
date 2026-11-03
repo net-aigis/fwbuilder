@@ -19,6 +19,7 @@ export const SHORTCUTS: ShortcutEntry[] = [
   { keys: "Alt+↑ / Alt+↓", action: "Move selected rule", scope: "rules" },
   { keys: "↑ / ↓", action: "Select previous / next visible rule", scope: "rules" },
   { keys: "Home / End", action: "First / last visible rule", scope: "rules" },
+  { keys: "PageUp / PageDown", action: "Jump ±10 visible rules", scope: "rules" },
   { keys: "Space", action: "Toggle rule disabled", scope: "rules" },
   { keys: "Delete / Ctrl+D", action: "Delete selected rule", scope: "rules" },
   { keys: "f", action: "Cycle disabled filter (all → hide → only)", scope: "rules" },

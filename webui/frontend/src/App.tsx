@@ -815,6 +815,23 @@ export function App() {
         setSelectedRuleId(visibleRules[visibleRules.length - 1]?.id);
         return;
       }
+      if (
+        !mod &&
+        !e.altKey &&
+        (e.key === "PageUp" || e.key === "PageDown") &&
+        visibleRules.length
+      ) {
+        e.preventDefault();
+        const step = 10;
+        const idx = visibleRules.findIndex((r) => r.id === selectedRuleId);
+        const cur = idx < 0 ? 0 : idx;
+        const next =
+          e.key === "PageUp"
+            ? Math.max(0, cur - step)
+            : Math.min(visibleRules.length - 1, cur + step);
+        setSelectedRuleId(visibleRules[next]?.id);
+        return;
+      }
       if (!mod && !e.altKey && e.key.toLowerCase() === "n") {
         const disabled = rules.filter((r) => r.disabled);
         if (!disabled.length) return;
