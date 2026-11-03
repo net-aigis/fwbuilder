@@ -869,6 +869,11 @@ export function App() {
         onCopySelectedRuleTsv();
         return;
       }
+      if (!mod && !e.altKey && e.key.toLowerCase() === "y" && selectedRuleId) {
+        e.preventDefault();
+        onCopySelectedRuleJson();
+        return;
+      }
       if (!mod && !e.altKey && e.key.toLowerCase() === "j" && rules.length) {
         e.preventDefault();
         onJumpToRulePosition();
@@ -1451,16 +1456,6 @@ export function App() {
     }
   }
 
-  function onCopySelectedRuleJson() {
-    const rule = visibleRules.find((r) => r.id === selectedRuleId);
-    if (!rule) return;
-    const text = JSON.stringify(rule, null, 2);
-    void navigator.clipboard.writeText(text).then(
-      () => setStatus("Copied rule JSON"),
-      () => setError("Clipboard write failed"),
-    );
-  }
-
   function rulesToTsv(list: AnyRule[] = visibleRules): string {
     const cols = [
       "id",
@@ -1536,13 +1531,13 @@ export function App() {
     setStatus(`Downloaded ${visibleRules.length} rule(s) as TSV`);
   }
 
-  function rulesJsonPayload() {
+  function rulesJsonPayload(list: AnyRule[] = visibleRules) {
     return {
       ruleset_id: rulesetId,
       ruleset_name: rulesetName,
       which: rulesWhich,
-      count: visibleRules.length,
-      rules: visibleRules,
+      count: list.length,
+      rules: list,
     };
   }
 
@@ -1564,6 +1559,15 @@ export function App() {
     if (!visibleRules.length) return;
     void navigator.clipboard.writeText(JSON.stringify(rulesJsonPayload(), null, 2)).then(
       () => setStatus(`Copied ${visibleRules.length} rule(s) as JSON`),
+      () => setError("Clipboard write failed"),
+    );
+  }
+
+  function onCopySelectedRuleJson() {
+    const rule = visibleRules.find((r) => r.id === selectedRuleId);
+    if (!rule) return;
+    void navigator.clipboard.writeText(JSON.stringify(rulesJsonPayload([rule]), null, 2)).then(
+      () => setStatus(`Copied selected rule ${rule.id} as JSON`),
       () => setError("Clipboard write failed"),
     );
   }
@@ -3608,6 +3612,15 @@ export function App() {
                   <button
                     type="button"
                     className="ghost"
+                    disabled={!selectedRuleId}
+                    onClick={onCopySelectedRuleJson}
+                    title="Copy selected rule as JSON (y)"
+                  >
+                    Copy selected JSON
+                  </button>
+                  <button
+                    type="button"
+                    className="ghost"
                     disabled={!visibleRules.length}
                     onClick={onDownloadRulesTsv}
                     title="Download visible rules as .tsv"
@@ -3630,15 +3643,6 @@ export function App() {
                     onClick={() => void onDuplicateRule()}
                   >
                     Duplicate
-                  </button>
-                  <button
-                    type="button"
-                    className="ghost"
-                    disabled={!selectedRuleId}
-                    onClick={onCopySelectedRuleJson}
-                    title="Copy selected rule as JSON"
-                  >
-                    Copy rule JSON
                   </button>
                   <button
                     type="button"

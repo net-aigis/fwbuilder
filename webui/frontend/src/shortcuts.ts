@@ -24,6 +24,7 @@ export const SHORTCUTS: ShortcutEntry[] = [
   { keys: "f", action: "Cycle disabled filter (all → hide → only)", scope: "rules" },
   { keys: "a", action: "Cycle action filter (all → each action)", scope: "rules" },
   { keys: "t", action: "Copy selected rule as TSV", scope: "rules" },
+  { keys: "y", action: "Copy selected rule as JSON", scope: "rules" },
   { keys: "o", action: "Toggle only-disabled filter", scope: "rules" },
   { keys: "n / Shift+N", action: "Next / previous disabled rule", scope: "rules" },
   { keys: "j", action: "Jump to rule position", scope: "rules" },
