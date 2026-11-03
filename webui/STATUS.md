@@ -222,6 +222,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Cycle action filter | done | `a` / Cycle action; E2E phase77 |
 | Copy selected rule TSV | done | `t` / Copy selected TSV; E2E phase78 |
 | Copy selected rule JSON | done | `y` / Copy selected JSON; E2E phase79 |
+| Cycle group filter | done | `u` / Cycle group; E2E phase80 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Phase 3 — compile / deploy
@@ -312,6 +313,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase77 (cycle action) | done | `e2e-phase77.sh` **OK** |
 | Local E2E phase78 (selected rule TSV) | done | `e2e-phase78.sh` **OK** |
 | Local E2E phase79 (selected rule JSON) | done | `e2e-phase79.sh` **OK** |
+| Local E2E phase80 (cycle group) | done | `e2e-phase80.sh` **OK** |
 
 ## Local commands
 
@@ -400,6 +402,7 @@ bash webui/scripts/e2e-phase76.sh
 bash webui/scripts/e2e-phase77.sh
 bash webui/scripts/e2e-phase78.sh
 bash webui/scripts/e2e-phase79.sh
+bash webui/scripts/e2e-phase80.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

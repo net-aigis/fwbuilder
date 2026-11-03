@@ -23,6 +23,7 @@ export const SHORTCUTS: ShortcutEntry[] = [
   { keys: "Delete / Ctrl+D", action: "Delete selected rule", scope: "rules" },
   { keys: "f", action: "Cycle disabled filter (all → hide → only)", scope: "rules" },
   { keys: "a", action: "Cycle action filter (all → each action)", scope: "rules" },
+  { keys: "u", action: "Cycle group filter (all → each group)", scope: "rules" },
   { keys: "t", action: "Copy selected rule as TSV", scope: "rules" },
   { keys: "y", action: "Copy selected rule as JSON", scope: "rules" },
   { keys: "o", action: "Toggle only-disabled filter", scope: "rules" },

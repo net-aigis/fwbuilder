@@ -864,6 +864,15 @@ export function App() {
         setStatus(next ? `Filter: action=${next}` : "Filter: all actions");
         return;
       }
+      if (!mod && !e.altKey && e.key.toLowerCase() === "u" && ruleGroups.length) {
+        e.preventDefault();
+        const opts = ["", ...ruleGroups];
+        const idx = opts.indexOf(ruleGroupFilter);
+        const next = opts[(idx + 1) % opts.length] ?? "";
+        setRuleGroupFilter(next);
+        setStatus(next ? `Filter: group=${next}` : "Filter: all groups");
+        return;
+      }
       if (!mod && !e.altKey && e.key.toLowerCase() === "t" && selectedRuleId) {
         e.preventDefault();
         onCopySelectedRuleTsv();
@@ -926,6 +935,8 @@ export function App() {
     onlyDisabled,
     ruleActionFilter,
     ruleActions,
+    ruleGroupFilter,
+    ruleGroups,
     picker,
     trashOpen,
     unusedHits,
@@ -3470,6 +3481,23 @@ export function App() {
                       ))}
                     </select>
                   </label>
+                  {ruleGroups.length ? (
+                    <button
+                      type="button"
+                      className="ghost"
+                      disabled={busy}
+                      title="Cycle group filter: all → each group (u)"
+                      onClick={() => {
+                        const opts = ["", ...ruleGroups];
+                        const idx = opts.indexOf(ruleGroupFilter);
+                        const next = opts[(idx + 1) % opts.length] ?? "";
+                        setRuleGroupFilter(next);
+                        setStatus(next ? `Filter: group=${next}` : "Filter: all groups");
+                      }}
+                    >
+                      Cycle group
+                    </button>
+                  ) : null}
                   <label className="field inline">
                     Filter
                     <input
