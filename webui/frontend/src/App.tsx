@@ -659,6 +659,25 @@ export function App() {
         else if (rulesFwId) void onCompile();
         return;
       }
+      if (e.altKey && !mod && e.key.toLowerCase() === "r") {
+        // Open Policy rules for selected Firewall/Cluster, or current rulesFwId.
+        e.preventDefault();
+        if (selected && (selected.type === "Firewall" || selected.type === "Cluster")) {
+          void loadRules(selected.id, "policy");
+        } else if (rulesFwId) {
+          void loadRules(rulesFwId, rulesWhich);
+        }
+        return;
+      }
+      if (e.altKey && !mod && e.key.toLowerCase() === "d" && (rulesFwId || selected)) {
+        e.preventDefault();
+        const fw =
+          selected && (selected.type === "Firewall" || selected.type === "Cluster")
+            ? selected.id
+            : rulesFwId || undefined;
+        if (fw) void onDeployDryRun(fw);
+        return;
+      }
       if (mod && e.key.toLowerCase() === "i") {
         e.preventDefault();
         void onShowStats();
