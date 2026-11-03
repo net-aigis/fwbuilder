@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "328"
+WEBUI_SOFT_COMPLETE_PHASE = "336"
 
 HARD_GAPS_OPEN = (
     "full_qt_pixel_layout",
@@ -54,6 +54,23 @@ HARD_GAP_NOTES = {
     ),
     "password_keyboard_interactive_ssh": (
         "BatchMode only; allow_password_auth → 400; POST /ssh-auth/password → 501."
+    ),
+}
+
+HARD_GAP_CLOSURE = {
+    "full_qt_pixel_layout": (
+        "Close when AdvancedDialog pages render with desktop-equivalent geometry "
+        "(row/col sizes, nested layouts, and widget bounds match Qt within a stated "
+        "tolerance) — layout-fidelity score alone is not sufficient."
+    ),
+    "expect_sshsession_runtime": (
+        "Close when WebUI can open an SSHSession and run the desktop expect install "
+        "path for interactive platforms (Cisco/Juniper/Procurve), or an explicitly "
+        "documented subset with live execution (not preview-only / 501)."
+    ),
+    "password_keyboard_interactive_ssh": (
+        "Close when password and/or keyboard-interactive SSH auth works for deploy "
+        "(BatchMode-only is not enough); must not hang on prompts."
     ),
 }
 
@@ -96,11 +113,13 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
         "hard_gap_open": list(HARD_GAPS_OPEN),
         "hard_gap_count": len(HARD_GAPS_OPEN),
         "hard_gap_notes": dict(HARD_GAP_NOTES),
+        "hard_gap_closure": dict(HARD_GAP_CLOSURE),
         "layout_fidelity_path": "/api/v1/layout-fidelity",
         "note": (
             "Honesty/preview track is soft-complete (soft_fertig); these items remain "
             "unimplemented (full Qt pixel layout, expect/SSHSession runtime, password SSH). "
-            "GET /layout-fidelity reports extracted-signal coverage only."
+            "GET /layout-fidelity reports extracted-signal coverage only. "
+            "hard_gap_closure documents what would close each gap."
         ),
     }
 

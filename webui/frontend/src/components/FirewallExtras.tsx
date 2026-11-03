@@ -165,6 +165,7 @@ export function FirewallExtras({
   const [hardGaps, setHardGaps] = useState<string[]>([]);
   const [hardGapsNote, setHardGapsNote] = useState<string | null>(null);
   const [hardGapNotes, setHardGapNotes] = useState<Record<string, string>>({});
+  const [hardGapClosure, setHardGapClosure] = useState<Record<string, string>>({});
   const [layoutFidelity, setLayoutFidelity] = useState<string | null>(null);
   const [resHint, setResHint] = useState<string | null>(null);
 
@@ -193,6 +194,7 @@ export function FirewallExtras({
       else setHardGaps([]);
       setHardGapsNote(gaps?.note || null);
       setHardGapNotes(gaps?.hard_gap_notes || {});
+      setHardGapClosure(gaps?.hard_gap_closure || {});
       try {
         const fid = await fetchLayoutFidelity(plat, hostOs || "");
         if (fid.ok && fid.score_percent != null) {
@@ -1385,6 +1387,9 @@ export function FirewallExtras({
                 hardGapNotes[g] ? (
                   <li key={g}>
                     <code>{g}</code>: {hardGapNotes[g]}
+                    {hardGapClosure[g] ? (
+                      <span className="muted"> — close when: {hardGapClosure[g]}</span>
+                    ) : null}
                   </li>
                 ) : null,
               )}

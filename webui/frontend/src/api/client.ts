@@ -796,6 +796,8 @@ export function fetchHardGaps() {
     hard_gap_open: string[];
     hard_gap_count?: number;
     hard_gap_notes?: Record<string, string>;
+    hard_gap_closure?: Record<string, string>;
+    layout_fidelity_path?: string;
     note?: string;
   }>("/api/v1/hard-gaps");
 }
