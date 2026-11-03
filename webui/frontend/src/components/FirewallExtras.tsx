@@ -87,7 +87,13 @@ export function FirewallExtras({
   const [log, setLog] = useState<string | null>(null);
   const [lastPlan, setLastPlan] = useState<string[]>([]);
   const [showAll, setShowAll] = useState(false);
-  const [useQtGridLayout, setUseQtGridLayout] = useState(true);
+  const [useQtGridLayout, setUseQtGridLayout] = useState(() => {
+    try {
+      return sessionStorage.getItem("fwbweb.qtGridLayout") !== "0";
+    } catch {
+      return true;
+    }
+  });
   const [groups, setGroups] = useState<Group[]>([]);
   const [featured, setFeatured] = useState<string[]>(FALLBACK_FEATURED);
   const [compiler, setCompiler] = useState<string>("");
@@ -229,6 +235,14 @@ export function FirewallExtras({
       /* ignore */
     }
   }, [activeGroup, platform, hostOs]);
+
+  useEffect(() => {
+    try {
+      sessionStorage.setItem("fwbweb.qtGridLayout", useQtGridLayout ? "1" : "0");
+    } catch {
+      /* ignore */
+    }
+  }, [useQtGridLayout]);
 
   useEffect(() => {
     if (!firewallId) return;
