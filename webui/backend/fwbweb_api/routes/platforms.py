@@ -163,12 +163,13 @@ def get_expect_install_walkthrough(
 @router.post("/expect-install-plan/run")
 def run_expect_install_plan(
     host_os: str = Query(..., min_length=1),
+    step: str | None = Query(None, description="Optional single step id; still refused"),
     _: str = Depends(require_token),
 ) -> dict[str, Any]:
     """Explicit refusal: WebUI never executes the desktop expect installer."""
     from ..expect_installer import refuse_expect_install
 
-    raise HTTPException(status_code=501, detail=refuse_expect_install(host_os))
+    raise HTTPException(status_code=501, detail=refuse_expect_install(host_os, step=step))
 
 
 @router.get("/ssh-auth")

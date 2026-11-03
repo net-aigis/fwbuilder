@@ -377,6 +377,22 @@ def parse_widget_enabled(root: ET.Element | None) -> dict[str, bool]:
     return out
 
 
+def parse_widget_visible(root: ET.Element | None) -> dict[str, bool]:
+    """Map widget objectName → visible flag when .ui sets it explicitly."""
+    out: dict[str, bool] = {}
+    if root is None:
+        return out
+    for w in root.iter("widget"):
+        name = w.get("name")
+        if not name:
+            continue
+        prop = w.find("./property[@name='visible']/bool")
+        if prop is None or prop.text is None:
+            continue
+        out[name] = prop.text.strip().lower() in {"true", "1"}
+    return out
+
+
 def _parse_stretch_list(raw: str | None) -> list[int]:
     if not raw or not str(raw).strip():
         return []
@@ -731,6 +747,7 @@ def extract_cpp(cpp_path: Path, ui_root: ET.Element | None, ui_widgets: dict[str
     max_sizes = parse_widget_maximum_sizes(ui_root)
     alignments = parse_widget_alignments(ui_root)
     enabled_map = parse_widget_enabled(ui_root)
+    visible_map = parse_widget_visible(ui_root)
     # Widgets that have a separate grid QLabel buddy cell (caption lives there).
     external_label_widgets: set[str] = set()
     if ui_root is not None:
@@ -758,6 +775,8 @@ def extract_cpp(cpp_path: Path, ui_root: ET.Element | None, ui_widgets: dict[str
             field["alignment"] = alignments[widget]
         if widget in enabled_map:
             field["enabled"] = enabled_map[widget]
+        if widget in visible_map:
+            field["visible"] = visible_map[widget]
         if widget in min_sizes:
             field["minimum_size"] = min_sizes[widget]
         if widget in max_sizes:

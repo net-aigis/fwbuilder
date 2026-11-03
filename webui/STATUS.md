@@ -429,25 +429,33 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Soft marker 288 | done | E2E phase286 |
 | STATUS 281+ mentions | done | E2E phase287 |
 | Soft-complete STATUS through 288 | done | E2E phase288 |
+| hard_gap_notes UI list | done | E2E phase289 |
+| Expect run step= still 501 | done | E2E phase290 |
+| visible=false extract/hide | done | E2E phase291 |
+| 289–291 wiring | done | E2E phase292 |
+| Soft marker 296 | done | E2E phase293 |
+| STATUS 289+ mentions | done | E2E phase294 |
+| Typecheck after 289–291 | done | E2E phase295 |
+| Soft-complete STATUS through 296 | done | E2E phase296 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Soft-complete (feature/webui polish track)
 
 WebUI on `feature/webui` remains soft-complete for the polish track.
 
-### Hard-gap honesty/preview track — soft-fertig (phase256); preview slices through 288
+### Hard-gap honesty/preview track — soft-fertig (phase256); preview slices through 296
 
-`WEBUI_SOFT_COMPLETE_PHASE=288`; `/hard-gaps` sets `soft_fertig_honesty_track: true` + `hard_gap_notes`.
+`WEBUI_SOFT_COMPLETE_PHASE=296`; `/hard-gaps` sets `soft_fertig_honesty_track: true` + `hard_gap_notes` (UI list).
 
-- Deploy: manifest `# files:`, OS configlets, external PolicyInstallScript, copyFWB, use_scp, gzip transfer on compress (plan shows −%), capabilities API (+ expect_install_plan / walkthrough pointers), live gate + force_limited, expect stub + raw/expanded configlet preview + ordered expect plan (reg_user + safety_net_acl + download + sessionStorage) + dry walkthrough (all preview_only, sessionStorage); `POST …/run` → 501 (still **no** expect/SSHSession runtime)
-- Options: .ui labels, free QLabel annotations (+ alignment), buddy_labels (external_label controls), enabled=false respect, QRadio bool, QGroupBox sections (flat/checkable), tooltips, page-local QGridLayout + spacers (sizeHint) + column/row stretch + spacing/margins (CSS + page hint) + sizePolicy + min/max size + layout hints + layout_tree + dialog windowTitle/geometry/tab_position/sizeGrip (header WxH + tabs + CSS max-height) + shared `qtGridStyle` on Firewall/Rule/Interface (still **not** full pixel Qt layout)
+- Deploy: manifest `# files:`, OS configlets, external PolicyInstallScript, copyFWB, use_scp, gzip transfer on compress (plan shows −%), capabilities API (+ expect_install_plan / walkthrough pointers), live gate + force_limited, expect stub + raw/expanded configlet preview + ordered expect plan (reg_user + safety_net_acl + download + sessionStorage) + dry walkthrough (all preview_only, sessionStorage); `POST …/run` (+ optional `step=`) → 501 / step_refused (still **no** expect/SSHSession runtime)
+- Options: .ui labels, free QLabel annotations (+ alignment), buddy_labels (external_label controls), enabled/visible respect, QRadio bool, QGroupBox sections (flat/checkable), tooltips, page-local QGridLayout + spacers (sizeHint) + column/row stretch + spacing/margins (CSS + page hint) + sizePolicy + min/max size + layout hints + layout_tree + dialog windowTitle/geometry/tab_position/sizeGrip (header WxH + tabs + CSS max-height) + shared `qtGridStyle` on Firewall/Rule/Interface (still **not** full pixel Qt layout)
 - SSH: BatchMode only; `GET /ssh-auth`, capabilities.ssh_auth, deploy plan line, `allow_password_auth` → 400, `POST /ssh-auth/password` → 501
-- Honesty: UI lists `hard_gap_open` + note via `fetchHardGaps`; `GET /hard-gaps` documents remaining gaps with per-gap notes
+- Honesty: UI lists `hard_gap_open` + per-gap notes via `fetchHardGaps`; `GET /hard-gaps` documents remaining gaps
 
 Still open (hard backlog — **not** soft-fertig):
 
-- Full Qt AdvancedDialog **pixel** layout parity (exact geometry; dialog size + grid spacing since phase226/241; row/col + spacers/sizeHint + stretch + annotations/buddy_labels/alignment + sizePolicy/min/max/enabled + QGroupBox flat + layout_tree + tab_position/sizeGrip since phase165/177/181/189/205/209/213/257–282)
-- Full desktop **FirewallInstaller** expect/SSHSession for Cisco/Juniper/Procurve (plan/preview/walkthrough/download; run endpoint refuses with 501)
+- Full Qt AdvancedDialog **pixel** layout parity (exact geometry; dialog size + grid spacing since phase226/241; row/col + spacers/sizeHint + stretch + annotations/buddy_labels/alignment + sizePolicy/min/max/enabled/visible + QGroupBox flat + layout_tree + tab_position/sizeGrip since phase165/177/181/189/205/209/213/257–291)
+- Full desktop **FirewallInstaller** expect/SSHSession for Cisco/Juniper/Procurve (plan/preview/walkthrough/download; run/step endpoint refuses with 501)
 - Password/keyboard-interactive SSH (API refuses `allow_password_auth` and `POST /ssh-auth/password`; BatchMode only)
 
 ## Phase 3 — compile / deploy
@@ -747,6 +755,14 @@ Still open (hard backlog — **not** soft-fertig):
 | Local E2E phase286 (soft marker 288) | done | `e2e-phase286.sh` **OK** |
 | Local E2E phase287 (STATUS mentions) | done | `e2e-phase287.sh` **OK** |
 | Local E2E phase288 (STATUS soft-complete) | done | `e2e-phase288.sh` **OK** |
+| Local E2E phase289 (hard_gap_notes UI) | done | `e2e-phase289.sh` **OK** |
+| Local E2E phase290 (expect step refuse) | done | `e2e-phase290.sh` **OK** |
+| Local E2E phase291 (visible wiring) | done | `e2e-phase291.sh` **OK** |
+| Local E2E phase292 (wiring) | done | `e2e-phase292.sh` **OK** |
+| Local E2E phase293 (soft marker 296) | done | `e2e-phase293.sh` **OK** |
+| Local E2E phase294 (STATUS mentions) | done | `e2e-phase294.sh` **OK** |
+| Local E2E phase295 (typecheck) | done | `e2e-phase295.sh` **OK** |
+| Local E2E phase296 (STATUS soft-complete) | done | `e2e-phase296.sh` **OK** |
 
 ## Local commands
 
@@ -1044,6 +1060,14 @@ bash webui/scripts/e2e-phase285.sh
 bash webui/scripts/e2e-phase286.sh
 bash webui/scripts/e2e-phase287.sh
 bash webui/scripts/e2e-phase288.sh
+bash webui/scripts/e2e-phase289.sh
+bash webui/scripts/e2e-phase290.sh
+bash webui/scripts/e2e-phase291.sh
+bash webui/scripts/e2e-phase292.sh
+bash webui/scripts/e2e-phase293.sh
+bash webui/scripts/e2e-phase294.sh
+bash webui/scripts/e2e-phase295.sh
+bash webui/scripts/e2e-phase296.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

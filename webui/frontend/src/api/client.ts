@@ -492,6 +492,7 @@ export type OptionFieldMeta = {
   alignment?: string;
   external_label?: boolean;
   enabled?: boolean;
+  visible?: boolean;
 };
 
 export function fetchOptionSchema(platform: string, hostOs = "") {
@@ -759,9 +760,27 @@ export function fetchInstallerConfigletFile(
 export function fetchHardGaps() {
   return api<{
     soft_complete_phase: string;
+    soft_fertig_honesty_track?: boolean;
     hard_gap_open: string[];
+    hard_gap_count?: number;
+    hard_gap_notes?: Record<string, string>;
     note?: string;
   }>("/api/v1/hard-gaps");
+}
+
+export async function refuseExpectInstallStep(
+  hostOs: string,
+  stepId: string,
+): Promise<{ refused: boolean; status: number; detail: string }> {
+  const q = new URLSearchParams({ host_os: hostOs, step: stepId });
+  const headers = new Headers();
+  headers.set("Authorization", `Bearer ${getToken()}`);
+  const res = await fetch(`${apiBase}/api/v1/expect-install-plan/run?${q.toString()}`, {
+    method: "POST",
+    headers,
+  });
+  const text = await res.text();
+  return { refused: res.status === 501, status: res.status, detail: text };
 }
 
 export function fetchSshAuth() {

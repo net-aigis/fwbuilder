@@ -15,6 +15,7 @@ type FieldMeta = {
   alignment?: string;
   external_label?: boolean;
   enabled?: boolean;
+  visible?: boolean;
 };
 
 type Props = {
@@ -69,6 +70,9 @@ export function OptionField({ name, value, meta, disabled, onChange }: Props) {
   const title = tip || (showKeyHint ? name : undefined) || (external ? name : undefined);
   const style = fieldStyle(meta);
   const sizeClass = sizePolicyClass(meta);
+  if (meta?.visible === false) {
+    return null;
+  }
   const fieldClass = [
     "field",
     "block",

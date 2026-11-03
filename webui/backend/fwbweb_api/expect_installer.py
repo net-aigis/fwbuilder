@@ -74,14 +74,21 @@ def expect_installer_status(host_os: str) -> dict[str, Any]:
     }
 
 
-def refuse_expect_install(host_os: str) -> dict[str, Any]:
+def refuse_expect_install(host_os: str, step: str | None = None) -> dict[str, Any]:
     """Return a structured refusal payload for live expect installs."""
     status = expect_installer_status(host_os)
-    return {
+    out: dict[str, Any] = {
         "ok": False,
         "error": "expect_installer_not_implemented",
         **status,
     }
+    if step:
+        out["step"] = step
+        out["step_refused"] = True
+        out["note"] = (
+            f"Step '{step}' was not executed. WebUI has no expect/SSHSession runtime."
+        )
+    return out
 
 
 def expect_install_plan(

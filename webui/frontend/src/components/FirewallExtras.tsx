@@ -6,6 +6,7 @@ import {
   fetchExpectInstallPlan,
   fetchExpectInstallWalkthrough,
   fetchHardGaps,
+  refuseExpectInstallStep,
   refusePasswordSsh,
   fetchInstallerConfigletFile,
   fetchInstallerConfiglets,
@@ -162,6 +163,7 @@ export function FirewallExtras({
   const [sshAuthNote, setSshAuthNote] = useState<string | null>(null);
   const [hardGaps, setHardGaps] = useState<string[]>([]);
   const [hardGapsNote, setHardGapsNote] = useState<string | null>(null);
+  const [hardGapNotes, setHardGapNotes] = useState<Record<string, string>>({});
   const [resHint, setResHint] = useState<string | null>(null);
 
   async function reload() {
@@ -188,6 +190,7 @@ export function FirewallExtras({
       else if (resSt?.hard_gap_open?.length) setHardGaps(resSt.hard_gap_open);
       else setHardGaps([]);
       setHardGapsNote(gaps?.note || null);
+      setHardGapNotes(gaps?.hard_gap_notes || {});
       if (resSt?.configlets_ok) {
         const phase = resSt.soft_complete_phase
           ? ` · soft-complete phase${resSt.soft_complete_phase}`
@@ -1026,6 +1029,33 @@ export function FirewallExtras({
                 >
                   Probe password SSH
                 </button>
+                <button
+                  type="button"
+                  className="ghost"
+                  disabled={busy || !hostOs}
+                  title="POST expect run for step ssh_open — always 501"
+                  onClick={() => {
+                    if (!hostOs) return;
+                    void (async () => {
+                      onBusy?.(true);
+                      onError?.(null);
+                      try {
+                        const r = await refuseExpectInstallStep(hostOs, "ssh_open");
+                        if (r.refused) {
+                          onStatus?.("Expect step ssh_open refused (501)");
+                        } else {
+                          onError?.(`Unexpected expect run response: ${r.status}`);
+                        }
+                      } catch (e) {
+                        onError?.(e instanceof Error ? e.message : String(e));
+                      } finally {
+                        onBusy?.(false);
+                      }
+                    })();
+                  }}
+                >
+                  Probe expect step
+                </button>
               </div>
               {expectPlanText ? (
                 <pre className="deploy-log configlet-preview" tabIndex={0}>
@@ -1309,6 +1339,17 @@ export function FirewallExtras({
             Hard gaps still open: <code>{hardGaps.join(", ")}</code>
           </p>
           {hardGapsNote ? <p className="muted">{hardGapsNote}</p> : null}
+          {Object.keys(hardGapNotes).length ? (
+            <ul className="muted hard-gap-notes">
+              {hardGaps.map((g) =>
+                hardGapNotes[g] ? (
+                  <li key={g}>
+                    <code>{g}</code>: {hardGapNotes[g]}
+                  </li>
+                ) : null,
+              )}
+            </ul>
+          ) : null}
         </div>
       ) : null}
       <p className="muted pad">
