@@ -387,6 +387,20 @@ def _rule_dialog_stem(rule_kind: str | None) -> str | None:
     return mapping.get(key) or mapping.get(key.lower())
 
 
+def _groups_from_pages(pages: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    groups: list[dict[str, Any]] = []
+    for p in pages:
+        g: dict[str, Any] = {
+            "id": p.get("id"),
+            "title": p.get("title"),
+            "keys": list(p.get("keys") or []),
+        }
+        if p.get("sections"):
+            g["sections"] = p["sections"]
+        groups.append(g)
+    return groups
+
+
 def rule_option_schema(rule_kind: str = "policy") -> dict[str, Any]:
     """Field metadata for Policy/NAT/Routing rule options dialogs."""
     kind = (rule_kind or "policy").strip() or "policy"
@@ -400,7 +414,7 @@ def rule_option_schema(rule_kind: str = "policy") -> dict[str, Any]:
         field_meta = {k: dict(v) for k, v in (info.get("fields") or {}).items()}
         pages = list(info.get("pages") or [])
     if pages:
-        groups = [{"id": p["id"], "title": p["title"], "keys": list(p.get("keys") or [])} for p in pages]
+        groups = _groups_from_pages(pages)
     elif field_meta:
         groups = [{"id": "rule", "title": "Rule options", "keys": sorted(field_meta.keys())}]
     else:
@@ -446,7 +460,7 @@ def interface_option_schema(host_os: str) -> dict[str, Any]:
         defaults.setdefault(key, "")
 
     if pages:
-        groups = [{"id": p["id"], "title": p["title"], "keys": list(p.get("keys") or [])} for p in pages]
+        groups = _groups_from_pages(pages)
     elif field_meta:
         groups = [{"id": "interface", "title": "Interface", "keys": sorted(field_meta.keys())}]
     elif defaults:

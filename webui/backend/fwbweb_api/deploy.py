@@ -189,9 +189,13 @@ def plan_and_deploy(
 
     ssh_extra = shlex.split(ssh_args) if ssh_args.strip() else []
     scp_extra = shlex.split(scp_args) if scp_args.strip() else []
+    identity_expanded: str | None = None
     if identity_file:
-        ssh_extra += ["-i", identity_file]
-        scp_extra += ["-i", identity_file]
+        identity_expanded = str(Path(identity_file).expanduser())
+        if not dry_run and not Path(identity_expanded).is_file():
+            raise DeployError(f"SSH identity file missing: {identity_expanded}")
+        ssh_extra += ["-i", identity_expanded]
+        scp_extra += ["-i", identity_expanded]
 
     # Prefer BatchMode so missing keys fail fast instead of hanging on password.
     base_ssh = ["ssh", "-o", "BatchMode=yes", "-o", "StrictHostKeyChecking=accept-new", *ssh_extra]
@@ -270,6 +274,7 @@ def plan_and_deploy(
         "manifest": manifest,
         "activation_cmd": act if activate else "",
         "activation_source": activation_source,
+        "identity_file": identity_expanded,
         "plan": plan_lines,
         "commands": commands,
         "log": "",

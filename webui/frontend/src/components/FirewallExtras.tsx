@@ -106,10 +106,12 @@ export function FirewallExtras({
             dryRun?: boolean;
             activate?: boolean;
             compress?: boolean;
+            identityFile?: string;
           };
           if (typeof prefs.dryRun === "boolean") setDryRun(prefs.dryRun);
           if (typeof prefs.activate === "boolean") setActivate(prefs.activate);
           if (typeof prefs.compress === "boolean") setCompress(prefs.compress);
+          if (typeof prefs.identityFile === "string") setIdentityFile(prefs.identityFile);
         }
       } catch {
         /* ignore */
@@ -172,12 +174,12 @@ export function FirewallExtras({
     try {
       sessionStorage.setItem(
         deployPrefsKey(firewallId),
-        JSON.stringify({ dryRun, activate, compress }),
+        JSON.stringify({ dryRun, activate, compress, identityFile }),
       );
     } catch {
       /* ignore */
     }
-  }, [firewallId, dryRun, activate, compress]);
+  }, [firewallId, dryRun, activate, compress, identityFile]);
 
   const keys = useMemo(() => {
     const all = Object.keys(options).sort();

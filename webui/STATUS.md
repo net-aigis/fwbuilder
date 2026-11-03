@@ -284,6 +284,8 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Deploy compressScript (per request) | done | body.compress + UI; E2E phase139 |
 | Interactive installer warning + deploy prefs | done | FirewallExtras; E2E phase140 |
 | Root vs reg_user activation configlets | done | linux24; E2E phase141 |
+| SSH identity `~` expand + missing check | done | dry-run expand / live reject; E2E phase142/144 |
+| openwrt installer configlet resolve | done | own dir or linux24; E2E phase143 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Soft-complete (feature/webui polish track)
@@ -448,6 +450,9 @@ Still open:
 | Local E2E phase139 (deploy compress) | done | `e2e-phase139.sh` **OK** |
 | Local E2E phase140 (interactive warn/prefs) | done | `e2e-phase140.sh` **OK** |
 | Local E2E phase141 (root vs reg_user) | done | `e2e-phase141.sh` **OK** |
+| Local E2E phase142 (identity ~ expand) | done | `e2e-phase142.sh` **OK** |
+| Local E2E phase143 (openwrt configlets) | done | `e2e-phase143.sh` **OK** |
+| Local E2E phase144 (missing identity) | done | `e2e-phase144.sh` **OK** |
 
 ## Local commands
 
@@ -598,6 +603,9 @@ bash webui/scripts/e2e-phase138.sh
 bash webui/scripts/e2e-phase139.sh
 bash webui/scripts/e2e-phase140.sh
 bash webui/scripts/e2e-phase141.sh
+bash webui/scripts/e2e-phase142.sh
+bash webui/scripts/e2e-phase143.sh
+bash webui/scripts/e2e-phase144.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```
