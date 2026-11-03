@@ -150,7 +150,10 @@ export function FirewallExtras({
       if (sshAuth?.note) setSshAuthNote(sshAuth.note);
       else setSshAuthNote(null);
       if (resSt?.configlets_ok) {
-        setResHint(`${resSt.configlet_os_count} installer OS configlet dirs`);
+        const phase = resSt.soft_complete_phase
+          ? ` · soft-complete phase${resSt.soft_complete_phase}`
+          : "";
+        setResHint(`${resSt.configlet_os_count} installer OS configlet dirs${phase}`);
       } else if (resSt) {
         setResHint("configlets missing — check FWBUILDER_RES_DIR");
       } else {
@@ -212,6 +215,7 @@ export function FirewallExtras({
           };
         };
         setInstallerMode(caps.recommended_webui_mode || null);
+        const planNote = caps.expect_install_plan?.note;
         if (cfgList.interactive_installer) {
           const steps = caps.expect_installer?.desktop_steps || [];
           setExpectSteps(steps);
@@ -219,13 +223,18 @@ export function FirewallExtras({
             caps.expect_installer?.names || caps.names || cfgList.names || [],
           );
           setInstallerNote(
-            cfgList.note ||
-              "This OS uses interactive FirewallInstaller pre/post configlets; WebUI scp/ssh deploy is limited.",
+            [
+              cfgList.note ||
+                "This OS uses interactive FirewallInstaller pre/post configlets; WebUI scp/ssh deploy is limited.",
+              planNote,
+            ]
+              .filter(Boolean)
+              .join(" "),
           );
         } else {
           setExpectSteps([]);
           setExpectConfiglets([]);
-          setInstallerNote(null);
+          setInstallerNote(planNote || null);
         }
       } else {
         setInstallerMode(null);

@@ -756,6 +756,8 @@ export function fetchResStatus() {
     configlets_ok: boolean;
     configlet_os_count: number;
     configlet_os: string[];
+    soft_complete_phase?: string;
+    hard_gap_open?: string[];
   }>("/api/v1/res-status");
 }
 
@@ -769,6 +771,14 @@ export function fetchInstallerCapabilities(hostOs: string) {
     webui_modes?: Record<string, boolean>;
     note?: string | null;
     names?: string[];
+    expect_install_plan?: {
+      available?: boolean;
+      executable?: boolean;
+      path?: string;
+      run_path?: string;
+      run_status?: number;
+      note?: string;
+    };
     ssh_auth?: {
       batch_mode?: boolean;
       password_supported?: boolean;

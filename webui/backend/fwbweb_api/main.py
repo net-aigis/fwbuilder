@@ -34,9 +34,13 @@ app.include_router(deploy_router)
 app.include_router(platforms_router)
 
 
+# Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
+WEBUI_SOFT_COMPLETE_PHASE = "220"
+
+
 @app.get("/api/v1/health")
 def health() -> dict[str, str]:
-    return {"status": "ok"}
+    return {"status": "ok", "soft_complete_phase": WEBUI_SOFT_COMPLETE_PHASE}
 
 
 @app.get("/api/v1/res-status")
@@ -58,6 +62,12 @@ def res_status(_: str = Depends(require_token)) -> dict[str, object]:
         "configlets_ok": cfg.is_dir(),
         "configlet_os_count": len(dirs),
         "configlet_os": dirs,
+        "soft_complete_phase": WEBUI_SOFT_COMPLETE_PHASE,
+        "hard_gap_open": [
+            "full_qt_pixel_layout",
+            "expect_sshsession_runtime",
+            "password_keyboard_interactive_ssh",
+        ],
     }
 
 
