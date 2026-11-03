@@ -498,6 +498,44 @@ export function App() {
     }
   }
 
+  async function onBulkDirection() {
+    if (!sessionId || !visibleRules.length) return;
+    const withDir = visibleRules.filter((r) => "direction" in r);
+    if (!withDir.length) {
+      setError("Visible rules have no direction field");
+      return;
+    }
+    const current = String((withDir[0] as PolicyRule).direction ?? "Both");
+    const next = window.prompt(
+      `Set direction on ${withDir.length} visible rule(s) (Inbound|Outbound|Both)`,
+      current,
+    );
+    if (next === null) return;
+    const direction = next.trim();
+    if (!direction) return;
+    if (!["Inbound", "Outbound", "Both"].includes(direction)) {
+      setError("direction must be Inbound, Outbound, or Both");
+      return;
+    }
+    if (!window.confirm(`Set direction “${direction}” on ${withDir.length} visible rule(s)?`))
+      return;
+    setBusy(true);
+    setError(null);
+    try {
+      for (const rule of withDir) {
+        if (String((rule as PolicyRule).direction ?? "") === direction) continue;
+        await updateRule(sessionId, rule.id, { direction });
+      }
+      setDirty(true);
+      await refreshRules();
+      setStatus(`Set direction “${direction}” on ${withDir.length} visible rules`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function onBulkAction() {
     if (!sessionId || !visibleRules.length) return;
     const withAction = visibleRules.filter((r) => "action" in r);
@@ -2508,9 +2546,10 @@ export function App() {
                   className="ghost"
                   onClick={() => {
                     const lines = [
-                      "id\ttype\tname",
+                      "id\ttype\tname\tcomment",
                       ...searchHits.map(
-                        (h) => `${h.id}\t${h.type}\t${(h.name ?? "").replace(/\t|\n/g, " ")}`,
+                        (h) =>
+                          `${h.id}\t${h.type}\t${(h.name ?? "").replace(/\t|\n/g, " ")}\t${(h.comment ?? "").replace(/\t|\n/g, " ")}`,
                       ),
                     ];
                     const blob = new Blob([lines.join("\n")], {
@@ -2550,9 +2589,11 @@ export function App() {
                     e.dataTransfer.effectAllowed = "copy";
                   }}
                   onClick={() => void onSelect(h)}
+                  title={h.comment || h.id}
                 >
                   <span className="tree-type">{h.type}</span>
                   <span className="tree-name">{h.name}</span>
+                  {h.comment ? <span className="muted tree-hint">{h.comment}</span> : null}
                 </button>
               ))}
             </div>
@@ -3174,6 +3215,15 @@ export function App() {
                     title="Set the same action on all visible Policy/NAT rules"
                   >
                     Action visible…
+                  </button>
+                  <button
+                    type="button"
+                    className="ghost"
+                    disabled={!canOperate || !visibleRules.length}
+                    onClick={() => void onBulkDirection()}
+                    title="Set direction on all visible Policy rules"
+                  >
+                    Direction visible…
                   </button>
                   <button
                     type="button"

@@ -202,6 +202,8 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Stats rulesets count | done | bridge stats; E2E phase63 |
 | Search matches object comment | done | collectSearch; E2E phase64 |
 | Bulk logging visible rules | done | Log on/off visible; E2E phase64 |
+| Search hit shows comment | done | search panel; E2E phase65 |
+| Bulk direction visible | done | Direction visible…; E2E phase65 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Phase 3 — compile / deploy
@@ -277,6 +279,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase62 (rule group + object id) | done | `e2e-phase62.sh` **OK** |
 | Local E2E phase63 (jump pos + rulesets) | done | `e2e-phase63.sh` **OK** |
 | Local E2E phase64 (comment search + logging) | done | `e2e-phase64.sh` **OK** |
+| Local E2E phase65 (comment hit + direction) | done | `e2e-phase65.sh` **OK** |
 
 ## Local commands
 
@@ -350,6 +353,7 @@ bash webui/scripts/e2e-phase61.sh
 bash webui/scripts/e2e-phase62.sh
 bash webui/scripts/e2e-phase63.sh
 bash webui/scripts/e2e-phase64.sh
+bash webui/scripts/e2e-phase65.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```
