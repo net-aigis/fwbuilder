@@ -683,6 +683,12 @@ export function FirewallExtras({
             {activeGroupMeta.column_stretch?.length
               ? ` · stretch ${activeGroupMeta.column_stretch.join(":")}`
               : ""}
+            {activeGroupMeta.spacing &&
+            (activeGroupMeta.spacing.vertical != null ||
+              activeGroupMeta.spacing.horizontal != null ||
+              activeGroupMeta.spacing.spacing != null)
+              ? ` · gap ${activeGroupMeta.spacing.vertical ?? activeGroupMeta.spacing.spacing ?? "·"}/${activeGroupMeta.spacing.horizontal ?? activeGroupMeta.spacing.spacing ?? "·"}`
+              : ""}
           </span>
           <button
             type="button"

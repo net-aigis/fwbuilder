@@ -389,14 +389,18 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Rule catalog spacing check | done | E2E phase246 |
 | 245 wiring check | done | E2E phase247 |
 | Soft-complete STATUS through 248 | done | E2E phase248 |
+| Gap hint on options page | done | E2E phase249 |
+| Smoke spacing + soft marker | done | E2E phase250 |
+| 249 wiring check | done | E2E phase251 |
+| Soft-complete STATUS through 252 | done | E2E phase252 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Soft-complete (feature/webui polish track)
 
-WebUI on `feature/webui` remains soft-complete for the polish track; hard-gap honesty/preview track is soft-complete through phase248 (`WEBUI_SOFT_COMPLETE_PHASE` in `/health`, `/res-status`, `/hard-gaps`):
+WebUI on `feature/webui` remains soft-complete for the polish track; hard-gap honesty/preview track is soft-complete through phase252 (`WEBUI_SOFT_COMPLETE_PHASE` in `/health`, `/res-status`, `/hard-gaps`):
 
 - Deploy: manifest `# files:`, OS configlets, external PolicyInstallScript, copyFWB, use_scp, gzip transfer on compress (plan shows −%), capabilities API (+ expect_install_plan pointer), live gate + force_limited, expect stub + raw/expanded configlet preview + ordered expect plan download; `POST …/run` → 501 (still **no** expect/SSHSession runtime)
-- Options: .ui labels, free QLabel annotations, QRadio bool, QGroupBox sections, tooltips, page-local QGridLayout + spacers + columnstretch + spacing/margins + sizePolicy + min/max size + layout hints + dialog windowTitle/geometry (header WxH + CSS max-height) + shared `qtGridStyle` on Firewall/Rule/Interface (still **not** full pixel Qt layout)
+- Options: .ui labels, free QLabel annotations, QRadio bool, QGroupBox sections, tooltips, page-local QGridLayout + spacers + columnstretch + spacing/margins (CSS + page hint) + sizePolicy + min/max size + layout hints + dialog windowTitle/geometry (header WxH + CSS max-height) + shared `qtGridStyle` on Firewall/Rule/Interface (still **not** full pixel Qt layout)
 - SSH: BatchMode only; `GET /ssh-auth`, capabilities.ssh_auth, deploy plan line, and `allow_password_auth` → 400
 - Honesty: UI lists `hard_gap_open` + note via `fetchHardGaps`; `GET /hard-gaps` documents remaining gaps
 
@@ -663,6 +667,10 @@ Still open (hard backlog):
 | Local E2E phase246 (rule spacing catalog) | done | `e2e-phase246.sh` **OK** |
 | Local E2E phase247 (wiring) | done | `e2e-phase247.sh` **OK** |
 | Local E2E phase248 (STATUS soft-complete) | done | `e2e-phase248.sh` **OK** |
+| Local E2E phase249 (gap page hint) | done | `e2e-phase249.sh` **OK** |
+| Local E2E phase250 (smoke spacing) | done | `e2e-phase250.sh` **OK** |
+| Local E2E phase251 (wiring) | done | `e2e-phase251.sh` **OK** |
+| Local E2E phase252 (STATUS soft-complete) | done | `e2e-phase252.sh` **OK** |
 
 ## Local commands
 
@@ -920,6 +928,10 @@ bash webui/scripts/e2e-phase245.sh
 bash webui/scripts/e2e-phase246.sh
 bash webui/scripts/e2e-phase247.sh
 bash webui/scripts/e2e-phase248.sh
+bash webui/scripts/e2e-phase249.sh
+bash webui/scripts/e2e-phase250.sh
+bash webui/scripts/e2e-phase251.sh
+bash webui/scripts/e2e-phase252.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```
