@@ -524,16 +524,28 @@ def parse_grid_positions(root: ET.Element | None) -> dict[str, dict[str, int]]:
     return positions
 
 
+def _bool_prop(widget: ET.Element, name: str) -> bool | None:
+    el = widget.find(f"./property[@name='{name}']/bool")
+    if el is None or el.text is None:
+        return None
+    return el.text.strip().lower() in {"true", "1"}
+
+
 def parse_groupbox_sections(page: ET.Element) -> list[dict]:
-    """QGroupBox subgroups on a tab page: {id, title, widgets:[…]}."""
+    """QGroupBox subgroups on a tab page: {id, title, widgets:[…], flat?, checkable?}."""
     sections: list[dict] = []
     for w in page.iter("widget"):
         if w.get("class") != "QGroupBox":
             continue
         title_el = w.find("./property[@name='title']/string")
         title = (title_el.text or "").strip() if title_el is not None else ""
+        flat = _bool_prop(w, "flat")
+        checkable = _bool_prop(w, "checkable")
+        # Untitled QGroupBoxes are kept when they declare flat/checkable (layout chrome).
         if not title:
-            continue
+            if flat is None and checkable is None:
+                continue
+            title = (w.get("name") or "").strip() or f"Group {len(sections) + 1}"
         widgets: list[str] = []
         for child in w.iter("widget"):
             name = child.get("name")
@@ -542,14 +554,45 @@ def parse_groupbox_sections(page: ET.Element) -> list[dict]:
                 widgets.append(name)
         if not widgets:
             continue
-        sections.append(
-            {
-                "id": w.get("name") or f"group{len(sections)}",
-                "title": title,
-                "widgets": widgets,
-            }
-        )
+        entry: dict[str, Any] = {
+            "id": w.get("name") or f"group{len(sections)}",
+            "title": title,
+            "widgets": widgets,
+        }
+        if flat is not None:
+            entry["flat"] = flat
+        if checkable is not None:
+            entry["checkable"] = checkable
+        checked = _bool_prop(w, "checked")
+        if checkable and checked is not None:
+            entry["checked"] = checked
+        sections.append(entry)
     return sections
+
+
+def _layout_tree(node: ET.Element, *, depth: int = 0, max_depth: int = 6) -> list[dict[str, Any]]:
+    """Shallow nested-layout tree under a page (structure hint, not pixel geometry)."""
+    if depth > max_depth:
+        return []
+    out: list[dict[str, Any]] = []
+    for child in list(node):
+        if child.tag == "layout":
+            cls = child.get("class") or "layout"
+            entry: dict[str, Any] = {"class": cls, "items": len(child.findall("item"))}
+            name = child.get("name")
+            if name:
+                entry["name"] = name
+            nested = _layout_tree(child, depth=depth + 1, max_depth=max_depth)
+            # Also peek into item→widget→layout
+            for item in child.findall("item"):
+                for w in item.findall("widget"):
+                    nested.extend(_layout_tree(w, depth=depth + 1, max_depth=max_depth))
+            if nested:
+                entry["children"] = nested
+            out.append(entry)
+        elif child.tag == "widget":
+            out.extend(_layout_tree(child, depth=depth, max_depth=max_depth))
+    return out
 
 
 def parse_pages(root: ET.Element | None) -> list[dict]:
@@ -595,6 +638,9 @@ def parse_pages(root: ET.Element | None) -> list[dict]:
             layouts = _layout_summary(page)
             if layouts:
                 page_entry["layouts"] = layouts
+            layout_tree = _layout_tree(page)
+            if layout_tree:
+                page_entry["layout_tree"] = layout_tree
             annotations = _annotations_in_subtree(page)
             if annotations:
                 page_entry["annotations"] = annotations
@@ -685,9 +731,15 @@ def pages_with_keys(pages: list[dict], fields: dict[str, dict]) -> list[dict]:
             sec_keys = [k for k in sec_keys if k in seen]
             if not sec_keys:
                 continue
-            sections_out.append(
-                {"id": sec["id"], "title": sec["title"], "keys": sec_keys}
-            )
+            sec_entry: dict[str, Any] = {
+                "id": sec["id"],
+                "title": sec["title"],
+                "keys": sec_keys,
+            }
+            for flag in ("flat", "checkable", "checked"):
+                if flag in sec:
+                    sec_entry[flag] = sec[flag]
+            sections_out.append(sec_entry)
             section_seen.update(sec_keys)
         leftover = [k for k in keys if k not in section_seen]
         if leftover and sections_out:
@@ -706,6 +758,8 @@ def pages_with_keys(pages: list[dict], fields: dict[str, dict]) -> list[dict]:
                 entry["spacing"] = page["spacing"]
             if page.get("layouts"):
                 entry["layouts"] = page["layouts"]
+            if page.get("layout_tree"):
+                entry["layout_tree"] = page["layout_tree"]
             if page.get("annotations"):
                 entry["annotations"] = page["annotations"]
             out.append(entry)

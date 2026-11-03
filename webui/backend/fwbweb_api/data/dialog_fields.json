@@ -1183,6 +1183,13 @@
           "keys": [
             "firewall_is_part_of_any_and_networks"
           ],
+          "layout_tree": [
+            {
+              "class": "QGridLayout",
+              "items": 6,
+              "name": "gridLayout_3"
+            }
+          ],
           "layouts": {
             "QGridLayout": 1
           },
@@ -1250,6 +1257,12 @@
           "id": "tab2",
           "keys": [
             "ulog_nlgroup"
+          ],
+          "layout_tree": [
+            {
+              "class": "QGridLayout",
+              "items": 8
+            }
           ],
           "layouts": {
             "QGridLayout": 1
@@ -1319,6 +1332,13 @@
             "limit_suffix",
             "limit_value_not",
             "limit_burst"
+          ],
+          "layout_tree": [
+            {
+              "class": "QGridLayout",
+              "items": 11,
+              "name": "gridLayout_10"
+            }
           ],
           "layouts": {
             "QGridLayout": 1
@@ -1415,6 +1435,13 @@
             "connlimit_value",
             "connlimit_above_not",
             "connlimit_masklen"
+          ],
+          "layout_tree": [
+            {
+              "class": "QGridLayout",
+              "items": 11,
+              "name": "gridLayout_9"
+            }
           ],
           "layouts": {
             "QGridLayout": 1
@@ -1518,6 +1545,13 @@
             "hashlimit_expire",
             "hashlimit_gcinterval"
           ],
+          "layout_tree": [
+            {
+              "class": "QGridLayout",
+              "items": 9,
+              "name": "gridLayout_8"
+            }
+          ],
           "layouts": {
             "QGridLayout": 1,
             "QHBoxLayout": 3
@@ -1556,6 +1590,13 @@
           "id": "tab6",
           "keys": [
             "ipt_mark_connections"
+          ],
+          "layout_tree": [
+            {
+              "class": "QGridLayout",
+              "items": 5,
+              "name": "gridLayout"
+            }
           ],
           "layouts": {
             "QGridLayout": 1
@@ -1609,6 +1650,13 @@
           "id": "tab7_2",
           "keys": [
             "classify_str"
+          ],
+          "layout_tree": [
+            {
+              "class": "QGridLayout",
+              "items": 4,
+              "name": "gridLayout_12"
+            }
           ],
           "layouts": {
             "QGridLayout": 1
@@ -1698,6 +1746,13 @@
             "ipt_gw",
             "ipt_continue",
             "ipt_tee"
+          ],
+          "layout_tree": [
+            {
+              "class": "QGridLayout",
+              "items": 5,
+              "name": "gridLayout_21"
+            }
           ],
           "layouts": {
             "QGridLayout": 3
@@ -1867,6 +1922,25 @@
             "iface_options",
             "vlan_id",
             "enable_stp"
+          ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "class": "QGridLayout",
+                  "items": 4,
+                  "name": "gridLayout_106"
+                },
+                {
+                  "class": "QGridLayout",
+                  "items": 2,
+                  "name": "gridLayout_4"
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 11,
+              "name": "gridLayout"
+            }
           ],
           "layouts": {
             "QGridLayout": 3
@@ -2181,6 +2255,13 @@
             "freebsd_ip_sourceroute",
             "freebsd_ip_redirect"
           ],
+          "layout_tree": [
+            {
+              "class": "QGridLayout",
+              "items": 11,
+              "name": "gridLayout"
+            }
+          ],
           "layouts": {
             "QGridLayout": 1
           },
@@ -2287,6 +2368,13 @@
             "freebsd_path_ipnat",
             "freebsd_path_sysctl"
           ],
+          "layout_tree": [
+            {
+              "class": "QGridLayout",
+              "items": 14,
+              "name": "gridLayout_2"
+            }
+          ],
           "layouts": {
             "QGridLayout": 1
           },
@@ -2351,6 +2439,13 @@
           "id": "tab",
           "keys": [
             "data_dir"
+          ],
+          "layout_tree": [
+            {
+              "class": "QGridLayout",
+              "items": 5,
+              "name": "gridLayout_7"
+            }
           ],
           "layouts": {
             "QGridLayout": 1
@@ -2427,6 +2522,12 @@
           "keys": [
             "ios_set_host_name",
             "ios_ip_address"
+          ],
+          "layout_tree": [
+            {
+              "class": "QGridLayout",
+              "items": 3
+            }
           ],
           "layouts": {
             "QGridLayout": 1
@@ -2929,11 +3030,32 @@
             "mgmt_ssh",
             "mgmt_addr"
           ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "class": "QGridLayout",
+                  "items": 2,
+                  "name": "gridLayout_4"
+                },
+                {
+                  "class": "QGridLayout",
+                  "items": 3,
+                  "name": "gridLayout_6"
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 8,
+              "name": "gridLayout_9"
+            }
+          ],
           "layouts": {
             "QGridLayout": 3
           },
           "sections": [
             {
+              "checkable": false,
+              "flat": false,
               "id": "frame114",
               "keys": [
                 "ignore_empty_groups",
@@ -3003,6 +3125,29 @@
             "iosacl_acl_basic",
             "iosacl_acl_no_clear",
             "iosacl_acl_substitution"
+          ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "class": "QGridLayout",
+                  "items": 4,
+                  "name": "gridLayout_7"
+                },
+                {
+                  "children": [
+                    {
+                      "class": "QGridLayout",
+                      "items": 4
+                    }
+                  ],
+                  "class": "QGridLayout",
+                  "items": 8
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 2
+            }
           ],
           "layouts": {
             "QGridLayout": 4
@@ -3106,6 +3251,30 @@
             "filesystem",
             "firewall_dir"
           ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "class": "QGridLayout",
+                  "items": 6,
+                  "name": "gridLayout_125"
+                },
+                {
+                  "class": "QGridLayout",
+                  "items": 5,
+                  "name": "gridLayout_3"
+                },
+                {
+                  "class": "QGridLayout",
+                  "items": 2,
+                  "name": "gridLayout_2"
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 4,
+              "name": "gridLayout_8"
+            }
+          ],
           "layouts": {
             "QGridLayout": 4,
             "QHBoxLayout": 4
@@ -3183,6 +3352,22 @@
           "keys": [
             "iosacl_prolog_script",
             "iosacl_epilog_script"
+          ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "class": "QGridLayout",
+                  "items": 4
+                },
+                {
+                  "class": "QGridLayout",
+                  "items": 4
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 2
+            }
           ],
           "layouts": {
             "QGridLayout": 3
@@ -3269,6 +3454,22 @@
             "iosacl_logging_console",
             "iosacl_logging_buffered_level",
             "iosacl_logging_console_level"
+          ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "class": "QGridLayout",
+                  "items": 10
+                },
+                {
+                  "class": "QGridLayout",
+                  "items": 4
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 4
+            }
           ],
           "layouts": {
             "QGridLayout": 3
@@ -3856,6 +4057,13 @@
             "mgmt_ssh",
             "mgmt_addr"
           ],
+          "layout_tree": [
+            {
+              "class": "QGridLayout",
+              "items": 14,
+              "name": "gridLayout_4"
+            }
+          ],
           "layouts": {
             "QGridLayout": 1,
             "QHBoxLayout": 1,
@@ -3951,6 +4159,25 @@
             "sshArgs",
             "scpArgs"
           ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "class": "QGridLayout",
+                  "items": 10,
+                  "name": "gridLayout_102"
+                },
+                {
+                  "class": "QGridLayout",
+                  "items": 2,
+                  "name": "gridLayout_2"
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 3,
+              "name": "gridLayout_3"
+            }
+          ],
           "layouts": {
             "QGridLayout": 3,
             "QHBoxLayout": 4
@@ -4009,6 +4236,22 @@
           "keys": [
             "epilog_script",
             "prolog_script"
+          ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "class": "QGridLayout",
+                  "items": 4
+                },
+                {
+                  "class": "QGridLayout",
+                  "items": 4
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 2
+            }
           ],
           "layouts": {
             "QGridLayout": 3
@@ -4107,6 +4350,28 @@
             "limit_suffix",
             "log_all"
           ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "class": "QGridLayout",
+                      "items": 6
+                    },
+                    {
+                      "class": "QGridLayout",
+                      "items": 7
+                    }
+                  ],
+                  "class": "QGridLayout",
+                  "items": 3
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 10
+            }
+          ],
           "layouts": {
             "QGridLayout": 4
           },
@@ -4166,6 +4431,12 @@
           "keys": [
             "debug",
             "verify_interfaces"
+          ],
+          "layout_tree": [
+            {
+              "class": "QGridLayout",
+              "items": 6
+            }
           ],
           "layouts": {
             "QGridLayout": 1
@@ -4755,6 +5026,12 @@
             "linux24_ip_dynaddr",
             "linux24_log_martians"
           ],
+          "layout_tree": [
+            {
+              "class": "QGridLayout",
+              "items": 24
+            }
+          ],
           "layouts": {
             "QGridLayout": 1
           },
@@ -4900,6 +5177,12 @@
             "linux24_tcp_ecn",
             "linux24_tcp_syncookies",
             "linux24_tcp_timestamps"
+          ],
+          "layout_tree": [
+            {
+              "class": "QGridLayout",
+              "items": 21
+            }
           ],
           "layouts": {
             "QGridLayout": 1
@@ -5074,6 +5357,13 @@
             "linux24_path_lsmod",
             "linux24_path_iptables_restore",
             "linux24_path_ip6tables_restore"
+          ],
+          "layout_tree": [
+            {
+              "class": "QGridLayout",
+              "items": 25,
+              "name": "gridLayout_123"
+            }
           ],
           "layouts": {
             "QGridLayout": 1
@@ -5768,6 +6058,13 @@
             "action_on_reject",
             "ipf_return_icmp_as_dest"
           ],
+          "layout_tree": [
+            {
+              "class": "QGridLayout",
+              "items": 25,
+              "name": "gridLayout_4"
+            }
+          ],
           "layouts": {
             "QGridLayout": 1
           },
@@ -5809,6 +6106,12 @@
             "ipf_nat_ekshell_proxy",
             "ipf_nat_pptp_proxy",
             "ipf_nat_irc_proxy"
+          ],
+          "layout_tree": [
+            {
+              "class": "QGridLayout",
+              "items": 13
+            }
           ],
           "layouts": {
             "QGridLayout": 1
@@ -5898,6 +6201,25 @@
             "sshArgs",
             "scpArgs"
           ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "class": "QGridLayout",
+                  "items": 10,
+                  "name": "gridLayout_2"
+                },
+                {
+                  "class": "QGridLayout",
+                  "items": 2,
+                  "name": "gridLayout_127"
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 4,
+              "name": "gridLayout_3"
+            }
+          ],
           "layouts": {
             "QGridLayout": 3,
             "QHBoxLayout": 4
@@ -5968,6 +6290,22 @@
             "prolog_script",
             "epilog_script"
           ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "class": "QGridLayout",
+                  "items": 4
+                },
+                {
+                  "class": "QGridLayout",
+                  "items": 4
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 2
+            }
+          ],
           "layouts": {
             "QGridLayout": 3
           },
@@ -6022,6 +6360,12 @@
             "ipf_log_level",
             "ipf_log_body",
             "ipf_log_or_block"
+          ],
+          "layout_tree": [
+            {
+              "class": "QGridLayout",
+              "items": 11
+            }
           ],
           "layouts": {
             "QGridLayout": 1
@@ -6104,6 +6448,12 @@
             "debug",
             "optimize",
             "dynAddr"
+          ],
+          "layout_tree": [
+            {
+              "class": "QGridLayout",
+              "items": 9
+            }
           ],
           "layouts": {
             "QGridLayout": 1
@@ -6515,6 +6865,13 @@
             "mgmt_ssh",
             "mgmt_addr"
           ],
+          "layout_tree": [
+            {
+              "class": "QGridLayout",
+              "items": 16,
+              "name": "gridLayout"
+            }
+          ],
           "layouts": {
             "QGridLayout": 1,
             "QHBoxLayout": 1
@@ -6593,6 +6950,25 @@
             "sshArgs",
             "scpArgs"
           ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "class": "QGridLayout",
+                  "items": 10,
+                  "name": "gridLayout_104"
+                },
+                {
+                  "class": "QGridLayout",
+                  "items": 2,
+                  "name": "gridLayout_2"
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 3,
+              "name": "gridLayout_3"
+            }
+          ],
           "layouts": {
             "QGridLayout": 3,
             "QHBoxLayout": 4
@@ -6652,6 +7028,22 @@
             "epilog_script",
             "prolog_script"
           ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "class": "QGridLayout",
+                  "items": 4
+                },
+                {
+                  "class": "QGridLayout",
+                  "items": 4
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 2
+            }
+          ],
           "layouts": {
             "QGridLayout": 3
           },
@@ -6698,6 +7090,12 @@
             "manage_virtual_addr",
             "configure_interfaces",
             "debug"
+          ],
+          "layout_tree": [
+            {
+              "class": "QGridLayout",
+              "items": 7
+            }
           ],
           "layouts": {
             "QGridLayout": 1
@@ -7649,6 +8047,13 @@
             "mgmt_addr",
             "add_mgmt_ssh_rule_when_stoped"
           ],
+          "layout_tree": [
+            {
+              "class": "QGridLayout",
+              "items": 11,
+              "name": "gridLayout_10"
+            }
+          ],
           "layouts": {
             "QGridLayout": 5,
             "QHBoxLayout": 3
@@ -7740,6 +8145,25 @@
             "sshArgs",
             "scpArgs"
           ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "class": "QGridLayout",
+                  "items": 10,
+                  "name": "gridLayout"
+                },
+                {
+                  "class": "QGridLayout",
+                  "items": 2,
+                  "name": "gridLayout_2"
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 3,
+              "name": "gridLayout_3"
+            }
+          ],
           "layouts": {
             "QGridLayout": 3,
             "QHBoxLayout": 4
@@ -7819,6 +8243,22 @@
             "prolog_script",
             "hooks_profile",
             "prolog_place"
+          ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "class": "QGridLayout",
+                  "items": 4
+                },
+                {
+                  "class": "QGridLayout",
+                  "items": 7
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 2
+            }
           ],
           "layouts": {
             "QGridLayout": 3
@@ -7908,9 +8348,60 @@
             "limit_suffix",
             "log_all"
           ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "class": "QGridLayout",
+                      "items": 6
+                    },
+                    {
+                      "class": "QGridLayout",
+                      "items": 7
+                    }
+                  ],
+                  "class": "QGridLayout",
+                  "items": 3
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 10
+            }
+          ],
           "layouts": {
             "QGridLayout": 4
           },
+          "sections": [
+            {
+              "checkable": false,
+              "flat": true,
+              "id": "buttonGroup1",
+              "keys": [
+                "use_ULOG",
+                "log_tcp_seq",
+                "log_ip_opt",
+                "use_numeric_log_levels",
+                "log_level",
+                "log_tcp_opt",
+                "ulog_cprange",
+                "ulog_qthreshold",
+                "ulog_nlgroup"
+              ],
+              "title": "buttonGroup1"
+            },
+            {
+              "id": "other",
+              "keys": [
+                "log_prefix",
+                "limit_value",
+                "limit_suffix",
+                "log_all"
+              ],
+              "title": "Other"
+            }
+          ],
           "spacers": [
             {
               "colspan": 1,
@@ -7990,6 +8481,13 @@
             "configure_bonding_interfaces",
             "manage_virtual_addr",
             "use_iptables_restore"
+          ],
+          "layout_tree": [
+            {
+              "class": "QGridLayout",
+              "items": 18,
+              "name": "gridLayout_4"
+            }
           ],
           "layouts": {
             "QGridLayout": 1
@@ -8100,6 +8598,12 @@
           "keys": [
             "junos_set_host_name",
             "junos_ip_address"
+          ],
+          "layout_tree": [
+            {
+              "class": "QGridLayout",
+              "items": 3
+            }
           ],
           "layouts": {
             "QGridLayout": 1
@@ -8481,11 +8985,32 @@
             "check_shading",
             "filter_prefix"
           ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "class": "QGridLayout",
+                  "items": 2,
+                  "name": "gridLayout_6"
+                },
+                {
+                  "class": "QGridLayout",
+                  "items": 2,
+                  "name": "gridLayout_4"
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 7,
+              "name": "gridLayout_9"
+            }
+          ],
           "layouts": {
             "QGridLayout": 3
           },
           "sections": [
             {
+              "checkable": false,
+              "flat": false,
               "id": "frame114",
               "keys": [
                 "ignore_empty_groups",
@@ -8524,6 +9049,19 @@
           "id": "script_options_tab",
           "keys": [
             "junosacl_include_comments"
+          ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "class": "QGridLayout",
+                  "items": 2,
+                  "name": "gridLayout_7"
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 1
+            }
           ],
           "layouts": {
             "QGridLayout": 2
@@ -8585,6 +9123,30 @@
             "altAddress",
             "sshArgs",
             "scpArgs"
+          ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "class": "QGridLayout",
+                  "items": 2,
+                  "name": "gridLayout_2"
+                },
+                {
+                  "class": "QGridLayout",
+                  "items": 4,
+                  "name": "gridLayout_3"
+                },
+                {
+                  "class": "QGridLayout",
+                  "items": 6,
+                  "name": "gridLayout_125"
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 4,
+              "name": "gridLayout_8"
+            }
           ],
           "layouts": {
             "QGridLayout": 4,
@@ -8669,6 +9231,22 @@
           "keys": [
             "junosacl_prolog_script",
             "junosacl_epilog_script"
+          ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "class": "QGridLayout",
+                  "items": 4
+                },
+                {
+                  "class": "QGridLayout",
+                  "items": 4
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 2
+            }
           ],
           "layouts": {
             "QGridLayout": 3
@@ -8755,6 +9333,22 @@
             "junosacl_logging_console",
             "junosacl_logging_buffered_level",
             "junosacl_logging_console_level"
+          ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "class": "QGridLayout",
+                  "items": 10
+                },
+                {
+                  "class": "QGridLayout",
+                  "items": 4
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 4
+            }
           ],
           "layouts": {
             "QGridLayout": 3
@@ -9037,6 +9631,13 @@
             "linksys_path_brctl",
             "linksys_path_ifenslave"
           ],
+          "layout_tree": [
+            {
+              "class": "QGridLayout",
+              "items": 19,
+              "name": "gridLayout_130"
+            }
+          ],
           "layouts": {
             "QGridLayout": 1
           },
@@ -9100,6 +9701,12 @@
           "keys": [
             "prompt1",
             "prompt2"
+          ],
+          "layout_tree": [
+            {
+              "class": "QGridLayout",
+              "items": 10
+            }
           ],
           "layouts": {
             "QGridLayout": 1
@@ -9777,6 +10384,12 @@
             "linux24_ip_dynaddr",
             "linux24_log_martians"
           ],
+          "layout_tree": [
+            {
+              "class": "QGridLayout",
+              "items": 24
+            }
+          ],
           "layouts": {
             "QGridLayout": 1
           },
@@ -9922,6 +10535,12 @@
             "linux24_tcp_ecn",
             "linux24_tcp_syncookies",
             "linux24_tcp_timestamps"
+          ],
+          "layout_tree": [
+            {
+              "class": "QGridLayout",
+              "items": 21
+            }
           ],
           "layouts": {
             "QGridLayout": 1
@@ -10109,6 +10728,13 @@
             "linux24_path_iptables_restore",
             "linux24_path_ip6tables_restore"
           ],
+          "layout_tree": [
+            {
+              "class": "QGridLayout",
+              "items": 27,
+              "name": "gridLayout_1"
+            }
+          ],
           "layouts": {
             "QGridLayout": 1
           },
@@ -10171,6 +10797,25 @@
             "linux24_conntrack_hashsize",
             "linux24_conntrack_tcp_be_liberal"
           ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "class": "QGridLayout",
+                  "items": 6,
+                  "name": "gridLayout_2"
+                },
+                {
+                  "class": "QVBoxLayout",
+                  "items": 3,
+                  "name": "verticalLayout"
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 3,
+              "name": "gridLayout_4"
+            }
+          ],
           "layouts": {
             "QGridLayout": 2,
             "QHBoxLayout": 1,
@@ -10228,6 +10873,13 @@
           "id": "tab_2",
           "keys": [
             "data_dir"
+          ],
+          "layout_tree": [
+            {
+              "class": "QGridLayout",
+              "items": 5,
+              "name": "gridLayout"
+            }
           ],
           "layouts": {
             "QGridLayout": 1
@@ -10397,6 +11049,30 @@
             "bonding_policy",
             "xmit_hash_policy",
             "bondng_driver_options"
+          ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "class": "QGridLayout",
+                  "items": 4,
+                  "name": "gridLayout_115"
+                },
+                {
+                  "class": "QGridLayout",
+                  "items": 2,
+                  "name": "gridLayout_4"
+                },
+                {
+                  "class": "QGridLayout",
+                  "items": 6,
+                  "name": "gridLayout_3"
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 6,
+              "name": "gridLayout_2"
+            }
           ],
           "layouts": {
             "QGridLayout": 4
@@ -10612,6 +11288,12 @@
             "macosx_ip_redirect",
             "macosx_ip_sourceroute"
           ],
+          "layout_tree": [
+            {
+              "class": "QGridLayout",
+              "items": 10
+            }
+          ],
           "layouts": {
             "QGridLayout": 1
           },
@@ -10704,6 +11386,12 @@
             "macosx_path_ipfw",
             "macosx_path_sysctl"
           ],
+          "layout_tree": [
+            {
+              "class": "QGridLayout",
+              "items": 8
+            }
+          ],
           "layouts": {
             "QGridLayout": 1
           },
@@ -10794,6 +11482,12 @@
           "keys": [
             "nxos_set_host_name",
             "nxos_ip_address"
+          ],
+          "layout_tree": [
+            {
+              "class": "QGridLayout",
+              "items": 3
+            }
           ],
           "layouts": {
             "QGridLayout": 1
@@ -11309,11 +12003,32 @@
             "mgmt_ssh",
             "mgmt_addr"
           ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "class": "QGridLayout",
+                  "items": 2,
+                  "name": "gridLayout_4"
+                },
+                {
+                  "class": "QGridLayout",
+                  "items": 3,
+                  "name": "gridLayout_6"
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 8,
+              "name": "gridLayout_9"
+            }
+          ],
           "layouts": {
             "QGridLayout": 3
           },
           "sections": [
             {
+              "checkable": false,
+              "flat": false,
               "id": "frame114",
               "keys": [
                 "ignore_empty_groups",
@@ -11383,6 +12098,29 @@
             "nxosacl_acl_basic",
             "nxosacl_acl_no_clear",
             "nxosacl_acl_substitution"
+          ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "class": "QGridLayout",
+                  "items": 4,
+                  "name": "gridLayout_7"
+                },
+                {
+                  "children": [
+                    {
+                      "class": "QGridLayout",
+                      "items": 4
+                    }
+                  ],
+                  "class": "QGridLayout",
+                  "items": 8
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 2
+            }
           ],
           "layouts": {
             "QGridLayout": 4
@@ -11491,6 +12229,30 @@
             "scpArgs",
             "use_nxos_session"
           ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "class": "QGridLayout",
+                  "items": 5,
+                  "name": "gridLayout_3"
+                },
+                {
+                  "class": "QGridLayout",
+                  "items": 2,
+                  "name": "gridLayout_2"
+                },
+                {
+                  "class": "QGridLayout",
+                  "items": 6,
+                  "name": "gridLayout_125"
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 5,
+              "name": "gridLayout_8"
+            }
+          ],
           "layouts": {
             "QGridLayout": 4,
             "QHBoxLayout": 4
@@ -11575,6 +12337,22 @@
           "keys": [
             "nxosacl_prolog_script",
             "nxosacl_epilog_script"
+          ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "class": "QGridLayout",
+                  "items": 4
+                },
+                {
+                  "class": "QGridLayout",
+                  "items": 4
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 2
+            }
           ],
           "layouts": {
             "QGridLayout": 3
@@ -11661,6 +12439,22 @@
             "nxosacl_logging_console",
             "nxosacl_logging_buffered_level",
             "nxosacl_logging_console_level"
+          ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "class": "QGridLayout",
+                  "items": 10
+                },
+                {
+                  "class": "QGridLayout",
+                  "items": 4
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 4
+            }
           ],
           "layouts": {
             "QGridLayout": 3
@@ -11914,6 +12708,12 @@
             "openbsd_ip_sourceroute",
             "openbsd_ip_redirect"
           ],
+          "layout_tree": [
+            {
+              "class": "QGridLayout",
+              "items": 14
+            }
+          ],
           "layouts": {
             "QGridLayout": 1
           },
@@ -12000,6 +12800,12 @@
             "openbsd_path_pfctl",
             "openbsd_path_sysctl"
           ],
+          "layout_tree": [
+            {
+              "class": "QGridLayout",
+              "items": 8
+            }
+          ],
           "layouts": {
             "QGridLayout": 1
           },
@@ -12064,6 +12870,13 @@
           "id": "tab",
           "keys": [
             "data_dir"
+          ],
+          "layout_tree": [
+            {
+              "class": "QGridLayout",
+              "items": 5,
+              "name": "gridLayout"
+            }
           ],
           "layouts": {
             "QGridLayout": 1
@@ -13558,6 +14371,30 @@
             "mgmt_ssh",
             "mgmt_addr"
           ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "class": "QGridLayout",
+                  "items": 5,
+                  "name": "gridLayout_7"
+                },
+                {
+                  "class": "QGridLayout",
+                  "items": 5,
+                  "name": "gridLayout"
+                },
+                {
+                  "class": "QGridLayout",
+                  "items": 5,
+                  "name": "gridLayout_6"
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 9,
+              "name": "gridLayout_10"
+            }
+          ],
           "layouts": {
             "QGridLayout": 4,
             "QHBoxLayout": 1
@@ -13572,6 +14409,7 @@
               "title": "Names of generated files"
             },
             {
+              "flat": false,
               "id": "groupBox_2",
               "keys": [
                 "script_name_on_firewall",
@@ -13580,15 +14418,22 @@
               "title": "Names of the files on the firewall"
             },
             {
-              "id": "other",
+              "flat": false,
+              "id": "groupBox",
               "keys": [
-                "compiler",
-                "cmdline",
                 "accept_new_tcp_with_no_syn",
                 "check_shading",
                 "pf_modulate_state",
                 "ignore_empty_groups",
-                "preserve_group_names",
+                "preserve_group_names"
+              ],
+              "title": "groupBox"
+            },
+            {
+              "id": "other",
+              "keys": [
+                "compiler",
+                "cmdline",
                 "mgmt_ssh",
                 "mgmt_addr"
               ],
@@ -13625,6 +14470,20 @@
             "pf_scrub_fragm_crop",
             "pf_scrub_fragm_drop_ovl",
             "pf_scrub_reassemble_tcp"
+          ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "class": "QGridLayout",
+                  "items": 4,
+                  "name": "gridLayout_5"
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 9,
+              "name": "gridLayout_9"
+            }
           ],
           "layouts": {
             "QGridLayout": 2,
@@ -13711,6 +14570,25 @@
             "pf_set_debug",
             "pf_state_policy",
             "pf_block_policy"
+          ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "class": "QGridLayout",
+                  "items": 10,
+                  "name": "gridLayout_15"
+                },
+                {
+                  "class": "QGridLayout",
+                  "items": 8,
+                  "name": "gridLayout_16"
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 3,
+              "name": "gridLayout_17"
+            }
           ],
           "layouts": {
             "QGridLayout": 3
@@ -13817,6 +14695,41 @@
             "pf_timeout_interval",
             "pf_do_timeout_frag",
             "pf_timeout_frag"
+          ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "class": "QGridLayout",
+                  "items": 12
+                },
+                {
+                  "class": "QGridLayout",
+                  "items": 6
+                },
+                {
+                  "class": "QGridLayout",
+                  "items": 6
+                },
+                {
+                  "class": "QGridLayout",
+                  "items": 4
+                },
+                {
+                  "class": "QGridLayout",
+                  "items": 3,
+                  "name": "gridLayout_12"
+                },
+                {
+                  "class": "QGridLayout",
+                  "items": 5,
+                  "name": "gridLayout_13"
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 8,
+              "name": "gridLayout_14"
+            }
           ],
           "layouts": {
             "QGridLayout": 7,
@@ -13970,6 +14883,25 @@
             "sshArgs",
             "scpArgs"
           ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "class": "QGridLayout",
+                  "items": 10,
+                  "name": "gridLayout_128"
+                },
+                {
+                  "class": "QGridLayout",
+                  "items": 2,
+                  "name": "gridLayout_2"
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 3,
+              "name": "gridLayout_3"
+            }
+          ],
           "layouts": {
             "QGridLayout": 3,
             "QHBoxLayout": 4
@@ -14041,6 +14973,22 @@
             "prolog_script",
             "prolog_place"
           ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "class": "QGridLayout",
+                  "items": 4
+                },
+                {
+                  "class": "QGridLayout",
+                  "items": 7
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 2
+            }
+          ],
           "layouts": {
             "QGridLayout": 3
           },
@@ -14104,6 +15052,12 @@
           "keys": [
             "log_prefix",
             "fallback_log"
+          ],
+          "layout_tree": [
+            {
+              "class": "QGridLayout",
+              "items": 7
+            }
           ],
           "layouts": {
             "QGridLayout": 1
@@ -14187,11 +15141,31 @@
             "manage_virtual_addr",
             "pf_flush_states"
           ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "class": "QGridLayout",
+                  "items": 3,
+                  "name": "gridLayout_4"
+                },
+                {
+                  "class": "QGridLayout",
+                  "items": 8,
+                  "name": "gridLayout_8"
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 4,
+              "name": "gridLayout_11"
+            }
+          ],
           "layouts": {
             "QGridLayout": 3
           },
           "sections": [
             {
+              "flat": false,
               "id": "groupBox_3",
               "keys": [
                 "generate_shell_script",
@@ -15379,6 +16353,30 @@
             "mgmt_ssh",
             "mgmt_addr"
           ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "class": "QGridLayout",
+                  "items": 6,
+                  "name": "gridLayout_3"
+                },
+                {
+                  "class": "QGridLayout",
+                  "items": 2,
+                  "name": "gridLayout_18"
+                },
+                {
+                  "class": "QGridLayout",
+                  "items": 4,
+                  "name": "gridLayout_17"
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 8,
+              "name": "gridLayout_20"
+            }
+          ],
           "layouts": {
             "QGridLayout": 5
           },
@@ -15492,6 +16490,30 @@
             "filesystem",
             "firewall_dir"
           ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "class": "QGridLayout",
+                  "items": 6,
+                  "name": "gridLayout_124"
+                },
+                {
+                  "class": "QVBoxLayout",
+                  "items": 4,
+                  "name": "verticalLayout_2"
+                },
+                {
+                  "class": "QGridLayout",
+                  "items": 2,
+                  "name": "gridLayout_2"
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 3,
+              "name": "gridLayout_6"
+            }
+          ],
           "layouts": {
             "QGridLayout": 3,
             "QHBoxLayout": 5,
@@ -15545,6 +16567,23 @@
           "keys": [
             "pix_prolog_script",
             "pix_epilog_script"
+          ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "class": "QGridLayout",
+                  "items": 4
+                },
+                {
+                  "class": "QGridLayout",
+                  "items": 4
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 2,
+              "name": "gridLayout_10"
+            }
           ],
           "layouts": {
             "QGridLayout": 3
@@ -15747,6 +16786,25 @@
             "uauth_abs",
             "uauth_inact"
           ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "class": "QGridLayout",
+                      "items": 4
+                    }
+                  ],
+                  "class": "QGridLayout",
+                  "items": 45
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 4,
+              "name": "gridLayout_9"
+            }
+          ],
           "layouts": {
             "QGridLayout": 3
           },
@@ -15843,6 +16901,32 @@
             "pix_logging_buffered_level",
             "pix_logging_console",
             "pix_logging_console_level"
+          ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "class": "QGridLayout",
+                      "items": 7,
+                      "name": "gridLayout_14"
+                    }
+                  ],
+                  "class": "QGridLayout",
+                  "items": 15,
+                  "name": "gridLayout_15"
+                },
+                {
+                  "class": "QGridLayout",
+                  "items": 6,
+                  "name": "gridLayout_5"
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 3,
+              "name": "gridLayout_16"
+            }
           ],
           "layouts": {
             "QGridLayout": 4
@@ -15987,6 +17071,26 @@
             "pix_acl_temp_addr",
             "pix_acl_substitution"
           ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "class": "QGridLayout",
+                      "items": 4
+                    }
+                  ],
+                  "class": "QGridLayout",
+                  "items": 4,
+                  "name": "gridLayout_12"
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 2,
+              "name": "gridLayout_19"
+            }
+          ],
           "layouts": {
             "QGridLayout": 3,
             "QHBoxLayout": 3
@@ -16048,6 +17152,25 @@
             "pix_regroup_commands",
             "pix_use_manual_commit"
           ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "class": "QGridLayout",
+                  "items": 2,
+                  "name": "gridLayout_13"
+                },
+                {
+                  "class": "QGridLayout",
+                  "items": 4,
+                  "name": "_3"
+                }
+              ],
+              "class": "QVBoxLayout",
+              "items": 3,
+              "name": "verticalLayout"
+            }
+          ],
           "layouts": {
             "QGridLayout": 2,
             "QVBoxLayout": 1
@@ -16087,6 +17210,19 @@
             "pix_nodnsalias_outbound",
             "pix_max_conns",
             "pix_emb_limit"
+          ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "class": "QGridLayout",
+                  "items": 18,
+                  "name": "gridLayout_8"
+                }
+              ],
+              "class": "QVBoxLayout",
+              "items": 1
+            }
           ],
           "layouts": {
             "QGridLayout": 1,
@@ -16361,6 +17497,12 @@
             "pix_set_host_name",
             "pix_ip_address"
           ],
+          "layout_tree": [
+            {
+              "class": "QGridLayout",
+              "items": 3
+            }
+          ],
           "layouts": {
             "QGridLayout": 1
           },
@@ -16448,6 +17590,19 @@
             "pix_ntp3",
             "pix_ntp1_pref"
           ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "class": "QGridLayout",
+                  "items": 11
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 3,
+              "name": "gridLayout"
+            }
+          ],
           "layouts": {
             "QGridLayout": 2
           },
@@ -16532,6 +17687,18 @@
             "pix_snmp_poll_traps_2",
             "pix_enable_snmp_traps"
           ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "class": "QGridLayout",
+                  "items": 8
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 5
+            }
+          ],
           "layouts": {
             "QGridLayout": 2
           },
@@ -16590,6 +17757,12 @@
           "keys": [
             "pix_tcpmss",
             "pix_tcpmss_value"
+          ],
+          "layout_tree": [
+            {
+              "class": "QGridLayout",
+              "items": 5
+            }
           ],
           "layouts": {
             "QGridLayout": 1
@@ -16670,6 +17843,20 @@
           "id": "tab",
           "keys": [
             "vlan_id"
+          ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "class": "QGridLayout",
+                  "items": 4,
+                  "name": "gridLayout_116"
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 5,
+              "name": "gridLayout_2"
+            }
           ],
           "layouts": {
             "QGridLayout": 2
@@ -17179,11 +18366,32 @@
             "mgmt_ssh",
             "mgmt_addr"
           ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "class": "QGridLayout",
+                  "items": 2,
+                  "name": "gridLayout_4"
+                },
+                {
+                  "class": "QGridLayout",
+                  "items": 2,
+                  "name": "gridLayout_6"
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 8,
+              "name": "gridLayout_9"
+            }
+          ],
           "layouts": {
             "QGridLayout": 3
           },
           "sections": [
             {
+              "checkable": false,
+              "flat": false,
               "id": "frame114",
               "keys": [
                 "ignore_empty_groups",
@@ -17251,6 +18459,31 @@
             "procurve_acl_acl_temp_addr",
             "procurve_acl_include_comments",
             "procurve_acl_use_acl_remarks"
+          ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "class": "QGridLayout",
+                      "items": 4
+                    }
+                  ],
+                  "class": "QGridLayout",
+                  "items": 7,
+                  "name": "gridLayout_7"
+                },
+                {
+                  "class": "QGridLayout",
+                  "items": 3,
+                  "name": "gridLayout_10"
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 2,
+              "name": "gridLayout_11"
+            }
           ],
           "layouts": {
             "QGridLayout": 4
@@ -17343,6 +18576,30 @@
             "filesystem",
             "firewall_dir"
           ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "class": "QGridLayout",
+                  "items": 6,
+                  "name": "gridLayout_126"
+                },
+                {
+                  "class": "QGridLayout",
+                  "items": 5,
+                  "name": "gridLayout_3"
+                },
+                {
+                  "class": "QGridLayout",
+                  "items": 2,
+                  "name": "gridLayout_2"
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 3,
+              "name": "gridLayout_8"
+            }
+          ],
           "layouts": {
             "QGridLayout": 4,
             "QHBoxLayout": 4
@@ -17409,6 +18666,22 @@
           "keys": [
             "procurve_acl_prolog_script",
             "procurve_acl_epilog_script"
+          ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "class": "QGridLayout",
+                  "items": 4
+                },
+                {
+                  "class": "QGridLayout",
+                  "items": 4
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 2
+            }
           ],
           "layouts": {
             "QGridLayout": 3
@@ -17495,6 +18768,22 @@
             "procurve_acl_logging_console",
             "procurve_acl_logging_buffered_level",
             "procurve_acl_logging_console_level"
+          ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "class": "QGridLayout",
+                  "items": 10
+                },
+                {
+                  "class": "QGridLayout",
+                  "items": 4
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 4
+            }
           ],
           "layouts": {
             "QGridLayout": 3
@@ -18245,6 +19534,13 @@
             "mgmt_addr",
             "add_mgmt_ssh_rule_when_stoped"
           ],
+          "layout_tree": [
+            {
+              "class": "QGridLayout",
+              "items": 27,
+              "name": "gridLayout_5"
+            }
+          ],
           "layouts": {
             "QGridLayout": 1
           },
@@ -18334,6 +19630,25 @@
             "altAddress",
             "activationCmd"
           ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "class": "QGridLayout",
+                  "items": 5,
+                  "name": "gridLayout"
+                },
+                {
+                  "class": "QGridLayout",
+                  "items": 2,
+                  "name": "gridLayout_2"
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 3,
+              "name": "gridLayout_3"
+            }
+          ],
           "layouts": {
             "QGridLayout": 3,
             "QHBoxLayout": 4
@@ -18402,6 +19717,22 @@
             "epilog_script",
             "prolog_script",
             "prolog_place"
+          ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "class": "QGridLayout",
+                  "items": 4
+                },
+                {
+                  "class": "QGridLayout",
+                  "items": 5
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 2
+            }
           ],
           "layouts": {
             "QGridLayout": 3
@@ -18491,9 +19822,60 @@
             "limit_suffix",
             "log_all"
           ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "class": "QGridLayout",
+                      "items": 6
+                    },
+                    {
+                      "class": "QGridLayout",
+                      "items": 7
+                    }
+                  ],
+                  "class": "QGridLayout",
+                  "items": 3
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 10
+            }
+          ],
           "layouts": {
             "QGridLayout": 4
           },
+          "sections": [
+            {
+              "checkable": false,
+              "flat": true,
+              "id": "buttonGroup1",
+              "keys": [
+                "use_ULOG",
+                "log_tcp_seq",
+                "log_ip_opt",
+                "use_numeric_log_levels",
+                "log_level",
+                "log_tcp_opt",
+                "ulog_cprange",
+                "ulog_qthreshold",
+                "ulog_nlgroup"
+              ],
+              "title": "buttonGroup1"
+            },
+            {
+              "id": "other",
+              "keys": [
+                "log_prefix",
+                "limit_value",
+                "limit_suffix",
+                "log_all"
+              ],
+              "title": "Other"
+            }
+          ],
           "spacers": [
             {
               "colspan": 1,
@@ -18585,6 +19967,13 @@
             "configure_interfaces",
             "manage_virtual_addr",
             "use_iptables_restore"
+          ],
+          "layout_tree": [
+            {
+              "class": "QGridLayout",
+              "items": 16,
+              "name": "gridLayout_4"
+            }
           ],
           "layouts": {
             "QGridLayout": 1
@@ -18777,6 +20166,20 @@
             "vlan_id",
             "iface_disableboot",
             "iface_disablearp"
+          ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "class": "QGridLayout",
+                  "items": 3,
+                  "name": "gridLayout_1"
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 19,
+              "name": "gridLayout_2"
+            }
           ],
           "layouts": {
             "QGridLayout": 2
@@ -19597,6 +21000,12 @@
             "secuwall_mgmt_confpart",
             "secuwall_mgmt_rules_disable"
           ],
+          "layout_tree": [
+            {
+              "class": "QGridLayout",
+              "items": 23
+            }
+          ],
           "layouts": {
             "QGridLayout": 1
           },
@@ -19715,6 +21124,12 @@
             "secuwall_dns_reso3",
             "secuwall_dns_reso4",
             "secuwall_dns_reso5"
+          ],
+          "layout_tree": [
+            {
+              "class": "QGridLayout",
+              "items": 17
+            }
           ],
           "layouts": {
             "QGridLayout": 1,
@@ -19905,6 +21320,12 @@
             "linux24_ip_dynaddr",
             "linux24_log_martians"
           ],
+          "layout_tree": [
+            {
+              "class": "QGridLayout",
+              "items": 26
+            }
+          ],
           "layouts": {
             "QGridLayout": 1
           },
@@ -20062,6 +21483,12 @@
             "linux24_tcp_syncookies",
             "linux24_tcp_timestamps"
           ],
+          "layout_tree": [
+            {
+              "class": "QGridLayout",
+              "items": 22
+            }
+          ],
           "layouts": {
             "QGridLayout": 1
           },
@@ -20149,6 +21576,18 @@
           "keys": [
             "secuwall_add_files",
             "secuwall_add_files_dir"
+          ],
+          "layout_tree": [
+            {
+              "children": [
+                {
+                  "class": "QGridLayout",
+                  "items": 7
+                }
+              ],
+              "class": "QGridLayout",
+              "items": 5
+            }
           ],
           "layouts": {
             "QGridLayout": 2
@@ -20396,6 +21835,12 @@
             "solaris_ip_ignore_redirect",
             "solaris_ip_forward_src_routed"
           ],
+          "layout_tree": [
+            {
+              "class": "QGridLayout",
+              "items": 14
+            }
+          ],
           "layouts": {
             "QGridLayout": 1
           },
@@ -20484,6 +21929,12 @@
           "keys": [
             "solaris_path_ipf",
             "solaris_path_ipnat"
+          ],
+          "layout_tree": [
+            {
+              "class": "QGridLayout",
+              "items": 8
+            }
           ],
           "layouts": {
             "QGridLayout": 1

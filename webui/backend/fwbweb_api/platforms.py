@@ -351,6 +351,8 @@ def option_schema(platform: str, host_os: str = "") -> dict[str, Any]:
                 g["spacing"] = p["spacing"]
             if p.get("layouts"):
                 g["layouts"] = p["layouts"]
+            if p.get("layout_tree"):
+                g["layout_tree"] = p["layout_tree"]
             if p.get("annotations"):
                 g["annotations"] = p["annotations"]
             groups.append(g)
@@ -451,6 +453,8 @@ def _groups_from_pages(pages: list[dict[str, Any]]) -> list[dict[str, Any]]:
             g["spacing"] = p["spacing"]
         if p.get("layouts"):
             g["layouts"] = p["layouts"]
+        if p.get("layout_tree"):
+            g["layout_tree"] = p["layout_tree"]
         if p.get("annotations"):
             g["annotations"] = p["annotations"]
         groups.append(g)

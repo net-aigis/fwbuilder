@@ -509,7 +509,15 @@ export function fetchOptionSchema(platform: string, hostOs = "") {
       id: string;
       title: string;
       keys: string[];
-      sections?: Array<{ id: string; title: string; keys: string[] }>;
+      sections?: Array<{
+        id: string;
+        title: string;
+        keys: string[];
+        flat?: boolean;
+        checkable?: boolean;
+        checked?: boolean;
+      }>;
+      layout_tree?: unknown[];
       spacers?: Array<{
         row?: number;
         column?: number;
@@ -767,6 +775,50 @@ export function fetchExpectInstallPlan(
     }>;
     note?: string;
   }>(`/api/v1/expect-install-plan?${q.toString()}`);
+}
+
+export function fetchExpectInstallWalkthrough(
+  hostOs: string,
+  opts?: { fwdir?: string; fwscript?: string },
+) {
+  const q = new URLSearchParams({ host_os: hostOs });
+  if (opts?.fwdir) q.set("fwdir", opts.fwdir);
+  if (opts?.fwscript) q.set("fwscript", opts.fwscript);
+  return api<{
+    ok: boolean;
+    executable: boolean;
+    walkthrough: boolean;
+    all_preview_only: boolean;
+    host_os: string;
+    step_count: number;
+    steps: Array<{
+      id: string;
+      title: string;
+      status: string;
+      runnable: boolean;
+      implemented?: boolean;
+      has_preview?: boolean;
+      configlet?: string;
+      detail?: string;
+    }>;
+    note?: string;
+  }>(`/api/v1/expect-install-plan/walkthrough?${q.toString()}`);
+}
+
+/** Calls the password-SSH refusal endpoint; expects HTTP 501. */
+export async function refusePasswordSsh(): Promise<{
+  refused: boolean;
+  status: number;
+  detail: string;
+}> {
+  const headers = new Headers();
+  headers.set("Authorization", `Bearer ${getToken()}`);
+  const res = await fetch(`${apiBase}/api/v1/ssh-auth/password`, {
+    method: "POST",
+    headers,
+  });
+  const text = await res.text();
+  return { refused: res.status === 501, status: res.status, detail: text };
 }
 
 export function fetchInstallerConfiglets(hostOs: string) {

@@ -718,6 +718,15 @@ pre.configlet-preview {
   align-self: center;
 }
 
+.option-section-flat {
+  border-left: 2px solid var(--border, #444);
+  padding-left: 0.5rem;
+}
+
+.option-section-checkable .option-section-title {
+  font-style: italic;
+}
+
 /* .ui QSizePolicy hints (approximate CSS mapping). */
 .field.size-h-Expanding,
 .field.size-h-MinimumExpanding {

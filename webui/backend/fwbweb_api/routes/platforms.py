@@ -12,7 +12,11 @@ from ..configlets import (
     resolve_configlet_dir,
 )
 from ..deploy import ssh_auth_capabilities
-from ..expect_installer import expect_install_plan, expect_installer_status
+from ..expect_installer import (
+    expect_install_plan,
+    expect_install_walkthrough,
+    expect_installer_status,
+)
 from ..platforms import (
     get_os,
     get_platform,
@@ -104,11 +108,19 @@ def get_installer_capabilities(
             "available": True,
             "executable": False,
             "path": "/api/v1/expect-install-plan",
+            "walkthrough_path": "/api/v1/expect-install-plan/walkthrough",
             "run_path": "/api/v1/expect-install-plan/run",
             "run_status": 501,
-            "note": "GET returns ordered preview; POST /run always refuses with 501.",
+            "note": (
+                "GET returns ordered preview; GET walkthrough marks every step "
+                "preview_only; POST /run always refuses with 501."
+            ),
         },
-        "ssh_auth": ssh_auth_capabilities(),
+        "ssh_auth": {
+            **ssh_auth_capabilities(),
+            "password_probe_path": "/api/v1/ssh-auth/password",
+            "password_probe_status": 501,
+        },
         "recommended_webui_mode": (
             "external_install_script"
             if not (modes.get("scp_ssh") or modes.get("scp_ssh_limited"))
@@ -137,6 +149,17 @@ def get_expect_install_plan(
     return expect_install_plan(host_os, fwdir=fwdir, fwscript=fwscript)
 
 
+@router.get("/expect-install-plan/walkthrough")
+def get_expect_install_walkthrough(
+    host_os: str = Query(..., min_length=1),
+    fwdir: str = Query("/etc"),
+    fwscript: str = Query("firewall.fw"),
+    _: str = Depends(require_token),
+) -> dict[str, Any]:
+    """Dry walkthrough of expect steps (all preview_only; nothing executed)."""
+    return expect_install_walkthrough(host_os, fwdir=fwdir, fwscript=fwscript)
+
+
 @router.post("/expect-install-plan/run")
 def run_expect_install_plan(
     host_os: str = Query(..., min_length=1),
@@ -152,6 +175,23 @@ def run_expect_install_plan(
 def get_ssh_auth(_: str = Depends(require_token)) -> dict[str, Any]:
     """WebUI SSH authentication capabilities (BatchMode only today)."""
     return ssh_auth_capabilities()
+
+
+@router.post("/ssh-auth/password")
+def refuse_password_ssh(_: str = Depends(require_token)) -> dict[str, Any]:
+    """Explicit refusal endpoint for password/keyboard-interactive SSH."""
+    raise HTTPException(
+        status_code=501,
+        detail={
+            "ok": False,
+            "error": "password_auth_not_implemented",
+            "ssh_auth": ssh_auth_capabilities(),
+            "note": (
+                "Password and keyboard-interactive SSH are not implemented. "
+                "Use BatchMode key/agent auth only."
+            ),
+        },
+    )
 
 
 @router.get("/installer-configlet")

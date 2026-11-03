@@ -209,3 +209,46 @@ def expect_install_plan(
             "WebUI does not open an SSHSession or run expect."
         ),
     }
+
+
+def expect_install_walkthrough(
+    host_os: str,
+    *,
+    fwdir: str = "/etc",
+    fwscript: str = "firewall.fw",
+) -> dict[str, Any]:
+    """Dry walkthrough of expect plan steps — all preview_only, none executed."""
+    plan = expect_install_plan(host_os, fwdir=fwdir, fwscript=fwscript)
+    steps_out: list[dict[str, Any]] = []
+    for step in plan.get("steps") or []:
+        steps_out.append(
+            {
+                "id": step.get("id"),
+                "title": step.get("title"),
+                "status": "preview_only",
+                "runnable": False,
+                "implemented": False,
+                "configlet": step.get("configlet"),
+                "has_preview": bool(step.get("preview")),
+                "detail": step.get("detail")
+                or "Not executed; WebUI has no expect/SSHSession runtime",
+            }
+        )
+    return {
+        "ok": True,
+        "executable": False,
+        "error": "expect_installer_not_implemented",
+        "host_os": host_os,
+        "walkthrough": True,
+        "steps": steps_out,
+        "step_count": len(steps_out),
+        "all_preview_only": True,
+        "note": (
+            "Walkthrough lists desktop expect steps with preview_only status. "
+            "No SSH session is opened and no step is run."
+        ),
+        "has_reg_user": plan.get("has_reg_user"),
+        "has_safety_net_acl": plan.get("has_safety_net_acl"),
+        "needed": plan.get("needed"),
+        "interactive_installer": plan.get("interactive_installer"),
+    }

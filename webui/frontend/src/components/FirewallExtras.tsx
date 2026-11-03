@@ -4,7 +4,9 @@ import {
   fetchInstallerCapabilities,
   fetchInstallerConfiglet,
   fetchExpectInstallPlan,
+  fetchExpectInstallWalkthrough,
   fetchHardGaps,
+  refusePasswordSsh,
   fetchInstallerConfigletFile,
   fetchInstallerConfiglets,
   fetchManagement,
@@ -53,7 +55,14 @@ const FALLBACK_FEATURED = [
   "epilog_script",
 ];
 
-type GroupSection = { id: string; title: string; keys: string[] };
+type GroupSection = {
+  id: string;
+  title: string;
+  keys: string[];
+  flat?: boolean;
+  checkable?: boolean;
+  checked?: boolean;
+};
 type Group = {
   id: string;
   title: string;
@@ -63,6 +72,7 @@ type Group = {
   column_stretch?: number[];
   row_stretch?: number[];
   layouts?: Record<string, number>;
+  layout_tree?: unknown[];
   annotations?: QtGridAnnotation[];
   spacing?: QtGridSpacing;
 };
@@ -140,6 +150,7 @@ export function FirewallExtras({
     expanded?: boolean;
   } | null>(null);
   const [expectPlanText, setExpectPlanText] = useState<string | null>(null);
+  const [expectWalkthroughText, setExpectWalkthroughText] = useState<string | null>(null);
   const [sshAuthNote, setSshAuthNote] = useState<string | null>(null);
   const [hardGaps, setHardGaps] = useState<string[]>([]);
   const [hardGapsNote, setHardGapsNote] = useState<string | null>(null);
@@ -765,8 +776,29 @@ export function FirewallExtras({
             )
           : { className: "typed-grid options-grid" };
         return (
-          <div key={sec.id || "all"} className="option-section">
-            {sec.title ? <h4 className="option-section-title">{sec.title}</h4> : null}
+          <div
+            key={sec.id || "all"}
+            className={[
+              "option-section",
+              sec.flat ? "option-section-flat" : "",
+              sec.checkable ? "option-section-checkable" : "",
+            ]
+              .filter(Boolean)
+              .join(" ")}
+            data-flat={sec.flat ? "1" : undefined}
+            data-checkable={sec.checkable ? "1" : undefined}
+          >
+            {sec.title ? (
+              <h4 className="option-section-title">
+                {sec.checkable ? (
+                  <span className="muted" title="QGroupBox checkable in .ui (display only)">
+                    ☐{" "}
+                  </span>
+                ) : null}
+                {sec.title}
+                {sec.flat ? <span className="muted"> · flat</span> : null}
+              </h4>
+            ) : null}
             <div className={grid.className} style={grid.style}>
               {pageSpacers.map((sp, i) => (
                 <div
@@ -890,10 +922,80 @@ export function FirewallExtras({
                 >
                   Download expect plan
                 </button>
+                <button
+                  type="button"
+                  className="ghost"
+                  disabled={busy || !hostOs}
+                  title="Dry walkthrough: every step preview_only (nothing executed)"
+                  onClick={() => {
+                    if (!hostOs) return;
+                    void (async () => {
+                      onBusy?.(true);
+                      onError?.(null);
+                      try {
+                        const wt = await fetchExpectInstallWalkthrough(hostOs, {
+                          fwdir: remoteDir || "/etc",
+                        });
+                        const lines = [
+                          `# expect walkthrough for ${wt.host_os} (all_preview_only=${wt.all_preview_only})`,
+                          wt.note || "",
+                          "",
+                          ...wt.steps.map((s, i) => {
+                            const mark = s.runnable ? "RUN" : "preview_only";
+                            return `${i + 1}. [${s.id}] ${s.title} — ${mark}${
+                              s.detail ? `\n   ${s.detail}` : ""
+                            }`;
+                          }),
+                        ];
+                        setExpectWalkthroughText(lines.join("\n"));
+                        onStatus?.(
+                          `Expect walkthrough: ${wt.step_count} steps (preview_only)`,
+                        );
+                      } catch (e) {
+                        onError?.(e instanceof Error ? e.message : String(e));
+                      } finally {
+                        onBusy?.(false);
+                      }
+                    })();
+                  }}
+                >
+                  Walkthrough (dry)
+                </button>
+                <button
+                  type="button"
+                  className="ghost"
+                  disabled={busy}
+                  title="Confirm password/keyboard-interactive SSH is refused (501)"
+                  onClick={() => {
+                    void (async () => {
+                      onBusy?.(true);
+                      onError?.(null);
+                      try {
+                        const r = await refusePasswordSsh();
+                        if (r.refused) {
+                          onStatus?.("Password SSH refused (501) — BatchMode only");
+                        } else {
+                          onError?.(`Unexpected SSH auth response: ${r.status}`);
+                        }
+                      } catch (e) {
+                        onError?.(e instanceof Error ? e.message : String(e));
+                      } finally {
+                        onBusy?.(false);
+                      }
+                    })();
+                  }}
+                >
+                  Probe password SSH
+                </button>
               </div>
               {expectPlanText ? (
                 <pre className="deploy-log configlet-preview" tabIndex={0}>
                   {expectPlanText}
+                </pre>
+              ) : null}
+              {expectWalkthroughText ? (
+                <pre className="deploy-log configlet-preview" tabIndex={0}>
+                  {expectWalkthroughText}
                 </pre>
               ) : null}
               {expectConfiglets.length ? (

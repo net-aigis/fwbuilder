@@ -405,26 +405,34 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | 257–261 wiring | done | E2E phase262 |
 | Soft marker 264 | done | E2E phase263 |
 | Soft-complete STATUS through 264 | done | E2E phase264 |
+| QGroupBox flat/checkable extract | done | E2E phase265 |
+| QGroupBox flat/checkable UI | done | E2E phase266 |
+| Nested layout_tree extract | done | E2E phase267 |
+| Expect walkthrough preview_only | done | E2E phase268 |
+| Walkthrough UI + password probe 501 | done | E2E phase269 |
+| 265–269 wiring | done | E2E phase270 |
+| Soft marker 272 | done | E2E phase271 |
+| Soft-complete STATUS through 272 | done | E2E phase272 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Soft-complete (feature/webui polish track)
 
 WebUI on `feature/webui` remains soft-complete for the polish track.
 
-### Hard-gap honesty/preview track — soft-fertig (phase256); preview slices through 264
+### Hard-gap honesty/preview track — soft-fertig (phase256); preview slices through 272
 
-`WEBUI_SOFT_COMPLETE_PHASE=264`; `/hard-gaps` sets `soft_fertig_honesty_track: true`.
+`WEBUI_SOFT_COMPLETE_PHASE=272`; `/hard-gaps` sets `soft_fertig_honesty_track: true`.
 
-- Deploy: manifest `# files:`, OS configlets, external PolicyInstallScript, copyFWB, use_scp, gzip transfer on compress (plan shows −%), capabilities API (+ expect_install_plan pointer), live gate + force_limited, expect stub + raw/expanded configlet preview + ordered expect plan (reg_user + safety_net_acl + download + sessionStorage); `POST …/run` → 501 (still **no** expect/SSHSession runtime)
-- Options: .ui labels, free QLabel annotations (+ alignment), QRadio bool, QGroupBox sections, tooltips, page-local QGridLayout + spacers (sizeHint) + column/row stretch + spacing/margins (CSS + page hint) + sizePolicy + min/max size + layout hints + dialog windowTitle/geometry (header WxH + CSS max-height) + shared `qtGridStyle` on Firewall/Rule/Interface (still **not** full pixel Qt layout)
-- SSH: BatchMode only; `GET /ssh-auth`, capabilities.ssh_auth, deploy plan line, and `allow_password_auth` → 400
+- Deploy: manifest `# files:`, OS configlets, external PolicyInstallScript, copyFWB, use_scp, gzip transfer on compress (plan shows −%), capabilities API (+ expect_install_plan / walkthrough pointers), live gate + force_limited, expect stub + raw/expanded configlet preview + ordered expect plan (reg_user + safety_net_acl + download + sessionStorage) + dry walkthrough (all preview_only); `POST …/run` → 501 (still **no** expect/SSHSession runtime)
+- Options: .ui labels, free QLabel annotations (+ alignment), QRadio bool, QGroupBox sections (flat/checkable), tooltips, page-local QGridLayout + spacers (sizeHint) + column/row stretch + spacing/margins (CSS + page hint) + sizePolicy + min/max size + layout hints + layout_tree + dialog windowTitle/geometry (header WxH + CSS max-height) + shared `qtGridStyle` on Firewall/Rule/Interface (still **not** full pixel Qt layout)
+- SSH: BatchMode only; `GET /ssh-auth`, capabilities.ssh_auth, deploy plan line, `allow_password_auth` → 400, `POST /ssh-auth/password` → 501
 - Honesty: UI lists `hard_gap_open` + note via `fetchHardGaps`; `GET /hard-gaps` documents remaining gaps
 
 Still open (hard backlog — **not** soft-fertig):
 
-- Full Qt AdvancedDialog **pixel** layout parity (exact geometry; dialog size + grid spacing since phase226/241; row/col + spacers/sizeHint + stretch + annotations/alignment + sizePolicy/min/max size since phase165/177/181/189/205/209/213/257–260)
-- Full desktop **FirewallInstaller** expect/SSHSession for Cisco/Juniper/Procurve (plan/preview/download; run endpoint refuses with 501)
-- Password/keyboard-interactive SSH (API refuses `allow_password_auth`; BatchMode only)
+- Full Qt AdvancedDialog **pixel** layout parity (exact geometry; dialog size + grid spacing since phase226/241; row/col + spacers/sizeHint + stretch + annotations/alignment + sizePolicy/min/max size + QGroupBox flat + layout_tree since phase165/177/181/189/205/209/213/257–267)
+- Full desktop **FirewallInstaller** expect/SSHSession for Cisco/Juniper/Procurve (plan/preview/walkthrough/download; run endpoint refuses with 501)
+- Password/keyboard-interactive SSH (API refuses `allow_password_auth` and `POST /ssh-auth/password`; BatchMode only)
 
 ## Phase 3 — compile / deploy
 
@@ -699,6 +707,14 @@ Still open (hard backlog — **not** soft-fertig):
 | Local E2E phase262 (wiring) | done | `e2e-phase262.sh` **OK** |
 | Local E2E phase263 (soft marker 264) | done | `e2e-phase263.sh` **OK** |
 | Local E2E phase264 (STATUS soft-complete) | done | `e2e-phase264.sh` **OK** |
+| Local E2E phase265 (QGroupBox flat/checkable) | done | `e2e-phase265.sh` **OK** |
+| Local E2E phase266 (groupbox UI) | done | `e2e-phase266.sh` **OK** |
+| Local E2E phase267 (layout_tree) | done | `e2e-phase267.sh` **OK** |
+| Local E2E phase268 (expect walkthrough) | done | `e2e-phase268.sh` **OK** |
+| Local E2E phase269 (walkthrough/password UI) | done | `e2e-phase269.sh` **OK** |
+| Local E2E phase270 (wiring) | done | `e2e-phase270.sh` **OK** |
+| Local E2E phase271 (soft marker 272) | done | `e2e-phase271.sh` **OK** |
+| Local E2E phase272 (STATUS soft-complete) | done | `e2e-phase272.sh` **OK** |
 
 ## Local commands
 
@@ -972,6 +988,14 @@ bash webui/scripts/e2e-phase261.sh
 bash webui/scripts/e2e-phase262.sh
 bash webui/scripts/e2e-phase263.sh
 bash webui/scripts/e2e-phase264.sh
+bash webui/scripts/e2e-phase265.sh
+bash webui/scripts/e2e-phase266.sh
+bash webui/scripts/e2e-phase267.sh
+bash webui/scripts/e2e-phase268.sh
+bash webui/scripts/e2e-phase269.sh
+bash webui/scripts/e2e-phase270.sh
+bash webui/scripts/e2e-phase271.sh
+bash webui/scripts/e2e-phase272.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```
