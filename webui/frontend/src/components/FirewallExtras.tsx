@@ -119,6 +119,9 @@ export function FirewallExtras({
             useScp?: boolean;
             copyFwb?: boolean;
             identityFile?: string;
+            deployHost?: string;
+            deployUser?: string;
+            remoteDir?: string;
           };
           if (typeof prefs.dryRun === "boolean") setDryRun(prefs.dryRun);
           if (typeof prefs.activate === "boolean") setActivate(prefs.activate);
@@ -126,6 +129,9 @@ export function FirewallExtras({
           if (typeof prefs.useScp === "boolean") setUseScp(prefs.useScp);
           if (typeof prefs.copyFwb === "boolean") setCopyFwb(prefs.copyFwb);
           if (typeof prefs.identityFile === "string") setIdentityFile(prefs.identityFile);
+          if (typeof prefs.deployHost === "string" && prefs.deployHost) setDeployHost(prefs.deployHost);
+          if (typeof prefs.deployUser === "string") setDeployUser(prefs.deployUser);
+          if (typeof prefs.remoteDir === "string" && prefs.remoteDir) setRemoteDir(prefs.remoteDir);
         }
       } catch {
         /* ignore */
@@ -188,12 +194,33 @@ export function FirewallExtras({
     try {
       sessionStorage.setItem(
         deployPrefsKey(firewallId),
-        JSON.stringify({ dryRun, activate, compress, useScp, copyFwb, identityFile }),
+        JSON.stringify({
+          dryRun,
+          activate,
+          compress,
+          useScp,
+          copyFwb,
+          identityFile,
+          deployHost,
+          deployUser,
+          remoteDir,
+        }),
       );
     } catch {
       /* ignore */
     }
-  }, [firewallId, dryRun, activate, compress, useScp, copyFwb, identityFile]);
+  }, [
+    firewallId,
+    dryRun,
+    activate,
+    compress,
+    useScp,
+    copyFwb,
+    identityFile,
+    deployHost,
+    deployUser,
+    remoteDir,
+  ]);
 
   const keys = useMemo(() => {
     const all = Object.keys(options).sort();
@@ -288,11 +315,11 @@ export function FirewallExtras({
 
   async function onDeploy() {
     if (!dryRun) {
-      if (
-        !window.confirm(
-          "LIVE deploy will run scp/ssh against the management host. Continue?",
-        )
-      ) {
+      const external = installEnabled && installCmd.trim().length > 0;
+      const warn = external
+        ? "LIVE deploy will run the external install script on this machine. Continue?"
+        : "LIVE deploy will run scp/ssh against the management host. Continue?";
+      if (!window.confirm(warn)) {
         return;
       }
       const typed = window.prompt('Type DEPLOY to confirm live install', "");
@@ -332,7 +359,9 @@ export function FirewallExtras({
           `host=${res.deploy.host} user=${res.deploy.user || "(none)"}`,
           `remote=${res.deploy.remote_path}`,
           `dry_run=${res.deploy.dry_run}`,
+          res.deploy.mode ? `mode=${res.deploy.mode}` : "",
           `use_scp=${useScp}`,
+          copyFwb ? "copy_fwb=true" : "",
           deployAny.identity_file ? `identity_file=${deployAny.identity_file}` : "",
           deployAny.activation_source
             ? `activation_source=${deployAny.activation_source}`

@@ -661,6 +661,7 @@ export function deployFirewall(
     compile: { outputs?: string[]; destdir?: string; log?: string };
     deploy: {
       dry_run: boolean;
+      mode?: string;
       host: string;
       user: string;
       remote_path: string;
@@ -671,6 +672,7 @@ export function deployFirewall(
       activation_source?: string;
       activation_cmd?: string;
       identity_file?: string | null;
+      copy_fwb?: boolean;
       files?: Array<{ local: string; remote: string }>;
       manifest?: Array<{ local: string; remote: string; main?: boolean }>;
     };

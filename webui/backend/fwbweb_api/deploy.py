@@ -341,6 +341,7 @@ def plan_and_deploy(
     result: dict[str, Any] = {
         "ok": True,
         "dry_run": dry_run,
+        "mode": "scp_ssh",
         "host": host,
         "user": user,
         "remote_path": main_remote,
@@ -350,6 +351,7 @@ def plan_and_deploy(
         "activation_cmd": act if activate else "",
         "activation_source": activation_source,
         "identity_file": identity_expanded,
+        "copy_fwb": bool(copy_fwb),
         "plan": plan_lines,
         "commands": commands,
         "log": "",
