@@ -163,12 +163,19 @@ export function FirewallExtras({
         /* ignore */
       }
       if (cfgList) {
-        const caps = cfgList as typeof cfgList & { recommended_webui_mode?: string };
+        const caps = cfgList as typeof cfgList & {
+          recommended_webui_mode?: string;
+          expect_installer?: { note?: string; desktop_steps?: string[] };
+        };
         setInstallerMode(caps.recommended_webui_mode || null);
         if (cfgList.interactive_installer) {
+          const steps = caps.expect_installer?.desktop_steps?.length
+            ? ` Desktop steps: ${caps.expect_installer.desktop_steps.length}.`
+            : "";
           setInstallerNote(
-            cfgList.note ||
-              "This OS uses interactive FirewallInstaller pre/post configlets; WebUI scp/ssh deploy is limited.",
+            (cfgList.note ||
+              "This OS uses interactive FirewallInstaller pre/post configlets; WebUI scp/ssh deploy is limited.") +
+              steps,
           );
         } else {
           setInstallerNote(null);

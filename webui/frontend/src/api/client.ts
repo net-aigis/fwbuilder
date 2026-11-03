@@ -661,6 +661,12 @@ export function fetchInstallerCapabilities(hostOs: string) {
     recommended_webui_mode?: string;
     webui_modes?: Record<string, boolean>;
     note?: string | null;
+    expect_installer?: {
+      implemented?: boolean;
+      needed?: boolean;
+      desktop_steps?: string[];
+      note?: string;
+    };
   }>(`/api/v1/installer-capabilities?${q.toString()}`);
 }
 
