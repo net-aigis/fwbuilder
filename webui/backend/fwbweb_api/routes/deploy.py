@@ -9,7 +9,7 @@ from pydantic import BaseModel, Field
 from ..auth import require_token
 from ..bridge import BridgeError
 from ..compile import CompileError, run_compiler
-from ..deploy import DeployError, plan_and_deploy, plan_external_install
+from ..deploy import DeployError, plan_and_deploy, plan_external_install, ssh_auth_capabilities
 from ..sessions import store
 
 router = APIRouter(prefix="/api/v1/projects", tags=["deploy"])
@@ -46,6 +46,8 @@ class DeployRequest(BaseModel):
     copy_fwb: bool = False
     # Live scp/ssh on Cisco/Juniper/… is incomplete; require explicit opt-in.
     force_limited_installer: bool = False
+    # Password/keyboard-interactive is not implemented; requesting it is refused.
+    allow_password_auth: bool = False
 
 
 @router.post("/{session_id}/deploy")
@@ -54,6 +56,14 @@ def deploy_firewall(
     body: DeployRequest,
     _: str = Depends(require_token),
 ) -> dict[str, Any]:
+    if body.allow_password_auth:
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "error": "password_auth_not_implemented",
+                "ssh_auth": ssh_auth_capabilities(),
+            },
+        )
     try:
         session = store.get(session_id)
     except KeyError as exc:

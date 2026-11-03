@@ -100,6 +100,7 @@ def get_installer_capabilities(
         **listing,
         "desktop_full_installer": listing.get("interactive_installer"),
         "expect_installer": expect,
+        "ssh_auth": ssh_auth_capabilities(),
         "recommended_webui_mode": (
             "external_install_script"
             if not (modes.get("scp_ssh") or modes.get("scp_ssh_limited"))

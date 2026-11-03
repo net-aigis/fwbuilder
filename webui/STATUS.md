@@ -337,21 +337,25 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | GET /ssh-auth capabilities | done | E2E phase194 |
 | Expanded configlet file preview | done | expand=true; E2E phase195 |
 | Expand buttons + sshAuthNote UI | done | FirewallExtras; E2E phase196 |
+| ssh_auth on installer-capabilities | done | E2E phase197 |
+| Refuse deploy allow_password_auth | done | 400 password_auth_not_implemented; E2E phase198 |
+| post_config expand preview | done | E2E phase199 |
+| Soft-complete STATUS through 200 | done | E2E phase200 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Soft-complete (feature/webui polish track)
 
-WebUI on `feature/webui` remains soft-complete for the polish track; hard-gap slices continue through phase196+:
+WebUI on `feature/webui` remains soft-complete for the polish track; hard-gap slices continue through phase200+:
 
 - Deploy: manifest `# files:`, OS configlets, external PolicyInstallScript, copyFWB, use_scp, gzip transfer on compress, capabilities API, live gate + force_limited, expect stub + raw/expanded configlet preview (still **no** expect/SSHSession runtime)
 - Options: .ui labels, free QLabel annotations, QRadio bool, QGroupBox sections, tooltips, page-local QGridLayout + spacers + columnstretch + layout hints + shared `qtGridStyle` on Firewall/Rule/Interface (still **not** full pixel Qt layout)
-- SSH: BatchMode only; `GET /ssh-auth` + deploy `ssh_auth` + plan line document password refusal
+- SSH: BatchMode only; `GET /ssh-auth`, capabilities.ssh_auth, deploy plan line, and `allow_password_auth` → 400
 
 Still open (hard backlog):
 
 - Full Qt AdvancedDialog **pixel** layout parity (exact geometry; row/col + spacers + stretch + annotations since phase165/177/181/189)
 - Full desktop **FirewallInstaller** expect/SSHSession for Cisco/Juniper/Procurve (pre/post previewable/expandable; still no runtime)
-- Password/keyboard-interactive SSH (documented refusal via `/ssh-auth`; BatchMode only)
+- Password/keyboard-interactive SSH (API refuses `allow_password_auth`; BatchMode only)
 
 ## Phase 3 — compile / deploy
 
@@ -558,6 +562,10 @@ Still open (hard backlog):
 | Local E2E phase194 (GET /ssh-auth) | done | `e2e-phase194.sh` **OK** |
 | Local E2E phase195 (expand configlet) | done | `e2e-phase195.sh` **OK** |
 | Local E2E phase196 (expand + sshAuth UI) | done | `e2e-phase196.sh` **OK** |
+| Local E2E phase197 (caps ssh_auth) | done | `e2e-phase197.sh` **OK** |
+| Local E2E phase198 (password refuse) | done | `e2e-phase198.sh` **OK** |
+| Local E2E phase199 (post_config expand) | done | `e2e-phase199.sh` **OK** |
+| Local E2E phase200 (STATUS soft-complete) | done | `e2e-phase200.sh` **OK** |
 
 ## Local commands
 
@@ -763,6 +771,10 @@ bash webui/scripts/e2e-phase193.sh
 bash webui/scripts/e2e-phase194.sh
 bash webui/scripts/e2e-phase195.sh
 bash webui/scripts/e2e-phase196.sh
+bash webui/scripts/e2e-phase197.sh
+bash webui/scripts/e2e-phase198.sh
+bash webui/scripts/e2e-phase199.sh
+bash webui/scripts/e2e-phase200.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

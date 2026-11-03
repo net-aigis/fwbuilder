@@ -741,6 +741,12 @@ export function fetchInstallerCapabilities(hostOs: string) {
     webui_modes?: Record<string, boolean>;
     note?: string | null;
     names?: string[];
+    ssh_auth?: {
+      batch_mode?: boolean;
+      password_supported?: boolean;
+      keyboard_interactive_supported?: boolean;
+      note?: string;
+    };
     expect_installer?: {
       implemented?: boolean;
       needed?: boolean;
