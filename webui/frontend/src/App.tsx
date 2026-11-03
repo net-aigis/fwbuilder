@@ -104,7 +104,15 @@ export function App() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [tab, setTab] = useState<MainTab>("object");
-  const [rulesWhich, setRulesWhich] = useState<RulesWhich>("policy");
+  const [rulesWhich, setRulesWhich] = useState<RulesWhich>(() => {
+    try {
+      const w = sessionStorage.getItem("fwbweb.rulesWhich");
+      if (w === "policy" || w === "nat" || w === "routing") return w;
+    } catch {
+      /* ignore */
+    }
+    return "policy";
+  });
   const [rulesFwId, setRulesFwId] = useState<string | null>(null);
   const [rulesFwMeta, setRulesFwMeta] = useState<{
     name: string;
@@ -470,6 +478,11 @@ export function App() {
       });
       setRulesetId(targetId);
       setRulesWhich(which);
+      try {
+        sessionStorage.setItem("fwbweb.rulesWhich", which);
+      } catch {
+        /* ignore */
+      }
       setTab("rules");
       setStatus(`${chosen?.name || which} · ${data.rules?.length ?? 0} rules`);
     } catch (err) {
@@ -851,6 +864,31 @@ export function App() {
       if (mod && e.shiftKey && e.key.toLowerCase() === "l" && !typing) {
         e.preventDefault();
         setTheme((t) => (t === "dark" ? "light" : "dark"));
+        return;
+      }
+      if (mod && !e.shiftKey && e.key === "1") {
+        e.preventDefault();
+        setTab("object");
+        return;
+      }
+      if (mod && !e.shiftKey && e.key === "2") {
+        e.preventDefault();
+        setTab("rules");
+        return;
+      }
+      if (
+        tab === "rules" &&
+        !mod &&
+        !e.altKey &&
+        e.key.toLowerCase() === "i" &&
+        selectedRuleId &&
+        !typing
+      ) {
+        e.preventDefault();
+        void navigator.clipboard.writeText(selectedRuleId).then(
+          () => setStatus(`Copied rule id ${selectedRuleId}`),
+          () => setError("Clipboard write failed"),
+        );
         return;
       }
       if (
@@ -3054,6 +3092,7 @@ export function App() {
             <button
               type="button"
               className={tab === "object" ? undefined : "ghost"}
+              title="Object tab (Ctrl+1)"
               onClick={() => setTab("object")}
             >
               Object
@@ -3062,6 +3101,7 @@ export function App() {
               type="button"
               className={tab === "rules" ? undefined : "ghost"}
               disabled={!rulesFwId}
+              title="Rules tab (Ctrl+2)"
               onClick={() => setTab("rules")}
             >
               Rules {rulesFwId ? `(${rulesWhich})` : ""}
