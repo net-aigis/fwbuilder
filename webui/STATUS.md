@@ -206,6 +206,8 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Bulk direction visible | done | Direction visible…; E2E phase65 |
 | Stats fw Rules/Compile actions | done | stats list; E2E phase66 |
 | Stats fw platform enrichment | done | fetchObject per fw |
+| Rules TSV id/logging/direction | done | rulesToTsv; E2E phase67 |
+| Status bar rule position | done | pos N next to visible index |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Phase 3 — compile / deploy
@@ -283,6 +285,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase64 (comment search + logging) | done | `e2e-phase64.sh` **OK** |
 | Local E2E phase65 (comment hit + direction) | done | `e2e-phase65.sh` **OK** |
 | Local E2E phase66 (stats Rules/Compile) | done | `e2e-phase66.sh` **OK** |
+| Local E2E phase67 (enriched rules TSV) | done | `e2e-phase67.sh` **OK** |
 
 ## Local commands
 
@@ -358,6 +361,7 @@ bash webui/scripts/e2e-phase63.sh
 bash webui/scripts/e2e-phase64.sh
 bash webui/scripts/e2e-phase65.sh
 bash webui/scripts/e2e-phase66.sh
+bash webui/scripts/e2e-phase67.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

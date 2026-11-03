@@ -1340,8 +1340,11 @@ export function App() {
 
   function rulesToTsv(): string {
     const cols = [
+      "id",
       "pos",
       "disabled",
+      "logging",
+      "direction",
       "group",
       "action",
       "src",
@@ -1354,13 +1357,19 @@ export function App() {
     const lines = [cols.join("\t")];
     for (const r of visibleRules) {
       const action = "action" in r ? String((r as PolicyRule).action ?? "") : "";
+      const direction = "direction" in r ? String((r as PolicyRule).direction ?? "") : "";
+      const logging =
+        "logging" in r ? ((r as PolicyRule).logging ? "1" : "0") : "";
       const cell = (el: RuleElement | undefined) =>
         el ? formatRuleObjects(el).replace(/\t|\n/g, " ") : "";
       const pr = r as PolicyRule;
       lines.push(
         [
+          r.id,
           String(r.position ?? ""),
           r.disabled ? "1" : "0",
+          logging,
+          direction,
           (r.group ?? "").replace(/\t|\n/g, " "),
           action,
           cell(pr.src),
@@ -3470,6 +3479,10 @@ export function App() {
               visibleRules.findIndex((r) => r.id === selectedRuleId),
             ) + (selectedRuleId ? 1 : 0)}
             /{visibleRules.length}
+            {(() => {
+              const sel = visibleRules.find((r) => r.id === selectedRuleId);
+              return sel && sel.position != null ? ` · pos ${sel.position}` : "";
+            })()}
           </span>
         ) : null}
         {dirty ? <span className="dirty-flag">Unsaved</span> : null}
