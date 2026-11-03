@@ -260,14 +260,37 @@ def plan_and_deploy(
         scp_extra += ["-i", identity_expanded]
 
     # Prefer BatchMode so missing keys fail fast instead of hanging on password.
-    base_ssh = ["ssh", "-o", "BatchMode=yes", "-o", "StrictHostKeyChecking=accept-new", *ssh_extra]
-    base_scp = ["scp", "-o", "BatchMode=yes", "-o", "StrictHostKeyChecking=accept-new", *scp_extra]
+    base_ssh = [
+        "ssh",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=accept-new",
+        "-o",
+        "ConnectTimeout=20",
+        *ssh_extra,
+    ]
+    base_scp = [
+        "scp",
+        "-o",
+        "BatchMode=yes",
+        "-o",
+        "StrictHostKeyChecking=accept-new",
+        "-o",
+        "ConnectTimeout=20",
+        *scp_extra,
+    ]
 
     scp_cmds: list[list[str]] = []
     commands: list[str] = []
     plan_lines = ["Installation plan:"]
     for local_path, remote_path in copies:
-        plan_lines.append(f"Copy file: {local_path.name} --> {remote_path}")
+        try:
+            sz = local_path.stat().st_size
+            size_s = f" ({sz} bytes)" if sz < 1024 else f" ({sz/1024:.1f} KiB)"
+        except OSError:
+            size_s = ""
+        plan_lines.append(f"Copy file: {local_path.name}{size_s} --> {remote_path}")
         scp_cmd = [*base_scp, str(local_path), f"{scp_target}:{remote_path}"]
         scp_cmds.append(scp_cmd)
         commands.append(" ".join(shlex.quote(c) for c in scp_cmd))
@@ -277,7 +300,12 @@ def plan_and_deploy(
         if fwb.is_file():
             dest_dir = remote_dir.rstrip("/") or "/etc"
             remote_fwb = f"{dest_dir}/{fwb.name}"
-            plan_lines.append(f"Copy data file: {fwb.name} --> {dest_dir}")
+            try:
+                sz = fwb.stat().st_size
+                size_s = f" ({sz} bytes)" if sz < 1024 else f" ({sz / 1024:.1f} KiB)"
+            except OSError:
+                size_s = ""
+            plan_lines.append(f"Copy data file: {fwb.name}{size_s} --> {dest_dir}")
             scp_cmd = [*base_scp, str(fwb), f"{scp_target}:{remote_fwb}"]
             scp_cmds.append(scp_cmd)
             commands.append(" ".join(shlex.quote(c) for c in scp_cmd))
