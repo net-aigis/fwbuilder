@@ -2267,6 +2267,54 @@ export function App() {
                   type="button"
                   className="ghost"
                   disabled={busy}
+                  title="Download Deleted Objects as JSON"
+                  onClick={() => {
+                    const blob = new Blob(
+                      [JSON.stringify({ count: trashItems.length, objects: trashItems }, null, 2)],
+                      { type: "application/json" },
+                    );
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = "fwbweb-deleted.json";
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    setStatus(`Downloaded ${trashItems.length} deleted object(s)`);
+                  }}
+                >
+                  JSON
+                </button>
+                <button
+                  type="button"
+                  className="ghost"
+                  disabled={busy}
+                  title="Download Deleted Objects as TSV"
+                  onClick={() => {
+                    const lines = [
+                      "id\ttype\tname\tcomment\tdeleted_from_parent_id",
+                      ...trashItems.map(
+                        (h) =>
+                          `${h.id}\t${h.type}\t${(h.name ?? "").replace(/\t|\n/g, " ")}\t${(h.comment ?? "").replace(/\t|\n/g, " ")}\t${h.deleted_from_parent_id ?? ""}`,
+                      ),
+                    ];
+                    const blob = new Blob([lines.join("\n")], {
+                      type: "text/tab-separated-values",
+                    });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = "fwbweb-deleted.tsv";
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    setStatus(`Downloaded ${trashItems.length} deleted object(s) as TSV`);
+                  }}
+                >
+                  TSV
+                </button>
+                <button
+                  type="button"
+                  className="ghost"
+                  disabled={busy}
                   onClick={() => void onRestoreAllTrash()}
                   title="Restore every deleted object to its previous parent"
                 >
@@ -2473,9 +2521,10 @@ export function App() {
                   disabled={busy}
                   onClick={() => {
                     const lines = [
-                      "id\ttype\tname",
+                      "id\ttype\tname\tcomment",
                       ...visibleUnused.map(
-                        (h) => `${h.id}\t${h.type}\t${(h.name ?? "").replace(/\t|\n/g, " ")}`,
+                        (h) =>
+                          `${h.id}\t${h.type}\t${(h.name ?? "").replace(/\t|\n/g, " ")}\t${(h.comment ?? "").replace(/\t|\n/g, " ")}`,
                       ),
                     ];
                     const blob = new Blob([lines.join("\n")], {
