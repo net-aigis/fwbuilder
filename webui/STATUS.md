@@ -325,20 +325,24 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | CSS columns from columnstretch | done | qtGridStyle fr weights; E2E phase182 |
 | Expect steps from pre/post configlets | done | expect_installer; E2E phase183 |
 | Expect configlet names in UI | done | FirewallExtras; E2E phase184 |
+| Layout/stretch page hint | done | FirewallExtras; E2E phase185 |
+| Raw installer configlet file API | done | `GET /installer-configlet-file`; E2E phase186 |
+| Configlet preview buttons in UI | done | FirewallExtras; E2E phase187 |
+| SSH auth line in deploy plan | done | plan_and_deploy; E2E phase188 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Soft-complete (feature/webui polish track)
 
-WebUI on `feature/webui` remains soft-complete for the polish track; hard-gap slices continue through phase184+:
+WebUI on `feature/webui` remains soft-complete for the polish track; hard-gap slices continue through phase188+:
 
-- Deploy: manifest `# files:`, OS configlets, external PolicyInstallScript, copyFWB, use_scp, gzip transfer on compress, capabilities API, live gate + force_limited, expect stub with configlet-aware steps (still **no** expect/SSHSession runtime)
-- Options: .ui labels, QRadio bool, QGroupBox sections, tooltips, page-local QGridLayout + spacers + columnstretch + shared `qtGridStyle` (still **not** full pixel Qt layout)
-- SSH: BatchMode only; password/keyboard-interactive explicitly unsupported (`ssh_auth` in deploy result)
+- Deploy: manifest `# files:`, OS configlets, external PolicyInstallScript, copyFWB, use_scp, gzip transfer on compress, capabilities API, live gate + force_limited, expect stub + raw configlet preview (still **no** expect/SSHSession runtime)
+- Options: .ui labels, QRadio bool, QGroupBox sections, tooltips, page-local QGridLayout + spacers + columnstretch + layout hints + shared `qtGridStyle` (still **not** full pixel Qt layout)
+- SSH: BatchMode only; password/keyboard-interactive explicitly unsupported (`ssh_auth` in deploy result + plan line)
 
 Still open (hard backlog):
 
 - Full Qt AdvancedDialog **pixel** layout parity (exact geometry; row/col + spacers + stretch since phase165/177/181)
-- Full desktop **FirewallInstaller** expect/SSHSession for Cisco/Juniper/Procurve (pre/post named; still no runtime)
+- Full desktop **FirewallInstaller** expect/SSHSession for Cisco/Juniper/Procurve (pre/post previewable; still no runtime)
 - Password/keyboard-interactive SSH (documented refusal; BatchMode only)
 
 ## Phase 3 — compile / deploy
@@ -534,6 +538,10 @@ Still open (hard backlog):
 | Local E2E phase182 (columnstretch CSS) | done | `e2e-phase182.sh` **OK** |
 | Local E2E phase183 (expect pre/post steps) | done | `e2e-phase183.sh` **OK** |
 | Local E2E phase184 (expect configlets UI) | done | `e2e-phase184.sh` **OK** |
+| Local E2E phase185 (layout hint UI) | done | `e2e-phase185.sh` **OK** |
+| Local E2E phase186 (configlet file API) | done | `e2e-phase186.sh` **OK** |
+| Local E2E phase187 (configlet preview UI) | done | `e2e-phase187.sh` **OK** |
+| Local E2E phase188 (SSH auth in plan) | done | `e2e-phase188.sh` **OK** |
 
 ## Local commands
 
@@ -727,6 +735,10 @@ bash webui/scripts/e2e-phase181.sh
 bash webui/scripts/e2e-phase182.sh
 bash webui/scripts/e2e-phase183.sh
 bash webui/scripts/e2e-phase184.sh
+bash webui/scripts/e2e-phase185.sh
+bash webui/scripts/e2e-phase186.sh
+bash webui/scripts/e2e-phase187.sh
+bash webui/scripts/e2e-phase188.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

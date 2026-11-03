@@ -637,6 +637,21 @@ export function fetchInstallerConfiglet(params: {
   }>(`/api/v1/installer-configlet?${q.toString()}`);
 }
 
+export function fetchInstallerConfigletFile(hostOs: string, name: string) {
+  const q = new URLSearchParams({ host_os: hostOs, name });
+  return api<{
+    ok: boolean;
+    host_os: string;
+    name: string;
+    configlet_dir?: string;
+    path?: string;
+    size?: number;
+    text?: string;
+    names?: string[];
+    note?: string;
+  }>(`/api/v1/installer-configlet-file?${q.toString()}`);
+}
+
 export function fetchInstallerConfiglets(hostOs: string) {
   const q = new URLSearchParams({ host_os: hostOs });
   return api<{

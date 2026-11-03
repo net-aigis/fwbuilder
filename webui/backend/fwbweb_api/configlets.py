@@ -107,6 +107,57 @@ def load_installer_configlet(host_os: str, *, user: str) -> str | None:
     return path.read_text(encoding="utf-8", errors="replace")
 
 
+def read_installer_configlet_file(host_os: str, name: str) -> dict[str, Any]:
+    """Read a named installer_commands* file (preview only; no expansion)."""
+    listing = list_installer_configlets(host_os)
+    safe = (name or "").strip()
+    if (
+        not safe
+        or "/" in safe
+        or "\\" in safe
+        or ".." in safe
+        or not safe.startswith("installer_commands")
+    ):
+        return {
+            "ok": False,
+            "error": "invalid_configlet_name",
+            "host_os": host_os,
+            "name": name,
+            "names": listing.get("names") or [],
+        }
+    directory = resolve_configlet_dir(host_os)
+    if directory is None:
+        return {
+            "ok": False,
+            "error": "configlet_dir_missing",
+            "host_os": host_os,
+            "name": safe,
+            "names": listing.get("names") or [],
+        }
+    path = directory / safe
+    if not path.is_file():
+        return {
+            "ok": False,
+            "error": "configlet_not_found",
+            "host_os": host_os,
+            "name": safe,
+            "configlet_dir": str(directory),
+            "names": listing.get("names") or [],
+        }
+    text = path.read_text(encoding="utf-8", errors="replace")
+    return {
+        "ok": True,
+        "host_os": host_os,
+        "name": safe,
+        "configlet_dir": str(directory),
+        "path": str(path),
+        "size": len(text.encode("utf-8")),
+        "text": text,
+        "names": listing.get("names") or [],
+        "note": "Raw configlet preview for desktop expect path; WebUI does not execute it.",
+    }
+
+
 def expand_configlet(
     text: str,
     *,

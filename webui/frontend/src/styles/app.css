@@ -704,6 +704,13 @@ button.linkish:disabled {
   min-height: 0.75rem;
 }
 
+pre.configlet-preview {
+  max-height: 14rem;
+  overflow: auto;
+  font-size: 0.75rem;
+  margin-top: 0.5rem;
+}
+
 .dialog-pages {
   display: flex;
   flex-wrap: wrap;

@@ -3,6 +3,7 @@ import {
   deployFirewall,
   fetchInstallerCapabilities,
   fetchInstallerConfiglet,
+  fetchInstallerConfigletFile,
   fetchInstallerConfiglets,
   fetchManagement,
   fetchResStatus,
@@ -112,6 +113,10 @@ export function FirewallExtras({
   const [installerMode, setInstallerMode] = useState<string | null>(null);
   const [expectSteps, setExpectSteps] = useState<string[]>([]);
   const [expectConfiglets, setExpectConfiglets] = useState<string[]>([]);
+  const [configletPreview, setConfigletPreview] = useState<{
+    name: string;
+    text: string;
+  } | null>(null);
   const [resHint, setResHint] = useState<string | null>(null);
 
   async function reload() {
@@ -611,6 +616,14 @@ export function FirewallExtras({
         <div className="btn-row pad-tight">
           <span className="muted">
             Page {activeGroupIndex + 1}/{groups.length}: {activeGroupMeta.title}
+            {activeGroupMeta.layouts
+              ? ` · layouts ${Object.entries(activeGroupMeta.layouts)
+                  .map(([k, n]) => `${k}:${n}`)
+                  .join(", ")}`
+              : ""}
+            {activeGroupMeta.column_stretch?.length
+              ? ` · stretch ${activeGroupMeta.column_stretch.join(":")}`
+              : ""}
           </span>
           <button
             type="button"
@@ -711,10 +724,53 @@ export function FirewallExtras({
                 ))}
               </ol>
               {expectConfiglets.length ? (
-                <p className="muted">
-                  Installer configlets:{" "}
-                  <code>{expectConfiglets.join(", ")}</code>
-                </p>
+                <div className="pad-tight">
+                  <p className="muted">
+                    Installer configlets:{" "}
+                    <code>{expectConfiglets.join(", ")}</code>
+                  </p>
+                  <div className="btn-row">
+                    {expectConfiglets
+                      .filter((n) =>
+                        n.includes("pre_config") || n.includes("post_config"),
+                      )
+                      .map((n) => (
+                        <button
+                          key={n}
+                          type="button"
+                          className="ghost"
+                          disabled={busy || !hostOs}
+                          title="Read-only raw configlet preview (not executed)"
+                          onClick={() => {
+                            if (!hostOs) return;
+                            void (async () => {
+                              onBusy?.(true);
+                              onError?.(null);
+                              try {
+                                const r = await fetchInstallerConfigletFile(hostOs, n);
+                                setConfigletPreview({
+                                  name: r.name,
+                                  text: r.text || "",
+                                });
+                                onStatus?.(`Configlet preview: ${r.name}`);
+                              } catch (e) {
+                                onError?.(e instanceof Error ? e.message : String(e));
+                              } finally {
+                                onBusy?.(false);
+                              }
+                            })();
+                          }}
+                        >
+                          Preview {n.replace("installer_commands_", "")}
+                        </button>
+                      ))}
+                  </div>
+                  {configletPreview ? (
+                    <pre className="deploy-log configlet-preview" tabIndex={0}>
+                      {`# ${configletPreview.name}\n${configletPreview.text}`}
+                    </pre>
+                  ) : null}
+                </div>
               ) : null}
             </details>
           ) : null}

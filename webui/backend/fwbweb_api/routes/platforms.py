@@ -8,6 +8,7 @@ from ..auth import require_token
 from ..configlets import (
     default_activation_cmd,
     list_installer_configlets,
+    read_installer_configlet_file,
     resolve_configlet_dir,
 )
 from ..expect_installer import expect_installer_status
@@ -154,6 +155,22 @@ def get_installer_configlet(
         "names": preview.get("names") or [],
         "note": preview.get("note"),
     }
+
+
+@router.get("/installer-configlet-file")
+def get_installer_configlet_file(
+    host_os: str = Query(..., min_length=1),
+    name: str = Query(..., min_length=1),
+    _: str = Depends(require_token),
+) -> dict[str, Any]:
+    """Raw installer_commands* file preview (read-only; not executed)."""
+    result = read_installer_configlet_file(host_os, name)
+    if not result.get("ok"):
+        err = result.get("error")
+        if err == "invalid_configlet_name":
+            raise HTTPException(status_code=400, detail=result)
+        raise HTTPException(status_code=404, detail=result)
+    return result
 
 
 @router.get("/rule-option-schema")

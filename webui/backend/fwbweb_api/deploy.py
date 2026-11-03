@@ -307,7 +307,7 @@ def plan_and_deploy(
 
     scp_cmds: list[list[str]] = []
     commands: list[str] = []
-    plan_lines = ["Installation plan:"]
+    plan_lines = ["Installation plan:", f"SSH auth: {SSH_AUTH_NOTE}"]
     temp_gz: list[Path] = []
     decompress_parts: list[str] = []
     transfer_copies: list[tuple[Path, str]] = []
