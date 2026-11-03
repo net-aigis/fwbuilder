@@ -216,6 +216,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Alt+R open Policy for Firewall | done | keyboard; E2E phase72 |
 | Alt+D deploy dry-run | done | keyboard; E2E phase72 |
 | Open Policy/NAT/Routing on Firewall | done | object panel; E2E phase73 |
+| Cycle disabled filter button | done | Cycle disabled; E2E phase74 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Phase 3 — compile / deploy
@@ -300,6 +301,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase71 (deploy dry-run) | done | `e2e-phase71.sh` **OK** |
 | Local E2E phase72 (Alt+R / Alt+D) | done | `e2e-phase72.sh` **OK** |
 | Local E2E phase73 (open Policy/NAT/Routing) | done | `e2e-phase73.sh` **OK** |
+| Local E2E phase74 (cycle disabled counts) | done | `e2e-phase74.sh` **OK** |
 
 ## Local commands
 
@@ -382,6 +384,7 @@ bash webui/scripts/e2e-phase70.sh
 bash webui/scripts/e2e-phase71.sh
 bash webui/scripts/e2e-phase72.sh
 bash webui/scripts/e2e-phase73.sh
+bash webui/scripts/e2e-phase74.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

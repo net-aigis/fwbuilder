@@ -3326,6 +3326,29 @@ export function App() {
                     />{" "}
                     Only disabled
                   </label>
+                  <button
+                    type="button"
+                    className="ghost"
+                    disabled={busy}
+                    title="Cycle disabled filter: all → hide → only (f)"
+                    onClick={() => {
+                      if (!hideDisabled && !onlyDisabled) {
+                        setHideDisabled(true);
+                        setOnlyDisabled(false);
+                        setStatus("Filter: hide disabled");
+                      } else if (hideDisabled) {
+                        setHideDisabled(false);
+                        setOnlyDisabled(true);
+                        setStatus("Filter: only disabled");
+                      } else {
+                        setHideDisabled(false);
+                        setOnlyDisabled(false);
+                        setStatus("Filter: all rules");
+                      }
+                    }}
+                  >
+                    Cycle disabled
+                  </button>
                   {ruleActions.length ? (
                     <label className="field inline">
                       Action
