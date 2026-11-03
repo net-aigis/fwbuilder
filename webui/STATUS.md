@@ -212,6 +212,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Deleted Objects JSON/TSV | done | trash panel; E2E phase68 |
 | Jump where-used rule → Rules tab | done | WhereUsed; E2E phase69 |
 | Deleted Objects type filter | done | trash panel; E2E phase70 |
+| Deploy dry-run from stats/rules | done | Deploy dry-run; E2E phase71 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Phase 3 — compile / deploy
@@ -293,6 +294,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase68 (unused/deleted export) | done | `e2e-phase68.sh` **OK** |
 | Local E2E phase69 (where-used → rule) | done | `e2e-phase69.sh` **OK** |
 | Local E2E phase70 (trash type filter) | done | `e2e-phase70.sh` **OK** |
+| Local E2E phase71 (deploy dry-run) | done | `e2e-phase71.sh` **OK** |
 
 ## Local commands
 
@@ -372,6 +374,7 @@ bash webui/scripts/e2e-phase67.sh
 bash webui/scripts/e2e-phase68.sh
 bash webui/scripts/e2e-phase69.sh
 bash webui/scripts/e2e-phase70.sh
+bash webui/scripts/e2e-phase71.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

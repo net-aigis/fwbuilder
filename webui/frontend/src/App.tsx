@@ -6,6 +6,7 @@ import {
   compileAllFirewalls,
   compileFirewall,
   createObject,
+  deployFirewall,
   deleteObject,
   emptyDeletedObjects,
   findUnusedObjects,
@@ -2049,6 +2050,36 @@ export function App() {
     }
   }
 
+  async function onDeployDryRun(fwId?: string) {
+    const target = fwId || rulesFwId;
+    if (!sessionId || !target) return;
+    setBusy(true);
+    setError(null);
+    setCompileLog(null);
+    try {
+      const res = await deployFirewall(sessionId, {
+        firewall_id: target,
+        dry_run: true,
+        compile_first: true,
+      });
+      const cmds = (res.deploy?.commands || []).join("\n");
+      setCompileOutputs(res.compile?.outputs ?? []);
+      setCompileLog(
+        `Deploy dry-run ${res.firewall} (${res.platform})\n` +
+          `host=${res.deploy?.host || "(unset)"} user=${res.deploy?.user || "(unset)"}\n` +
+          `remote=${res.deploy?.remote_path || ""}\n\n` +
+          `${cmds}\n\n` +
+          `${res.deploy?.log || ""}\n` +
+          `${res.compile?.log || ""}`,
+      );
+      setStatus(`Deploy dry-run for ${res.firewall}`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function onCompileAll() {
     if (!sessionId) return;
     setBusy(true);
@@ -3483,6 +3514,15 @@ export function App() {
                   <button
                     type="button"
                     className="ghost"
+                    disabled={!canOperate || !rulesFwId}
+                    onClick={() => void onDeployDryRun()}
+                    title="Deploy dry-run for this firewall (compile first)"
+                  >
+                    Deploy dry-run
+                  </button>
+                  <button
+                    type="button"
+                    className="ghost"
                     disabled={!canOperate}
                     onClick={() => void onCompileAll()}
                     title="Compile every firewall in this project (Ctrl+Shift+E)"
@@ -3785,6 +3825,30 @@ export function App() {
                         }}
                       >
                         Compile
+                      </button>
+                      <button
+                        type="button"
+                        className="ghost"
+                        disabled={busy}
+                        title="Deploy dry-run (compile first, no scp/ssh)"
+                        onClick={() => {
+                          setStats(null);
+                          setRulesFwId(f.id);
+                          setRulesFwMeta({
+                            name: f.name,
+                            platform:
+                              f.attrs?.platform != null
+                                ? String(f.attrs.platform)
+                                : undefined,
+                            host_OS:
+                              f.attrs?.host_OS != null
+                                ? String(f.attrs.host_OS)
+                                : undefined,
+                          });
+                          void onDeployDryRun(f.id);
+                        }}
+                      >
+                        Deploy dry-run
                       </button>
                     </li>
                   ))}
