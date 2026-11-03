@@ -307,6 +307,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Reset deploy prefs + hard backlog STATUS | done | E2E phase164 |
 | QGridLayout row/col on option fields | done | extract + OptionField; E2E phase165 |
 | qt-grid on Rule/Interface options | done | E2E phase166 |
+| Expect-installer stub API | done | `GET /expect-installer`; E2E phase167 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Soft-complete (feature/webui polish track)
@@ -498,6 +499,7 @@ Still open (hard backlog):
 | Local E2E phase164 (reset prefs/backlog) | done | `e2e-phase164.sh` **OK** |
 | Local E2E phase165 (QGridLayout meta) | done | `e2e-phase165.sh` **OK** |
 | Local E2E phase166 (rule/iface qt-grid) | done | `e2e-phase166.sh` **OK** |
+| Local E2E phase167 (expect stub) | done | `e2e-phase167.sh` **OK** |
 
 ## Local commands
 
@@ -673,6 +675,7 @@ bash webui/scripts/e2e-phase163.sh
 bash webui/scripts/e2e-phase164.sh
 bash webui/scripts/e2e-phase165.sh
 bash webui/scripts/e2e-phase166.sh
+bash webui/scripts/e2e-phase167.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

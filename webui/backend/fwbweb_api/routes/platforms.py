@@ -10,6 +10,7 @@ from ..configlets import (
     list_installer_configlets,
     resolve_configlet_dir,
 )
+from ..expect_installer import expect_installer_status
 from ..platforms import (
     get_os,
     get_platform,
@@ -92,15 +93,26 @@ def get_installer_capabilities(
     """Honest WebUI vs desktop FirewallInstaller capability summary for host_OS."""
     listing = list_installer_configlets(host_os)
     modes = listing.get("webui_modes") or {}
+    expect = expect_installer_status(host_os)
     return {
         **listing,
         "desktop_full_installer": listing.get("interactive_installer"),
+        "expect_installer": expect,
         "recommended_webui_mode": (
             "external_install_script"
             if not (modes.get("scp_ssh") or modes.get("scp_ssh_limited"))
             else ("scp_ssh_limited" if modes.get("scp_ssh_limited") else "scp_ssh")
         ),
     }
+
+
+@router.get("/expect-installer")
+def get_expect_installer(
+    host_os: str = Query(..., min_length=1),
+    _: str = Depends(require_token),
+) -> dict[str, Any]:
+    """Status of the (unimplemented) desktop expect/SSHSession installer path."""
+    return expect_installer_status(host_os)
 
 
 @router.get("/installer-configlet")
