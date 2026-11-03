@@ -11,6 +11,7 @@ export const SHORTCUTS: ShortcutEntry[] = [
   { keys: "Ctrl+I", action: "Project stats" },
   { keys: "Ctrl+Shift+F", action: "Focus rule text filter", scope: "rules" },
   { keys: "Ctrl+Shift+C", action: "Copy object id", scope: "object" },
+  { keys: "Ctrl+Shift+N", action: "Copy object name", scope: "object" },
   { keys: "Ctrl+Shift+P", action: "Copy object path", scope: "object" },
   { keys: "Ctrl+Shift+L", action: "Toggle light/dark theme" },
   { keys: "Ctrl+1", action: "Object tab" },

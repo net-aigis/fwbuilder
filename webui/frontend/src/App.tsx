@@ -103,7 +103,15 @@ export function App() {
   const [status, setStatus] = useState<string>("Not connected");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [tab, setTab] = useState<MainTab>("object");
+  const [tab, setTab] = useState<MainTab>(() => {
+    try {
+      const t = sessionStorage.getItem("fwbweb.mainTab");
+      if (t === "object" || t === "rules") return t;
+    } catch {
+      /* ignore */
+    }
+    return "object";
+  });
   const [rulesWhich, setRulesWhich] = useState<RulesWhich>(() => {
     try {
       const w = sessionStorage.getItem("fwbweb.rulesWhich");
@@ -320,20 +328,11 @@ export function App() {
 
   useEffect(() => {
     try {
-      sessionStorage.setItem(
-        "fwbweb.ruleFilters",
-        JSON.stringify({
-          hideDisabled,
-          onlyDisabled,
-          ruleActionFilter,
-          ruleGroupFilter,
-          ruleTextFilter,
-        }),
-      );
+      sessionStorage.setItem("fwbweb.mainTab", tab);
     } catch {
       /* ignore */
     }
-  }, [hideDisabled, onlyDisabled, ruleActionFilter, ruleGroupFilter, ruleTextFilter]);
+  }, [tab]);
 
   useEffect(() => {
     void refreshObjectPath(selected?.id ?? null);
@@ -929,6 +928,14 @@ export function App() {
         e.preventDefault();
         void navigator.clipboard.writeText(selected.id).then(
           () => setStatus(`Copied object id ${selected.id}`),
+          () => setError("Clipboard write failed"),
+        );
+        return;
+      }
+      if (mod && e.shiftKey && e.key.toLowerCase() === "n" && selected?.name) {
+        e.preventDefault();
+        void navigator.clipboard.writeText(selected.name).then(
+          () => setStatus(`Copied object name ${selected.name}`),
           () => setError("Clipboard write failed"),
         );
         return;
@@ -2518,6 +2525,48 @@ export function App() {
     }
   }
 
+  async function onDeployLive(fwId?: string) {
+    const target = fwId || rulesFwId;
+    if (!sessionId || !target) return;
+    if (
+      !window.confirm(
+        "LIVE deploy will run scp/ssh against the management host. Continue?",
+      )
+    ) {
+      return;
+    }
+    const typed = window.prompt('Type DEPLOY to confirm live install', "");
+    if (typed !== "DEPLOY") {
+      setStatus("Live deploy cancelled");
+      return;
+    }
+    setBusy(true);
+    setError(null);
+    setCompileLog(null);
+    try {
+      const res = await deployFirewall(sessionId, {
+        firewall_id: target,
+        dry_run: false,
+        compile_first: true,
+      });
+      const cmds = (res.deploy?.commands || []).join("\n");
+      setCompileOutputs(res.compile?.outputs ?? []);
+      setCompileLog(
+        `Deploy LIVE ${res.firewall} (${res.platform})\n` +
+          `host=${res.deploy?.host || "(unset)"} user=${res.deploy?.user || "(unset)"}\n` +
+          `remote=${res.deploy?.remote_path || ""}\n\n` +
+          `${cmds}\n\n` +
+          `${res.deploy?.log || ""}\n` +
+          `${res.compile?.log || ""}`,
+      );
+      setStatus(`Deployed ${res.firewall} → ${res.deploy?.host || "?"}`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function onCompileAll() {
     if (!sessionId) return;
     setBusy(true);
@@ -3423,6 +3472,15 @@ export function App() {
                         >
                           Deploy dry-run
                         </button>
+                        <button
+                          type="button"
+                          className="ghost"
+                          disabled={busy}
+                          title="Compile then live scp/ssh (double confirm)"
+                          onClick={() => void onDeployLive(selected.id)}
+                        >
+                          Deploy live
+                        </button>
                       </div>
                     ) : null}
                     {selected.type === "Firewall" ? (
@@ -4110,6 +4168,15 @@ export function App() {
                   <button
                     type="button"
                     className="ghost"
+                    disabled={!canOperate || !rulesFwId}
+                    onClick={() => void onDeployLive()}
+                    title="Live deploy (scp/ssh) with double confirm"
+                  >
+                    Deploy live
+                  </button>
+                  <button
+                    type="button"
+                    className="ghost"
                     disabled={!canOperate}
                     onClick={() => void onCompileAll()}
                     title="Compile every firewall in this project (Ctrl+Shift+E)"
@@ -4500,6 +4567,30 @@ export function App() {
                         }}
                       >
                         Deploy dry-run
+                      </button>
+                      <button
+                        type="button"
+                        className="ghost"
+                        disabled={busy}
+                        title="Live deploy with double confirm"
+                        onClick={() => {
+                          setStats(null);
+                          setRulesFwId(f.id);
+                          setRulesFwMeta({
+                            name: f.name,
+                            platform:
+                              f.attrs?.platform != null
+                                ? String(f.attrs.platform)
+                                : undefined,
+                            host_OS:
+                              f.attrs?.host_OS != null
+                                ? String(f.attrs.host_OS)
+                                : undefined,
+                          });
+                          void onDeployLive(f.id);
+                        }}
+                      >
+                        Deploy live
                       </button>
                     </li>
                   ))}

@@ -243,6 +243,9 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Persist rule filters | done | sessionStorage `ruleFilters`; E2E phase98 |
 | Clear compile/deploy log | done | Clear log / Ctrl+Shift+X / Esc; E2E phase99 |
 | Download compile log shortcut | done | Ctrl+Shift+D; E2E phase100 |
+| Live deploy double confirm | done | Deploy live / FirewallExtras; E2E phase101 |
+| Persist main tab | done | sessionStorage `mainTab`; E2E phase102 |
+| Copy object name shortcut | done | Ctrl+Shift+N; E2E phase103 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Phase 3 — compile / deploy
@@ -253,7 +256,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Download compile outputs | done | `GET …/compile/outputs/{file}` |
 | Local E2E phase3 (rule ops + compile) | done | `e2e-phase3.sh` **OK** → `nft-test.fw` |
 | FirewallOptions + Management address | done | `options` / `management` bridge cmds + UI |
-| Deploy via system `scp`/`ssh` (dry-run default) | done | `POST …/deploy` — **not** full desktop FirewallInstaller |
+| Deploy via system `scp`/`ssh` (dry-run default) | done | `POST …/deploy` — **not** full desktop FirewallInstaller; live needs double confirm |
 | Local E2E phase4 | done | `e2e-phase4.sh` **OK** |
 | Platform catalog from resources XML | done | `GET /api/v1/platforms` |
 | Compilers `fwb_pf` / `fwb_ipf` / `fwb_ipfw` | done | local Podman build; compile via XML `<compiler>` |
@@ -354,6 +357,9 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase98 (ruleFilters) | done | `e2e-phase98.sh` **OK** |
 | Local E2E phase99 (clear compile log) | done | `e2e-phase99.sh` **OK** |
 | Local E2E phase100 (download log shortcut) | done | `e2e-phase100.sh` **OK** |
+| Local E2E phase101 (live deploy confirm) | done | `e2e-phase101.sh` **OK** |
+| Local E2E phase102 (mainTab) | done | `e2e-phase102.sh` **OK** |
+| Local E2E phase103 (copy object name) | done | `e2e-phase103.sh` **OK** |
 
 ## Local commands
 
@@ -463,6 +469,9 @@ bash webui/scripts/e2e-phase97.sh
 bash webui/scripts/e2e-phase98.sh
 bash webui/scripts/e2e-phase99.sh
 bash webui/scripts/e2e-phase100.sh
+bash webui/scripts/e2e-phase101.sh
+bash webui/scripts/e2e-phase102.sh
+bash webui/scripts/e2e-phase103.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

@@ -145,6 +145,20 @@ export function FirewallExtras({
   }
 
   async function onDeploy() {
+    if (!dryRun) {
+      if (
+        !window.confirm(
+          "LIVE deploy will run scp/ssh against the management host. Continue?",
+        )
+      ) {
+        return;
+      }
+      const typed = window.prompt('Type DEPLOY to confirm live install', "");
+      if (typed !== "DEPLOY") {
+        onStatus?.("Live deploy cancelled");
+        return;
+      }
+    }
     onBusy?.(true);
     onError?.(null);
     setLog(null);
