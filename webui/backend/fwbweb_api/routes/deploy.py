@@ -41,6 +41,7 @@ class DeployRequest(BaseModel):
     ipv: str | None = None
     # Desktop stores compressScript in QSettings; WebUI passes it per deploy.
     compress: bool | None = None
+    use_scp: bool | None = None
 
 
 @router.post("/{session_id}/deploy")
@@ -158,7 +159,11 @@ def deploy_firewall(
                 else (_opt_bool("compressScript") or _opt_bool("compress"))
             ),
             generate_rc_conf=_opt_bool("generate_rc_conf_file"),
-            use_scp=_opt_bool("use_scp", default=True),
+            use_scp=(
+                body.use_scp
+                if body.use_scp is not None
+                else _opt_bool("use_scp", default=True)
+            ),
             ssh_args=options.get("sshArgs") or "",
             scp_args=options.get("scpArgs") or "",
             identity_file=body.identity_file,

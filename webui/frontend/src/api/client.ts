@@ -649,6 +649,7 @@ export function deployFirewall(
     compile_first?: boolean;
     dry_run?: boolean;
     compress?: boolean;
+    use_scp?: boolean;
   },
 ) {
   return api<{
@@ -668,6 +669,7 @@ export function deployFirewall(
       plan?: string[];
       activation_source?: string;
       activation_cmd?: string;
+      identity_file?: string | null;
       files?: Array<{ local: string; remote: string }>;
       manifest?: Array<{ local: string; remote: string; main?: boolean }>;
     };

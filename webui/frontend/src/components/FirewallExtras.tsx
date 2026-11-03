@@ -72,7 +72,9 @@ export function FirewallExtras({
   const [activate, setActivate] = useState(true);
   const [dryRun, setDryRun] = useState(true);
   const [compress, setCompress] = useState(false);
+  const [useScp, setUseScp] = useState(true);
   const [log, setLog] = useState<string | null>(null);
+  const [lastPlan, setLastPlan] = useState<string[]>([]);
   const [showAll, setShowAll] = useState(false);
   const [groups, setGroups] = useState<Group[]>([]);
   const [featured, setFeatured] = useState<string[]>(FALLBACK_FEATURED);
@@ -106,11 +108,13 @@ export function FirewallExtras({
             dryRun?: boolean;
             activate?: boolean;
             compress?: boolean;
+            useScp?: boolean;
             identityFile?: string;
           };
           if (typeof prefs.dryRun === "boolean") setDryRun(prefs.dryRun);
           if (typeof prefs.activate === "boolean") setActivate(prefs.activate);
           if (typeof prefs.compress === "boolean") setCompress(prefs.compress);
+          if (typeof prefs.useScp === "boolean") setUseScp(prefs.useScp);
           if (typeof prefs.identityFile === "string") setIdentityFile(prefs.identityFile);
         }
       } catch {
@@ -174,12 +178,12 @@ export function FirewallExtras({
     try {
       sessionStorage.setItem(
         deployPrefsKey(firewallId),
-        JSON.stringify({ dryRun, activate, compress, identityFile }),
+        JSON.stringify({ dryRun, activate, compress, useScp, identityFile }),
       );
     } catch {
       /* ignore */
     }
-  }, [firewallId, dryRun, activate, compress, identityFile]);
+  }, [firewallId, dryRun, activate, compress, useScp, identityFile]);
 
   const keys = useMemo(() => {
     const all = Object.keys(options).sort();
@@ -290,25 +294,29 @@ export function FirewallExtras({
         dry_run: dryRun,
         activate,
         compress,
+        use_scp: useScp,
       });
       const deployAny = res.deploy as typeof res.deploy & {
         plan?: string[];
         activation_source?: string;
         activation_cmd?: string;
+        identity_file?: string | null;
       };
+      const plan = (deployAny.plan && deployAny.plan.length ? deployAny.plan : []) as string[];
+      setLastPlan(plan);
       setLog(
         [
           res.deploy.note || "",
           `host=${res.deploy.host} user=${res.deploy.user || "(none)"}`,
           `remote=${res.deploy.remote_path}`,
           `dry_run=${res.deploy.dry_run}`,
+          `use_scp=${useScp}`,
+          deployAny.identity_file ? `identity_file=${deployAny.identity_file}` : "",
           deployAny.activation_source
             ? `activation_source=${deployAny.activation_source}`
             : "",
           "",
-          ...((deployAny.plan && deployAny.plan.length
-            ? deployAny.plan
-            : []) as string[]),
+          ...plan,
           "",
           ...(res.deploy.commands || []),
           "",
@@ -337,6 +345,14 @@ export function FirewallExtras({
     );
   }
 
+  function onCopyPlan() {
+    if (!lastPlan.length) return;
+    void navigator.clipboard.writeText(lastPlan.join("\n")).then(
+      () => onStatus?.("Copied install plan"),
+      () => onError?.("Clipboard write failed"),
+    );
+  }
+
   async function onPreviewConfiglet() {
     const os = (hostOs || "").trim();
     if (!os) {
@@ -357,9 +373,7 @@ export function FirewallExtras({
         generate_rc_conf: ["true", "1", "yes", "on"].includes(
           (options.generate_rc_conf_file || "").trim().toLowerCase(),
         ),
-        use_scp: !["false", "0", "no", "off"].includes(
-          (options.use_scp || "true").trim().toLowerCase(),
-        ),
+        use_scp: useScp,
       });
       const prev = res.preview || { ok: false, command: "" };
       setLog(
@@ -564,6 +578,15 @@ export function FirewallExtras({
           />
           Compress script
         </label>
+        <label className="check" title="Cisco/Juniper using_scp configlet flag">
+          <input
+            type="checkbox"
+            checked={useScp}
+            disabled={busy}
+            onChange={(e) => setUseScp(e.target.checked)}
+          />
+          Use SCP
+        </label>
         <button type="button" disabled={busy} onClick={() => void onDeploy()}>
           Compile + deploy
         </button>
@@ -576,6 +599,11 @@ export function FirewallExtras({
         >
           Preview configlet
         </button>
+        {lastPlan.length ? (
+          <button type="button" className="ghost" disabled={busy} onClick={onCopyPlan}>
+            Copy plan
+          </button>
+        ) : null}
         {log ? (
           <button type="button" className="ghost" disabled={busy} onClick={onCopyLog}>
             Copy deploy log
