@@ -329,19 +329,23 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Raw installer configlet file API | done | `GET /installer-configlet-file`; E2E phase186 |
 | Configlet preview buttons in UI | done | FirewallExtras; E2E phase187 |
 | SSH auth line in deploy plan | done | plan_and_deploy; E2E phase188 |
+| Free QLabel annotations from .ui | done | dialog_fields pages.annotations; E2E phase189 |
+| Annotation cells in options grid | done | FirewallExtras qt-annotation; E2E phase190 |
+| Spacers/annotations on Rule/Interface | done | RuleOptions + InterfaceOptions; E2E phase191 |
+| Soft-complete STATUS through 192 | done | E2E phase192 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Soft-complete (feature/webui polish track)
 
-WebUI on `feature/webui` remains soft-complete for the polish track; hard-gap slices continue through phase188+:
+WebUI on `feature/webui` remains soft-complete for the polish track; hard-gap slices continue through phase192+:
 
 - Deploy: manifest `# files:`, OS configlets, external PolicyInstallScript, copyFWB, use_scp, gzip transfer on compress, capabilities API, live gate + force_limited, expect stub + raw configlet preview (still **no** expect/SSHSession runtime)
-- Options: .ui labels, QRadio bool, QGroupBox sections, tooltips, page-local QGridLayout + spacers + columnstretch + layout hints + shared `qtGridStyle` (still **not** full pixel Qt layout)
+- Options: .ui labels, free QLabel annotations, QRadio bool, QGroupBox sections, tooltips, page-local QGridLayout + spacers + columnstretch + layout hints + shared `qtGridStyle` on Firewall/Rule/Interface (still **not** full pixel Qt layout)
 - SSH: BatchMode only; password/keyboard-interactive explicitly unsupported (`ssh_auth` in deploy result + plan line)
 
 Still open (hard backlog):
 
-- Full Qt AdvancedDialog **pixel** layout parity (exact geometry; row/col + spacers + stretch since phase165/177/181)
+- Full Qt AdvancedDialog **pixel** layout parity (exact geometry; row/col + spacers + stretch + annotations since phase165/177/181/189)
 - Full desktop **FirewallInstaller** expect/SSHSession for Cisco/Juniper/Procurve (pre/post previewable; still no runtime)
 - Password/keyboard-interactive SSH (documented refusal; BatchMode only)
 
@@ -542,6 +546,10 @@ Still open (hard backlog):
 | Local E2E phase186 (configlet file API) | done | `e2e-phase186.sh` **OK** |
 | Local E2E phase187 (configlet preview UI) | done | `e2e-phase187.sh` **OK** |
 | Local E2E phase188 (SSH auth in plan) | done | `e2e-phase188.sh` **OK** |
+| Local E2E phase189 (.ui annotations) | done | `e2e-phase189.sh` **OK** |
+| Local E2E phase190 (annotation UI) | done | `e2e-phase190.sh` **OK** |
+| Local E2E phase191 (rule/iface spacers) | done | `e2e-phase191.sh` **OK** |
+| Local E2E phase192 (STATUS soft-complete) | done | `e2e-phase192.sh` **OK** |
 
 ## Local commands
 
@@ -739,6 +747,10 @@ bash webui/scripts/e2e-phase185.sh
 bash webui/scripts/e2e-phase186.sh
 bash webui/scripts/e2e-phase187.sh
 bash webui/scripts/e2e-phase188.sh
+bash webui/scripts/e2e-phase189.sh
+bash webui/scripts/e2e-phase190.sh
+bash webui/scripts/e2e-phase191.sh
+bash webui/scripts/e2e-phase192.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

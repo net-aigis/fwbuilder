@@ -6,7 +6,7 @@ import {
   type OptionFieldMeta,
 } from "../api/client";
 import { OptionField } from "./OptionField";
-import { qtGridStyle } from "../qtGrid";
+import { qtGridStyle, qtSpacerStyle, type QtGridAnnotation, type QtGridSpacer } from "../qtGrid";
 
 type Props = {
   sessionId: string;
@@ -18,7 +18,14 @@ type Props = {
   onError?: (msg: string | null) => void;
 };
 
-type Group = { id: string; title: string; keys: string[] };
+type Group = {
+  id: string;
+  title: string;
+  keys: string[];
+  spacers?: QtGridSpacer[];
+  column_stretch?: number[];
+  annotations?: QtGridAnnotation[];
+};
 
 function metaFor(key: string, value: string, fields: Record<string, OptionFieldMeta>) {
   if (fields[key]) return fields[key];
@@ -163,9 +170,31 @@ export function RuleOptions({
       {keys.length || Object.keys(options).length ? (
         (() => {
           const shown = keys.length ? keys : Object.keys(options).sort();
-          const grid = qtGridStyle(shown, fields);
+          const page = groups.find((g) => g.id === activeGroup);
+          const spacers = (!showAll && page?.spacers) || [];
+          const stretch = (!showAll && page?.column_stretch) || [];
+          const notes = (!showAll && page?.annotations) || [];
+          const grid = qtGridStyle(shown, fields, spacers, stretch, notes);
           return (
             <div className={grid.className} style={grid.style}>
+              {spacers.map((sp, i) => (
+                <div
+                  key={sp.name || `spacer-${i}`}
+                  className="qt-spacer"
+                  aria-hidden="true"
+                  data-orientation={sp.orientation || undefined}
+                  style={qtSpacerStyle(sp)}
+                />
+              ))}
+              {notes.map((note, i) => (
+                <p
+                  key={note.name || `note-${i}`}
+                  className="qt-annotation muted"
+                  style={qtSpacerStyle(note)}
+                >
+                  {note.text}
+                </p>
+              ))}
               {shown.map((key) => (
                 <OptionField
                   key={key}

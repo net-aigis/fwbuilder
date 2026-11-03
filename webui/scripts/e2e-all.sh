@@ -197,6 +197,10 @@ scripts=(
   e2e-phase186
   e2e-phase187
   e2e-phase188
+  e2e-phase189
+  e2e-phase190
+  e2e-phase191
+  e2e-phase192
 )
 for s in "${scripts[@]}"; do
   script="webui/scripts/${s}.sh"

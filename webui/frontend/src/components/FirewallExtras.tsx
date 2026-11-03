@@ -14,7 +14,12 @@ import {
   type OptionFieldMeta,
 } from "../api/client";
 import { OptionField } from "./OptionField";
-import { qtGridStyle, qtSpacerStyle, type QtGridSpacer } from "../qtGrid";
+import {
+  qtGridStyle,
+  qtSpacerStyle,
+  type QtGridAnnotation,
+  type QtGridSpacer,
+} from "../qtGrid";
 
 type Props = {
   sessionId: string;
@@ -52,6 +57,7 @@ type Group = {
   spacers?: QtGridSpacer[];
   column_stretch?: number[];
   layouts?: Record<string, number>;
+  annotations?: QtGridAnnotation[];
 };
 
 function groupStorageKey(platform: string, hostOs: string) {
@@ -671,8 +677,10 @@ export function FirewallExtras({
           useQtGridLayout && secIdx === 0 ? activeGroupMeta?.spacers || [] : [];
         const pageStretch =
           useQtGridLayout && secIdx === 0 ? activeGroupMeta?.column_stretch || [] : [];
+        const pageNotes =
+          useQtGridLayout && secIdx === 0 ? activeGroupMeta?.annotations || [] : [];
         const grid = useQtGridLayout
-          ? qtGridStyle(sec.keys, fields, pageSpacers, pageStretch)
+          ? qtGridStyle(sec.keys, fields, pageSpacers, pageStretch, pageNotes)
           : { className: "typed-grid options-grid" };
         return (
           <div key={sec.id || "all"} className="option-section">
@@ -686,6 +694,15 @@ export function FirewallExtras({
                   data-orientation={sp.orientation || undefined}
                   style={qtSpacerStyle(sp)}
                 />
+              ))}
+              {pageNotes.map((note, i) => (
+                <p
+                  key={note.name || `note-${i}`}
+                  className="qt-annotation muted"
+                  style={qtSpacerStyle(note)}
+                >
+                  {note.text}
+                </p>
               ))}
               {sec.keys.map((key) => (
                 <OptionField

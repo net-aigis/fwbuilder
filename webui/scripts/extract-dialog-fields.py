@@ -299,6 +299,44 @@ def _layout_summary(node: ET.Element) -> dict[str, int]:
     return counts
 
 
+def _annotations_in_subtree(node: ET.Element) -> list[dict[str, Any]]:
+    """Free QLabel text cells (not buddy labels) with optional QGrid position."""
+    annotations: list[dict[str, Any]] = []
+    for lay in node.iter("layout"):
+        if lay.get("class") != "QGridLayout":
+            continue
+        for item in lay.findall("item"):
+            try:
+                row = int(item.get("row") or 0)
+                col = int(item.get("column") or 0)
+            except ValueError:
+                continue
+            rowspan = int(item.get("rowspan") or 1)
+            colspan = int(item.get("colspan") or 1)
+            for child in list(item):
+                if child.tag != "widget" or child.get("class") != "QLabel":
+                    continue
+                buddy = child.find("./property[@name='buddy']/cstring")
+                if buddy is not None and (buddy.text or "").strip():
+                    continue  # field caption, already mapped via labels
+                text_el = child.find("./property[@name='text']/string")
+                text = (text_el.text or "").strip() if text_el is not None else ""
+                if not text or text in {":", "..."}:
+                    continue
+                entry: dict[str, Any] = {
+                    "text": text,
+                    "row": row,
+                    "column": col,
+                    "rowspan": rowspan,
+                    "colspan": colspan,
+                }
+                name = child.get("name")
+                if name:
+                    entry["name"] = name
+                annotations.append(entry)
+    return annotations
+
+
 def parse_grid_positions(root: ET.Element | None) -> dict[str, dict[str, int]]:
     """Map widget → row/column, preferring per-tab-page grids then whole dialog."""
     positions: dict[str, dict[str, int]] = {}
@@ -385,6 +423,9 @@ def parse_pages(root: ET.Element | None) -> list[dict]:
             layouts = _layout_summary(page)
             if layouts:
                 page_entry["layouts"] = layouts
+            annotations = _annotations_in_subtree(page)
+            if annotations:
+                page_entry["annotations"] = annotations
             pages.append(page_entry)
         if pages:
             break  # primary tab widget only
@@ -468,6 +509,8 @@ def pages_with_keys(pages: list[dict], fields: dict[str, dict]) -> list[dict]:
                 entry["column_stretch"] = page["column_stretch"]
             if page.get("layouts"):
                 entry["layouts"] = page["layouts"]
+            if page.get("annotations"):
+                entry["annotations"] = page["annotations"]
             out.append(entry)
     return out
 

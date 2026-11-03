@@ -514,12 +514,44 @@ export function fetchOptionSchema(platform: string, hostOs = "") {
       }>;
       column_stretch?: number[];
       layouts?: Record<string, number>;
+      annotations?: Array<{
+        text: string;
+        row?: number;
+        column?: number;
+        rowspan?: number;
+        colspan?: number;
+        name?: string;
+      }>;
     }>;
     featured_keys: string[];
     fields?: Record<string, OptionFieldMeta>;
     dialog_field_count?: number;
   }>(`/api/v1/option-schema?${qs.toString()}`);
 }
+
+type SchemaGroup = {
+  id: string;
+  title: string;
+  keys: string[];
+  spacers?: Array<{
+    row?: number;
+    column?: number;
+    rowspan?: number;
+    colspan?: number;
+    orientation?: string;
+    name?: string;
+  }>;
+  column_stretch?: number[];
+  layouts?: Record<string, number>;
+  annotations?: Array<{
+    text: string;
+    row?: number;
+    column?: number;
+    rowspan?: number;
+    colspan?: number;
+    name?: string;
+  }>;
+};
 
 export function fetchInterfaceOptionSchema(hostOs: string) {
   const qs = new URLSearchParams({ host_os: hostOs });
@@ -529,7 +561,7 @@ export function fetchInterfaceOptionSchema(hostOs: string) {
     dialog_stem?: string | null;
     supports_advanced_interface_options?: boolean;
     defaults: Record<string, string>;
-    groups: Array<{ id: string; title: string; keys: string[] }>;
+    groups: SchemaGroup[];
     featured_keys: string[];
     fields?: Record<string, OptionFieldMeta>;
     dialog_field_count?: number;
@@ -541,7 +573,7 @@ export function fetchRuleOptionSchema(ruleKind: string = "policy") {
   return api<{
     rule_kind: string;
     dialog_stem?: string | null;
-    groups: Array<{ id: string; title: string; keys: string[] }>;
+    groups: SchemaGroup[];
     featured_keys: string[];
     fields?: Record<string, OptionFieldMeta>;
     dialog_field_count?: number;

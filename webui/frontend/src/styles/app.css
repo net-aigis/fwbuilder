@@ -711,6 +711,13 @@ pre.configlet-preview {
   margin-top: 0.5rem;
 }
 
+.options-grid.qt-grid .qt-annotation {
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.35;
+  align-self: center;
+}
+
 .dialog-pages {
   display: flex;
   flex-wrap: wrap;
