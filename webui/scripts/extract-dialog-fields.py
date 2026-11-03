@@ -192,12 +192,10 @@ def parse_widget_tooltips(root: ET.Element | None) -> dict[str, str]:
     return tips
 
 
-def parse_grid_positions(root: ET.Element | None) -> dict[str, dict[str, int]]:
-    """Map widget objectName → QGridLayout row/column (first occurrence)."""
+def _grids_in_subtree(node: ET.Element) -> dict[str, dict[str, int]]:
+    """Collect QGridLayout positions under a page/subtree (first hit per widget)."""
     positions: dict[str, dict[str, int]] = {}
-    if root is None:
-        return positions
-    for lay in root.iter("layout"):
+    for lay in node.iter("layout"):
         if lay.get("class") != "QGridLayout":
             continue
         for item in lay.findall("item"):
@@ -220,6 +218,27 @@ def parse_grid_positions(root: ET.Element | None) -> dict[str, dict[str, int]]:
                     "rowspan": rowspan,
                     "colspan": colspan,
                 }
+    return positions
+
+
+def parse_grid_positions(root: ET.Element | None) -> dict[str, dict[str, int]]:
+    """Map widget → row/column, preferring per-tab-page grids then whole dialog."""
+    positions: dict[str, dict[str, int]] = {}
+    if root is None:
+        return positions
+    # Prefer page-local grids so row indices match the visible dialog page.
+    for tw in root.iter("widget"):
+        if tw.get("class") != "QTabWidget":
+            continue
+        for page in list(tw):
+            if page.tag != "widget" or page.get("class") != "QWidget":
+                continue
+            for name, pos in _grids_in_subtree(page).items():
+                positions.setdefault(name, pos)
+        break
+    # Fall back for dialogs without tabs / leftover widgets.
+    for name, pos in _grids_in_subtree(root).items():
+        positions.setdefault(name, pos)
     return positions
 
 
