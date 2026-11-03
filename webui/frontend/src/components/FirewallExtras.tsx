@@ -77,6 +77,10 @@ function deployPlanKey(firewallId: string) {
   return `fwbweb.deployPlan.${firewallId}`;
 }
 
+function expectPlanKey(firewallId: string) {
+  return `fwbweb.expectPlan.${firewallId}`;
+}
+
 export function FirewallExtras({
   sessionId,
   firewallId,
@@ -213,6 +217,8 @@ export function FirewallExtras({
           const storedPlan = JSON.parse(planRaw) as string[];
           if (Array.isArray(storedPlan) && storedPlan.length) setLastPlan(storedPlan);
         }
+        const expectRaw = sessionStorage.getItem(expectPlanKey(firewallId));
+        if (expectRaw) setExpectPlanText(expectRaw);
       } catch {
         /* ignore */
       }
@@ -830,7 +836,13 @@ export function FirewallExtras({
                             return head + body;
                           }),
                         ];
-                        setExpectPlanText(lines.join("\n"));
+                        const text = lines.join("\n");
+                        setExpectPlanText(text);
+                        try {
+                          sessionStorage.setItem(expectPlanKey(firewallId), text);
+                        } catch {
+                          /* ignore */
+                        }
                         onStatus?.(`Expect plan: ${plan.step_count} steps (not executable)`);
                       } catch (e) {
                         onError?.(e instanceof Error ? e.message : String(e));
