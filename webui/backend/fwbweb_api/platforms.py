@@ -319,6 +319,8 @@ def option_schema(platform: str, host_os: str = "") -> dict[str, Any]:
                 g["spacers"] = p["spacers"]
             if p.get("column_stretch"):
                 g["column_stretch"] = p["column_stretch"]
+            if p.get("row_stretch"):
+                g["row_stretch"] = p["row_stretch"]
             if p.get("layouts"):
                 g["layouts"] = p["layouts"]
             if p.get("annotations"):
@@ -413,6 +415,8 @@ def _groups_from_pages(pages: list[dict[str, Any]]) -> list[dict[str, Any]]:
             g["spacers"] = p["spacers"]
         if p.get("column_stretch"):
             g["column_stretch"] = p["column_stretch"]
+        if p.get("row_stretch"):
+            g["row_stretch"] = p["row_stretch"]
         if p.get("layouts"):
             g["layouts"] = p["layouts"]
         if p.get("annotations"):

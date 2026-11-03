@@ -706,6 +706,31 @@ export function fetchSshAuth() {
   }>("/api/v1/ssh-auth");
 }
 
+export function fetchExpectInstallPlan(
+  hostOs: string,
+  opts?: { fwdir?: string; fwscript?: string },
+) {
+  const q = new URLSearchParams({ host_os: hostOs });
+  if (opts?.fwdir) q.set("fwdir", opts.fwdir);
+  if (opts?.fwscript) q.set("fwscript", opts.fwscript);
+  return api<{
+    ok: boolean;
+    executable: boolean;
+    error?: string;
+    host_os: string;
+    step_count: number;
+    steps: Array<{
+      id: string;
+      title: string;
+      implemented?: boolean;
+      detail?: string;
+      configlet?: string;
+      preview?: string;
+    }>;
+    note?: string;
+  }>(`/api/v1/expect-install-plan?${q.toString()}`);
+}
+
 export function fetchInstallerConfiglets(hostOs: string) {
   const q = new URLSearchParams({ host_os: hostOs });
   return api<{

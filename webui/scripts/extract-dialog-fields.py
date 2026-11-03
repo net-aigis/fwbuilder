@@ -290,6 +290,23 @@ def _column_stretch_in_subtree(node: ET.Element) -> list[int]:
     return best
 
 
+def _row_stretch_in_subtree(node: ET.Element) -> list[int]:
+    """Pick rowstretch from the busiest QGridLayout that declares one."""
+    best: list[int] = []
+    best_n = -1
+    for lay in node.iter("layout"):
+        if lay.get("class") != "QGridLayout":
+            continue
+        stretch = _parse_stretch_list(lay.get("rowstretch"))
+        if not stretch:
+            continue
+        n = len(lay.findall("item"))
+        if n > best_n:
+            best_n = n
+            best = stretch
+    return best
+
+
 def _layout_summary(node: ET.Element) -> dict[str, int]:
     """Count layout classes under a page (nested layout hint, not pixel geometry)."""
     counts: dict[str, int] = {}
@@ -420,6 +437,9 @@ def parse_pages(root: ET.Element | None) -> list[dict]:
             col_stretch = _column_stretch_in_subtree(page)
             if col_stretch:
                 page_entry["column_stretch"] = col_stretch
+            row_stretch = _row_stretch_in_subtree(page)
+            if row_stretch:
+                page_entry["row_stretch"] = row_stretch
             layouts = _layout_summary(page)
             if layouts:
                 page_entry["layouts"] = layouts
@@ -507,6 +527,8 @@ def pages_with_keys(pages: list[dict], fields: dict[str, dict]) -> list[dict]:
                 entry["spacers"] = page["spacers"]
             if page.get("column_stretch"):
                 entry["column_stretch"] = page["column_stretch"]
+            if page.get("row_stretch"):
+                entry["row_stretch"] = page["row_stretch"]
             if page.get("layouts"):
                 entry["layouts"] = page["layouts"]
             if page.get("annotations"):

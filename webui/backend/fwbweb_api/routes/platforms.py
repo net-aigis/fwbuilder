@@ -12,7 +12,7 @@ from ..configlets import (
     resolve_configlet_dir,
 )
 from ..deploy import ssh_auth_capabilities
-from ..expect_installer import expect_installer_status
+from ..expect_installer import expect_install_plan, expect_installer_status
 from ..platforms import (
     get_os,
     get_platform,
@@ -116,6 +116,17 @@ def get_expect_installer(
 ) -> dict[str, Any]:
     """Status of the (unimplemented) desktop expect/SSHSession installer path."""
     return expect_installer_status(host_os)
+
+
+@router.get("/expect-install-plan")
+def get_expect_install_plan(
+    host_os: str = Query(..., min_length=1),
+    fwdir: str = Query("/etc"),
+    fwscript: str = Query("firewall.fw"),
+    _: str = Depends(require_token),
+) -> dict[str, Any]:
+    """Ordered desktop expect steps with configlet previews (not executable)."""
+    return expect_install_plan(host_os, fwdir=fwdir, fwscript=fwscript)
 
 
 @router.get("/ssh-auth")

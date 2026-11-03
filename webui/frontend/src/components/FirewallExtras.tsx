@@ -3,6 +3,7 @@ import {
   deployFirewall,
   fetchInstallerCapabilities,
   fetchInstallerConfiglet,
+  fetchExpectInstallPlan,
   fetchInstallerConfigletFile,
   fetchInstallerConfiglets,
   fetchManagement,
@@ -125,6 +126,7 @@ export function FirewallExtras({
     text: string;
     expanded?: boolean;
   } | null>(null);
+  const [expectPlanText, setExpectPlanText] = useState<string | null>(null);
   const [sshAuthNote, setSshAuthNote] = useState<string | null>(null);
   const [resHint, setResHint] = useState<string | null>(null);
 
@@ -746,6 +748,53 @@ export function FirewallExtras({
                   <li key={s}>{s}</li>
                 ))}
               </ol>
+              <div className="btn-row pad-tight">
+                <button
+                  type="button"
+                  className="ghost"
+                  disabled={busy || !hostOs}
+                  title="Read-only ordered expect plan with configlet previews (not executed)"
+                  onClick={() => {
+                    if (!hostOs) return;
+                    void (async () => {
+                      onBusy?.(true);
+                      onError?.(null);
+                      try {
+                        const plan = await fetchExpectInstallPlan(hostOs, {
+                          fwdir: remoteDir || "/etc",
+                        });
+                        const lines = [
+                          `# expect plan for ${plan.host_os} (executable=${plan.executable})`,
+                          plan.note || "",
+                          "",
+                          ...plan.steps.map((s, i) => {
+                            const head = `${i + 1}. [${s.id}] ${s.title}`;
+                            const body = s.preview
+                              ? `\n${s.preview}\n`
+                              : s.detail
+                                ? `\n   ${s.detail}`
+                                : "";
+                            return head + body;
+                          }),
+                        ];
+                        setExpectPlanText(lines.join("\n"));
+                        onStatus?.(`Expect plan: ${plan.step_count} steps (not executable)`);
+                      } catch (e) {
+                        onError?.(e instanceof Error ? e.message : String(e));
+                      } finally {
+                        onBusy?.(false);
+                      }
+                    })();
+                  }}
+                >
+                  Show expect plan
+                </button>
+              </div>
+              {expectPlanText ? (
+                <pre className="deploy-log configlet-preview" tabIndex={0}>
+                  {expectPlanText}
+                </pre>
+              ) : null}
               {expectConfiglets.length ? (
                 <div className="pad-tight">
                   <p className="muted">

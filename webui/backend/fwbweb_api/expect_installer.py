@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from .configlets import list_installer_configlets
+from .configlets import list_installer_configlets, read_installer_configlet_file
 
 # High-level steps the desktop expect path performs (no reproduction of expect scripts).
 _BASE_STEPS = (
@@ -72,4 +72,93 @@ def refuse_expect_install(host_os: str) -> dict[str, Any]:
         "ok": False,
         "error": "expect_installer_not_implemented",
         **status,
+    }
+
+
+def expect_install_plan(
+    host_os: str,
+    *,
+    fwdir: str = "/etc",
+    fwscript: str = "firewall.fw",
+) -> dict[str, Any]:
+    """Ordered desktop expect steps with expanded configlet previews (not executable)."""
+    status = expect_installer_status(host_os)
+    names = list(status.get("names") or [])
+    steps: list[dict[str, Any]] = [
+        {
+            "id": "ssh_open",
+            "title": "Open SSH session",
+            "implemented": False,
+            "detail": "password/keyboard-interactive or key (WebUI: BatchMode key/agent only)",
+        },
+    ]
+    if "installer_commands_pre_config" in names:
+        pre = read_installer_configlet_file(
+            host_os,
+            "installer_commands_pre_config",
+            expand=True,
+            fwdir=fwdir,
+            fwscript=fwscript,
+        )
+        steps.append(
+            {
+                "id": "pre_config",
+                "title": "Run installer_commands_pre_config",
+                "implemented": False,
+                "configlet": "installer_commands_pre_config",
+                "preview": pre.get("expanded_text") or pre.get("text") or "",
+            }
+        )
+    steps.append(
+        {
+            "id": "enable_mode",
+            "title": "Enter enable / configure mode",
+            "implemented": False,
+            "detail": "platform-specific; not implemented in WebUI",
+        }
+    )
+    steps.append(
+        {
+            "id": "push_config",
+            "title": "Push or paste generated config",
+            "implemented": False,
+            "detail": "scp or terminal paste on desktop; WebUI can scp with force_limited_installer only",
+        }
+    )
+    if "installer_commands_post_config" in names:
+        post = read_installer_configlet_file(
+            host_os,
+            "installer_commands_post_config",
+            expand=True,
+            fwdir=fwdir,
+            fwscript=fwscript,
+        )
+        steps.append(
+            {
+                "id": "post_config",
+                "title": "Run installer_commands_post_config / activation",
+                "implemented": False,
+                "configlet": "installer_commands_post_config",
+                "preview": post.get("expanded_text") or post.get("text") or "",
+            }
+        )
+    steps.append(
+        {
+            "id": "write_mem",
+            "title": "Optional write mem / commit",
+            "implemented": False,
+        }
+    )
+    return {
+        "ok": True,
+        "executable": False,
+        "error": "expect_installer_not_implemented",
+        "host_os": host_os,
+        "steps": steps,
+        "step_count": len(steps),
+        **{k: status[k] for k in status if k not in {"desktop_steps"}},
+        "note": (
+            "Expect install plan is a read-only preview of desktop steps. "
+            "WebUI does not open an SSHSession or run expect."
+        ),
     }

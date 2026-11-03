@@ -341,20 +341,24 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Refuse deploy allow_password_auth | done | 400 password_auth_not_implemented; E2E phase198 |
 | post_config expand preview | done | E2E phase199 |
 | Soft-complete STATUS through 200 | done | E2E phase200 |
+| Expect install plan API | done | `GET /expect-install-plan`; E2E phase201 |
+| Expect plan UI button | done | FirewallExtras; E2E phase202 |
+| row_stretch extract wiring | done | extract + platforms; E2E phase203 |
+| Soft-complete STATUS through 204 | done | E2E phase204 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Soft-complete (feature/webui polish track)
 
-WebUI on `feature/webui` remains soft-complete for the polish track; hard-gap slices continue through phase200+:
+WebUI on `feature/webui` remains soft-complete for the polish track; hard-gap slices continue through phase204+:
 
-- Deploy: manifest `# files:`, OS configlets, external PolicyInstallScript, copyFWB, use_scp, gzip transfer on compress, capabilities API, live gate + force_limited, expect stub + raw/expanded configlet preview (still **no** expect/SSHSession runtime)
+- Deploy: manifest `# files:`, OS configlets, external PolicyInstallScript, copyFWB, use_scp, gzip transfer on compress, capabilities API, live gate + force_limited, expect stub + raw/expanded configlet preview + ordered expect plan (still **no** expect/SSHSession runtime)
 - Options: .ui labels, free QLabel annotations, QRadio bool, QGroupBox sections, tooltips, page-local QGridLayout + spacers + columnstretch + layout hints + shared `qtGridStyle` on Firewall/Rule/Interface (still **not** full pixel Qt layout)
 - SSH: BatchMode only; `GET /ssh-auth`, capabilities.ssh_auth, deploy plan line, and `allow_password_auth` → 400
 
 Still open (hard backlog):
 
 - Full Qt AdvancedDialog **pixel** layout parity (exact geometry; row/col + spacers + stretch + annotations since phase165/177/181/189)
-- Full desktop **FirewallInstaller** expect/SSHSession for Cisco/Juniper/Procurve (pre/post previewable/expandable; still no runtime)
+- Full desktop **FirewallInstaller** expect/SSHSession for Cisco/Juniper/Procurve (plan/preview only; still no runtime)
 - Password/keyboard-interactive SSH (API refuses `allow_password_auth`; BatchMode only)
 
 ## Phase 3 — compile / deploy
@@ -566,6 +570,10 @@ Still open (hard backlog):
 | Local E2E phase198 (password refuse) | done | `e2e-phase198.sh` **OK** |
 | Local E2E phase199 (post_config expand) | done | `e2e-phase199.sh` **OK** |
 | Local E2E phase200 (STATUS soft-complete) | done | `e2e-phase200.sh` **OK** |
+| Local E2E phase201 (expect-install-plan) | done | `e2e-phase201.sh` **OK** |
+| Local E2E phase202 (expect plan UI) | done | `e2e-phase202.sh` **OK** |
+| Local E2E phase203 (row_stretch extract) | done | `e2e-phase203.sh` **OK** |
+| Local E2E phase204 (STATUS soft-complete) | done | `e2e-phase204.sh` **OK** |
 
 ## Local commands
 
@@ -775,6 +783,10 @@ bash webui/scripts/e2e-phase197.sh
 bash webui/scripts/e2e-phase198.sh
 bash webui/scripts/e2e-phase199.sh
 bash webui/scripts/e2e-phase200.sh
+bash webui/scripts/e2e-phase201.sh
+bash webui/scripts/e2e-phase202.sh
+bash webui/scripts/e2e-phase203.sh
+bash webui/scripts/e2e-phase204.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```
