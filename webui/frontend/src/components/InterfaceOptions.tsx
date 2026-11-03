@@ -175,7 +175,11 @@ export function InterfaceOptions({
         </div>
       ) : null}
       {keys.length ? (
-        <div className="typed-grid options-grid">
+        <div
+          className={`typed-grid options-grid${
+            keys.some((k) => fields[k]?.grid) ? " qt-grid" : ""
+          }`}
+        >
           {keys.map((key) => (
             <OptionField
               key={key}

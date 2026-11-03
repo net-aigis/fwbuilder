@@ -306,6 +306,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Res-status hint in FirewallExtras | done | E2E phase163 |
 | Reset deploy prefs + hard backlog STATUS | done | E2E phase164 |
 | QGridLayout row/col on option fields | done | extract + OptionField; E2E phase165 |
+| qt-grid on Rule/Interface options | done | E2E phase166 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Soft-complete (feature/webui polish track)
@@ -317,7 +318,7 @@ WebUI on `feature/webui` remains soft-complete for the polish track; hard-gap sl
 
 Still open (hard backlog):
 
-- Full Qt AdvancedDialog **pixel** layout parity (geometry/spacer/buddy rows from `.ui`)
+- Full Qt AdvancedDialog **pixel** layout parity (spacers, nested layouts, exact geometry; QGrid row/col hints exist since phase165)
 - Full desktop **FirewallInstaller** expect/SSHSession for Cisco/Juniper/Procurve (pre/post configlets, enable mode, `write mem`)
 - Password/keyboard-interactive SSH (WebUI uses BatchMode only)
 - Script compression during transfer (configlet flags only today)
@@ -496,6 +497,7 @@ Still open (hard backlog):
 | Local E2E phase163 (res-status hint) | done | `e2e-phase163.sh` **OK** |
 | Local E2E phase164 (reset prefs/backlog) | done | `e2e-phase164.sh` **OK** |
 | Local E2E phase165 (QGridLayout meta) | done | `e2e-phase165.sh` **OK** |
+| Local E2E phase166 (rule/iface qt-grid) | done | `e2e-phase166.sh` **OK** |
 
 ## Local commands
 
@@ -670,6 +672,7 @@ bash webui/scripts/e2e-phase162.sh
 bash webui/scripts/e2e-phase163.sh
 bash webui/scripts/e2e-phase164.sh
 bash webui/scripts/e2e-phase165.sh
+bash webui/scripts/e2e-phase166.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

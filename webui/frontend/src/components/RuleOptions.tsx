@@ -160,7 +160,13 @@ export function RuleOptions({
         </div>
       ) : null}
       {keys.length || Object.keys(options).length ? (
-        <div className="typed-grid options-grid">
+        <div
+          className={`typed-grid options-grid${
+            (keys.length ? keys : Object.keys(options)).some((k) => fields[k]?.grid)
+              ? " qt-grid"
+              : ""
+          }`}
+        >
           {(keys.length ? keys : Object.keys(options).sort()).map((key) => (
             <OptionField
               key={key}
