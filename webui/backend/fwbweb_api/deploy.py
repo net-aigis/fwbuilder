@@ -7,10 +7,13 @@ main script. Still no expect/SSHSession interactive installer.
 
 from __future__ import annotations
 
+import gzip
 import os
 import re
 import shlex
+import shutil
 import subprocess
+import tempfile
 from pathlib import Path
 from typing import Any
 
@@ -152,6 +155,22 @@ def _scp_host(host: str) -> str:
     return host
 
 
+def _gzip_for_transfer(local_path: Path) -> Path:
+    """Write a temporary gzip of ``local_path`` for compressed scp transfer."""
+    fd, name = tempfile.mkstemp(prefix="fwbweb-gz-", suffix=".gz")
+    os.close(fd)
+    out = Path(name)
+    with local_path.open("rb") as src, gzip.open(out, "wb") as dst:
+        shutil.copyfileobj(src, dst)
+    return out
+
+
+SSH_AUTH_NOTE = (
+    "WebUI uses OpenSSH BatchMode=yes (key/agent only). "
+    "Password and keyboard-interactive SSH are not implemented."
+)
+
+
 def plan_external_install(
     *,
     command: str,
@@ -289,34 +308,61 @@ def plan_and_deploy(
     scp_cmds: list[list[str]] = []
     commands: list[str] = []
     plan_lines = ["Installation plan:"]
-    for local_path, remote_path in copies:
+    temp_gz: list[Path] = []
+    decompress_parts: list[str] = []
+    transfer_copies: list[tuple[Path, str]] = []
+
+    def _queue_copy(local_path: Path, remote_path: str, *, label: str) -> None:
         try:
             sz = local_path.stat().st_size
-            size_s = f" ({sz} bytes)" if sz < 1024 else f" ({sz/1024:.1f} KiB)"
+            size_s = f" ({sz} bytes)" if sz < 1024 else f" ({sz / 1024:.1f} KiB)"
         except OSError:
             size_s = ""
-        plan_lines.append(f"Copy file: {local_path.name}{size_s} --> {remote_path}")
-        scp_cmd = [*base_scp, str(local_path), f"{scp_target}:{remote_path}"]
+        if compress:
+            gz_path = _gzip_for_transfer(local_path)
+            temp_gz.append(gz_path)
+            try:
+                gz_sz = gz_path.stat().st_size
+                gz_s = f" ({gz_sz} bytes gzip)" if gz_sz < 1024 else f" ({gz_sz / 1024:.1f} KiB gzip)"
+            except OSError:
+                gz_s = " (gzip)"
+            remote_gz = f"{remote_path}.gz"
+            plan_lines.append(
+                f"{label}: {local_path.name}{size_s} --> {remote_gz}{gz_s} "
+                f"(gunzip to {remote_path})"
+            )
+            scp_cmd = [*base_scp, str(gz_path), f"{scp_target}:{remote_gz}"]
+            transfer_copies.append((gz_path, remote_gz))
+            decompress_parts.append(
+                f"gzip -dc {shlex.quote(remote_gz)} > {shlex.quote(remote_path)} "
+                f"&& rm -f {shlex.quote(remote_gz)}"
+            )
+        else:
+            plan_lines.append(f"{label}: {local_path.name}{size_s} --> {remote_path}")
+            scp_cmd = [*base_scp, str(local_path), f"{scp_target}:{remote_path}"]
+            transfer_copies.append((local_path, remote_path))
         scp_cmds.append(scp_cmd)
         commands.append(" ".join(shlex.quote(c) for c in scp_cmd))
+
+    for local_path, remote_path in copies:
+        _queue_copy(local_path, remote_path, label="Copy file")
 
     if copy_fwb and fwb_path is not None:
         fwb = Path(fwb_path)
         if fwb.is_file():
             dest_dir = remote_dir.rstrip("/") or "/etc"
             remote_fwb = f"{dest_dir}/{fwb.name}"
-            try:
-                sz = fwb.stat().st_size
-                size_s = f" ({sz} bytes)" if sz < 1024 else f" ({sz / 1024:.1f} KiB)"
-            except OSError:
-                size_s = ""
-            plan_lines.append(f"Copy data file: {fwb.name}{size_s} --> {dest_dir}")
-            scp_cmd = [*base_scp, str(fwb), f"{scp_target}:{remote_fwb}"]
-            scp_cmds.append(scp_cmd)
-            commands.append(" ".join(shlex.quote(c) for c in scp_cmd))
+            _queue_copy(fwb, remote_fwb, label="Copy data file")
             copies = [*copies, (fwb, remote_fwb)]
         else:
             plan_lines.append(f"Copy data file: skipped (missing {fwb})")
+
+    decompress_cmd: list[str] | None = None
+    if decompress_parts:
+        remote_shell = " && ".join(decompress_parts)
+        plan_lines.append(f"Decompress on host: {remote_shell}")
+        decompress_cmd = [*base_ssh, ssh_target, remote_shell]
+        commands.append(" ".join(shlex.quote(c) for c in decompress_cmd))
 
     act = (activation_cmd or "").strip()
     activation_source: str | None = None
@@ -380,38 +426,67 @@ def plan_and_deploy(
         "remote_path": main_remote,
         "local_script": str(local_script),
         "files": [{"local": str(lp), "remote": rp} for lp, rp in copies],
+        "transfer_files": [{"local": str(lp), "remote": rp} for lp, rp in transfer_copies],
+        "compress": bool(compress),
         "manifest": manifest,
         "activation_cmd": act if activate else "",
         "activation_source": activation_source,
         "identity_file": identity_expanded,
         "copy_fwb": bool(copy_fwb),
+        "ssh_auth": {
+            "batch_mode": True,
+            "password_supported": False,
+            "keyboard_interactive_supported": False,
+            "note": SSH_AUTH_NOTE,
+        },
         "plan": plan_lines,
         "commands": commands,
         "log": "",
         "note": note,
     }
 
-    if dry_run:
-        result["log"] = (
-            "\n".join(plan_lines)
-            + "\n\ndry_run: commands not executed\n"
-            + "\n".join(commands)
-        )
+    try:
+        if dry_run:
+            result["log"] = (
+                "\n".join(plan_lines)
+                + "\n\ndry_run: commands not executed\n"
+                + "\n".join(commands)
+            )
+            return result
+
+        env = {**os.environ}
+        log_parts: list[str] = []
+        for scp_cmd in scp_cmds:
+            code, out = _run(scp_cmd, timeout=timeout, env=env)
+            log_parts.append(f"$ {' '.join(scp_cmd)}\n{out}")
+            if code != 0:
+                raise DeployError(f"scp exited {code}", log="\n".join(log_parts), commands=commands)
+
+        if decompress_cmd is not None:
+            code, out = _run(decompress_cmd, timeout=timeout, env=env)
+            log_parts.append(f"$ {' '.join(decompress_cmd)}\n{out}")
+            if code != 0:
+                raise DeployError(
+                    f"ssh decompress exited {code}",
+                    log="\n".join(log_parts),
+                    commands=commands,
+                )
+
+        if ssh_cmd is not None:
+            code, out = _run(ssh_cmd, timeout=timeout, env=env)
+            log_parts.append(f"$ {' '.join(ssh_cmd)}\n{out}")
+            if code != 0:
+                raise DeployError(
+                    f"ssh activate exited {code}",
+                    log="\n".join(log_parts),
+                    commands=commands,
+                )
+
+        result["log"] = "\n".join(log_parts)
         return result
-
-    env = {**os.environ}
-    log_parts: list[str] = []
-    for scp_cmd in scp_cmds:
-        code, out = _run(scp_cmd, timeout=timeout, env=env)
-        log_parts.append(f"$ {' '.join(scp_cmd)}\n{out}")
-        if code != 0:
-            raise DeployError(f"scp exited {code}", log="\n".join(log_parts), commands=commands)
-
-    if ssh_cmd is not None:
-        code, out = _run(ssh_cmd, timeout=timeout, env=env)
-        log_parts.append(f"$ {' '.join(ssh_cmd)}\n{out}")
-        if code != 0:
-            raise DeployError(f"ssh activate exited {code}", log="\n".join(log_parts), commands=commands)
-
-    result["log"] = "\n".join(log_parts)
-    return result
+    finally:
+        for p in temp_gz:
+            try:
+                p.unlink(missing_ok=True)
+            except OSError:
+                pass
