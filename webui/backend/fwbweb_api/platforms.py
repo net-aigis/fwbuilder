@@ -262,6 +262,86 @@ def dialog_chrome_for(platform: str) -> dict[str, Any]:
     return out
 
 
+def layout_fidelity_for(platform: str, host_os: str = "") -> dict[str, Any]:
+    """Coverage stats for extracted .ui layout signals (not pixel parity)."""
+    cat = _dialog_catalog()
+    dialogs = cat.get("dialogs") or {}
+    try:
+        plat = get_platform(platform)
+        stem = _dialog_stem(plat.get("dialog") or platform)
+    except KeyError:
+        stem = _dialog_stem(platform)
+    if not stem or stem not in dialogs:
+        return {
+            "ok": False,
+            "error": "dialog_not_found",
+            "platform": platform,
+            "host_os": host_os or None,
+            "pixel_parity": False,
+        }
+    info = dialogs[stem]
+    fields = info.get("fields") or {}
+    pages = info.get("pages") or []
+    n = max(len(fields), 1)
+    field_stats = {
+        "fields": len(fields),
+        "with_grid": sum(1 for v in fields.values() if v.get("grid")),
+        "with_label": sum(1 for v in fields.values() if v.get("label")),
+        "with_tooltip": sum(1 for v in fields.values() if v.get("tooltip")),
+        "with_size_policy": sum(1 for v in fields.values() if v.get("size_policy")),
+        "with_minimum_size": sum(1 for v in fields.values() if v.get("minimum_size")),
+        "with_maximum_size": sum(1 for v in fields.values() if v.get("maximum_size")),
+        "with_alignment": sum(1 for v in fields.values() if v.get("alignment")),
+        "with_external_label": sum(1 for v in fields.values() if v.get("external_label")),
+        "with_enabled": sum(1 for v in fields.values() if "enabled" in v),
+    }
+    page_stats = {
+        "pages": len(pages),
+        "spacers": sum(len(p.get("spacers") or []) for p in pages),
+        "spacers_with_size_hint": sum(
+            1 for p in pages for s in (p.get("spacers") or []) if s.get("size_hint")
+        ),
+        "annotations": sum(len(p.get("annotations") or []) for p in pages),
+        "buddy_labels": sum(len(p.get("buddy_labels") or []) for p in pages),
+        "pages_with_column_stretch": sum(1 for p in pages if p.get("column_stretch")),
+        "pages_with_row_stretch": sum(1 for p in pages if p.get("row_stretch")),
+        "pages_with_spacing": sum(1 for p in pages if p.get("spacing")),
+        "pages_with_layout_tree": sum(1 for p in pages if p.get("layout_tree")),
+    }
+    chrome = {
+        "window_title": bool(info.get("window_title")),
+        "geometry": bool(info.get("geometry")),
+        "tab_position": bool(info.get("tab_position")),
+        "size_grip_enabled": "size_grip_enabled" in info,
+    }
+    # Weighted heuristic: grid placement dominates; chrome/spacers secondary.
+    score_parts = [
+        field_stats["with_grid"] / n,
+        field_stats["with_label"] / n,
+        field_stats["with_size_policy"] / n,
+        min(page_stats["spacers_with_size_hint"], n) / n if page_stats["spacers"] else 0.0,
+        1.0 if chrome["geometry"] else 0.0,
+        1.0 if page_stats["pages_with_spacing"] else 0.0,
+        1.0 if page_stats["pages_with_layout_tree"] else 0.0,
+    ]
+    score = round(100.0 * (sum(score_parts) / len(score_parts)), 1)
+    return {
+        "ok": True,
+        "platform": platform,
+        "host_os": host_os or None,
+        "dialog": stem,
+        "pixel_parity": False,
+        "score_percent": score,
+        "note": (
+            "Heuristic coverage of extracted .ui layout signals. "
+            "score_percent is not pixel-perfect Qt parity."
+        ),
+        "fields": field_stats,
+        "pages": page_stats,
+        "chrome": chrome,
+    }
+
+
 def dialog_pages_for(platform: str, host_os: str = "") -> list[dict[str, Any]]:
     """Qt AdvancedDialog tab pages with option keys (platform dialog preferred)."""
     cat = _dialog_catalog()

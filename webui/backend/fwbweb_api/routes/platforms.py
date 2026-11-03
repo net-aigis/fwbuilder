@@ -21,6 +21,7 @@ from ..platforms import (
     get_os,
     get_platform,
     interface_option_schema,
+    layout_fidelity_for,
     list_oses,
     list_platforms,
     option_schema,
@@ -170,6 +171,16 @@ def run_expect_install_plan(
     from ..expect_installer import refuse_expect_install
 
     raise HTTPException(status_code=501, detail=refuse_expect_install(host_os, step=step))
+
+
+@router.get("/layout-fidelity")
+def get_layout_fidelity(
+    platform: str = Query(..., min_length=1),
+    host_os: str = Query(""),
+    _: str = Depends(require_token),
+) -> dict[str, Any]:
+    """Heuristic .ui layout-signal coverage (explicitly not pixel parity)."""
+    return layout_fidelity_for(platform, host_os)
 
 
 @router.get("/ssh-auth")

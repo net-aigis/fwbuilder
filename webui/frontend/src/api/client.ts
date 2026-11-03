@@ -757,6 +757,23 @@ export function fetchInstallerConfigletFile(
   }>(`/api/v1/installer-configlet-file?${q.toString()}`);
 }
 
+export function fetchLayoutFidelity(platform: string, hostOs = "") {
+  const qs = new URLSearchParams({ platform });
+  if (hostOs) qs.set("host_os", hostOs);
+  return api<{
+    ok: boolean;
+    platform: string;
+    dialog?: string;
+    pixel_parity: boolean;
+    score_percent?: number;
+    note?: string;
+    fields?: Record<string, number>;
+    pages?: Record<string, number>;
+    chrome?: Record<string, boolean>;
+    error?: string;
+  }>(`/api/v1/layout-fidelity?${qs.toString()}`);
+}
+
 export function fetchHardGaps() {
   return api<{
     soft_complete_phase: string;

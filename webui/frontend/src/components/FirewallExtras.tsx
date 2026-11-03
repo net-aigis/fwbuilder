@@ -6,6 +6,7 @@ import {
   fetchExpectInstallPlan,
   fetchExpectInstallWalkthrough,
   fetchHardGaps,
+  fetchLayoutFidelity,
   refuseExpectInstallStep,
   refusePasswordSsh,
   fetchInstallerConfigletFile,
@@ -164,6 +165,7 @@ export function FirewallExtras({
   const [hardGaps, setHardGaps] = useState<string[]>([]);
   const [hardGapsNote, setHardGapsNote] = useState<string | null>(null);
   const [hardGapNotes, setHardGapNotes] = useState<Record<string, string>>({});
+  const [layoutFidelity, setLayoutFidelity] = useState<string | null>(null);
   const [resHint, setResHint] = useState<string | null>(null);
 
   async function reload() {
@@ -191,6 +193,18 @@ export function FirewallExtras({
       else setHardGaps([]);
       setHardGapsNote(gaps?.note || null);
       setHardGapNotes(gaps?.hard_gap_notes || {});
+      try {
+        const fid = await fetchLayoutFidelity(plat, hostOs || "");
+        if (fid.ok && fid.score_percent != null) {
+          setLayoutFidelity(
+            `${fid.score_percent}% .ui signals (${fid.dialog || plat}; not pixel parity)`,
+          );
+        } else {
+          setLayoutFidelity(null);
+        }
+      } catch {
+        setLayoutFidelity(null);
+      }
       if (resSt?.configlets_ok) {
         const phase = resSt.soft_complete_phase
           ? ` · soft-complete phase${resSt.soft_complete_phase}`
@@ -662,6 +676,7 @@ export function FirewallExtras({
           ) : null}
           {tabPosition ? <span className="muted"> · tabs {tabPosition}</span> : null}
           {sizeGripEnabled === true ? <span className="muted"> · sizeGrip</span> : null}
+          {layoutFidelity ? <span className="muted"> · fidelity {layoutFidelity}</span> : null}
         </h3>
         <div className="btn-row">
           <button type="button" className="ghost" disabled={busy} onClick={() => void reload()}>

@@ -437,24 +437,32 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | STATUS 289+ mentions | done | E2E phase294 |
 | Typecheck after 289–291 | done | E2E phase295 |
 | Soft-complete STATUS through 296 | done | E2E phase296 |
+| layout_fidelity API | done | E2E phase297 |
+| layout fidelity UI header | done | E2E phase298 |
+| fidelity honesty (not pixel) | done | E2E phase299 |
+| 297–299 wiring | done | E2E phase300 |
+| Soft marker 304 | done | E2E phase301 |
+| STATUS fidelity mentions | done | E2E phase302 |
+| Multi-platform fidelity | done | E2E phase303 |
+| Soft-complete STATUS through 304 | done | E2E phase304 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Soft-complete (feature/webui polish track)
 
 WebUI on `feature/webui` remains soft-complete for the polish track.
 
-### Hard-gap honesty/preview track — soft-fertig (phase256); preview slices through 296
+### Hard-gap honesty/preview track — soft-fertig (phase256); preview slices through 304
 
-`WEBUI_SOFT_COMPLETE_PHASE=296`; `/hard-gaps` sets `soft_fertig_honesty_track: true` + `hard_gap_notes` (UI list).
+`WEBUI_SOFT_COMPLETE_PHASE=304`; `/hard-gaps` sets `soft_fertig_honesty_track: true` + `hard_gap_notes` (UI list); `GET /layout-fidelity` reports heuristic `score_percent` (**not** pixel parity).
 
 - Deploy: manifest `# files:`, OS configlets, external PolicyInstallScript, copyFWB, use_scp, gzip transfer on compress (plan shows −%), capabilities API (+ expect_install_plan / walkthrough pointers), live gate + force_limited, expect stub + raw/expanded configlet preview + ordered expect plan (reg_user + safety_net_acl + download + sessionStorage) + dry walkthrough (all preview_only, sessionStorage); `POST …/run` (+ optional `step=`) → 501 / step_refused (still **no** expect/SSHSession runtime)
-- Options: .ui labels, free QLabel annotations (+ alignment), buddy_labels (external_label controls), enabled/visible respect, QRadio bool, QGroupBox sections (flat/checkable), tooltips, page-local QGridLayout + spacers (sizeHint) + column/row stretch + spacing/margins (CSS + page hint) + sizePolicy + min/max size + layout hints + layout_tree + dialog windowTitle/geometry/tab_position/sizeGrip (header WxH + tabs + CSS max-height) + shared `qtGridStyle` on Firewall/Rule/Interface (still **not** full pixel Qt layout)
+- Options: .ui labels, free QLabel annotations (+ alignment), buddy_labels (external_label controls), enabled/visible respect, QRadio bool, QGroupBox sections (flat/checkable), tooltips, page-local QGridLayout + spacers (sizeHint) + column/row stretch + spacing/margins (CSS + page hint) + sizePolicy + min/max size + layout hints + layout_tree + dialog windowTitle/geometry/tab_position/sizeGrip (header WxH + tabs + CSS max-height) + shared `qtGridStyle` + layout-fidelity score on Firewall/Rule/Interface (still **not** full pixel Qt layout)
 - SSH: BatchMode only; `GET /ssh-auth`, capabilities.ssh_auth, deploy plan line, `allow_password_auth` → 400, `POST /ssh-auth/password` → 501
-- Honesty: UI lists `hard_gap_open` + per-gap notes via `fetchHardGaps`; `GET /hard-gaps` documents remaining gaps
+- Honesty: UI lists `hard_gap_open` + per-gap notes via `fetchHardGaps`; `GET /hard-gaps` documents remaining gaps; layout-fidelity score is coverage of extracted signals only
 
 Still open (hard backlog — **not** soft-fertig):
 
-- Full Qt AdvancedDialog **pixel** layout parity (exact geometry; dialog size + grid spacing since phase226/241; row/col + spacers/sizeHint + stretch + annotations/buddy_labels/alignment + sizePolicy/min/max/enabled/visible + QGroupBox flat + layout_tree + tab_position/sizeGrip since phase165/177/181/189/205/209/213/257–291)
+- Full Qt AdvancedDialog **pixel** layout parity (exact geometry; dialog size + grid spacing since phase226/241; row/col + spacers/sizeHint + stretch + annotations/buddy_labels/alignment + sizePolicy/min/max/enabled/visible + QGroupBox flat + layout_tree + tab_position/sizeGrip since phase165/177/181/189/205/209/213/257–291; fidelity score since 297)
 - Full desktop **FirewallInstaller** expect/SSHSession for Cisco/Juniper/Procurve (plan/preview/walkthrough/download; run/step endpoint refuses with 501)
 - Password/keyboard-interactive SSH (API refuses `allow_password_auth` and `POST /ssh-auth/password`; BatchMode only)
 
@@ -763,6 +771,14 @@ Still open (hard backlog — **not** soft-fertig):
 | Local E2E phase294 (STATUS mentions) | done | `e2e-phase294.sh` **OK** |
 | Local E2E phase295 (typecheck) | done | `e2e-phase295.sh` **OK** |
 | Local E2E phase296 (STATUS soft-complete) | done | `e2e-phase296.sh` **OK** |
+| Local E2E phase297 (layout-fidelity API) | done | `e2e-phase297.sh` **OK** |
+| Local E2E phase298 (fidelity UI) | done | `e2e-phase298.sh` **OK** |
+| Local E2E phase299 (fidelity honesty) | done | `e2e-phase299.sh` **OK** |
+| Local E2E phase300 (wiring) | done | `e2e-phase300.sh` **OK** |
+| Local E2E phase301 (soft marker 304) | done | `e2e-phase301.sh` **OK** |
+| Local E2E phase302 (STATUS mentions) | done | `e2e-phase302.sh` **OK** |
+| Local E2E phase303 (multi-platform fidelity) | done | `e2e-phase303.sh` **OK** |
+| Local E2E phase304 (STATUS soft-complete) | done | `e2e-phase304.sh` **OK** |
 
 ## Local commands
 
@@ -1068,6 +1084,14 @@ bash webui/scripts/e2e-phase293.sh
 bash webui/scripts/e2e-phase294.sh
 bash webui/scripts/e2e-phase295.sh
 bash webui/scripts/e2e-phase296.sh
+bash webui/scripts/e2e-phase297.sh
+bash webui/scripts/e2e-phase298.sh
+bash webui/scripts/e2e-phase299.sh
+bash webui/scripts/e2e-phase300.sh
+bash webui/scripts/e2e-phase301.sh
+bash webui/scripts/e2e-phase302.sh
+bash webui/scripts/e2e-phase303.sh
+bash webui/scripts/e2e-phase304.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```
