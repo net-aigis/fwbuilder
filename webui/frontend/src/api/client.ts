@@ -698,6 +698,14 @@ export function fetchInstallerConfigletFile(
   }>(`/api/v1/installer-configlet-file?${q.toString()}`);
 }
 
+export function fetchHardGaps() {
+  return api<{
+    soft_complete_phase: string;
+    hard_gap_open: string[];
+    note?: string;
+  }>("/api/v1/hard-gaps");
+}
+
 export function fetchSshAuth() {
   return api<{
     batch_mode: boolean;

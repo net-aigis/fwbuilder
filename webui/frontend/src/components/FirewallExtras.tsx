@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import {
   deployFirewall,
   fetchInstallerCapabilities,
@@ -117,6 +117,9 @@ export function FirewallExtras({
   const [compiler, setCompiler] = useState<string>("");
   const [dialogName, setDialogName] = useState<string>("");
   const [dialogTitle, setDialogTitle] = useState<string>("");
+  const [dialogGeometry, setDialogGeometry] = useState<{ width?: number; height?: number } | null>(
+    null,
+  );
   const [activeGroup, setActiveGroup] = useState<string>("platform");
   const [installerNote, setInstallerNote] = useState<string | null>(null);
   const [installerMode, setInstallerMode] = useState<string | null>(null);
@@ -254,6 +257,7 @@ export function FirewallExtras({
         setCompiler(schema.compiler || "");
         setDialogName(schema.dialog || "");
         setDialogTitle(schema.window_title || "");
+        setDialogGeometry(schema.geometry || null);
         setFields(schema.fields ?? {});
         setDefaults(schema.defaults ?? {});
         let preferred = nextGroups[0]?.id || "platform";
@@ -587,8 +591,20 @@ export function FirewallExtras({
     }
   }
 
+  const dialogMaxHeight =
+    dialogGeometry?.height && dialogGeometry.height > 0
+      ? `${Math.min(dialogGeometry.height, 720)}px`
+      : undefined;
+
   return (
-    <div className="firewall-extras">
+    <div
+      className="firewall-extras"
+      style={
+        dialogMaxHeight
+          ? ({ ["--fwb-dialog-max-height"]: dialogMaxHeight } as CSSProperties)
+          : undefined
+      }
+    >
       <header className="panel-header">
         <h3>
           Platform / installer options

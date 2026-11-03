@@ -682,7 +682,7 @@ button.linkish:disabled {
 }
 
 .options-grid {
-  max-height: 22rem;
+  max-height: var(--fwb-dialog-max-height, 22rem);
   overflow: auto;
   margin-bottom: 1rem;
   grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
