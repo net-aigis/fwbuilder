@@ -453,17 +453,25 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | STATUS 305+ mentions | done | E2E phase310 |
 | Typecheck after timeline | done | E2E phase311 |
 | Soft-complete STATUS through 312 | done | E2E phase312 |
+| Download expect walkthrough | done | E2E phase313 |
+| Rule/iface layout_fidelity | done | E2E phase314 |
+| 313–314 wiring | done | E2E phase315 |
+| Soft marker 320 | done | E2E phase316 |
+| STATUS 313+ mentions | done | E2E phase317 |
+| Shared fidelity helper check | done | E2E phase318 |
+| Hard gaps still 3 @ 320 | done | E2E phase319 |
+| Soft-complete STATUS through 320 | done | E2E phase320 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Soft-complete (feature/webui polish track)
 
 WebUI on `feature/webui` remains soft-complete for the polish track.
 
-### Hard-gap honesty/preview track — soft-fertig (phase256); preview slices through 312
+### Hard-gap honesty/preview track — soft-fertig (phase256); preview slices through 320
 
-`WEBUI_SOFT_COMPLETE_PHASE=312`; `/hard-gaps` sets `soft_fertig_honesty_track: true` + `hard_gap_notes` + `layout_fidelity_path`; `GET /layout-fidelity` / option-schema.layout_fidelity report heuristic `score_percent` (**not** pixel parity).
+`WEBUI_SOFT_COMPLETE_PHASE=320`; `/hard-gaps` sets `soft_fertig_honesty_track: true` + `hard_gap_notes` + `layout_fidelity_path`; `GET /layout-fidelity` / option-schema + rule/iface schemas report heuristic `score_percent` (**not** pixel parity).
 
-- Deploy: manifest `# files:`, OS configlets, external PolicyInstallScript, copyFWB, use_scp, gzip transfer on compress (plan shows −%), capabilities API (+ expect_install_plan / walkthrough pointers), live gate + force_limited, expect stub + raw/expanded configlet preview + ordered expect plan (reg_user + safety_net_acl + download + sessionStorage) + dry walkthrough (preview_only + simulated_at timeline, sessionStorage); `POST …/run` (+ optional `step=`) → 501 / step_refused (still **no** expect/SSHSession runtime)
+- Deploy: manifest `# files:`, OS configlets, external PolicyInstallScript, copyFWB, use_scp, gzip transfer on compress (plan shows −%), capabilities API (+ expect_install_plan / walkthrough pointers), live gate + force_limited, expect stub + raw/expanded configlet preview + ordered expect plan (reg_user + safety_net_acl + download + sessionStorage) + dry walkthrough (preview_only + simulated_at timeline, sessionStorage + download); `POST …/run` (+ optional `step=`) → 501 / step_refused (still **no** expect/SSHSession runtime)
 - Options: .ui labels, free QLabel annotations (+ alignment), buddy_labels (external_label controls), enabled/visible respect, QRadio bool, QGroupBox sections (flat/checkable), tooltips, page-local QGridLayout + spacers (sizeHint) + column/row stretch + spacing/margins (CSS + page hint) + sizePolicy + min/max size + layout hints + layout_tree + dialog windowTitle/geometry/tab_position/sizeGrip (header WxH + tabs + CSS max-height) + shared `qtGridStyle` + layout-fidelity score on Firewall/Rule/Interface (still **not** full pixel Qt layout)
 - SSH: BatchMode only; `GET /ssh-auth`, capabilities.ssh_auth, deploy plan line, `allow_password_auth` → 400, `POST /ssh-auth/password` → 501
 - Honesty: UI lists `hard_gap_open` + per-gap notes via `fetchHardGaps`; `GET /hard-gaps` documents remaining gaps; layout-fidelity score is coverage of extracted signals only
@@ -795,6 +803,14 @@ Still open (hard backlog — **not** soft-fertig):
 | Local E2E phase310 (STATUS mentions) | done | `e2e-phase310.sh` **OK** |
 | Local E2E phase311 (typecheck) | done | `e2e-phase311.sh` **OK** |
 | Local E2E phase312 (STATUS soft-complete) | done | `e2e-phase312.sh` **OK** |
+| Local E2E phase313 (walkthrough download) | done | `e2e-phase313.sh` **OK** |
+| Local E2E phase314 (rule/iface fidelity) | done | `e2e-phase314.sh` **OK** |
+| Local E2E phase315 (wiring) | done | `e2e-phase315.sh` **OK** |
+| Local E2E phase316 (soft marker 320) | done | `e2e-phase316.sh` **OK** |
+| Local E2E phase317 (STATUS mentions) | done | `e2e-phase317.sh` **OK** |
+| Local E2E phase318 (shared fidelity) | done | `e2e-phase318.sh` **OK** |
+| Local E2E phase319 (hard gaps still 3) | done | `e2e-phase319.sh` **OK** |
+| Local E2E phase320 (STATUS soft-complete) | done | `e2e-phase320.sh` **OK** |
 
 ## Local commands
 
@@ -1116,6 +1132,14 @@ bash webui/scripts/e2e-phase309.sh
 bash webui/scripts/e2e-phase310.sh
 bash webui/scripts/e2e-phase311.sh
 bash webui/scripts/e2e-phase312.sh
+bash webui/scripts/e2e-phase313.sh
+bash webui/scripts/e2e-phase314.sh
+bash webui/scripts/e2e-phase315.sh
+bash webui/scripts/e2e-phase316.sh
+bash webui/scripts/e2e-phase317.sh
+bash webui/scripts/e2e-phase318.sh
+bash webui/scripts/e2e-phase319.sh
+bash webui/scripts/e2e-phase320.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

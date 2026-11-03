@@ -1025,6 +1025,27 @@ export function FirewallExtras({
                 <button
                   type="button"
                   className="ghost"
+                  disabled={busy || !expectWalkthroughText}
+                  title="Download the last dry walkthrough as text"
+                  onClick={() => {
+                    if (!expectWalkthroughText) return;
+                    const blob = new Blob([expectWalkthroughText + "\n"], {
+                      type: "text/plain;charset=utf-8",
+                    });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = `fwbweb-expect-walkthrough-${firewallId || "fw"}.txt`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    onStatus?.("Downloaded expect walkthrough");
+                  }}
+                >
+                  Download walkthrough
+                </button>
+                <button
+                  type="button"
+                  className="ghost"
                   disabled={busy}
                   title="Confirm password/keyboard-interactive SSH is refused (501)"
                   onClick={() => {

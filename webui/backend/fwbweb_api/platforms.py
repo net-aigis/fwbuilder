@@ -262,24 +262,8 @@ def dialog_chrome_for(platform: str) -> dict[str, Any]:
     return out
 
 
-def layout_fidelity_for(platform: str, host_os: str = "") -> dict[str, Any]:
-    """Coverage stats for extracted .ui layout signals (not pixel parity)."""
-    cat = _dialog_catalog()
-    dialogs = cat.get("dialogs") or {}
-    try:
-        plat = get_platform(platform)
-        stem = _dialog_stem(plat.get("dialog") or platform)
-    except KeyError:
-        stem = _dialog_stem(platform)
-    if not stem or stem not in dialogs:
-        return {
-            "ok": False,
-            "error": "dialog_not_found",
-            "platform": platform,
-            "host_os": host_os or None,
-            "pixel_parity": False,
-        }
-    info = dialogs[stem]
+def _layout_fidelity_from_dialog(stem: str, info: dict[str, Any]) -> dict[str, Any]:
+    """Coverage stats for one extracted dialog (not pixel parity)."""
     fields = info.get("fields") or {}
     pages = info.get("pages") or []
     n = max(len(fields), 1)
@@ -314,7 +298,6 @@ def layout_fidelity_for(platform: str, host_os: str = "") -> dict[str, Any]:
         "tab_position": bool(info.get("tab_position")),
         "size_grip_enabled": "size_grip_enabled" in info,
     }
-    # Weighted heuristic: grid placement dominates; chrome/spacers secondary.
     score_parts = [
         field_stats["with_grid"] / n,
         field_stats["with_label"] / n,
@@ -327,8 +310,6 @@ def layout_fidelity_for(platform: str, host_os: str = "") -> dict[str, Any]:
     score = round(100.0 * (sum(score_parts) / len(score_parts)), 1)
     return {
         "ok": True,
-        "platform": platform,
-        "host_os": host_os or None,
         "dialog": stem,
         "pixel_parity": False,
         "score_percent": score,
@@ -340,6 +321,29 @@ def layout_fidelity_for(platform: str, host_os: str = "") -> dict[str, Any]:
         "pages": page_stats,
         "chrome": chrome,
     }
+
+
+def layout_fidelity_for(platform: str, host_os: str = "") -> dict[str, Any]:
+    """Coverage stats for extracted .ui layout signals (not pixel parity)."""
+    cat = _dialog_catalog()
+    dialogs = cat.get("dialogs") or {}
+    try:
+        plat = get_platform(platform)
+        stem = _dialog_stem(plat.get("dialog") or platform)
+    except KeyError:
+        stem = _dialog_stem(platform)
+    if not stem or stem not in dialogs:
+        return {
+            "ok": False,
+            "error": "dialog_not_found",
+            "platform": platform,
+            "host_os": host_os or None,
+            "pixel_parity": False,
+        }
+    out = _layout_fidelity_from_dialog(stem, dialogs[stem])
+    out["platform"] = platform
+    out["host_os"] = host_os or None
+    return out
 
 
 def dialog_pages_for(platform: str, host_os: str = "") -> list[dict[str, Any]]:
@@ -583,6 +587,15 @@ def rule_option_schema(rule_kind: str = "policy") -> dict[str, Any]:
     fields: dict[str, Any] = {}
     for key in seen:
         fields[key] = _infer_type(key, "", field_meta.get(key))
+    fidelity: dict[str, Any] | None = None
+    if stem and stem in dialogs:
+        fidelity = {
+            "score_percent": _layout_fidelity_from_dialog(stem, dialogs[stem]).get(
+                "score_percent"
+            ),
+            "pixel_parity": False,
+            "path": "/api/v1/layout-fidelity",
+        }
     return {
         "rule_kind": kind,
         "dialog_stem": stem,
@@ -591,6 +604,7 @@ def rule_option_schema(rule_kind: str = "policy") -> dict[str, Any]:
         "fields": fields,
         "dialog_field_count": len(field_meta),
         "dialog_pages": pages,
+        "layout_fidelity": fidelity,
     }
 
 
@@ -643,6 +657,15 @@ def interface_option_schema(host_os: str) -> dict[str, Any]:
         fields[key] = _infer_type(key, defaults.get(key, ""), field_meta.get(key))
 
     caps = os_info.get("capabilities") or {}
+    fidelity: dict[str, Any] | None = None
+    if stem and stem in dialogs:
+        fidelity = {
+            "score_percent": _layout_fidelity_from_dialog(stem, dialogs[stem]).get(
+                "score_percent"
+            ),
+            "pixel_parity": False,
+            "path": "/api/v1/layout-fidelity",
+        }
     return {
         "host_os": os_info["name"],
         "interface_dialog": iface_dialog or None,
@@ -657,4 +680,5 @@ def interface_option_schema(host_os: str) -> dict[str, Any]:
         "fields": fields,
         "dialog_field_count": len(field_meta),
         "dialog_pages": pages,
+        "layout_fidelity": fidelity,
     }
