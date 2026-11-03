@@ -68,6 +68,7 @@ type GroupSection = {
   stacked?: boolean;
   stack?: string;
   stack_index?: number;
+  empty?: boolean;
 };
 type Group = {
   id: string;
@@ -153,6 +154,8 @@ export function FirewallExtras({
   const [tabPosition, setTabPosition] = useState<string>("");
   const [sizeGripEnabled, setSizeGripEnabled] = useState<boolean | null>(null);
   const [activeGroup, setActiveGroup] = useState<string>("platform");
+  const [activeStackIndex, setActiveStackIndex] = useState(0);
+  const [showAllStacks, setShowAllStacks] = useState(false);
   const [installerNote, setInstallerNote] = useState<string | null>(null);
   const [installerMode, setInstallerMode] = useState<string | null>(null);
   const [expectSteps, setExpectSteps] = useState<string[]>([]);
@@ -419,6 +422,47 @@ export function FirewallExtras({
   const activeGroupMeta = groups.find((g) => g.id === activeGroup) || null;
   const activeGroupIndex = groups.findIndex((g) => g.id === activeGroup);
 
+  const stackedPages = useMemo(() => {
+    const secs = activeGroupMeta?.sections || [];
+    return secs
+      .filter((s) => s.stacked)
+      .slice()
+      .sort((a, b) => (a.stack_index ?? 0) - (b.stack_index ?? 0));
+  }, [activeGroupMeta]);
+
+  useEffect(() => {
+    if (!stackedPages.length) {
+      setShowAllStacks(false);
+      return;
+    }
+    let preferred = stackedPages[0]?.stack_index ?? 0;
+    try {
+      const stored = sessionStorage.getItem(
+        `fwbweb.optionStackIndex.${platform || "unknown"}.${hostOs || ""}.${activeGroup}`,
+      );
+      if (stored != null) {
+        const n = Number(stored);
+        if (stackedPages.some((s) => s.stack_index === n)) preferred = n;
+      }
+    } catch {
+      /* ignore */
+    }
+    setActiveStackIndex(preferred);
+    setShowAllStacks(false);
+  }, [activeGroup, platform, hostOs, stackedPages]);
+
+  useEffect(() => {
+    if (!stackedPages.length) return;
+    try {
+      sessionStorage.setItem(
+        `fwbweb.optionStackIndex.${platform || "unknown"}.${hostOs || ""}.${activeGroup}`,
+        String(activeStackIndex),
+      );
+    } catch {
+      /* ignore */
+    }
+  }, [activeStackIndex, activeGroup, platform, hostOs, stackedPages.length]);
+
   const optionSections = useMemo(() => {
     if (filter.trim() || showAll || !activeGroupMeta?.sections?.length) {
       return [{ id: "all", title: "", keys }];
@@ -426,11 +470,14 @@ export function FirewallExtras({
     const keySet = new Set(keys);
     const out: GroupSection[] = [];
     for (const sec of activeGroupMeta.sections) {
+      if (sec.stacked && !showAllStacks && sec.stack_index !== activeStackIndex) {
+        continue;
+      }
       const secKeys = sec.keys.filter((k) => keySet.has(k));
-      if (secKeys.length) out.push({ ...sec, keys: secKeys });
+      if (secKeys.length || sec.empty) out.push({ ...sec, keys: secKeys });
     }
     return out.length ? out : [{ id: "all", title: "", keys }];
-  }, [filter, showAll, activeGroupMeta, keys]);
+  }, [filter, showAll, activeGroupMeta, keys, activeStackIndex, showAllStacks]);
 
   function cycleGroup(delta: number) {
     if (!groups.length) return;
@@ -795,6 +842,43 @@ export function FirewallExtras({
           Qt grid placement
         </label>
       </div>
+      {!filter.trim() && !showAll && stackedPages.length > 1 ? (
+        <div className="option-stack-pages pad" role="tablist" aria-label="QStackedWidget pages">
+          {stackedPages.map((p) => (
+            <button
+              key={p.id}
+              type="button"
+              role="tab"
+              aria-selected={!showAllStacks && p.stack_index === activeStackIndex}
+              className={
+                !showAllStacks && p.stack_index === activeStackIndex ? undefined : "ghost"
+              }
+              disabled={busy}
+              title={
+                p.empty
+                  ? "Empty QStackedWidget page"
+                  : `QStackedWidget page stack[${p.stack_index}]`
+              }
+              onClick={() => {
+                setShowAllStacks(false);
+                setActiveStackIndex(p.stack_index ?? 0);
+              }}
+            >
+              {p.title}
+              {p.empty ? " · empty" : ""}
+            </button>
+          ))}
+          <button
+            type="button"
+            className={showAllStacks ? undefined : "ghost"}
+            disabled={busy}
+            title="Show all stacked pages (preview)"
+            onClick={() => setShowAllStacks(true)}
+          >
+            All stacks
+          </button>
+        </div>
+      ) : null}
       {optionSections.map((sec, secIdx) => {
         const pageSpacers =
           useQtGridLayout && secIdx === 0 ? activeGroupMeta?.spacers || [] : [];
@@ -828,6 +912,7 @@ export function FirewallExtras({
               sec.checkable ? "option-section-checkable" : "",
               sec.enabled === false ? "option-section-disabled" : "",
               sec.stacked ? "option-section-stacked" : "",
+              sec.empty ? "option-section-empty" : "",
             ]
               .filter(Boolean)
               .join(" ")}
@@ -835,6 +920,7 @@ export function FirewallExtras({
             data-checkable={sec.checkable ? "1" : undefined}
             data-enabled={sec.enabled === false ? "0" : undefined}
             data-stacked={sec.stacked ? "1" : undefined}
+            data-empty={sec.empty ? "1" : undefined}
             data-stack={sec.stack}
           >
             {sec.title ? (
@@ -851,6 +937,7 @@ export function FirewallExtras({
                 ) : null}
                 {sec.title}
                 {sec.flat ? <span className="muted"> · flat</span> : null}
+                {sec.empty ? <span className="muted"> · empty</span> : null}
                 {sec.stacked && sec.stack_index != null ? (
                   <span className="muted"> · stack[{sec.stack_index}]</span>
                 ) : null}
@@ -895,7 +982,12 @@ export function FirewallExtras({
                   onChange={(v) => setOptions((prev) => ({ ...prev, [key]: v }))}
                 />
               ))}
-              {!sec.keys.length ? <p className="muted">No keys in this group.</p> : null}
+              {sec.empty && !sec.keys.length ? (
+                <p className="muted">Empty QStackedWidget page (desktop chrome).</p>
+              ) : null}
+              {!sec.keys.length && !sec.empty ? (
+                <p className="muted">No keys in this group.</p>
+              ) : null}
             </div>
           </div>
         );

@@ -1947,6 +1947,24 @@
           },
           "sections": [
             {
+              "empty": true,
+              "id": "page",
+              "keys": [],
+              "stack": "options_stack",
+              "stack_index": 0,
+              "stacked": true,
+              "title": "page"
+            },
+            {
+              "empty": true,
+              "id": "page_ethernet",
+              "keys": [],
+              "stack": "options_stack",
+              "stack_index": 1,
+              "stacked": true,
+              "title": "page_ethernet"
+            },
+            {
               "id": "page_vlan",
               "keys": [
                 "vlan_id"
@@ -11219,6 +11237,15 @@
           },
           "sections": [
             {
+              "empty": true,
+              "id": "page_ethernet",
+              "keys": [],
+              "stack": "options_stack",
+              "stack_index": 0,
+              "stacked": true,
+              "title": "page_ethernet"
+            },
+            {
               "id": "page_lan",
               "keys": [
                 "vlan_id"
@@ -18113,6 +18140,15 @@
           },
           "sections": [
             {
+              "empty": true,
+              "id": "page_blank",
+              "keys": [],
+              "stack": "options_stack",
+              "stack_index": 0,
+              "stacked": true,
+              "title": "page_blank"
+            },
+            {
               "id": "page_vlan",
               "keys": [
                 "vlan_id"
@@ -20510,6 +20546,15 @@
             "QGridLayout": 2
           },
           "sections": [
+            {
+              "empty": true,
+              "id": "page_0",
+              "keys": [],
+              "stack": "options_stack",
+              "stack_index": 0,
+              "stacked": true,
+              "title": "page_0"
+            },
             {
               "id": "page_1",
               "keys": [

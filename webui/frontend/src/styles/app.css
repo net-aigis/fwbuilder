@@ -737,6 +737,17 @@ pre.configlet-preview {
   padding-top: 0.35rem;
 }
 
+.option-section-empty {
+  opacity: 0.85;
+}
+
+.option-stack-pages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  align-items: center;
+}
+
 .field.field-ui-disabled {
   opacity: 0.6;
 }

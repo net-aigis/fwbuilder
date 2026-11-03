@@ -530,6 +530,7 @@ export function fetchOptionSchema(platform: string, hostOs = "") {
         stacked?: boolean;
         stack?: string;
         stack_index?: number;
+        empty?: boolean;
       }>;
       layout_tree?: unknown[];
       spacers?: Array<{
@@ -594,6 +595,7 @@ type SchemaGroup = {
     stacked?: boolean;
     stack?: string;
     stack_index?: number;
+    empty?: boolean;
   }>;
   spacers?: Array<{
     row?: number;

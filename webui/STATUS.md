@@ -501,24 +501,32 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | STATUS iface stacked 353–360 | done | E2E phase358 |
 | Typecheck after iface sections | done | E2E phase359 |
 | Soft-complete STATUS through 360 | done | E2E phase360 |
+| Empty QStackedWidget pages extract | done | E2E phase361 |
+| InterfaceOptions stack switcher | done | E2E phase362 |
+| FirewallExtras stack switcher | done | E2E phase363 |
+| Stack switcher CSS | done | E2E phase364 |
+| Client empty section flag | done | E2E phase365 |
+| Soft marker 368 | done | E2E phase366 |
+| Typecheck after stack switcher | done | E2E phase367 |
+| Soft-complete STATUS through 368 | done | E2E phase368 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Soft-complete (feature/webui polish track)
 
 WebUI on `feature/webui` remains soft-complete for the polish track.
 
-### Hard-gap honesty/preview track — soft-fertig (phase256); preview slices through 360
+### Hard-gap honesty/preview track — soft-fertig (phase256); preview slices through 368
 
-`WEBUI_SOFT_COMPLETE_PHASE=360`; `/hard-gaps` (+ `/hard-gaps/closure`) sets `soft_fertig_honesty_track: true` + `hard_gap_notes` + `hard_gap_closure` + `layout_fidelity_path`; `GET /layout-fidelity` / option-schema + rule/iface schemas report heuristic `score_percent` (**not** pixel parity); Firewall/Rule/Interface headers show it.
+`WEBUI_SOFT_COMPLETE_PHASE=368`; `/hard-gaps` (+ `/hard-gaps/closure`) sets `soft_fertig_honesty_track: true` + `hard_gap_notes` + `hard_gap_closure` + `layout_fidelity_path`; `GET /layout-fidelity` / option-schema + rule/iface schemas report heuristic `score_percent` (**not** pixel parity); Firewall/Rule/Interface headers show it.
 
 - Deploy: manifest `# files:`, OS configlets, external PolicyInstallScript, copyFWB, use_scp, gzip transfer on compress (plan shows −%), capabilities API (+ expect_install_plan / walkthrough pointers), live gate + force_limited, expect stub + raw/expanded configlet preview + ordered expect plan (reg_user + safety_net_acl + download + sessionStorage) + dry walkthrough (preview_only + simulated_at timeline, sessionStorage + download); `POST …/run` (+ optional `step=`) → 501 / step_refused (still **no** expect/SSHSession runtime)
-- Options: .ui labels, free QLabel annotations (+ alignment), buddy_labels (external_label controls), enabled/visible respect, QRadio bool, QGroupBox sections (flat/checkable) + QStackedWidget pages (FirewallExtras + InterfaceOptions section chrome), tooltips, page-local QGridLayout + spacers (sizeHint) + column/row stretch + spacing/margins (CSS + page hint) + sizePolicy + min/max size + layout hints + layout_tree + dialog windowTitle/geometry/tab_position/sizeGrip (header WxH + tabs + CSS max-height) + shared `qtGridStyle` + layout-fidelity score on Firewall/Rule/Interface (still **not** full pixel Qt layout)
+- Options: .ui labels, free QLabel annotations (+ alignment), buddy_labels (external_label controls), enabled/visible respect, QRadio bool, QGroupBox sections (flat/checkable) + QStackedWidget pages (FirewallExtras + InterfaceOptions section chrome + empty pages + stack switcher), tooltips, page-local QGridLayout + spacers (sizeHint) + column/row stretch + spacing/margins (CSS + page hint) + sizePolicy + min/max size + layout hints + layout_tree + dialog windowTitle/geometry/tab_position/sizeGrip (header WxH + tabs + CSS max-height) + shared `qtGridStyle` + layout-fidelity score on Firewall/Rule/Interface (still **not** full pixel Qt layout)
 - SSH: BatchMode only; `GET /ssh-auth`, capabilities.ssh_auth, deploy plan line, `allow_password_auth` → 400, `POST /ssh-auth/password` → 501
 - Honesty: UI lists `hard_gap_open` + notes + closure criteria via `fetchHardGaps`; `GET /hard-gaps` documents remaining gaps; layout-fidelity score is coverage of extracted signals only
 
 Still open (hard backlog — **not** soft-fertig):
 
-- Full Qt AdvancedDialog **pixel** layout parity (exact geometry; dialog size + grid spacing since phase226/241; row/col + spacers/sizeHint + stretch + annotations/buddy_labels/alignment + sizePolicy/min/max/enabled/visible + QGroupBox flat + QStackedWidget pages (Firewall+Interface chrome) + layout_tree + tab_position/sizeGrip since phase165/177/181/189/205/209/213/257–291/345–360; fidelity score since 297; closure criteria since 329)
+- Full Qt AdvancedDialog **pixel** layout parity (exact geometry; dialog size + grid spacing since phase226/241; row/col + spacers/sizeHint + stretch + annotations/buddy_labels/alignment + sizePolicy/min/max/enabled/visible + QGroupBox flat + QStackedWidget pages (Firewall+Interface chrome, empty pages, stack switcher) + layout_tree + tab_position/sizeGrip since phase165/177/181/189/205/209/213/257–291/345–368; fidelity score since 297; closure criteria since 329)
 - Full desktop **FirewallInstaller** expect/SSHSession for Cisco/Juniper/Procurve (plan/preview/walkthrough+timeline/download; run/step endpoint refuses with 501)
 - Password/keyboard-interactive SSH (API refuses `allow_password_auth` and `POST /ssh-auth/password`; BatchMode only)
 
@@ -891,6 +899,14 @@ Still open (hard backlog — **not** soft-fertig):
 | Local E2E phase358 (STATUS mentions) | done | `e2e-phase358.sh` **OK** |
 | Local E2E phase359 (typecheck) | done | `e2e-phase359.sh` **OK** |
 | Local E2E phase360 (STATUS soft-complete) | done | `e2e-phase360.sh` **OK** |
+| Local E2E phase361 (empty stack pages) | done | `e2e-phase361.sh` **OK** |
+| Local E2E phase362 (iface stack switcher) | done | `e2e-phase362.sh` **OK** |
+| Local E2E phase363 (firewall stack switcher) | done | `e2e-phase363.sh` **OK** |
+| Local E2E phase364 (stack CSS) | done | `e2e-phase364.sh` **OK** |
+| Local E2E phase365 (client empty flag) | done | `e2e-phase365.sh` **OK** |
+| Local E2E phase366 (soft marker 368) | done | `e2e-phase366.sh` **OK** |
+| Local E2E phase367 (typecheck) | done | `e2e-phase367.sh` **OK** |
+| Local E2E phase368 (STATUS soft-complete) | done | `e2e-phase368.sh` **OK** |
 
 ## Local commands
 
@@ -1260,6 +1276,14 @@ bash webui/scripts/e2e-phase357.sh
 bash webui/scripts/e2e-phase358.sh
 bash webui/scripts/e2e-phase359.sh
 bash webui/scripts/e2e-phase360.sh
+bash webui/scripts/e2e-phase361.sh
+bash webui/scripts/e2e-phase362.sh
+bash webui/scripts/e2e-phase363.sh
+bash webui/scripts/e2e-phase364.sh
+bash webui/scripts/e2e-phase365.sh
+bash webui/scripts/e2e-phase366.sh
+bash webui/scripts/e2e-phase367.sh
+bash webui/scripts/e2e-phase368.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

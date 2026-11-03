@@ -636,19 +636,18 @@ def parse_stacked_sections(page: ET.Element) -> list[dict]:
                 cls = c.get("class") or ""
                 if name and cls in CONTROL_CLASSES:
                     widgets.append(name)
+            entry: dict = {
+                "id": child.get("name") or f"{stack_name}_{page_idx}",
+                "title": title,
+                "widgets": widgets,
+                "stacked": True,
+                "stack": stack_name,
+                "stack_index": page_idx,
+            }
+            # Desktop often keeps index 0 empty (e.g. plain ethernet); keep the page.
             if not widgets:
-                page_idx += 1
-                continue
-            sections.append(
-                {
-                    "id": child.get("name") or f"{stack_name}_{page_idx}",
-                    "title": title,
-                    "widgets": widgets,
-                    "stacked": True,
-                    "stack": stack_name,
-                    "stack_index": page_idx,
-                }
-            )
+                entry["empty"] = True
+            sections.append(entry)
             page_idx += 1
     return sections
 
@@ -873,14 +872,24 @@ def pages_with_keys(pages: list[dict], fields: dict[str, dict]) -> list[dict]:
             sec_keys = keys_for_widgets(sec.get("widgets") or [], set())
             # Keep only keys that also belong to this page
             sec_keys = [k for k in sec_keys if k in seen]
-            if not sec_keys:
+            # Empty QStackedWidget pages (desktop index 0) stay as chrome markers.
+            if not sec_keys and not (sec.get("stacked") and sec.get("empty")):
                 continue
             sec_entry: dict[str, Any] = {
                 "id": sec["id"],
                 "title": sec["title"],
                 "keys": sec_keys,
             }
-            for flag in ("flat", "checkable", "checked", "enabled", "stacked", "stack", "stack_index"):
+            for flag in (
+                "flat",
+                "checkable",
+                "checked",
+                "enabled",
+                "stacked",
+                "stack",
+                "stack_index",
+                "empty",
+            ):
                 if flag in sec:
                     sec_entry[flag] = sec[flag]
             sections_out.append(sec_entry)
