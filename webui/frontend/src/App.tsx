@@ -1144,9 +1144,16 @@ export function App() {
       setStats(res);
       try {
         const fw = await searchObjects(sessionId, "", "Firewall");
-        setStatsFirewalls(
-          (fw.results ?? []).filter((r) => !String(r.id).startsWith("std")),
-        );
+        const basic = (fw.results ?? []).filter((r) => !String(r.id).startsWith("std"));
+        const enriched: TreeNode[] = [];
+        for (const row of basic.slice(0, 40)) {
+          try {
+            enriched.push(await fetchObject(sessionId, row.id));
+          } catch {
+            enriched.push(row);
+          }
+        }
+        setStatsFirewalls(enriched);
       } catch {
         setStatsFirewalls([]);
       }
@@ -1166,6 +1173,8 @@ export function App() {
       id: f.id,
       name: f.name,
       type: f.type,
+      platform: f.attrs?.platform,
+      host_OS: f.attrs?.host_OS,
     })) };
     const blob = new Blob([JSON.stringify(payload, null, 2)], {
       type: "application/json",
@@ -1954,14 +1963,15 @@ export function App() {
     return objs ?? [];
   }, [picker, rules]);
 
-  async function onCompile() {
-    if (!sessionId || !rulesFwId) return;
+  async function onCompile(fwId?: string) {
+    const target = fwId || rulesFwId;
+    if (!sessionId || !target) return;
     setBusy(true);
     setError(null);
     setCompileLog(null);
     setCompileOutputs([]);
     try {
-      const res = await compileFirewall(sessionId, rulesFwId);
+      const res = await compileFirewall(sessionId, target);
       setCompileOutputs(res.outputs ?? []);
       setCompileLog(
         `${res.compiler} → ${res.destdir}\noutputs: ${res.outputs.join(", ") || "(none)"}\n\n${res.log}`,
@@ -3582,7 +3592,7 @@ export function App() {
                 <div className="muted">Firewalls</div>
                 <ul className="stats-fw-list">
                   {statsFirewalls.map((f) => (
-                    <li key={f.id}>
+                    <li key={f.id} className="btn-row">
                       <button
                         type="button"
                         className="linkish"
@@ -3592,6 +3602,45 @@ export function App() {
                         }}
                       >
                         {f.name}
+                        {f.attrs?.platform ? (
+                          <span className="muted"> · {String(f.attrs.platform)}</span>
+                        ) : null}
+                      </button>
+                      <button
+                        type="button"
+                        className="ghost"
+                        disabled={busy}
+                        title="Open Policy rules for this firewall"
+                        onClick={() => {
+                          setStats(null);
+                          void loadRules(f.id, "policy");
+                        }}
+                      >
+                        Rules
+                      </button>
+                      <button
+                        type="button"
+                        className="ghost"
+                        disabled={busy}
+                        title="Compile this firewall"
+                        onClick={() => {
+                          setStats(null);
+                          setRulesFwId(f.id);
+                          setRulesFwMeta({
+                            name: f.name,
+                            platform:
+                              f.attrs?.platform != null
+                                ? String(f.attrs.platform)
+                                : undefined,
+                            host_OS:
+                              f.attrs?.host_OS != null
+                                ? String(f.attrs.host_OS)
+                                : undefined,
+                          });
+                          void onCompile(f.id);
+                        }}
+                      >
+                        Compile
                       </button>
                     </li>
                   ))}
