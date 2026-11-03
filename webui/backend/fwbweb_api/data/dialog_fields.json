@@ -57,6 +57,7 @@
         },
         "asa8_nat_dns": {
           "key": "asa8_nat_dns",
+          "label": "Make this NAT rule translate DNS replies. You also need to enable DNS inspection in the firewall object advanced settings dialog.",
           "type": "bool",
           "widget": "asa8_nat_dns",
           "widget_class": "QCheckBox"
@@ -75,24 +76,28 @@
         },
         "ipt_nat_persistent": {
           "key": "ipt_nat_persistent",
+          "label": "Give a client the same source-/destination-address for each connection (translates to --persistent, requires iptables 1.4.3 or later).",
           "type": "bool",
           "widget": "ipt_nat_persistent",
           "widget_class": "QCheckBox"
         },
         "ipt_nat_random": {
           "key": "ipt_nat_random",
+          "label": "Randomize port mapping (translates to --random)",
           "type": "bool",
           "widget": "ipt_nat_random",
           "widget_class": "QCheckBox"
         },
         "ipt_use_masq": {
           "key": "ipt_use_masq",
+          "label": "Always use MASQUERADE target instead of SNAT",
           "type": "bool",
           "widget": "ipt_use_masq",
           "widget_class": "QCheckBox"
         },
         "ipt_use_snat_instead_of_masq": {
           "key": "ipt_use_snat_instead_of_masq",
+          "label": "Use SNAT target instead of MASQUERADING for NAT rules with dynamic interfaces",
           "type": "bool",
           "widget": "ipt_use_snat_instead_of_masq",
           "widget_class": "QCheckBox"
@@ -129,6 +134,7 @@
         },
         "pf_static_port": {
           "key": "pf_static_port",
+          "label": "static-port",
           "type": "bool",
           "widget": "pf_static_port",
           "widget_class": "QCheckBox"
@@ -163,12 +169,14 @@
       "fields": {
         "no_fail": {
           "key": "no_fail",
+          "label": "If installation of this routing rule fails, just carry on",
           "type": "bool",
           "widget": "routing_non_critical_rule",
           "widget_class": "QCheckBox"
         },
         "use_onlink_option": {
           "key": "use_onlink_option",
+          "label": "Allow on-link gateway (ip route onlink)",
           "type": "bool",
           "widget": "routing_use_onlink_option",
           "widget_class": "QCheckBox"
@@ -197,6 +205,7 @@
         },
         "connlimit_above_not": {
           "key": "connlimit_above_not",
+          "label": "Negate",
           "type": "bool",
           "widget": "ipt_connlimit_above_not",
           "widget_class": "QCheckBox"
@@ -221,6 +230,7 @@
         },
         "disable_logging_for_this_rule": {
           "key": "disable_logging_for_this_rule",
+          "label": "completely disable logging for this rule",
           "type": "bool",
           "widget": "pix_disable_rule_log",
           "widget_class": "QCheckBox"
@@ -244,6 +254,7 @@
         },
         "hashlimit_dstlimit": {
           "key": "hashlimit_dstlimit",
+          "label": "On some older systems this module has name 'dstlimit'. Check here if you need to use this name.",
           "type": "bool",
           "widget": "ipt_hashlimit_dstlimit",
           "widget_class": "QCheckBox"
@@ -268,24 +279,28 @@
         },
         "hashlimit_mode_dstip": {
           "key": "hashlimit_mode_dstip",
+          "label": "dstip",
           "type": "bool",
           "widget": "cb_dstip",
           "widget_class": "QCheckBox"
         },
         "hashlimit_mode_dstport": {
           "key": "hashlimit_mode_dstport",
+          "label": "dstport",
           "type": "bool",
           "widget": "cb_dstport",
           "widget_class": "QCheckBox"
         },
         "hashlimit_mode_srcip": {
           "key": "hashlimit_mode_srcip",
+          "label": "srcip",
           "type": "bool",
           "widget": "cb_srcip",
           "widget_class": "QCheckBox"
         },
         "hashlimit_mode_srcport": {
           "key": "hashlimit_mode_srcport",
+          "label": "srcport",
           "type": "bool",
           "widget": "cb_srcport",
           "widget_class": "QCheckBox"
@@ -322,12 +337,14 @@
         },
         "iosacl_add_mirror_rule": {
           "key": "iosacl_add_mirror_rule",
+          "label": "Add mirror rule",
           "type": "bool",
           "widget": "iosacl_add_mirror_rule",
           "widget_class": "QCheckBox"
         },
         "ipf_keep_frags": {
           "key": "ipf_keep_frags",
+          "label": "Keep information on fragmented packets, to be applied to later fragments",
           "type": "bool",
           "widget": "ipf_keep_frags",
           "widget_class": "QCheckBox"
@@ -340,6 +357,7 @@
         },
         "ipf_return_icmp_as_dest": {
           "key": "ipf_return_icmp_as_dest",
+          "label": "Send ICMP 'unreachable' packet masquerading as being from the original destination",
           "type": "bool",
           "widget": "ipf_masq_icmp",
           "widget_class": "QCheckBox"
@@ -387,6 +405,7 @@
         },
         "ipt_continue": {
           "key": "ipt_continue",
+          "label": "Continue packet inspection",
           "type": "bool",
           "widget": "ipt_continue",
           "widget_class": "QCheckBox"
@@ -405,6 +424,7 @@
         },
         "ipt_mark_connections": {
           "key": "ipt_mark_connections",
+          "label": "Tag connections created by packets that match this rule  (adds a rule with CONNMARK target)",
           "type": "bool",
           "widget": "ipt_mark_connections",
           "widget_class": "QCheckBox"
@@ -417,6 +437,7 @@
         },
         "ipt_tee": {
           "key": "ipt_tee",
+          "label": "Make a copy",
           "type": "bool",
           "widget": "ipt_tee",
           "widget_class": "QCheckBox"
@@ -447,6 +468,7 @@
         },
         "limit_value_not": {
           "key": "limit_value_not",
+          "label": "Negate",
           "type": "bool",
           "widget": "ipt_limit_not",
           "widget_class": "QCheckBox"
@@ -487,12 +509,14 @@
         },
         "pf_fastroute": {
           "key": "pf_fastroute",
+          "label": "Fastroute",
           "type": "bool",
           "widget": "pf_fastroute",
           "widget_class": "QCheckBox"
         },
         "pf_keep_state": {
           "key": "pf_keep_state",
+          "label": "Force \"keep state\" to make the rule stateful regardless of the default.",
           "type": "bool",
           "widget": "pf_keep_state",
           "widget_class": "QCheckBox"
@@ -505,12 +529,14 @@
         },
         "pf_max_src_conn_flush": {
           "key": "pf_max_src_conn_flush",
+          "label": "flush",
           "type": "bool",
           "widget": "pf_flush",
           "widget_class": "QCheckBox"
         },
         "pf_max_src_conn_global": {
           "key": "pf_max_src_conn_global",
+          "label": "global",
           "type": "bool",
           "widget": "pf_global",
           "widget_class": "QCheckBox"
@@ -547,18 +573,21 @@
         },
         "pf_modulate_state": {
           "key": "pf_modulate_state",
+          "label": "Modulate state",
           "type": "bool",
           "widget": "pf_modulate",
           "widget_class": "QCheckBox"
         },
         "pf_no_sync": {
           "key": "pf_no_sync",
+          "label": "Prevent state changes for states created by this rule from appearing on the pfsync interface.",
           "type": "bool",
           "widget": "pf_no_sync",
           "widget_class": "QCheckBox"
         },
         "pf_pflow": {
           "key": "pf_pflow",
+          "label": "States created by this rule are exported on the pflow interface.",
           "type": "bool",
           "widget": "pf_pflow",
           "widget_class": "QCheckBox"
@@ -608,24 +637,28 @@
         },
         "pf_sloppy_tracker": {
           "key": "pf_sloppy_tracker",
+          "label": "Use sloppy TCP state tracker for this rule",
           "type": "bool",
           "widget": "pf_sloppy_tracker",
           "widget_class": "QCheckBox"
         },
         "pf_source_tracking": {
           "key": "pf_source_tracking",
+          "label": "Activate source tracking.",
           "type": "bool",
           "widget": "pf_source_tracking",
           "widget_class": "QCheckBox"
         },
         "pf_synproxy": {
           "key": "pf_synproxy",
+          "label": "synproxy",
           "type": "bool",
           "widget": "pf_synproxy",
           "widget_class": "QCheckBox"
         },
         "stateless": {
           "key": "stateless",
+          "label": "Stateless rule",
           "type": "bool",
           "widget": "ipfw_stateless",
           "widget_class": "QCheckBox"
@@ -723,12 +756,14 @@
       "fields": {
         "enable_stp": {
           "key": "enable_stp",
+          "label": "Enable STP",
           "type": "bool",
           "widget": "enable_stp",
           "widget_class": "QCheckBox"
         },
         "iface_configure_mtu": {
           "key": "iface_configure_mtu",
+          "label": "Set MTU to",
           "type": "bool",
           "widget": "iface_configure_mtu",
           "widget_class": "QCheckBox"
@@ -888,12 +923,14 @@
       "fields": {
         "ios_ip_address": {
           "key": "ios_ip_address",
+          "label": "Generate commands to configure addresses for interfaces",
           "type": "bool",
           "widget": "ios_ip_address",
           "widget_class": "QCheckBox"
         },
         "ios_set_host_name": {
           "key": "ios_set_host_name",
+          "label": "Set router name using object's name",
           "type": "bool",
           "widget": "ios_set_host_name",
           "widget_class": "QCheckBox"
@@ -928,6 +965,7 @@
         },
         "check_shading": {
           "key": "check_shading",
+          "label": "Detect rule shadowing in the policy",
           "type": "bool",
           "widget": "iosacl_check_shadowing",
           "widget_class": "QCheckBox"
@@ -946,6 +984,7 @@
         },
         "ignore_empty_groups": {
           "key": "ignore_empty_groups",
+          "label": "Ignore empty groups in rules",
           "type": "bool",
           "widget": "iosacl_ignore_empty_groups",
           "widget_class": "QCheckBox"
@@ -958,18 +997,21 @@
         },
         "iosacl_acl_basic": {
           "key": "iosacl_acl_basic",
+          "label": "Clear all access lists then install new ones. This method may interrupt access to the firewall if you manage it remotely via IPSEC tunnel. This is the way access lists were generated in older versions of Firewall Builder for IOSACL.",
           "type": "string",
           "widget": "iosacl_acl_basic",
           "widget_class": "QRadioButton"
         },
         "iosacl_acl_no_clear": {
           "key": "iosacl_acl_no_clear",
+          "label": "Do not clear access lists and object group, just generate IOSACL commands for the new ones. Use this option if you have your own policy installation scripts.",
           "type": "string",
           "widget": "iosacl_acl_no_clear",
           "widget_class": "QRadioButton"
         },
         "iosacl_acl_substitution": {
           "key": "iosacl_acl_substitution",
+          "label": "\"Safety net\" method:\n\nFirst, create temporary access list to permit connections from the management subnet specified below to the firewall and assign it to outside interface. This temporary ACL helps maintain session between management station and the firewall while access lists are reloaded in case connection comes over IPSEC tunnel. Then clear permanent lists, recreate them and assign to interfaces. This method ensures that remote access to the firewall is maintained without interruption  at a cost of slightly larger configuration.",
           "type": "string",
           "widget": "iosacl_acl_substitution",
           "widget_class": "QRadioButton"
@@ -988,18 +1030,21 @@
         },
         "iosacl_generate_logging_commands": {
           "key": "iosacl_generate_logging_commands",
+          "label": "Generate logging commands",
           "type": "bool",
           "widget": "generate_logging_commands",
           "widget_class": "QCheckBox"
         },
         "iosacl_include_comments": {
           "key": "iosacl_include_comments",
+          "label": "Comment the code",
           "type": "bool",
           "widget": "iosacl_include_comments",
           "widget_class": "QCheckBox"
         },
         "iosacl_logging_buffered": {
           "key": "iosacl_logging_buffered",
+          "label": "Internal buffer",
           "type": "bool",
           "widget": "logging_buffered",
           "widget_class": "QCheckBox"
@@ -1012,6 +1057,7 @@
         },
         "iosacl_logging_console": {
           "key": "iosacl_logging_console",
+          "label": "Console",
           "type": "bool",
           "widget": "logging_console",
           "widget_class": "QCheckBox"
@@ -1024,6 +1070,7 @@
         },
         "iosacl_logging_timestamp": {
           "key": "iosacl_logging_timestamp",
+          "label": "Enable logging timestamps on syslog file",
           "type": "bool",
           "widget": "logging_timestamp",
           "widget_class": "QCheckBox"
@@ -1042,6 +1089,7 @@
         },
         "iosacl_regroup_commands": {
           "key": "iosacl_regroup_commands",
+          "label": "Group similar commands together",
           "type": "bool",
           "widget": "iosacl_regroup_commands",
           "widget_class": "QCheckBox"
@@ -1060,12 +1108,14 @@
         },
         "iosacl_use_acl_remarks": {
           "key": "iosacl_use_acl_remarks",
+          "label": "Use ACL remarks",
           "type": "bool",
           "widget": "iosacl_use_acl_remarks",
           "widget_class": "QCheckBox"
         },
         "iosacl_use_object_groups": {
           "key": "iosacl_use_object_groups",
+          "label": "Use object-group statements (requires IOS v12.4(20)T and later)",
           "type": "bool",
           "widget": "iosacl_use_object_groups",
           "widget_class": "QCheckBox"
@@ -1078,6 +1128,7 @@
         },
         "mgmt_ssh": {
           "key": "mgmt_ssh",
+          "label": "Always permit ssh access from the management workstation with this address:",
           "type": "bool",
           "widget": "mgmt_ssh",
           "widget_class": "QCheckBox"
@@ -1102,6 +1153,7 @@
         },
         "use_scp": {
           "key": "use_scp",
+          "label": "Copy generated configuration file to the router using scp",
           "type": "bool",
           "widget": "use_scp",
           "widget_class": "QCheckBox"
@@ -1174,6 +1226,7 @@
       "fields": {
         "accept_new_tcp_with_no_syn": {
           "key": "accept_new_tcp_with_no_syn",
+          "label": "Accept TCP sessions opened prior to firewall restart",
           "type": "bool",
           "widget": "acceptSessions",
           "widget_class": "QCheckBox"
@@ -1204,12 +1257,14 @@
         },
         "bridging_fw": {
           "key": "bridging_fw",
+          "label": "Bridging firewall",
           "type": "bool",
           "widget": "bridge",
           "widget_class": "QCheckBox"
         },
         "check_shading": {
           "key": "check_shading",
+          "label": "Detect shadowing in policy rules",
           "type": "bool",
           "widget": "shadowing",
           "widget_class": "QCheckBox"
@@ -1228,6 +1283,7 @@
         },
         "debug": {
           "key": "debug",
+          "label": "Turn debugging on in generated script",
           "type": "bool",
           "widget": "iptDebug",
           "widget_class": "QCheckBox"
@@ -1246,12 +1302,14 @@
         },
         "firewall_is_part_of_any_and_networks": {
           "key": "firewall_is_part_of_any_and_networks",
+          "label": "Assume firewall is part of 'any'",
           "type": "bool",
           "widget": "assumeFwIsPartOfAny",
           "widget_class": "QCheckBox"
         },
         "ignore_empty_groups": {
           "key": "ignore_empty_groups",
+          "label": "Ignore empty groups in rules",
           "type": "bool",
           "widget": "emptyGroups",
           "widget_class": "QCheckBox"
@@ -1270,18 +1328,21 @@
         },
         "local_nat": {
           "key": "local_nat",
+          "label": "Enable support for NAT of locally originated connections",
           "type": "bool",
           "widget": "localNAT",
           "widget_class": "QCheckBox"
         },
         "log_all": {
           "key": "log_all",
+          "label": "Activate logging in all rules\n(overrides rule options, use for debugging)",
           "type": "bool",
           "widget": "logAll",
           "widget_class": "QCheckBox"
         },
         "log_ip_opt": {
           "key": "log_ip_opt",
+          "label": "log IP options",
           "type": "bool",
           "widget": "logIPopt",
           "widget_class": "QCheckBox"
@@ -1310,12 +1371,14 @@
         },
         "log_tcp_opt": {
           "key": "log_tcp_opt",
+          "label": "log TCP options",
           "type": "bool",
           "widget": "logTCPopt",
           "widget_class": "QCheckBox"
         },
         "log_tcp_seq": {
           "key": "log_tcp_seq",
+          "label": "log TCP seq. numbers",
           "type": "bool",
           "widget": "logTCPseq",
           "widget_class": "QCheckBox"
@@ -1328,6 +1391,7 @@
         },
         "mgmt_ssh": {
           "key": "mgmt_ssh",
+          "label": "Always permit ssh access from\nthe management workstation\nwith this address:",
           "type": "bool",
           "widget": "mgmt_ssh",
           "widget_class": "QCheckBox"
@@ -1382,12 +1446,14 @@
         },
         "use_numeric_log_levels": {
           "key": "use_numeric_log_levels",
+          "label": "use numeric syslog levels",
           "type": "bool",
           "widget": "logNumsyslog",
           "widget_class": "QCheckBox"
         },
         "verify_interfaces": {
           "key": "verify_interfaces",
+          "label": "Verify interfaces before loading firewall policy",
           "type": "bool",
           "widget": "verifyInterfaces",
           "widget_class": "QCheckBox"
@@ -1775,6 +1841,7 @@
       "fields": {
         "accept_new_tcp_with_no_syn": {
           "key": "accept_new_tcp_with_no_syn",
+          "label": "Accept TCP sessions opened prior to firewall restart",
           "type": "bool",
           "widget": "ipf_accept_new_tcp_with_no_syn",
           "widget_class": "QCheckBox"
@@ -1805,6 +1872,7 @@
         },
         "check_shading": {
           "key": "check_shading",
+          "label": "Detect rule shadowing in policy",
           "type": "bool",
           "widget": "ipf_check_shadowing",
           "widget_class": "QCheckBox"
@@ -1823,24 +1891,28 @@
         },
         "configure_interfaces": {
           "key": "configure_interfaces",
+          "label": "Configure Interfaces of the firewall machine",
           "type": "bool",
           "widget": "ipf_configure_interfaces",
           "widget_class": "QCheckBox"
         },
         "debug": {
           "key": "debug",
+          "label": "Turn debugging on in generated script",
           "type": "bool",
           "widget": "ipf_debug",
           "widget_class": "QCheckBox"
         },
         "dynAddr": {
           "key": "dynAddr",
+          "label": "Determine addresses of dynamic interfaces at run time",
           "type": "bool",
           "widget": "ipf_dynAddr",
           "widget_class": "QCheckBox"
         },
         "eliminate_duplicates": {
           "key": "eliminate_duplicates",
+          "label": "Find and eliminate duplicate rules",
           "type": "bool",
           "widget": "ipf_eliminate_duplicates",
           "widget_class": "QCheckBox"
@@ -1859,6 +1931,7 @@
         },
         "ignore_empty_groups": {
           "key": "ignore_empty_groups",
+          "label": "Ignore empty groups in rules",
           "type": "bool",
           "widget": "ipf_ignore_empty_groups",
           "widget_class": "QCheckBox"
@@ -1871,6 +1944,7 @@
         },
         "ipf_log_body": {
           "key": "ipf_log_body",
+          "label": "Log packet body",
           "type": "bool",
           "widget": "ipf_log_body",
           "widget_class": "QCheckBox"
@@ -1889,72 +1963,84 @@
         },
         "ipf_log_or_block": {
           "key": "ipf_log_or_block",
+          "label": "Block if can not log",
           "type": "bool",
           "widget": "ipf_log_or_block",
           "widget_class": "QCheckBox"
         },
         "ipf_nat_ekshell_proxy": {
           "key": "ipf_nat_ekshell_proxy",
+          "label": "Use Kerberos ekshell proxy in NAT rules",
           "type": "bool",
           "widget": "ipf_nat_ekshell_proxy",
           "widget_class": "QCheckBox"
         },
         "ipf_nat_ftp_proxy": {
           "key": "ipf_nat_ftp_proxy",
+          "label": "Use ftp proxy in NAT rules",
           "type": "bool",
           "widget": "ipf_nat_ftp_proxy",
           "widget_class": "QCheckBox"
         },
         "ipf_nat_h323_proxy": {
           "key": "ipf_nat_h323_proxy",
+          "label": "Use h323 proxy in NAT rules",
           "type": "bool",
           "widget": "ipf_nat_h323_proxy",
           "widget_class": "QCheckBox"
         },
         "ipf_nat_ipsec_proxy": {
           "key": "ipf_nat_ipsec_proxy",
+          "label": "Use ipsec proxy in NAT rules",
           "type": "bool",
           "widget": "ipf_nat_ipsec_proxy",
           "widget_class": "QCheckBox"
         },
         "ipf_nat_irc_proxy": {
           "key": "ipf_nat_irc_proxy",
+          "label": "Use IRC proxy in NAT rules for DCC",
           "type": "bool",
           "widget": "ipf_nat_irc_proxy",
           "widget_class": "QCheckBox"
         },
         "ipf_nat_krcmd_proxy": {
           "key": "ipf_nat_krcmd_proxy",
+          "label": "Use Kerberos rcmd proxy in NAT rules",
           "type": "bool",
           "widget": "ipf_nat_krcmd_proxy",
           "widget_class": "QCheckBox"
         },
         "ipf_nat_pptp_proxy": {
           "key": "ipf_nat_pptp_proxy",
+          "label": "Use PPTP proxy in NAT rules",
           "type": "bool",
           "widget": "ipf_nat_pptp_proxy",
           "widget_class": "QCheckBox"
         },
         "ipf_nat_raudio_proxy": {
           "key": "ipf_nat_raudio_proxy",
+          "label": "Use raudio proxy in NAT rules",
           "type": "bool",
           "widget": "ipf_nat_raudio_proxy",
           "widget_class": "QCheckBox"
         },
         "ipf_nat_rcmd_proxy": {
           "key": "ipf_nat_rcmd_proxy",
+          "label": "Use rcmd proxy in NAT rules",
           "type": "bool",
           "widget": "ipf_nat_rcmd_proxy",
           "widget_class": "QCheckBox"
         },
         "ipf_return_icmp_as_dest": {
           "key": "ipf_return_icmp_as_dest",
+          "label": "Masquerade returned icmp as being from original\npacket's destination",
           "type": "bool",
           "widget": "ipf_return_icmp_as_dest",
           "widget_class": "QCheckBox"
         },
         "manage_virtual_addr": {
           "key": "manage_virtual_addr",
+          "label": "Add virtual addresses for NAT",
           "type": "bool",
           "widget": "ipf_manage_virtual_addr",
           "widget_class": "QCheckBox"
@@ -1967,6 +2053,7 @@
         },
         "mgmt_ssh": {
           "key": "mgmt_ssh",
+          "label": "Always permit ssh access from the management\n workstation with this address:",
           "type": "bool",
           "widget": "mgmt_ssh",
           "widget_class": "QCheckBox"
@@ -1979,6 +2066,7 @@
         },
         "optimize": {
           "key": "optimize",
+          "label": "Optimization",
           "type": "bool",
           "widget": "ipf_optimize",
           "widget_class": "QCheckBox"
@@ -2105,6 +2193,7 @@
         },
         "add_check_state_rule": {
           "key": "add_check_state_rule",
+          "label": "Add rule to accept packets matching dynamic rules created for\nknown sessions on top of the policy (action 'check-state')",
           "type": "bool",
           "widget": "ipfw_add_check_state_rule",
           "widget_class": "QCheckBox"
@@ -2123,6 +2212,7 @@
         },
         "check_shading": {
           "key": "check_shading",
+          "label": "Detect rule shadowing in policy",
           "type": "bool",
           "widget": "ipfw_check_shadowing",
           "widget_class": "QCheckBox"
@@ -2141,12 +2231,14 @@
         },
         "configure_interfaces": {
           "key": "configure_interfaces",
+          "label": "Configure Interfaces of the firewall machine",
           "type": "bool",
           "widget": "ipfw_configure_interfaces",
           "widget_class": "QCheckBox"
         },
         "debug": {
           "key": "debug",
+          "label": "Turn debugging on in generated script",
           "type": "bool",
           "widget": "ipfw_debug",
           "widget_class": "QCheckBox"
@@ -2165,12 +2257,14 @@
         },
         "ignore_empty_groups": {
           "key": "ignore_empty_groups",
+          "label": "Ignore empty groups in rules",
           "type": "bool",
           "widget": "ipfw_ignore_empty_groups",
           "widget_class": "QCheckBox"
         },
         "manage_virtual_addr": {
           "key": "manage_virtual_addr",
+          "label": "Add virtual addresses for NAT",
           "type": "bool",
           "widget": "ipfw_manage_virtual_addr",
           "widget_class": "QCheckBox"
@@ -2183,6 +2277,7 @@
         },
         "mgmt_ssh": {
           "key": "mgmt_ssh",
+          "label": "Always permit ssh access from the management workstation with this address:",
           "type": "bool",
           "widget": "mgmt_ssh",
           "widget_class": "QCheckBox"
@@ -2271,12 +2366,14 @@
       "fields": {
         "accept_established": {
           "key": "accept_established",
+          "label": "Accept ESTABLISHED and RELATED packets before the first rule",
           "type": "bool",
           "widget": "acceptESTBeforeFirst",
           "widget_class": "QCheckBox"
         },
         "accept_new_tcp_with_no_syn": {
           "key": "accept_new_tcp_with_no_syn",
+          "label": "Accept TCP sessions opened prior to firewall restart",
           "type": "bool",
           "widget": "acceptSessions",
           "widget_class": "QCheckBox"
@@ -2295,12 +2392,14 @@
         },
         "add_mgmt_ssh_rule_when_stoped": {
           "key": "add_mgmt_ssh_rule_when_stoped",
+          "label": "Install the rule for ssh access from the management workstation when the firewall script is run with the \"block\" command",
           "type": "bool",
           "widget": "add_mgmt_ssh_rule_when_stoped",
           "widget_class": "QCheckBox"
         },
         "add_rules_for_ipv6_neighbor_discovery": {
           "key": "add_rules_for_ipv6_neighbor_discovery",
+          "label": "Add rules to accept IPv6 Neighbor Discovery\npackets to IPv6 policies",
           "type": "bool",
           "widget": "ipv6NeighborDiscovery",
           "widget_class": "QCheckBox"
@@ -2319,24 +2418,28 @@
         },
         "bridging_fw": {
           "key": "bridging_fw",
+          "label": "Bridging firewall",
           "type": "bool",
           "widget": "bridge",
           "widget_class": "QCheckBox"
         },
         "check_shading": {
           "key": "check_shading",
+          "label": "Detect shadowing in policy rules",
           "type": "bool",
           "widget": "shadowing",
           "widget_class": "QCheckBox"
         },
         "clamp_mss_to_mtu": {
           "key": "clamp_mss_to_mtu",
+          "label": "Clamp MSS to MTU",
           "type": "bool",
           "widget": "clampMSStoMTU",
           "widget_class": "QCheckBox"
         },
         "clear_unknown_interfaces": {
           "key": "clear_unknown_interfaces",
+          "label": "Clear ip addresses and bring down interfaces not configured in fwbuilder",
           "type": "bool",
           "widget": "clearUnknownInterfaces",
           "widget_class": "QCheckBox"
@@ -2355,36 +2458,42 @@
         },
         "configure_bonding_interfaces": {
           "key": "configure_bonding_interfaces",
+          "label": "Configure bonding Interfaces",
           "type": "bool",
           "widget": "configure_bonding_interfaces",
           "widget_class": "QCheckBox"
         },
         "configure_bridge_interfaces": {
           "key": "configure_bridge_interfaces",
+          "label": "Configure bridge Interfaces",
           "type": "bool",
           "widget": "configure_bridge_interfaces",
           "widget_class": "QCheckBox"
         },
         "configure_interfaces": {
           "key": "configure_interfaces",
+          "label": "Configure Interfaces of the firewall machine",
           "type": "bool",
           "widget": "configureInterfaces",
           "widget_class": "QCheckBox"
         },
         "configure_vlan_interfaces": {
           "key": "configure_vlan_interfaces",
+          "label": "Configure VLAN Interfaces",
           "type": "bool",
           "widget": "configure_vlan_interfaces",
           "widget_class": "QCheckBox"
         },
         "debug": {
           "key": "debug",
+          "label": "Turn debugging on in generated script",
           "type": "bool",
           "widget": "iptDebug",
           "widget_class": "QCheckBox"
         },
         "drop_invalid": {
           "key": "drop_invalid",
+          "label": "Drop packets that are associated with\nno known connection",
           "type": "bool",
           "widget": "dropInvalid",
           "widget_class": "QCheckBox"
@@ -2403,6 +2512,7 @@
         },
         "firewall_is_part_of_any_and_networks": {
           "key": "firewall_is_part_of_any_and_networks",
+          "label": "Assume firewall is part of 'any'",
           "type": "bool",
           "widget": "assumeFwIsPartOfAny",
           "widget_class": "QCheckBox"
@@ -2415,6 +2525,7 @@
         },
         "ignore_empty_groups": {
           "key": "ignore_empty_groups",
+          "label": "Ignore empty groups in rules",
           "type": "bool",
           "widget": "emptyGroups",
           "widget_class": "QCheckBox"
@@ -2433,30 +2544,35 @@
         },
         "load_modules": {
           "key": "load_modules",
+          "label": "Load iptables modules",
           "type": "bool",
           "widget": "loadModules",
           "widget_class": "QCheckBox"
         },
         "local_nat": {
           "key": "local_nat",
+          "label": "Enable support for NAT of locally originated connections",
           "type": "bool",
           "widget": "localNAT",
           "widget_class": "QCheckBox"
         },
         "log_all": {
           "key": "log_all",
+          "label": "Activate logging in all rules\n(overrides rule options, use for debugging)",
           "type": "bool",
           "widget": "logAll",
           "widget_class": "QCheckBox"
         },
         "log_invalid": {
           "key": "log_invalid",
+          "label": "and log them",
           "type": "bool",
           "widget": "logInvalid",
           "widget_class": "QCheckBox"
         },
         "log_ip_opt": {
           "key": "log_ip_opt",
+          "label": "log IP options",
           "type": "bool",
           "widget": "logIPopt",
           "widget_class": "QCheckBox"
@@ -2485,18 +2601,21 @@
         },
         "log_tcp_opt": {
           "key": "log_tcp_opt",
+          "label": "log TCP options",
           "type": "bool",
           "widget": "logTCPopt",
           "widget_class": "QCheckBox"
         },
         "log_tcp_seq": {
           "key": "log_tcp_seq",
+          "label": "log TCP seq. numbers",
           "type": "bool",
           "widget": "logTCPseq",
           "widget_class": "QCheckBox"
         },
         "manage_virtual_addr": {
           "key": "manage_virtual_addr",
+          "label": "Add virtual addresses for NAT",
           "type": "bool",
           "widget": "addVirtualsforNAT",
           "widget_class": "QCheckBox"
@@ -2509,6 +2628,7 @@
         },
         "mgmt_ssh": {
           "key": "mgmt_ssh",
+          "label": "Always permit ssh access from the management workstation with this address:",
           "type": "bool",
           "widget": "mgmt_ssh",
           "widget_class": "QCheckBox"
@@ -2580,30 +2700,35 @@
         },
         "use_iptables_restore": {
           "key": "use_iptables_restore",
+          "label": "Use iptables-restore to activate policy",
           "type": "bool",
           "widget": "iptablesRestoreActivation",
           "widget_class": "QCheckBox"
         },
         "use_kerneltz": {
           "key": "use_kerneltz",
+          "label": "Use kernel timezone instead of UTC (only available in iptables v 1.4.11 and later)",
           "type": "bool",
           "widget": "useKernelTz",
           "widget_class": "QCheckBox"
         },
         "use_m_set": {
           "key": "use_m_set",
+          "label": "Use module \"set\" for run-time Address Table objects (module is only available in iptables v 1.4.1.1 and later)",
           "type": "bool",
           "widget": "useModuleSet",
           "widget_class": "QCheckBox"
         },
         "use_numeric_log_levels": {
           "key": "use_numeric_log_levels",
+          "label": "use numeric syslog levels",
           "type": "bool",
           "widget": "logNumsyslog",
           "widget_class": "QCheckBox"
         },
         "verify_interfaces": {
           "key": "verify_interfaces",
+          "label": "Verify interfaces before loading firewall policy",
           "type": "bool",
           "widget": "verifyInterfaces",
           "widget_class": "QCheckBox"
@@ -2701,12 +2826,14 @@
       "fields": {
         "junos_ip_address": {
           "key": "junos_ip_address",
+          "label": "Generate commands to configure addresses for interfaces",
           "type": "bool",
           "widget": "junos_ip_address",
           "widget_class": "QCheckBox"
         },
         "junos_set_host_name": {
           "key": "junos_set_host_name",
+          "label": "Set router name using object's name",
           "type": "bool",
           "widget": "junos_set_host_name",
           "widget_class": "QCheckBox"
@@ -2741,6 +2868,7 @@
         },
         "check_shading": {
           "key": "check_shading",
+          "label": "Detect rule shadowing in the policy",
           "type": "bool",
           "widget": "junosacl_check_shadowing",
           "widget_class": "QCheckBox"
@@ -2765,6 +2893,7 @@
         },
         "ignore_empty_groups": {
           "key": "ignore_empty_groups",
+          "label": "Ignore empty groups in rules",
           "type": "bool",
           "widget": "junosacl_ignore_empty_groups",
           "widget_class": "QCheckBox"
@@ -2783,18 +2912,21 @@
         },
         "junosacl_generate_logging_commands": {
           "key": "junosacl_generate_logging_commands",
+          "label": "Generate logging commands",
           "type": "bool",
           "widget": "generate_logging_commands",
           "widget_class": "QCheckBox"
         },
         "junosacl_include_comments": {
           "key": "junosacl_include_comments",
+          "label": "Comment the code",
           "type": "bool",
           "widget": "junosacl_include_comments",
           "widget_class": "QCheckBox"
         },
         "junosacl_logging_buffered": {
           "key": "junosacl_logging_buffered",
+          "label": "Internal buffer",
           "type": "bool",
           "widget": "logging_buffered",
           "widget_class": "QCheckBox"
@@ -2807,6 +2939,7 @@
         },
         "junosacl_logging_console": {
           "key": "junosacl_logging_console",
+          "label": "Console",
           "type": "bool",
           "widget": "logging_console",
           "widget_class": "QCheckBox"
@@ -2819,6 +2952,7 @@
         },
         "junosacl_logging_timestamp": {
           "key": "junosacl_logging_timestamp",
+          "label": "Enable logging timestamps on syslog file",
           "type": "bool",
           "widget": "logging_timestamp",
           "widget_class": "QCheckBox"
@@ -2879,6 +3013,7 @@
         },
         "use_scp": {
           "key": "use_scp",
+          "label": "Copy generated configuration file to the router using scp",
           "type": "bool",
           "widget": "use_scp",
           "widget_class": "QCheckBox"
@@ -3418,6 +3553,7 @@
         },
         "enable_stp": {
           "key": "enable_stp",
+          "label": "Enable STP",
           "type": "bool",
           "widget": "enable_stp",
           "widget_class": "QCheckBox"
@@ -3529,12 +3665,14 @@
       "fields": {
         "nxos_ip_address": {
           "key": "nxos_ip_address",
+          "label": "Generate commands to configure addresses for interfaces",
           "type": "bool",
           "widget": "nxos_ip_address",
           "widget_class": "QCheckBox"
         },
         "nxos_set_host_name": {
           "key": "nxos_set_host_name",
+          "label": "Set router name using object's name",
           "type": "bool",
           "widget": "nxos_set_host_name",
           "widget_class": "QCheckBox"
@@ -3569,6 +3707,7 @@
         },
         "check_shading": {
           "key": "check_shading",
+          "label": "Detect rule shadowing in the policy",
           "type": "bool",
           "widget": "nxosacl_check_shadowing",
           "widget_class": "QCheckBox"
@@ -3587,6 +3726,7 @@
         },
         "ignore_empty_groups": {
           "key": "ignore_empty_groups",
+          "label": "Ignore empty groups in rules",
           "type": "bool",
           "widget": "nxosacl_ignore_empty_groups",
           "widget_class": "QCheckBox"
@@ -3599,6 +3739,7 @@
         },
         "mgmt_ssh": {
           "key": "mgmt_ssh",
+          "label": "Always permit ssh access from the management workstation with this address:",
           "type": "bool",
           "widget": "mgmt_ssh",
           "widget_class": "QCheckBox"
@@ -3611,18 +3752,21 @@
         },
         "nxosacl_acl_basic": {
           "key": "nxosacl_acl_basic",
+          "label": "Clear all access lists then install new ones. This method may interrupt access to the firewall if you manage it remotely via IPSEC tunnel. This is the way access lists were generated in older versions of Firewall Builder for NX-OSACL.",
           "type": "string",
           "widget": "nxosacl_acl_basic",
           "widget_class": "QRadioButton"
         },
         "nxosacl_acl_no_clear": {
           "key": "nxosacl_acl_no_clear",
+          "label": "Do not clear access lists and object group, just generate NX-OSACL commands for the new ones. Use this option if you have your own policy installation scripts.",
           "type": "string",
           "widget": "nxosacl_acl_no_clear",
           "widget_class": "QRadioButton"
         },
         "nxosacl_acl_substitution": {
           "key": "nxosacl_acl_substitution",
+          "label": "\"Safety net\" method:\n\nFirst, create temporary access list to permit connections from the management subnet specified below to the firewall and assign it to outside interface. This temporary ACL helps maintain session between management station and the firewall while access lists are reloaded in case connection comes over IPSEC tunnel. Then clear permanent lists, recreate them and assign to interfaces. This method ensures that remote access to the firewall is maintained without interruption  at a cost of slightly larger configuration.",
           "type": "string",
           "widget": "nxosacl_acl_substitution",
           "widget_class": "QRadioButton"
@@ -3641,18 +3785,21 @@
         },
         "nxosacl_generate_logging_commands": {
           "key": "nxosacl_generate_logging_commands",
+          "label": "Generate logging commands",
           "type": "bool",
           "widget": "generate_logging_commands",
           "widget_class": "QCheckBox"
         },
         "nxosacl_include_comments": {
           "key": "nxosacl_include_comments",
+          "label": "Comment the code",
           "type": "bool",
           "widget": "nxosacl_include_comments",
           "widget_class": "QCheckBox"
         },
         "nxosacl_logging_buffered": {
           "key": "nxosacl_logging_buffered",
+          "label": "Internal buffer",
           "type": "bool",
           "widget": "logging_buffered",
           "widget_class": "QCheckBox"
@@ -3665,6 +3812,7 @@
         },
         "nxosacl_logging_console": {
           "key": "nxosacl_logging_console",
+          "label": "Console",
           "type": "bool",
           "widget": "logging_console",
           "widget_class": "QCheckBox"
@@ -3677,6 +3825,7 @@
         },
         "nxosacl_logging_timestamp": {
           "key": "nxosacl_logging_timestamp",
+          "label": "Enable logging timestamps on syslog file",
           "type": "bool",
           "widget": "logging_timestamp",
           "widget_class": "QCheckBox"
@@ -3695,6 +3844,7 @@
         },
         "nxosacl_regroup_commands": {
           "key": "nxosacl_regroup_commands",
+          "label": "Group similar commands together",
           "type": "bool",
           "widget": "nxosacl_regroup_commands",
           "widget_class": "QCheckBox"
@@ -3713,12 +3863,14 @@
         },
         "nxosacl_use_acl_remarks": {
           "key": "nxosacl_use_acl_remarks",
+          "label": "Use ACL remarks",
           "type": "bool",
           "widget": "nxosacl_use_acl_remarks",
           "widget_class": "QCheckBox"
         },
         "nxosacl_use_object_groups": {
           "key": "nxosacl_use_object_groups",
+          "label": "Use object-group statements (requires NX-OS v12.4(20)T and later)",
           "type": "bool",
           "widget": "nxosacl_use_object_groups",
           "widget_class": "QCheckBox"
@@ -3743,12 +3895,14 @@
         },
         "use_nxos_session": {
           "key": "use_nxos_session",
+          "label": "Use NXOS Session Manager",
           "type": "bool",
           "widget": "use_nxos_session",
           "widget_class": "QCheckBox"
         },
         "use_scp": {
           "key": "use_scp",
+          "label": "Copy generated configuration file to the router using scp",
           "type": "bool",
           "widget": "use_scp",
           "widget_class": "QCheckBox"
@@ -3929,6 +4083,7 @@
       "fields": {
         "accept_new_tcp_with_no_syn": {
           "key": "accept_new_tcp_with_no_syn",
+          "label": "Accept TCP sessions opened prior to firewall restart",
           "type": "bool",
           "widget": "pf_accept_new_tcp_with_no_syn",
           "widget_class": "QCheckBox"
@@ -3953,6 +4108,7 @@
         },
         "check_shading": {
           "key": "check_shading",
+          "label": "Detect rule shadowing",
           "type": "bool",
           "widget": "pf_check_shadowing",
           "widget_class": "QCheckBox"
@@ -3983,36 +4139,42 @@
         },
         "configure_bridge_interfaces": {
           "key": "configure_bridge_interfaces",
+          "label": "Configure bridge Interfaces",
           "type": "bool",
           "widget": "pf_configure_bridge_interfaces",
           "widget_class": "QCheckBox"
         },
         "configure_carp_interfaces": {
           "key": "configure_carp_interfaces",
+          "label": "Configure CARP Interfaces",
           "type": "bool",
           "widget": "pf_configure_carp_interfaces",
           "widget_class": "QCheckBox"
         },
         "configure_interfaces": {
           "key": "configure_interfaces",
+          "label": "Configure Interfaces of the firewall machine",
           "type": "bool",
           "widget": "pf_configure_interfaces",
           "widget_class": "QCheckBox"
         },
         "configure_pfsync_interfaces": {
           "key": "configure_pfsync_interfaces",
+          "label": "Configure pfsync Interfaces",
           "type": "bool",
           "widget": "pf_configure_pfsync_interfaces",
           "widget_class": "QCheckBox"
         },
         "configure_vlan_interfaces": {
           "key": "configure_vlan_interfaces",
+          "label": "Configure VLAN Interfaces",
           "type": "bool",
           "widget": "pf_configure_vlan_interfaces",
           "widget_class": "QCheckBox"
         },
         "debug": {
           "key": "debug",
+          "label": "Turn debugging on in generated script",
           "type": "bool",
           "widget": "pf_debug",
           "widget_class": "QCheckBox"
@@ -4025,6 +4187,7 @@
         },
         "fallback_log": {
           "key": "fallback_log",
+          "label": "Fallback \"deny all\" rule should log blocked packets",
           "type": "bool",
           "widget": "pf_fallback_log",
           "widget_class": "QCheckBox"
@@ -4049,6 +4212,7 @@
         },
         "ignore_empty_groups": {
           "key": "ignore_empty_groups",
+          "label": "Ignore empty groups",
           "type": "bool",
           "widget": "pf_ignore_empty_groups",
           "widget_class": "QCheckBox"
@@ -4061,6 +4225,7 @@
         },
         "manage_virtual_addr": {
           "key": "manage_virtual_addr",
+          "label": "Add virtual addresses for NAT",
           "type": "bool",
           "widget": "pf_manage_virtual_addr",
           "widget_class": "QCheckBox"
@@ -4073,6 +4238,7 @@
         },
         "mgmt_ssh": {
           "key": "mgmt_ssh",
+          "label": "Always permit ssh access from\nthe management workstation\nwith this address:",
           "type": "bool",
           "widget": "mgmt_ssh",
           "widget_class": "QCheckBox"
@@ -4107,54 +4273,63 @@
         },
         "pf_do_limit_frags": {
           "key": "pf_do_limit_frags",
+          "label": "reassembly pool:",
           "type": "bool",
           "widget": "pf_do_limit_frags",
           "widget_class": "QCheckBox"
         },
         "pf_do_limit_src_nodes": {
           "key": "pf_do_limit_src_nodes",
+          "label": "src-nodes",
           "type": "bool",
           "widget": "pf_do_limit_src_nodes",
           "widget_class": "QCheckBox"
         },
         "pf_do_limit_states": {
           "key": "pf_do_limit_states",
+          "label": "state table size:",
           "type": "bool",
           "widget": "pf_do_limit_states",
           "widget_class": "QCheckBox"
         },
         "pf_do_limit_table_entries": {
           "key": "pf_do_limit_table_entries",
+          "label": "table-entries",
           "type": "bool",
           "widget": "pf_do_limit_table_entries",
           "widget_class": "QCheckBox"
         },
         "pf_do_limit_tables": {
           "key": "pf_do_limit_tables",
+          "label": "tables",
           "type": "bool",
           "widget": "pf_do_limit_tables",
           "widget_class": "QCheckBox"
         },
         "pf_do_scrub": {
           "key": "pf_do_scrub",
+          "label": "Reassemble fragments",
           "type": "bool",
           "widget": "pf_do_scrub",
           "widget_class": "QCheckBox"
         },
         "pf_do_timeout_frag": {
           "key": "pf_do_timeout_frag",
+          "label": "seconds before an unassembled fragment is expired",
           "type": "bool",
           "widget": "pf_do_timeout_frag",
           "widget_class": "QCheckBox"
         },
         "pf_do_timeout_interval": {
           "key": "pf_do_timeout_interval",
+          "label": "interval between purging expired states and fragments",
           "type": "bool",
           "widget": "pf_do_timeout_interval",
           "widget_class": "QCheckBox"
         },
         "pf_flush_states": {
           "key": "pf_flush_states",
+          "label": "Flush pf states after reloading rules",
           "type": "bool",
           "widget": "pf_flush_states",
           "widget_class": "QCheckBox"
@@ -4203,6 +4378,7 @@
         },
         "pf_modulate_state": {
           "key": "pf_modulate_state",
+          "label": "Modulate state for all stateful rules (applies only to TCP services)",
           "type": "bool",
           "widget": "pf_modulate_state",
           "widget_class": "QCheckBox"
@@ -4257,12 +4433,14 @@
         },
         "pf_scrub_no_df": {
           "key": "pf_scrub_no_df",
+          "label": "Clear DF bit",
           "type": "bool",
           "widget": "pf_scrub_no_df",
           "widget_class": "QCheckBox"
         },
         "pf_scrub_random_id": {
           "key": "pf_scrub_random_id",
+          "label": "Use random ID",
           "type": "bool",
           "widget": "pf_scrub_random_id",
           "widget_class": "QCheckBox"
@@ -4281,18 +4459,21 @@
         },
         "pf_scrub_use_maxmss": {
           "key": "pf_scrub_use_maxmss",
+          "label": "Enforce Maximum MSS:",
           "type": "bool",
           "widget": "pf_scrub_use_maxmss",
           "widget_class": "QCheckBox"
         },
         "pf_scrub_use_minttl": {
           "key": "pf_scrub_use_minttl",
+          "label": "Enforce Minimum TTL:",
           "type": "bool",
           "widget": "pf_scrub_use_minttl",
           "widget_class": "QCheckBox"
         },
         "pf_set_adaptive": {
           "key": "pf_set_adaptive",
+          "label": "Activate adaptive timeout scaling",
           "type": "bool",
           "widget": "pf_set_adaptive",
           "widget_class": "QCheckBox"
@@ -4305,84 +4486,98 @@
         },
         "pf_set_icmp_error": {
           "key": "pf_set_icmp_error",
+          "label": "error",
           "type": "bool",
           "widget": "pf_set_icmp_error",
           "widget_class": "QCheckBox"
         },
         "pf_set_icmp_first": {
           "key": "pf_set_icmp_first",
+          "label": "first",
           "type": "bool",
           "widget": "pf_set_icmp_first",
           "widget_class": "QCheckBox"
         },
         "pf_set_other_first": {
           "key": "pf_set_other_first",
+          "label": "first",
           "type": "bool",
           "widget": "pf_set_other_first",
           "widget_class": "QCheckBox"
         },
         "pf_set_other_multiple": {
           "key": "pf_set_other_multiple",
+          "label": "multiple",
           "type": "bool",
           "widget": "pf_set_other_multiple",
           "widget_class": "QCheckBox"
         },
         "pf_set_other_single": {
           "key": "pf_set_other_single",
+          "label": "single",
           "type": "bool",
           "widget": "pf_set_other_single",
           "widget_class": "QCheckBox"
         },
         "pf_set_tcp_closed": {
           "key": "pf_set_tcp_closed",
+          "label": "closed",
           "type": "bool",
           "widget": "pf_set_tcp_closed",
           "widget_class": "QCheckBox"
         },
         "pf_set_tcp_closing": {
           "key": "pf_set_tcp_closing",
+          "label": "closing",
           "type": "bool",
           "widget": "pf_set_tcp_closing",
           "widget_class": "QCheckBox"
         },
         "pf_set_tcp_established": {
           "key": "pf_set_tcp_established",
+          "label": "established",
           "type": "bool",
           "widget": "pf_set_tcp_established",
           "widget_class": "QCheckBox"
         },
         "pf_set_tcp_finwait": {
           "key": "pf_set_tcp_finwait",
+          "label": "finwait",
           "type": "bool",
           "widget": "pf_set_tcp_finwait",
           "widget_class": "QCheckBox"
         },
         "pf_set_tcp_first": {
           "key": "pf_set_tcp_first",
+          "label": "first",
           "type": "bool",
           "widget": "pf_set_tcp_first",
           "widget_class": "QCheckBox"
         },
         "pf_set_tcp_opening": {
           "key": "pf_set_tcp_opening",
+          "label": "opening",
           "type": "bool",
           "widget": "pf_set_tcp_opening",
           "widget_class": "QCheckBox"
         },
         "pf_set_udp_first": {
           "key": "pf_set_udp_first",
+          "label": "first",
           "type": "bool",
           "widget": "pf_set_udp_first",
           "widget_class": "QCheckBox"
         },
         "pf_set_udp_multiple": {
           "key": "pf_set_udp_multiple",
+          "label": "multiple",
           "type": "bool",
           "widget": "pf_set_udp_multiple",
           "widget_class": "QCheckBox"
         },
         "pf_set_udp_single": {
           "key": "pf_set_udp_single",
+          "label": "single",
           "type": "bool",
           "widget": "pf_set_udp_single",
           "widget_class": "QCheckBox"
@@ -4461,6 +4656,7 @@
         },
         "preserve_group_names": {
           "key": "preserve_group_names",
+          "label": "Preserve group and address table obects names in the generated pf configuration",
           "type": "bool",
           "widget": "pf_preserve_group_names",
           "widget_class": "QCheckBox"
@@ -4657,6 +4853,7 @@
         },
         "check_shading": {
           "key": "check_shading",
+          "label": "Detect rule shadowing in the policy",
           "type": "bool",
           "widget": "pix_check_shadowing",
           "widget_class": "QCheckBox"
@@ -4729,6 +4926,7 @@
         },
         "ignore_empty_groups": {
           "key": "ignore_empty_groups",
+          "label": "Ignore empty groups in rules",
           "type": "bool",
           "widget": "pix_ignore_empty_groups",
           "widget_class": "QCheckBox"
@@ -4741,6 +4939,7 @@
         },
         "mgmt_ssh": {
           "key": "mgmt_ssh",
+          "label": "Always permit ssh access from the management workstation with this address:",
           "type": "bool",
           "widget": "mgmt_ssh",
           "widget_class": "QCheckBox"
@@ -4759,18 +4958,21 @@
         },
         "pix_acl_basic": {
           "key": "pix_acl_basic",
+          "label": "Clear all access lists then install new ones. This method may interrupt access to the firewall if you manage it remotely via IPSEC tunnel. This is the way access lists were generated in older versions of Firewall Builder for PIX.",
           "type": "string",
           "widget": "pix_acl_basic",
           "widget_class": "QRadioButton"
         },
         "pix_acl_no_clear": {
           "key": "pix_acl_no_clear",
+          "label": "Do not clear access lists and object group, just generate PIX commands for the new ones. Use this option if you have your own policy installation scripts.",
           "type": "string",
           "widget": "pix_acl_no_clear",
           "widget_class": "QRadioButton"
         },
         "pix_acl_substitution": {
           "key": "pix_acl_substitution",
+          "label": "\"Safety net\" method:\n\nFirst, create temporary access list to permit connections from the management subnet specified below to the firewall and assign it to outside interface. This temporary ACL helps maintain session between management station and the firewall while access lists are reloaded in case connection comes over IPSEC tunnel. Then clear permanent lists, recreate them and assign to interfaces. This method ensures that remote access to the firewall is maintained without interruption  at a cost of slightly larger configuration.",
           "type": "string",
           "widget": "pix_acl_substitution",
           "widget_class": "QRadioButton"
@@ -4789,54 +4991,63 @@
         },
         "pix_assume_fw_part_of_any": {
           "key": "pix_assume_fw_part_of_any",
+          "label": "Assume firewall is part of 'any'",
           "type": "bool",
           "widget": "pix_assume_fw_part_of_any",
           "widget_class": "QCheckBox"
         },
         "pix_check_duplicate_nat": {
           "key": "pix_check_duplicate_nat",
+          "label": "Check for duplicate nat rules",
           "type": "bool",
           "widget": "pix_check_duplicate_nat",
           "widget_class": "QCheckBox"
         },
         "pix_check_overlapping_global_pools": {
           "key": "pix_check_overlapping_global_pools",
+          "label": "Check for overlapping global pools",
           "type": "bool",
           "widget": "pix_check_overlapping_global_pools",
           "widget_class": "QCheckBox"
         },
         "pix_check_overlapping_global_statics": {
           "key": "pix_check_overlapping_global_statics",
+          "label": "Check for overlapping global pools and statics",
           "type": "bool",
           "widget": "pix_check_overlapping_global_statics",
           "widget_class": "QCheckBox"
         },
         "pix_check_overlapping_statics": {
           "key": "pix_check_overlapping_statics",
+          "label": "Check for overlapping statics",
           "type": "bool",
           "widget": "pix_check_overlapping_statics",
           "widget_class": "QCheckBox"
         },
         "pix_connection_timewait": {
           "key": "pix_connection_timewait",
+          "label": "Force each TCP connection to linger in a shortened TIME&WAIT",
           "type": "bool",
           "widget": "connection_timewait",
           "widget_class": "QCheckBox"
         },
         "pix_emb_limit": {
           "key": "pix_emb_limit",
+          "label": "maximum number of embryonic connections per host",
           "type": "int",
           "widget": "emb_limit",
           "widget_class": "QSpinBox"
         },
         "pix_emblem_log_format": {
           "key": "pix_emblem_log_format",
+          "label": "Use 'EMBLEM' format for syslog messages",
           "type": "bool",
           "widget": "emblem_log_format",
           "widget_class": "QCheckBox"
         },
         "pix_emulate_out_acl": {
           "key": "pix_emulate_out_acl",
+          "label": "Emulate outbound ACLs",
           "type": "bool",
           "widget": "pix_emulate_out_acl",
           "widget_class": "QCheckBox"
@@ -4849,30 +5060,35 @@
         },
         "pix_floodguard": {
           "key": "pix_floodguard",
+          "label": "Enable TCP resource control for AAA Authentication Proxy",
           "type": "bool",
           "widget": "floodguard",
           "widget_class": "QCheckBox"
         },
         "pix_fragguard": {
           "key": "pix_fragguard",
+          "label": "Enable the IP Frag Guard feature (deprecated in v6.3 and later).",
           "type": "bool",
           "widget": "fragguard",
           "widget_class": "QCheckBox"
         },
         "pix_generate_out_acl": {
           "key": "pix_generate_out_acl",
+          "label": "Generate outbound ACLs",
           "type": "bool",
           "widget": "pix_generate_out_acl",
           "widget_class": "QCheckBox"
         },
         "pix_include_comments": {
           "key": "pix_include_comments",
+          "label": "Comment the code",
           "type": "bool",
           "widget": "pix_include_comments",
           "widget_class": "QCheckBox"
         },
         "pix_logging_buffered": {
           "key": "pix_logging_buffered",
+          "label": "Internal buffer",
           "type": "bool",
           "widget": "logging_buffered",
           "widget_class": "QCheckBox"
@@ -4885,6 +5101,7 @@
         },
         "pix_logging_console": {
           "key": "pix_logging_console",
+          "label": "Console",
           "type": "bool",
           "widget": "logging_console",
           "widget_class": "QCheckBox"
@@ -4897,6 +5114,7 @@
         },
         "pix_logging_timestamp": {
           "key": "pix_logging_timestamp",
+          "label": "Enable logging timestamps on syslog file",
           "type": "bool",
           "widget": "logging_timestamp",
           "widget_class": "QCheckBox"
@@ -4909,24 +5127,28 @@
         },
         "pix_max_conns": {
           "key": "pix_max_conns",
+          "label": "maximum number of simultaneous TCP and UDP connections",
           "type": "int",
           "widget": "max_conns",
           "widget_class": "QSpinBox"
         },
         "pix_nodnsalias_inbound": {
           "key": "pix_nodnsalias_inbound",
+          "label": "Disable inbound embedded DNS A record fixups",
           "type": "bool",
           "widget": "nodnsalias_inbound",
           "widget_class": "QCheckBox"
         },
         "pix_nodnsalias_outbound": {
           "key": "pix_nodnsalias_outbound",
+          "label": "Disable outbound DNS A record replies",
           "type": "bool",
           "widget": "nodnsalias_outbound",
           "widget_class": "QCheckBox"
         },
         "pix_optimize_default_nat": {
           "key": "pix_optimize_default_nat",
+          "label": "Optimize 'default nat' rules",
           "type": "bool",
           "widget": "pix_optimize_default_nat",
           "widget_class": "QCheckBox"
@@ -4939,30 +5161,35 @@
         },
         "pix_regroup_commands": {
           "key": "pix_regroup_commands",
+          "label": "Group similar commands together",
           "type": "bool",
           "widget": "pix_regroup_commands",
           "widget_class": "QCheckBox"
         },
         "pix_replace_natted_objects": {
           "key": "pix_replace_natted_objects",
+          "label": "Replace NAT'ted objects with their translations in policy rules",
           "type": "bool",
           "widget": "pix_replace_natted_objects",
           "widget_class": "QCheckBox"
         },
         "pix_resetinbound": {
           "key": "pix_resetinbound",
+          "label": "Actively reset inbound TCP connections with RST",
           "type": "bool",
           "widget": "resetinbound",
           "widget_class": "QCheckBox"
         },
         "pix_resetoutside": {
           "key": "pix_resetoutside",
+          "label": "Actively reset inbound TCP connections with RST on outside interface",
           "type": "bool",
           "widget": "resetoutside",
           "widget_class": "QCheckBox"
         },
         "pix_route_dnat": {
           "key": "pix_route_dnat",
+          "label": "Specify that when an incoming packet does a route lookup,\nthe incoming interface is used to determine which interface\nthe packet should go to, and which is the next hop\n(deprecated in v6.3 and later).",
           "type": "bool",
           "widget": "route_dnat",
           "widget_class": "QCheckBox"
@@ -4999,12 +5226,14 @@
         },
         "pix_use_acl_remarks": {
           "key": "pix_use_acl_remarks",
+          "label": "Use ACL remarks",
           "type": "bool",
           "widget": "pix_use_acl_remarks",
           "widget_class": "QCheckBox"
         },
         "pix_use_manual_commit": {
           "key": "pix_use_manual_commit",
+          "label": "Use manual ACL commit on FWSM",
           "type": "bool",
           "widget": "pix_use_manual_commit",
           "widget_class": "QCheckBox"
@@ -5035,6 +5264,7 @@
         },
         "short_script": {
           "key": "short_script",
+          "label": "Generate only access-list, access-group, telnet, ssh, nat, global and static commands",
           "type": "bool",
           "widget": "short_script",
           "widget_class": "QCheckBox"
@@ -5047,6 +5277,7 @@
         },
         "sip_media_hh": {
           "key": "sip_media_hh",
+          "label": "sip&media",
           "type": "int",
           "widget": "sip_media_hh",
           "widget_class": "QSpinBox"
@@ -5131,6 +5362,7 @@
         },
         "use_scp": {
           "key": "use_scp",
+          "label": "Copy generated configuration file to the firewall using scp",
           "type": "bool",
           "widget": "use_scp",
           "widget_class": "QCheckBox"
@@ -5289,18 +5521,21 @@
       "fields": {
         "pix_disable_snmp_agent": {
           "key": "pix_disable_snmp_agent",
+          "label": "Disable SNMP Agent",
           "type": "bool",
           "widget": "disable_snmp_agent",
           "widget_class": "QCheckBox"
         },
         "pix_enable_snmp_traps": {
           "key": "pix_enable_snmp_traps",
+          "label": "Enable sending log messages as SNMP trap notifications",
           "type": "bool",
           "widget": "enable_traps",
           "widget_class": "QCheckBox"
         },
         "pix_ip_address": {
           "key": "pix_ip_address",
+          "label": "Generate commands to configure addresses for interfaces",
           "type": "bool",
           "widget": "pix_ip_address",
           "widget_class": "QCheckBox"
@@ -5343,12 +5578,14 @@
         },
         "pix_set_communities_from_object_data": {
           "key": "pix_set_communities_from_object_data",
+          "label": "Set SNMP communities using data from the firewall object dialog",
           "type": "bool",
           "widget": "set_communities",
           "widget_class": "QCheckBox"
         },
         "pix_set_host_name": {
           "key": "pix_set_host_name",
+          "label": "Set PIX host name using object's name",
           "type": "bool",
           "widget": "pix_set_host_name",
           "widget_class": "QCheckBox"
@@ -5389,6 +5626,7 @@
         },
         "pix_tcpmss": {
           "key": "pix_tcpmss",
+          "label": "Change TCP MSS to",
           "type": "bool",
           "widget": "tcpmss",
           "widget_class": "QCheckBox"
@@ -5480,6 +5718,7 @@
         },
         "check_shading": {
           "key": "check_shading",
+          "label": "Detect rule shadowing in the policy",
           "type": "bool",
           "widget": "procurve_acl_check_shadowing",
           "widget_class": "QCheckBox"
@@ -5498,6 +5737,7 @@
         },
         "ignore_empty_groups": {
           "key": "ignore_empty_groups",
+          "label": "Ignore empty groups in rules",
           "type": "bool",
           "widget": "procurve_acl_ignore_empty_groups",
           "widget_class": "QCheckBox"
@@ -5510,6 +5750,7 @@
         },
         "mgmt_ssh": {
           "key": "mgmt_ssh",
+          "label": "Always permit ssh access from the management workstation with this address:",
           "type": "bool",
           "widget": "mgmt_ssh",
           "widget_class": "QCheckBox"
@@ -5528,18 +5769,21 @@
         },
         "procurve_acl_acl_basic": {
           "key": "procurve_acl_acl_basic",
+          "label": "Clear all access lists then install new ones. This method may interrupt access to the firewall if you manage it remotely via tunnel.",
           "type": "string",
           "widget": "procurve_acl_acl_basic",
           "widget_class": "QRadioButton"
         },
         "procurve_acl_acl_no_clear": {
           "key": "procurve_acl_acl_no_clear",
+          "label": "Do not clear access lists, just generate commands for the new ones. Use this option if you have your own policy installation scripts.",
           "type": "string",
           "widget": "procurve_acl_acl_no_clear",
           "widget_class": "QRadioButton"
         },
         "procurve_acl_acl_substitution": {
           "key": "procurve_acl_acl_substitution",
+          "label": "\"Safety net\" method:\n\nFirst, create temporary access list to permit connections from the management subnet specified below to the firewall and assign it to outside interface. This temporary ACL helps maintain session between management station and the firewall while access lists are reloaded in case connection comes over IPSEC tunnel. Then clear permanent lists, recreate them and assign to interfaces. This method ensures that remote access to the firewall is maintained without interruption  at a cost of slightly larger configuration.",
           "type": "string",
           "widget": "procurve_acl_acl_substitution",
           "widget_class": "QRadioButton"
@@ -5558,18 +5802,21 @@
         },
         "procurve_acl_generate_logging_commands": {
           "key": "procurve_acl_generate_logging_commands",
+          "label": "Generate logging commands",
           "type": "bool",
           "widget": "generate_logging_commands",
           "widget_class": "QCheckBox"
         },
         "procurve_acl_include_comments": {
           "key": "procurve_acl_include_comments",
+          "label": "Comment the code",
           "type": "bool",
           "widget": "procurve_acl_include_comments",
           "widget_class": "QCheckBox"
         },
         "procurve_acl_logging_buffered": {
           "key": "procurve_acl_logging_buffered",
+          "label": "Internal buffer",
           "type": "bool",
           "widget": "logging_buffered",
           "widget_class": "QCheckBox"
@@ -5582,6 +5829,7 @@
         },
         "procurve_acl_logging_console": {
           "key": "procurve_acl_logging_console",
+          "label": "Console",
           "type": "bool",
           "widget": "logging_console",
           "widget_class": "QCheckBox"
@@ -5594,6 +5842,7 @@
         },
         "procurve_acl_logging_timestamp": {
           "key": "procurve_acl_logging_timestamp",
+          "label": "Enable logging timestamps on syslog file",
           "type": "bool",
           "widget": "logging_timestamp",
           "widget_class": "QCheckBox"
@@ -5624,6 +5873,7 @@
         },
         "procurve_acl_use_acl_remarks": {
           "key": "procurve_acl_use_acl_remarks",
+          "label": "Use ACL remarks",
           "type": "bool",
           "widget": "procurve_acl_use_acl_remarks",
           "widget_class": "QCheckBox"
@@ -5642,6 +5892,7 @@
         },
         "use_scp": {
           "key": "use_scp",
+          "label": "Copy generated configuration file to the router using scp",
           "type": "bool",
           "widget": "use_scp",
           "widget_class": "QCheckBox"
@@ -5712,12 +5963,14 @@
       "fields": {
         "accept_established": {
           "key": "accept_established",
+          "label": "Accept ESTABLISHED and RELATED packets before the first rule",
           "type": "bool",
           "widget": "acceptESTBeforeFirst",
           "widget_class": "QCheckBox"
         },
         "accept_new_tcp_with_no_syn": {
           "key": "accept_new_tcp_with_no_syn",
+          "label": "Accept TCP sessions opened prior to firewall restart",
           "type": "bool",
           "widget": "acceptSessions",
           "widget_class": "QCheckBox"
@@ -5736,12 +5989,14 @@
         },
         "add_mgmt_ssh_rule_when_stoped": {
           "key": "add_mgmt_ssh_rule_when_stoped",
+          "label": "Install the rule for ssh access from the management workstation when the firewall \nis stopped",
           "type": "bool",
           "widget": "add_mgmt_ssh_rule_when_stoped",
           "widget_class": "QCheckBox"
         },
         "allow_reboot": {
           "key": "allow_reboot",
+          "label": "Allow reboot to load modules (only if needed)",
           "type": "bool",
           "widget": "allowReboot",
           "widget_class": "QCheckBox"
@@ -5754,18 +6009,21 @@
         },
         "bridging_fw": {
           "key": "bridging_fw",
+          "label": "Bridging firewall",
           "type": "bool",
           "widget": "bridge",
           "widget_class": "QCheckBox"
         },
         "check_shading": {
           "key": "check_shading",
+          "label": "Detect shadowing in policy rules",
           "type": "bool",
           "widget": "shadowing",
           "widget_class": "QCheckBox"
         },
         "clamp_mss_to_mtu": {
           "key": "clamp_mss_to_mtu",
+          "label": "Clamp MSS to MTU",
           "type": "bool",
           "widget": "clampMSStoMTU",
           "widget_class": "QCheckBox"
@@ -5784,18 +6042,21 @@
         },
         "configure_interfaces": {
           "key": "configure_interfaces",
+          "label": "Configure Interfaces of the running firewall machine",
           "type": "bool",
           "widget": "configureInterfaces",
           "widget_class": "QCheckBox"
         },
         "debug": {
           "key": "debug",
+          "label": "Turn debugging on in generated script",
           "type": "bool",
           "widget": "iptDebug",
           "widget_class": "QCheckBox"
         },
         "drop_invalid": {
           "key": "drop_invalid",
+          "label": "Drop packets that are associated with\nno known connection",
           "type": "bool",
           "widget": "dropInvalid",
           "widget_class": "QCheckBox"
@@ -5808,12 +6069,14 @@
         },
         "firewall_is_part_of_any_and_networks": {
           "key": "firewall_is_part_of_any_and_networks",
+          "label": "Assume firewall is part of 'any'",
           "type": "bool",
           "widget": "assumeFwIsPartOfAny",
           "widget_class": "QCheckBox"
         },
         "ignore_empty_groups": {
           "key": "ignore_empty_groups",
+          "label": "Ignore empty groups in rules",
           "type": "bool",
           "widget": "emptyGroups",
           "widget_class": "QCheckBox"
@@ -5832,24 +6095,28 @@
         },
         "local_nat": {
           "key": "local_nat",
+          "label": "Enable support for NAT of locally originated connections",
           "type": "bool",
           "widget": "localNAT",
           "widget_class": "QCheckBox"
         },
         "log_all": {
           "key": "log_all",
+          "label": "Activate logging in all rules\n(overrides rule options, use for debugging)",
           "type": "bool",
           "widget": "logAll",
           "widget_class": "QCheckBox"
         },
         "log_invalid": {
           "key": "log_invalid",
+          "label": "and log them",
           "type": "bool",
           "widget": "logInvalid",
           "widget_class": "QCheckBox"
         },
         "log_ip_opt": {
           "key": "log_ip_opt",
+          "label": "log IP options",
           "type": "bool",
           "widget": "logIPopt",
           "widget_class": "QCheckBox"
@@ -5878,18 +6145,21 @@
         },
         "log_tcp_opt": {
           "key": "log_tcp_opt",
+          "label": "log TCP options",
           "type": "bool",
           "widget": "logTCPopt",
           "widget_class": "QCheckBox"
         },
         "log_tcp_seq": {
           "key": "log_tcp_seq",
+          "label": "log TCP seq. numbers",
           "type": "bool",
           "widget": "logTCPseq",
           "widget_class": "QCheckBox"
         },
         "manage_virtual_addr": {
           "key": "manage_virtual_addr",
+          "label": "Add virtual addresses for NAT",
           "type": "bool",
           "widget": "addVirtualsforNAT",
           "widget_class": "QCheckBox"
@@ -5902,6 +6172,7 @@
         },
         "mgmt_ssh": {
           "key": "mgmt_ssh",
+          "label": "Always permit ssh access from the management workstation with this address:",
           "type": "bool",
           "widget": "mgmt_ssh",
           "widget_class": "QCheckBox"
@@ -5961,18 +6232,21 @@
         },
         "use_iptables_restore": {
           "key": "use_iptables_restore",
+          "label": "Use iptables-restore to activate policy",
           "type": "bool",
           "widget": "iptablesRestoreActivation",
           "widget_class": "QCheckBox"
         },
         "use_numeric_log_levels": {
           "key": "use_numeric_log_levels",
+          "label": "use numeric syslog levels",
           "type": "bool",
           "widget": "logNumsyslog",
           "widget_class": "QCheckBox"
         },
         "verify_interfaces": {
           "key": "verify_interfaces",
+          "label": "Verify interfaces before loading firewall policy",
           "type": "bool",
           "widget": "verifyInterfaces",
           "widget_class": "QCheckBox"
@@ -6058,12 +6332,14 @@
       "fields": {
         "iface_disablearp": {
           "key": "iface_disablearp",
+          "label": "Disable ARP on this interface",
           "type": "bool",
           "widget": "iface_disablearp",
           "widget_class": "QCheckBox"
         },
         "iface_disableboot": {
           "key": "iface_disableboot",
+          "label": "Disable at boot",
           "type": "bool",
           "widget": "iface_disableboot",
           "widget_class": "QCheckBox"
@@ -6295,6 +6571,7 @@
         },
         "secuwall_add_files": {
           "key": "secuwall_add_files",
+          "label": "Add additional files to firewall configuration",
           "type": "bool",
           "widget": "additional_files_enabled",
           "widget_class": "QCheckBox"
@@ -6438,6 +6715,7 @@
         },
         "secuwall_mgmt_rules_disable": {
           "key": "secuwall_mgmt_rules_disable",
+          "label": "Don't create firewall rules",
           "type": "bool",
           "widget": "secuwall_mgmt_rules_disable",
           "widget_class": "QCheckBox"

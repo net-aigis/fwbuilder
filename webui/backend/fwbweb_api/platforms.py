@@ -270,12 +270,16 @@ def dialog_pages_for(platform: str, host_os: str = "") -> list[dict[str, Any]]:
 
 def _infer_type(key: str, value: str, meta: dict[str, Any] | None) -> dict[str, Any]:
     if meta:
-        return {
+        out = {
             "type": meta.get("type") or "string",
             "choices": meta.get("choices"),
             "widget": meta.get("widget"),
             "widget_class": meta.get("widget_class"),
         }
+        if meta.get("label"):
+            out["label"] = meta.get("label")
+        return out
+
     low = (value or "").strip().lower()
     if low in {"true", "false"}:
         return {"type": "bool"}

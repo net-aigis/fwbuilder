@@ -1,8 +1,14 @@
-"""Simplified policy install via system ssh/scp (not the full Qt installer)."""
+"""Simplified policy install via system ssh/scp (not the full Qt installer).
+
+Closer to FirewallInstallerUnx for Unix/nft/ipt: reads the compiler
+``# files:`` manifest and copies every listed file, then activates the
+main script. Still no expect/SSHSession interactive installer.
+"""
 
 from __future__ import annotations
 
 import os
+import re
 import shlex
 import subprocess
 from pathlib import Path
@@ -14,6 +20,96 @@ class DeployError(RuntimeError):
         super().__init__(message)
         self.log = log
         self.commands = commands or []
+
+
+_MANIFEST_RE = re.compile(r"^#\s*files:\s*(.*)$", re.IGNORECASE)
+
+
+def parse_fw_manifest(script: Path) -> list[dict[str, Any]]:
+    """Parse Firewall Builder ``# files:`` lines from a generated script.
+
+    Format (same as FirewallInstaller::parseManifestLine)::
+
+        # files: * local_name [remote_name]
+
+    ``*`` marks the main activation script.
+    """
+    if not script.is_file():
+        return []
+    entries: list[dict[str, Any]] = []
+    for raw in script.read_text(encoding="utf-8", errors="replace").splitlines():
+        m = _MANIFEST_RE.match(raw.strip())
+        if not m:
+            continue
+        parts = m.group(1).split()
+        if not parts:
+            continue
+        main = False
+        if parts[0] == "*":
+            main = True
+            parts = parts[1:]
+        if not parts:
+            continue
+        local = parts[0]
+        remote = parts[1] if len(parts) > 1 else ""
+        entries.append({"local": local, "remote": remote, "main": main})
+    return entries
+
+
+def _is_abs_remote(path: str) -> bool:
+    return path.startswith("/") or (len(path) > 2 and path[1] == ":")
+
+
+def resolve_manifest_files(
+    *,
+    local_script: Path,
+    remote_dir: str,
+    remote_name_override: str | None = None,
+) -> tuple[list[tuple[Path, str]], str]:
+    """Return ([(local_path, remote_path), ...], main_remote_path)."""
+    base = local_script.parent
+    entries = parse_fw_manifest(local_script)
+    fwdir = remote_dir.rstrip("/") or "/etc"
+
+    if not entries:
+        remote = remote_name_override or local_script.name
+        if not _is_abs_remote(remote):
+            remote = f"{fwdir}/{remote}"
+        return [(local_script, remote)], remote
+
+    copies: list[tuple[Path, str]] = []
+    main_remote = ""
+    for ent in entries:
+        local_name = ent["local"]
+        remote_name = ent["remote"] or ""
+        local_path = Path(local_name)
+        if not local_path.is_absolute():
+            local_path = base / local_name
+        if not local_path.is_file():
+            # Fall back to main script basename in destdir
+            alt = base / Path(local_name).name
+            if alt.is_file():
+                local_path = alt
+            else:
+                raise DeployError(f"manifest local file missing: {local_name}")
+
+        if remote_name_override and ent.get("main"):
+            remote_name = remote_name_override
+
+        if not remote_name:
+            remote_path = f"{fwdir}/{local_path.name}"
+        elif _is_abs_remote(remote_name):
+            remote_path = remote_name
+        else:
+            remote_path = f"{fwdir}/{remote_name}"
+
+        copies.append((local_path, remote_path))
+        if ent.get("main"):
+            main_remote = remote_path
+
+    if not main_remote and copies:
+        main_remote = copies[0][1]
+    return copies, main_remote
 
 
 def _run(cmd: list[str], *, timeout: float, env: dict[str, str] | None = None) -> tuple[int, str]:
@@ -49,8 +145,11 @@ def plan_and_deploy(
     if not local_script.is_file():
         raise DeployError(f"local script missing: {local_script}")
 
-    remote_name = remote_name or local_script.name
-    remote_path = f"{remote_dir.rstrip('/')}/{remote_name}"
+    copies, main_remote = resolve_manifest_files(
+        local_script=local_script,
+        remote_dir=remote_dir,
+        remote_name_override=remote_name,
+    )
     target = f"{user}@{host}" if user else host
 
     ssh_extra = shlex.split(ssh_args) if ssh_args.strip() else []
@@ -63,32 +162,39 @@ def plan_and_deploy(
     base_ssh = ["ssh", "-o", "BatchMode=yes", "-o", "StrictHostKeyChecking=accept-new", *ssh_extra]
     base_scp = ["scp", "-o", "BatchMode=yes", "-o", "StrictHostKeyChecking=accept-new", *scp_extra]
 
-    scp_cmd = [*base_scp, str(local_script), f"{target}:{remote_path}"]
-    commands = [" ".join(shlex.quote(c) for c in scp_cmd)]
+    scp_cmds: list[list[str]] = []
+    commands: list[str] = []
+    for local_path, remote_path in copies:
+        scp_cmd = [*base_scp, str(local_path), f"{target}:{remote_path}"]
+        scp_cmds.append(scp_cmd)
+        commands.append(" ".join(shlex.quote(c) for c in scp_cmd))
 
     act = (activation_cmd or "").strip()
     if activate:
         if not act:
             # Same idea as GUI installer for regular users: run the copied script.
-            act = f"sudo {remote_path}" if user and user != "root" else remote_path
+            act = f"sudo {main_remote}" if user and user != "root" else main_remote
         ssh_cmd = [*base_ssh, target, act]
         commands.append(" ".join(shlex.quote(c) for c in ssh_cmd))
     else:
         ssh_cmd = None
 
+    manifest = parse_fw_manifest(local_script)
     result: dict[str, Any] = {
         "ok": True,
         "dry_run": dry_run,
         "host": host,
         "user": user,
-        "remote_path": remote_path,
+        "remote_path": main_remote,
         "local_script": str(local_script),
+        "files": [{"local": str(lp), "remote": rp} for lp, rp in copies],
+        "manifest": manifest,
         "activation_cmd": act if activate else "",
         "commands": commands,
         "log": "",
         "note": (
-            "Simplified WebUI installer (ssh/scp). Not the full desktop "
-            "FirewallInstaller / expect session."
+            "WebUI installer (ssh/scp) with FirewallInstaller-style manifest copy. "
+            "Not the full desktop expect/SSHSession installer."
         ),
     }
 
@@ -98,10 +204,11 @@ def plan_and_deploy(
 
     env = {**os.environ}
     log_parts: list[str] = []
-    code, out = _run(scp_cmd, timeout=timeout, env=env)
-    log_parts.append(f"$ {' '.join(scp_cmd)}\n{out}")
-    if code != 0:
-        raise DeployError(f"scp exited {code}", log="\n".join(log_parts), commands=commands)
+    for scp_cmd in scp_cmds:
+        code, out = _run(scp_cmd, timeout=timeout, env=env)
+        log_parts.append(f"$ {' '.join(scp_cmd)}\n{out}")
+        if code != 0:
+            raise DeployError(f"scp exited {code}", log="\n".join(log_parts), commands=commands)
 
     if ssh_cmd is not None:
         code, out = _run(ssh_cmd, timeout=timeout, env=env)

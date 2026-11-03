@@ -147,6 +147,33 @@ def parse_combo_items(root: ET.Element | None, widget_name: str) -> list[str]:
     return []
 
 
+def parse_widget_labels(root: ET.Element | None) -> dict[str, str]:
+    """Map widget objectName → human label from QCheckBox text or QLabel buddy."""
+    labels: dict[str, str] = {}
+    if root is None:
+        return labels
+    for w in root.iter("widget"):
+        name = w.get("name")
+        cls = w.get("class") or ""
+        if not name:
+            continue
+        if cls == "QCheckBox":
+            prop = w.find("./property[@name='text']/string")
+            if prop is not None and (prop.text or "").strip():
+                labels[name] = prop.text.strip()
+        elif cls == "QLabel":
+            buddy = w.find("./property[@name='buddy']/cstring")
+            text = w.find("./property[@name='text']/string")
+            if (
+                buddy is not None
+                and (buddy.text or "").strip()
+                and text is not None
+                and (text.text or "").strip()
+            ):
+                labels[buddy.text.strip()] = text.text.strip()
+    return labels
+
+
 def parse_pages(root: ET.Element | None) -> list[dict]:
     """Return tab pages: {id, title, widgets:[widget names]}."""
     if root is None:
@@ -183,12 +210,15 @@ def parse_pages(root: ET.Element | None) -> list[dict]:
 
 def extract_cpp(cpp_path: Path, ui_root: ET.Element | None, ui_widgets: dict[str, str]) -> dict[str, dict]:
     src = cpp_path.read_text(encoding="utf-8", errors="replace")
+    labels = parse_widget_labels(ui_root)
     fields: dict[str, dict] = {}
     for m in REG_OPT.finditer(src):
         widget, key, _mapping = m.group(1), m.group(2), m.group(3)
         cls = ui_widgets.get(widget, "")
         ftype = WIDGET_TYPE.get(cls, "string")
         field: dict = {"key": key, "widget": widget, "widget_class": cls or None, "type": ftype}
+        if widget in labels:
+            field["label"] = labels[widget]
         if ftype == "enum":
             choices = parse_combo_items(ui_root, widget) or KNOWN_ENUMS.get(key, [])
             if choices:

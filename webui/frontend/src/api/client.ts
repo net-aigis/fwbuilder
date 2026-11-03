@@ -481,6 +481,7 @@ export function fetchPlatforms() {
 export type OptionFieldMeta = {
   type?: string;
   choices?: string[];
+  label?: string;
   widget?: string;
   widget_class?: string;
 };

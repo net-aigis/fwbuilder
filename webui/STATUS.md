@@ -31,7 +31,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Option groups from `src/res/platform` + `os` | done | `GET /api/v1/option-schema`, UI tabs |
 | Typed fields from libgui AdvancedDialog `.ui` | done | `dialog_fields.json` + checkboxes/enums/textareas |
 | Dialog tab pages as option groups | done | extract pages → `option-schema.groups`; UI tabs |
-| Full Qt dialog page/layout parity | open | Types/keys/pages + page nav/reset yes; pixel layout no |
+| Full Qt dialog page/layout parity | open | Types/keys/pages + .ui labels + page nav; pixel layout no |
 | PolicyRuleOptions editor | done | select rule → Rule options panel; E2E phase6 |
 | Rule options dialog schema (Policy/NAT/Routing) | done | `GET /rule-option-schema`; typed tabs; E2E phase8 |
 | InterfaceOptions editor | done | IfaceOptsDialog fields + `GET /interface-option-schema`; E2E phase7 |
@@ -269,18 +269,21 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Persist interface option page | done | sessionStorage; E2E phase124 |
 | Host options filter + TSV | done | HostOptions; E2E phase125 |
 | Copy project path | done | Ctrl+Shift+G; E2E phase126 |
+| Deploy reads compiler `# files:` manifest | done | multi-file scp + main activate; E2E phase127 |
+| Qt .ui field labels in options UI | done | extract-dialog-fields + OptionField; E2E phase128 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Soft-complete (feature/webui polish track)
 
-WebUI on `feature/webui` is **soft-complete** for editor/rules/compile/deploy UX and e2e through phase 126.
+WebUI on `feature/webui` remains soft-complete for the polish track; hard-gap slices continue:
 
-Still **not** claimed (need separate, larger workstreams):
+- Deploy now follows FirewallInstallerUnx-style **manifest copy** (still no expect/SSHSession)
+- Options UI shows **.ui labels** where extractable (still no pixel Qt layout)
+
+Still open:
 
 - Full Qt AdvancedDialog **pixel** layout parity
-- Full desktop **FirewallInstaller** (expect sessions, platform-specific installers)
-
-Those remain open on purpose; scp/ssh deploy + dialog page tabs are the intentional WebUI subset.
+- Full desktop **FirewallInstaller** (expect sessions, Cisco/Juniper/Procurve interactive installers)
 
 ## Phase 3 — compile / deploy
 
@@ -290,7 +293,7 @@ Those remain open on purpose; scp/ssh deploy + dialog page tabs are the intentio
 | Download compile outputs | done | `GET …/compile/outputs/{file}` |
 | Local E2E phase3 (rule ops + compile) | done | `e2e-phase3.sh` **OK** → `nft-test.fw` |
 | FirewallOptions + Management address | done | `options` / `management` bridge cmds + UI |
-| Deploy via system `scp`/`ssh` (dry-run default) | done | `POST …/deploy` — remote_dir/identity/activate; **not** full desktop FirewallInstaller; live needs double confirm |
+| Deploy via system `scp`/`ssh` (dry-run default) | done | Manifest `# files:` multi-copy + activate; remote_dir/identity; **not** full expect/SSHSession installer |
 | Local E2E phase4 | done | `e2e-phase4.sh` **OK** |
 | Platform catalog from resources XML | done | `GET /api/v1/platforms` |
 | Compilers `fwb_pf` / `fwb_ipf` / `fwb_ipfw` | done | local Podman build; compile via XML `<compiler>` |
@@ -417,6 +420,8 @@ Those remain open on purpose; scp/ssh deploy + dialog page tabs are the intentio
 | Local E2E phase124 (iface page persist) | done | `e2e-phase124.sh` **OK** |
 | Local E2E phase125 (host options filter) | done | `e2e-phase125.sh` **OK** |
 | Local E2E phase126 (copy project path) | done | `e2e-phase126.sh` **OK** |
+| Local E2E phase127 (deploy manifest) | done | `e2e-phase127.sh` **OK** |
+| Local E2E phase128 (ui labels) | done | `e2e-phase128.sh` **OK** |
 
 ## Local commands
 
@@ -552,6 +557,8 @@ bash webui/scripts/e2e-phase123.sh
 bash webui/scripts/e2e-phase124.sh
 bash webui/scripts/e2e-phase125.sh
 bash webui/scripts/e2e-phase126.sh
+bash webui/scripts/e2e-phase127.sh
+bash webui/scripts/e2e-phase128.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

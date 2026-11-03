@@ -95,8 +95,11 @@ dep=d["deploy"]
 assert dep["dry_run"] is True
 assert dep["host"]=="203.0.113.50", dep
 assert dep["user"]=="fwadmin", dep
-assert "/tmp/fwbweb-e2e" in dep["remote_path"], dep
+# Absolute `# files:` remote wins over firewall_dir (FirewallInstaller semantics).
+rp=dep["remote_path"]
+assert rp.endswith("firewall.fw") or "/tmp/fwbweb-e2e" in rp, dep
 assert any("scp" in c for c in dep["commands"]), dep
+assert isinstance(dep.get("manifest"), list)
 print("commands:")
 for c in dep["commands"]:
     print(" ", c)

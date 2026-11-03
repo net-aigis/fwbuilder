@@ -135,7 +135,9 @@ def deploy_firewall(
             host=host,
             user=user,
             remote_dir=remote_dir,
-            remote_name=body.remote_name or script_name,
+            # Only override remote name when the client sets it explicitly.
+            # Otherwise keep FirewallInstaller-style absolute paths from `# files:`.
+            remote_name=body.remote_name,
             activate=body.activate,
             activation_cmd=activation,
             ssh_args=options.get("sshArgs") or "",
