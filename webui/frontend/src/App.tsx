@@ -133,7 +133,13 @@ export function App() {
   const [rulesetName, setRulesetName] = useState("");
   const [selectedRuleId, setSelectedRuleId] = useState<string | undefined>();
   const [searchQ, setSearchQ] = useState("");
-  const [searchType, setSearchType] = useState("");
+  const [searchType, setSearchType] = useState(() => {
+    try {
+      return sessionStorage.getItem("fwbweb.searchType") || "";
+    } catch {
+      return "";
+    }
+  });
   const [searchHits, setSearchHits] = useState<TreeNode[]>([]);
   const [picker, setPicker] = useState<PickerTarget | null>(null);
   const [compileLog, setCompileLog] = useState<string | null>(null);
@@ -187,7 +193,13 @@ export function App() {
       return "";
     }
   });
-  const [treeFilter, setTreeFilter] = useState("");
+  const [treeFilter, setTreeFilter] = useState(() => {
+    try {
+      return sessionStorage.getItem("fwbweb.treeFilter") || "";
+    } catch {
+      return "";
+    }
+  });
   const [unusedTypeFilter, setUnusedTypeFilter] = useState("");
   const [trashTypeFilter, setTrashTypeFilter] = useState("");
   const [trashCount, setTrashCount] = useState(0);
@@ -335,6 +347,22 @@ export function App() {
   }, [tab]);
 
   useEffect(() => {
+    try {
+      sessionStorage.setItem("fwbweb.treeFilter", treeFilter);
+    } catch {
+      /* ignore */
+    }
+  }, [treeFilter]);
+
+  useEffect(() => {
+    try {
+      sessionStorage.setItem("fwbweb.searchType", searchType);
+    } catch {
+      /* ignore */
+    }
+  }, [searchType]);
+
+  useEffect(() => {
     void refreshObjectPath(selected?.id ?? null);
   }, [sessionId, selected?.id]);
 
@@ -389,8 +417,9 @@ export function App() {
       };
       if (!ctx.fwId) return;
       if (ctx.which !== "policy" && ctx.which !== "nat" && ctx.which !== "routing") return;
-      await fetchObject(sid, ctx.fwId);
+      const fw = await fetchObject(sid, ctx.fwId);
       await loadRules(ctx.fwId, ctx.which, ctx.rulesetId || undefined);
+      setStatus(`Restored ${ctx.which} for ${fw.name || ctx.fwId}`);
     } catch {
       /* stale or missing firewall — ignore */
     }
@@ -3354,6 +3383,22 @@ export function App() {
                   >
                     Copy path
                   </button>
+                  {selected?.name ? (
+                    <button
+                      type="button"
+                      className="ghost"
+                      disabled={busy}
+                      title="Copy object name (Ctrl+Shift+N)"
+                      onClick={() => {
+                        void navigator.clipboard.writeText(selected.name).then(
+                          () => setStatus(`Copied object name ${selected.name}`),
+                          () => setError("Clipboard write failed"),
+                        );
+                      }}
+                    >
+                      Copy name
+                    </button>
+                  ) : null}
                 </nav>
               ) : null}
             <ObjectDetail

@@ -246,6 +246,9 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Live deploy double confirm | done | Deploy live / FirewallExtras; E2E phase101 |
 | Persist main tab | done | sessionStorage `mainTab`; E2E phase102 |
 | Copy object name shortcut | done | Ctrl+Shift+N; E2E phase103 |
+| Persist tree/search filters | done | sessionStorage; E2E phase104 |
+| Rules restore status message | done | after open; E2E phase105 |
+| Copy name button | done | object path bar; E2E phase106 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Phase 3 — compile / deploy
@@ -360,6 +363,9 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase101 (live deploy confirm) | done | `e2e-phase101.sh` **OK** |
 | Local E2E phase102 (mainTab) | done | `e2e-phase102.sh` **OK** |
 | Local E2E phase103 (copy object name) | done | `e2e-phase103.sh` **OK** |
+| Local E2E phase104 (tree/search persist) | done | `e2e-phase104.sh` **OK** |
+| Local E2E phase105 (restore status) | done | `e2e-phase105.sh` **OK** |
+| Local E2E phase106 (copy name button) | done | `e2e-phase106.sh` **OK** |
 
 ## Local commands
 
@@ -472,6 +478,9 @@ bash webui/scripts/e2e-phase100.sh
 bash webui/scripts/e2e-phase101.sh
 bash webui/scripts/e2e-phase102.sh
 bash webui/scripts/e2e-phase103.sh
+bash webui/scripts/e2e-phase104.sh
+bash webui/scripts/e2e-phase105.sh
+bash webui/scripts/e2e-phase106.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```
