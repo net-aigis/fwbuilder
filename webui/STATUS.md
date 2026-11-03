@@ -265,7 +265,22 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Copy deploy log + denser options grid | done | FirewallExtras/CSS; E2E phase120 |
 | Cycle recent project paths | done | Alt+, / Alt+.; E2E phase121 |
 | Rule options page nav | done | RuleOptions ←/→; E2E phase122 |
+| Interface options page nav | done | InterfaceOptions; E2E phase123 |
+| Persist interface option page | done | sessionStorage; E2E phase124 |
+| Host options filter + TSV | done | HostOptions; E2E phase125 |
+| Copy project path | done | Ctrl+Shift+G; E2E phase126 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
+
+## Soft-complete (feature/webui polish track)
+
+WebUI on `feature/webui` is **soft-complete** for editor/rules/compile/deploy UX and e2e through phase 126.
+
+Still **not** claimed (need separate, larger workstreams):
+
+- Full Qt AdvancedDialog **pixel** layout parity
+- Full desktop **FirewallInstaller** (expect sessions, platform-specific installers)
+
+Those remain open on purpose; scp/ssh deploy + dialog page tabs are the intentional WebUI subset.
 
 ## Phase 3 — compile / deploy
 
@@ -398,6 +413,10 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase120 (deploy log/grid) | done | `e2e-phase120.sh` **OK** |
 | Local E2E phase121 (recent cycle) | done | `e2e-phase121.sh` **OK** |
 | Local E2E phase122 (rule page nav) | done | `e2e-phase122.sh` **OK** |
+| Local E2E phase123 (iface page nav) | done | `e2e-phase123.sh` **OK** |
+| Local E2E phase124 (iface page persist) | done | `e2e-phase124.sh` **OK** |
+| Local E2E phase125 (host options filter) | done | `e2e-phase125.sh` **OK** |
+| Local E2E phase126 (copy project path) | done | `e2e-phase126.sh` **OK** |
 
 ## Local commands
 
@@ -529,6 +548,10 @@ bash webui/scripts/e2e-phase119.sh
 bash webui/scripts/e2e-phase120.sh
 bash webui/scripts/e2e-phase121.sh
 bash webui/scripts/e2e-phase122.sh
+bash webui/scripts/e2e-phase123.sh
+bash webui/scripts/e2e-phase124.sh
+bash webui/scripts/e2e-phase125.sh
+bash webui/scripts/e2e-phase126.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

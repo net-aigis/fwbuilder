@@ -1113,6 +1113,14 @@ export function App() {
         );
         return;
       }
+      if (mod && e.shiftKey && e.key.toLowerCase() === "g" && path) {
+        e.preventDefault();
+        void navigator.clipboard.writeText(path).then(
+          () => setStatus("Copied project path"),
+          () => setError("Clipboard write failed"),
+        );
+        return;
+      }
       if (mod && e.key.toLowerCase() === "d") {
         if (tab === "rules" && selectedRuleId) {
           e.preventDefault();
@@ -2939,6 +2947,20 @@ export function App() {
               ))}
             </datalist>
           </label>
+          <button
+            type="button"
+            className="ghost"
+            disabled={!path}
+            title="Copy project path (Ctrl+Shift+G)"
+            onClick={() => {
+              void navigator.clipboard.writeText(path).then(
+                () => setStatus("Copied project path"),
+                () => setError("Clipboard write failed"),
+              );
+            }}
+          >
+            Copy path
+          </button>
           <button type="button" onClick={onOpen} disabled={busy}>
             Open
           </button>

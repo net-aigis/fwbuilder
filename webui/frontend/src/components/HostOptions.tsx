@@ -20,6 +20,7 @@ function metaFor(value: string) {
 export function HostOptions({ sessionId, hostId, busy, onBusy, onStatus, onError }: Props) {
   const [options, setOptions] = useState<Record<string, string>>({});
   const [mgmtAddr, setMgmtAddr] = useState("");
+  const [filter, setFilter] = useState("");
 
   async function reload() {
     onBusy?.(true);
@@ -71,7 +72,13 @@ export function HostOptions({ sessionId, hostId, busy, onBusy, onStatus, onError
     }
   }
 
-  const keys = Object.keys(options).sort();
+  const keys = Object.keys(options)
+    .sort()
+    .filter((k) => {
+      const q = filter.trim().toLowerCase();
+      if (!q) return true;
+      return k.toLowerCase().includes(q) || (options[k] || "").toLowerCase().includes(q);
+    });
   return (
     <div className="firewall-extras">
       <header className="panel-header">
@@ -79,6 +86,26 @@ export function HostOptions({ sessionId, hostId, busy, onBusy, onStatus, onError
         <div className="btn-row">
           <button type="button" className="ghost" disabled={busy} onClick={() => void reload()}>
             Reload
+          </button>
+          <button
+            type="button"
+            className="ghost"
+            disabled={busy || !Object.keys(options).length}
+            title="Copy host options as TSV"
+            onClick={() => {
+              const lines = ["key\tvalue"];
+              for (const k of Object.keys(options).sort()) {
+                lines.push(
+                  `${k}\t${String(options[k] ?? "").replace(/\t|\n/g, " ")}`,
+                );
+              }
+              void navigator.clipboard.writeText(lines.join("\n")).then(
+                () => onStatus?.("Copied host options TSV"),
+                () => onError?.("Clipboard write failed"),
+              );
+            }}
+          >
+            Copy TSV
           </button>
           <button type="button" disabled={busy || !keys.length} onClick={() => void saveOptions()}>
             Save options
@@ -98,6 +125,14 @@ export function HostOptions({ sessionId, hostId, busy, onBusy, onStatus, onError
           Save management
         </button>
       </div>
+      <div className="search-row pad">
+        <input
+          placeholder="Filter host options…"
+          value={filter}
+          disabled={busy}
+          onChange={(e) => setFilter(e.target.value)}
+        />
+      </div>
       {keys.length ? (
         <div className="typed-grid options-grid">
           {keys.map((key) => (
@@ -112,7 +147,9 @@ export function HostOptions({ sessionId, hostId, busy, onBusy, onStatus, onError
           ))}
         </div>
       ) : (
-        <p className="muted pad">No HostOptions stored yet.</p>
+        <p className="muted pad">
+          {Object.keys(options).length ? "No host options match filter." : "No HostOptions stored yet."}
+        </p>
       )}
     </div>
   );

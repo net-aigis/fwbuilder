@@ -62,7 +62,14 @@ export function InterfaceOptions({
           ? [{ id: "interface", title: "Interface", keys: Object.keys(merged).sort() }]
           : [];
       setGroups(nextGroups);
-      if (nextGroups[0]?.id) setActiveGroup(nextGroups[0].id);
+      let preferred = nextGroups[0]?.id || "interface";
+      try {
+        const stored = sessionStorage.getItem(`fwbweb.ifaceOptionGroup.${os || "unknown"}`);
+        if (stored && nextGroups.some((g) => g.id === stored)) preferred = stored;
+      } catch {
+        /* ignore */
+      }
+      setActiveGroup(preferred);
       onStatus?.(
         `Interface options: ${Object.keys(merged).length}` +
           (schema ? ` · dialog fields ${schema.dialog_field_count ?? 0}` : "") +
@@ -79,6 +86,17 @@ export function InterfaceOptions({
     void reload();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionId, interfaceId, hostOs]);
+
+  useEffect(() => {
+    try {
+      sessionStorage.setItem(
+        `fwbweb.ifaceOptionGroup.${resolvedOs || "unknown"}`,
+        activeGroup,
+      );
+    } catch {
+      /* ignore */
+    }
+  }, [activeGroup, resolvedOs]);
 
   async function save() {
     onBusy?.(true);
@@ -114,11 +132,26 @@ export function InterfaceOptions({
         </div>
       </header>
       {groups.length > 1 ? (
-        <div className="btn-row pad">
+        <div className="dialog-pages pad" role="tablist" aria-label="Interface option pages">
+          <button
+            type="button"
+            className="ghost"
+            disabled={busy}
+            title="Previous interface options page"
+            onClick={() => {
+              const idx = Math.max(0, groups.findIndex((g) => g.id === activeGroup));
+              const next = groups[(idx - 1 + groups.length) % groups.length];
+              if (next) setActiveGroup(next.id);
+            }}
+          >
+            ←
+          </button>
           {groups.map((g) => (
             <button
               key={g.id}
               type="button"
+              role="tab"
+              aria-selected={g.id === activeGroup}
               className={g.id === activeGroup ? undefined : "ghost"}
               disabled={busy}
               onClick={() => setActiveGroup(g.id)}
@@ -126,6 +159,19 @@ export function InterfaceOptions({
               {g.title}
             </button>
           ))}
+          <button
+            type="button"
+            className="ghost"
+            disabled={busy}
+            title="Next interface options page"
+            onClick={() => {
+              const idx = Math.max(0, groups.findIndex((g) => g.id === activeGroup));
+              const next = groups[(idx + 1) % groups.length];
+              if (next) setActiveGroup(next.id);
+            }}
+          >
+            →
+          </button>
         </div>
       ) : null}
       {keys.length ? (
