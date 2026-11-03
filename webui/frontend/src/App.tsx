@@ -855,6 +855,15 @@ export function App() {
         }
         return;
       }
+      if (!mod && !e.altKey && e.key.toLowerCase() === "a" && ruleActions.length) {
+        e.preventDefault();
+        const opts = ["", ...ruleActions];
+        const idx = opts.indexOf(ruleActionFilter);
+        const next = opts[(idx + 1) % opts.length] ?? "";
+        setRuleActionFilter(next);
+        setStatus(next ? `Filter: action=${next}` : "Filter: all actions");
+        return;
+      }
       if (!mod && !e.altKey && e.key.toLowerCase() === "j" && rules.length) {
         e.preventDefault();
         onJumpToRulePosition();
@@ -905,6 +914,8 @@ export function App() {
     rules,
     hideDisabled,
     onlyDisabled,
+    ruleActionFilter,
+    ruleActions,
     picker,
     trashOpen,
     unusedHits,
@@ -3408,6 +3419,23 @@ export function App() {
                         ))}
                       </select>
                     </label>
+                  ) : null}
+                  {ruleActions.length ? (
+                    <button
+                      type="button"
+                      className="ghost"
+                      disabled={busy}
+                      title="Cycle action filter: all → each action (a)"
+                      onClick={() => {
+                        const opts = ["", ...ruleActions];
+                        const idx = opts.indexOf(ruleActionFilter);
+                        const next = opts[(idx + 1) % opts.length] ?? "";
+                        setRuleActionFilter(next);
+                        setStatus(next ? `Filter: action=${next}` : "Filter: all actions");
+                      }}
+                    >
+                      Cycle action
+                    </button>
                   ) : null}
                   <label className="field inline">
                     Group
