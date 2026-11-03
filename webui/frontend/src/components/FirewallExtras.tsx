@@ -39,6 +39,10 @@ const FALLBACK_FEATURED = [
 
 type Group = { id: string; title: string; keys: string[] };
 
+function groupStorageKey(platform: string, hostOs: string) {
+  return `fwbweb.optionGroup.${platform || "unknown"}.${hostOs || ""}`;
+}
+
 export function FirewallExtras({
   sessionId,
   firewallId,
@@ -50,17 +54,22 @@ export function FirewallExtras({
   onError,
 }: Props) {
   const [options, setOptions] = useState<Record<string, string>>({});
+  const [defaults, setDefaults] = useState<Record<string, string>>({});
   const [fields, setFields] = useState<Record<string, OptionFieldMeta>>({});
   const [filter, setFilter] = useState("");
   const [mgmtAddr, setMgmtAddr] = useState("");
   const [deployHost, setDeployHost] = useState("");
   const [deployUser, setDeployUser] = useState("");
+  const [remoteDir, setRemoteDir] = useState("");
+  const [identityFile, setIdentityFile] = useState("");
+  const [activate, setActivate] = useState(true);
   const [dryRun, setDryRun] = useState(true);
   const [log, setLog] = useState<string | null>(null);
   const [showAll, setShowAll] = useState(false);
   const [groups, setGroups] = useState<Group[]>([]);
   const [featured, setFeatured] = useState<string[]>(FALLBACK_FEATURED);
   const [compiler, setCompiler] = useState<string>("");
+  const [dialogName, setDialogName] = useState<string>("");
   const [activeGroup, setActiveGroup] = useState<string>("platform");
 
   async function reload() {
@@ -77,12 +86,23 @@ export function FirewallExtras({
       setMgmtAddr(m.management?.address ?? "");
       setDeployHost(m.management?.address || o.options?.altAddress || "");
       setDeployUser(o.options?.admUser || "");
+      setRemoteDir(o.options?.firewall_dir || "/etc");
       if (schema) {
-        setGroups(schema.groups ?? []);
+        const nextGroups = schema.groups ?? [];
+        setGroups(nextGroups);
         setFeatured(schema.featured_keys?.length ? schema.featured_keys : FALLBACK_FEATURED);
         setCompiler(schema.compiler || "");
+        setDialogName(schema.dialog || "");
         setFields(schema.fields ?? {});
-        if (schema.groups?.[0]?.id) setActiveGroup(schema.groups[0].id);
+        setDefaults(schema.defaults ?? {});
+        let preferred = nextGroups[0]?.id || "platform";
+        try {
+          const stored = sessionStorage.getItem(groupStorageKey(plat, hostOs || ""));
+          if (stored && nextGroups.some((g) => g.id === stored)) preferred = stored;
+        } catch {
+          /* ignore */
+        }
+        setActiveGroup(preferred);
         onStatus?.(
           `Options: ${Object.keys(o.options ?? {}).length} · dialog fields ${
             schema.dialog_field_count ?? 0
@@ -103,6 +123,15 @@ export function FirewallExtras({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionId, firewallId, platform, hostOs]);
 
+  useEffect(() => {
+    if (!activeGroup || !platform) return;
+    try {
+      sessionStorage.setItem(groupStorageKey(platform || "nftables", hostOs || ""), activeGroup);
+    } catch {
+      /* ignore */
+    }
+  }, [activeGroup, platform, hostOs]);
+
   const keys = useMemo(() => {
     const all = Object.keys(options).sort();
     const q = filter.trim().toLowerCase();
@@ -117,12 +146,38 @@ export function FirewallExtras({
     return preferred.length ? preferred : featured.filter((k) => k in options);
   }, [options, filter, showAll, groups, activeGroup, featured]);
 
+  const activeGroupMeta = groups.find((g) => g.id === activeGroup) || null;
+  const activeGroupIndex = groups.findIndex((g) => g.id === activeGroup);
+
+  function cycleGroup(delta: number) {
+    if (!groups.length) return;
+    const idx = activeGroupIndex < 0 ? 0 : activeGroupIndex;
+    const next = groups[(idx + delta + groups.length) % groups.length];
+    if (next) {
+      setActiveGroup(next.id);
+      setFilter("");
+      setShowAll(false);
+      onStatus?.(`Options page: ${next.title}`);
+    }
+  }
+
+  function resetActivePageDefaults() {
+    if (!activeGroupMeta) return;
+    setOptions((prev) => {
+      const next = { ...prev };
+      for (const key of activeGroupMeta.keys) {
+        if (key in defaults) next[key] = String(defaults[key] ?? "");
+      }
+      return next;
+    });
+    onStatus?.(`Reset defaults for page ${activeGroupMeta.title} (not saved yet)`);
+  }
+
   async function saveOptions() {
     onBusy?.(true);
     onError?.(null);
     try {
-      const res = await updateOptions(sessionId, firewallId, options);
-      setOptions(res.options ?? options);
+      await updateOptions(sessionId, firewallId, options);
       onStatus?.("Firewall options saved");
     } catch (err) {
       onError?.(err instanceof Error ? err.message : String(err));
@@ -167,15 +222,18 @@ export function FirewallExtras({
         firewall_id: firewallId,
         host: deployHost || undefined,
         user: deployUser || undefined,
+        remote_dir: remoteDir || undefined,
+        identity_file: identityFile.trim() || undefined,
         compile_first: true,
         dry_run: dryRun,
-        activate: true,
+        activate,
       });
       setLog(
         [
           res.deploy.note || "",
           `host=${res.deploy.host} user=${res.deploy.user || "(none)"}`,
           `remote=${res.deploy.remote_path}`,
+          `dry_run=${res.deploy.dry_run}`,
           "",
           ...(res.deploy.commands || []),
           "",
@@ -196,12 +254,21 @@ export function FirewallExtras({
     }
   }
 
+  function onCopyLog() {
+    if (!log) return;
+    void navigator.clipboard.writeText(log).then(
+      () => onStatus?.("Copied deploy log"),
+      () => onError?.("Clipboard write failed"),
+    );
+  }
+
   return (
     <div className="firewall-extras">
       <header className="panel-header">
         <h3>
           Platform / installer options
           {compiler ? <span className="muted"> · {compiler}</span> : null}
+          {dialogName ? <span className="muted"> · {dialogName}</span> : null}
         </h3>
         <div className="btn-row">
           <button type="button" className="ghost" disabled={busy} onClick={() => void reload()}>
@@ -214,11 +281,22 @@ export function FirewallExtras({
       </header>
 
       {groups.length && !filter && !showAll ? (
-        <div className="btn-row pad-tight">
+        <div className="dialog-pages pad-tight" role="tablist" aria-label="Option dialog pages">
+          <button
+            type="button"
+            className="ghost"
+            disabled={busy || groups.length < 2}
+            title="Previous dialog page"
+            onClick={() => cycleGroup(-1)}
+          >
+            ←
+          </button>
           {groups.map((g) => (
             <button
               key={g.id}
               type="button"
+              role="tab"
+              aria-selected={activeGroup === g.id}
               className={activeGroup === g.id ? undefined : "ghost"}
               disabled={busy}
               onClick={() => setActiveGroup(g.id)}
@@ -226,6 +304,32 @@ export function FirewallExtras({
               {g.title}
             </button>
           ))}
+          <button
+            type="button"
+            className="ghost"
+            disabled={busy || groups.length < 2}
+            title="Next dialog page"
+            onClick={() => cycleGroup(1)}
+          >
+            →
+          </button>
+        </div>
+      ) : null}
+
+      {activeGroupMeta && !filter && !showAll ? (
+        <div className="btn-row pad-tight">
+          <span className="muted">
+            Page {activeGroupIndex + 1}/{groups.length}: {activeGroupMeta.title}
+          </span>
+          <button
+            type="button"
+            className="ghost"
+            disabled={busy || !activeGroupMeta.keys.length}
+            title="Restore schema defaults for keys on this dialog page (Save to persist)"
+            onClick={resetActivePageDefaults}
+          >
+            Reset page defaults
+          </button>
         </div>
       ) : null}
 
@@ -277,6 +381,24 @@ export function FirewallExtras({
           SSH user
           <input value={deployUser} disabled={busy} onChange={(e) => setDeployUser(e.target.value)} />
         </label>
+        <label className="field block">
+          Remote directory
+          <input
+            value={remoteDir}
+            disabled={busy}
+            onChange={(e) => setRemoteDir(e.target.value)}
+            placeholder="/etc"
+          />
+        </label>
+        <label className="field block">
+          SSH identity file
+          <input
+            value={identityFile}
+            disabled={busy}
+            onChange={(e) => setIdentityFile(e.target.value)}
+            placeholder="~/.ssh/id_ed25519"
+          />
+        </label>
       </div>
       <div className="btn-row">
         <button type="button" className="ghost" disabled={busy} onClick={() => void saveManagement()}>
@@ -291,13 +413,27 @@ export function FirewallExtras({
           />
           Dry-run
         </label>
+        <label className="check">
+          <input
+            type="checkbox"
+            checked={activate}
+            disabled={busy}
+            onChange={(e) => setActivate(e.target.checked)}
+          />
+          Activate after copy
+        </label>
         <button type="button" disabled={busy} onClick={() => void onDeploy()}>
           Compile + deploy
         </button>
+        {log ? (
+          <button type="button" className="ghost" disabled={busy} onClick={onCopyLog}>
+            Copy deploy log
+          </button>
+        ) : null}
       </div>
       <p className="muted pad">
-        Field types come from libgui AdvancedDialog <code>.ui</code> widgets (checkbox / combo /
-        text). Not every Qt dialog page is mirrored 1:1.
+        Dialog pages come from libgui AdvancedDialog <code>.ui</code> tabs. Pixel-perfect Qt layout
+        is not claimed; scp/ssh deploy is simplified vs desktop FirewallInstaller.
       </p>
       {log ? <pre className="compile-log pad">{log}</pre> : null}
     </div>

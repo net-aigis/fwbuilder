@@ -591,6 +591,7 @@ export function deployFirewall(
     host?: string;
     user?: string;
     remote_dir?: string;
+    identity_file?: string;
     activate?: boolean;
     compile_first?: boolean;
     dry_run?: boolean;

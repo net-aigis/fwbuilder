@@ -31,7 +31,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Option groups from `src/res/platform` + `os` | done | `GET /api/v1/option-schema`, UI tabs |
 | Typed fields from libgui AdvancedDialog `.ui` | done | `dialog_fields.json` + checkboxes/enums/textareas |
 | Dialog tab pages as option groups | done | extract pages → `option-schema.groups`; UI tabs |
-| Full Qt dialog page/layout parity | open | Types/keys/pages yes; pixel layout no |
+| Full Qt dialog page/layout parity | open | Types/keys/pages + page nav/reset yes; pixel layout no |
 | PolicyRuleOptions editor | done | select rule → Rule options panel; E2E phase6 |
 | Rule options dialog schema (Policy/NAT/Routing) | done | `GET /rule-option-schema`; typed tabs; E2E phase8 |
 | InterfaceOptions editor | done | IfaceOptsDialog fields + `GET /interface-option-schema`; E2E phase7 |
@@ -259,6 +259,12 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Tree expand/collapse shortcuts | done | Ctrl+[ / Ctrl+]; E2E phase114 |
 | Copy object comment | done | Ctrl+Shift+M; E2E phase115 |
 | Copy firewall name | done | rules header; E2E phase116 |
+| Dialog page nav + reset defaults | done | FirewallExtras; E2E phase117 |
+| Persist option dialog page | done | sessionStorage per platform; E2E phase118 |
+| Deploy remote_dir/identity/activate | done | FirewallExtras; E2E phase119 |
+| Copy deploy log + denser options grid | done | FirewallExtras/CSS; E2E phase120 |
+| Cycle recent project paths | done | Alt+, / Alt+.; E2E phase121 |
+| Rule options page nav | done | RuleOptions ←/→; E2E phase122 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Phase 3 — compile / deploy
@@ -269,7 +275,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Download compile outputs | done | `GET …/compile/outputs/{file}` |
 | Local E2E phase3 (rule ops + compile) | done | `e2e-phase3.sh` **OK** → `nft-test.fw` |
 | FirewallOptions + Management address | done | `options` / `management` bridge cmds + UI |
-| Deploy via system `scp`/`ssh` (dry-run default) | done | `POST …/deploy` — **not** full desktop FirewallInstaller; live needs double confirm |
+| Deploy via system `scp`/`ssh` (dry-run default) | done | `POST …/deploy` — remote_dir/identity/activate; **not** full desktop FirewallInstaller; live needs double confirm |
 | Local E2E phase4 | done | `e2e-phase4.sh` **OK** |
 | Platform catalog from resources XML | done | `GET /api/v1/platforms` |
 | Compilers `fwb_pf` / `fwb_ipf` / `fwb_ipfw` | done | local Podman build; compile via XML `<compiler>` |
@@ -386,6 +392,12 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase114 (tree shortcuts) | done | `e2e-phase114.sh` **OK** |
 | Local E2E phase115 (copy comment) | done | `e2e-phase115.sh` **OK** |
 | Local E2E phase116 (copy fw name) | done | `e2e-phase116.sh` **OK** |
+| Local E2E phase117 (dialog page nav) | done | `e2e-phase117.sh` **OK** |
+| Local E2E phase118 (option page persist) | done | `e2e-phase118.sh` **OK** |
+| Local E2E phase119 (deploy extras) | done | `e2e-phase119.sh` **OK** |
+| Local E2E phase120 (deploy log/grid) | done | `e2e-phase120.sh` **OK** |
+| Local E2E phase121 (recent cycle) | done | `e2e-phase121.sh` **OK** |
+| Local E2E phase122 (rule page nav) | done | `e2e-phase122.sh` **OK** |
 
 ## Local commands
 
@@ -511,6 +523,12 @@ bash webui/scripts/e2e-phase113.sh
 bash webui/scripts/e2e-phase114.sh
 bash webui/scripts/e2e-phase115.sh
 bash webui/scripts/e2e-phase116.sh
+bash webui/scripts/e2e-phase117.sh
+bash webui/scripts/e2e-phase118.sh
+bash webui/scripts/e2e-phase119.sh
+bash webui/scripts/e2e-phase120.sh
+bash webui/scripts/e2e-phase121.sh
+bash webui/scripts/e2e-phase122.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

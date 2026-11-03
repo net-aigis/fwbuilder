@@ -34,6 +34,7 @@ export const SHORTCUTS: ShortcutEntry[] = [
   { keys: "Alt+G", action: "Open Routing rules (Firewall/Cluster)" },
   { keys: "Alt+P", action: "Cycle Policy → NAT → Routing", scope: "rules" },
   { keys: "Alt+D", action: "Deploy dry-run (compile first)" },
+  { keys: "Alt+, / Alt+.", action: "Cycle recent project paths" },
   { keys: "Alt+↑ / Alt+↓", action: "Move selected rule", scope: "rules" },
   { keys: "↑ / ↓", action: "Select previous / next visible rule", scope: "rules" },
   { keys: "Home / End", action: "First / last visible rule", scope: "rules" },

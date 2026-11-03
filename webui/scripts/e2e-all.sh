@@ -125,6 +125,12 @@ scripts=(
   e2e-phase114
   e2e-phase115
   e2e-phase116
+  e2e-phase117
+  e2e-phase118
+  e2e-phase119
+  e2e-phase120
+  e2e-phase121
+  e2e-phase122
 )
 for s in "${scripts[@]}"; do
   script="webui/scripts/${s}.sh"

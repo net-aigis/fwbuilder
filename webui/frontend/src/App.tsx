@@ -985,6 +985,16 @@ export function App() {
         if (fw) void onDeployDryRun(fw);
         return;
       }
+      if (e.altKey && !mod && (e.key === "," || e.key === "<") && recentPaths.length) {
+        e.preventDefault();
+        onCycleRecent(-1);
+        return;
+      }
+      if (e.altKey && !mod && (e.key === "." || e.key === ">") && recentPaths.length) {
+        e.preventDefault();
+        onCycleRecent(1);
+        return;
+      }
       if (mod && e.key.toLowerCase() === "i") {
         e.preventDefault();
         void onShowStats();
@@ -1400,6 +1410,8 @@ export function App() {
     ruleActionFilter,
     objectPath,
     compileLog,
+    recentPaths,
+    path,
   ]);
 
   async function onApplyObject(patch: {
@@ -2882,6 +2894,16 @@ export function App() {
     }
   }
 
+  function onCycleRecent(delta: number) {
+    if (!recentPaths.length) return;
+    const idx = Math.max(0, recentPaths.indexOf(path));
+    const next = recentPaths[(idx + delta + recentPaths.length) % recentPaths.length];
+    if (next) {
+      setPath(next);
+      setStatus(`Recent project: ${next}`);
+    }
+  }
+
   function onClearRecent() {
     setRecentPaths([]);
     try {
@@ -2921,15 +2943,35 @@ export function App() {
             Open
           </button>
           {recentPaths.length ? (
-            <button
-              type="button"
-              className="ghost"
-              disabled={busy}
-              title="Clear recent project paths"
-              onClick={onClearRecent}
-            >
-              Clear recent
-            </button>
+            <>
+              <button
+                type="button"
+                className="ghost"
+                disabled={busy}
+                title="Previous recent project path (Alt+,)"
+                onClick={() => onCycleRecent(-1)}
+              >
+                ‹
+              </button>
+              <button
+                type="button"
+                className="ghost"
+                disabled={busy}
+                title="Next recent project path (Alt+.)"
+                onClick={() => onCycleRecent(1)}
+              >
+                ›
+              </button>
+              <button
+                type="button"
+                className="ghost"
+                disabled={busy}
+                title="Clear recent project paths"
+                onClick={onClearRecent}
+              >
+                Clear recent
+              </button>
+            </>
           ) : null}
           <button
             type="button"

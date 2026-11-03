@@ -657,6 +657,19 @@ button.linkish:disabled {
   max-height: 22rem;
   overflow: auto;
   margin-bottom: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+  gap: 0.5rem 0.75rem;
+}
+
+.dialog-pages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  align-items: center;
+}
+
+.dialog-pages button[aria-selected="true"] {
+  font-weight: 600;
 }
 
 .check {

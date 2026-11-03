@@ -117,11 +117,26 @@ export function RuleOptions({
         </div>
       </header>
       {!showAll && groups.length > 1 ? (
-        <div className="btn-row pad">
+        <div className="dialog-pages pad" role="tablist" aria-label="Rule option pages">
+          <button
+            type="button"
+            className="ghost"
+            disabled={busy}
+            title="Previous rule options page"
+            onClick={() => {
+              const idx = Math.max(0, groups.findIndex((g) => g.id === activeGroup));
+              const next = groups[(idx - 1 + groups.length) % groups.length];
+              if (next) setActiveGroup(next.id);
+            }}
+          >
+            ←
+          </button>
           {groups.map((g) => (
             <button
               key={g.id}
               type="button"
+              role="tab"
+              aria-selected={g.id === activeGroup}
               className={g.id === activeGroup ? undefined : "ghost"}
               disabled={busy}
               onClick={() => setActiveGroup(g.id)}
@@ -129,6 +144,19 @@ export function RuleOptions({
               {g.title}
             </button>
           ))}
+          <button
+            type="button"
+            className="ghost"
+            disabled={busy}
+            title="Next rule options page"
+            onClick={() => {
+              const idx = Math.max(0, groups.findIndex((g) => g.id === activeGroup));
+              const next = groups[(idx + 1) % groups.length];
+              if (next) setActiveGroup(next.id);
+            }}
+          >
+            →
+          </button>
         </div>
       ) : null}
       {keys.length || Object.keys(options).length ? (
