@@ -507,6 +507,11 @@ export function fetchOptionSchema(platform: string, hostOs = "") {
     geometry?: { width?: number; height?: number };
     tab_position?: string;
     size_grip_enabled?: boolean;
+    layout_fidelity?: {
+      score_percent?: number;
+      pixel_parity?: boolean;
+      path?: string;
+    };
     supported_os?: string[];
     capabilities?: Record<string, string>;
     defaults: Record<string, string>;
@@ -852,15 +857,18 @@ export function fetchExpectInstallWalkthrough(
     all_preview_only: boolean;
     host_os: string;
     step_count: number;
+    timeline_start?: string;
     steps: Array<{
       id: string;
       title: string;
       status: string;
       runnable: boolean;
       implemented?: boolean;
+      ordinal?: number;
       has_preview?: boolean;
       configlet?: string;
       detail?: string;
+      simulated_at?: string;
     }>;
     note?: string;
   }>(`/api/v1/expect-install-plan/walkthrough?${q.toString()}`);

@@ -492,6 +492,7 @@ def option_schema(platform: str, host_os: str = "") -> dict[str, Any]:
         fields[key] = _infer_type(key, defaults.get(key, ""), field_meta.get(key))
 
     chrome = dialog_chrome_for(platform)
+    fidelity = layout_fidelity_for(platform, host_os)
     return {
         "platform": plat["name"],
         "host_os": host_os or None,
@@ -507,6 +508,11 @@ def option_schema(platform: str, host_os: str = "") -> dict[str, Any]:
         "fields": fields,
         "dialog_field_count": len(field_meta),
         "dialog_pages": pages,
+        "layout_fidelity": {
+            "score_percent": fidelity.get("score_percent"),
+            "pixel_parity": False,
+            "path": "/api/v1/layout-fidelity",
+        },
     }
 
 

@@ -993,11 +993,15 @@ export function FirewallExtras({
                           "",
                           ...wt.steps.map((s, i) => {
                             const mark = s.runnable ? "RUN" : "preview_only";
-                            return `${i + 1}. [${s.id}] ${s.title} — ${mark}${
+                            const when = s.simulated_at ? ` @ ${s.simulated_at}` : "";
+                            return `${s.ordinal ?? i + 1}. [${s.id}] ${s.title} — ${mark}${when}${
                               s.detail ? `\n   ${s.detail}` : ""
                             }`;
                           }),
                         ];
+                        if (wt.timeline_start) {
+                          lines.splice(1, 0, `timeline_start=${wt.timeline_start}`);
+                        }
                         const text = lines.join("\n");
                         setExpectWalkthroughText(text);
                         try {

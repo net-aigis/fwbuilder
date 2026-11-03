@@ -445,17 +445,25 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | STATUS fidelity mentions | done | E2E phase302 |
 | Multi-platform fidelity | done | E2E phase303 |
 | Soft-complete STATUS through 304 | done | E2E phase304 |
+| Walkthrough timeline stamps | done | E2E phase305 |
+| Timeline UI | done | E2E phase306 |
+| hard-gaps + schema fidelity link | done | E2E phase307 |
+| 305–307 wiring | done | E2E phase308 |
+| Soft marker 312 | done | E2E phase309 |
+| STATUS 305+ mentions | done | E2E phase310 |
+| Typecheck after timeline | done | E2E phase311 |
+| Soft-complete STATUS through 312 | done | E2E phase312 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Soft-complete (feature/webui polish track)
 
 WebUI on `feature/webui` remains soft-complete for the polish track.
 
-### Hard-gap honesty/preview track — soft-fertig (phase256); preview slices through 304
+### Hard-gap honesty/preview track — soft-fertig (phase256); preview slices through 312
 
-`WEBUI_SOFT_COMPLETE_PHASE=304`; `/hard-gaps` sets `soft_fertig_honesty_track: true` + `hard_gap_notes` (UI list); `GET /layout-fidelity` reports heuristic `score_percent` (**not** pixel parity).
+`WEBUI_SOFT_COMPLETE_PHASE=312`; `/hard-gaps` sets `soft_fertig_honesty_track: true` + `hard_gap_notes` + `layout_fidelity_path`; `GET /layout-fidelity` / option-schema.layout_fidelity report heuristic `score_percent` (**not** pixel parity).
 
-- Deploy: manifest `# files:`, OS configlets, external PolicyInstallScript, copyFWB, use_scp, gzip transfer on compress (plan shows −%), capabilities API (+ expect_install_plan / walkthrough pointers), live gate + force_limited, expect stub + raw/expanded configlet preview + ordered expect plan (reg_user + safety_net_acl + download + sessionStorage) + dry walkthrough (all preview_only, sessionStorage); `POST …/run` (+ optional `step=`) → 501 / step_refused (still **no** expect/SSHSession runtime)
+- Deploy: manifest `# files:`, OS configlets, external PolicyInstallScript, copyFWB, use_scp, gzip transfer on compress (plan shows −%), capabilities API (+ expect_install_plan / walkthrough pointers), live gate + force_limited, expect stub + raw/expanded configlet preview + ordered expect plan (reg_user + safety_net_acl + download + sessionStorage) + dry walkthrough (preview_only + simulated_at timeline, sessionStorage); `POST …/run` (+ optional `step=`) → 501 / step_refused (still **no** expect/SSHSession runtime)
 - Options: .ui labels, free QLabel annotations (+ alignment), buddy_labels (external_label controls), enabled/visible respect, QRadio bool, QGroupBox sections (flat/checkable), tooltips, page-local QGridLayout + spacers (sizeHint) + column/row stretch + spacing/margins (CSS + page hint) + sizePolicy + min/max size + layout hints + layout_tree + dialog windowTitle/geometry/tab_position/sizeGrip (header WxH + tabs + CSS max-height) + shared `qtGridStyle` + layout-fidelity score on Firewall/Rule/Interface (still **not** full pixel Qt layout)
 - SSH: BatchMode only; `GET /ssh-auth`, capabilities.ssh_auth, deploy plan line, `allow_password_auth` → 400, `POST /ssh-auth/password` → 501
 - Honesty: UI lists `hard_gap_open` + per-gap notes via `fetchHardGaps`; `GET /hard-gaps` documents remaining gaps; layout-fidelity score is coverage of extracted signals only
@@ -463,7 +471,7 @@ WebUI on `feature/webui` remains soft-complete for the polish track.
 Still open (hard backlog — **not** soft-fertig):
 
 - Full Qt AdvancedDialog **pixel** layout parity (exact geometry; dialog size + grid spacing since phase226/241; row/col + spacers/sizeHint + stretch + annotations/buddy_labels/alignment + sizePolicy/min/max/enabled/visible + QGroupBox flat + layout_tree + tab_position/sizeGrip since phase165/177/181/189/205/209/213/257–291; fidelity score since 297)
-- Full desktop **FirewallInstaller** expect/SSHSession for Cisco/Juniper/Procurve (plan/preview/walkthrough/download; run/step endpoint refuses with 501)
+- Full desktop **FirewallInstaller** expect/SSHSession for Cisco/Juniper/Procurve (plan/preview/walkthrough+timeline/download; run/step endpoint refuses with 501)
 - Password/keyboard-interactive SSH (API refuses `allow_password_auth` and `POST /ssh-auth/password`; BatchMode only)
 
 ## Phase 3 — compile / deploy
@@ -779,6 +787,14 @@ Still open (hard backlog — **not** soft-fertig):
 | Local E2E phase302 (STATUS mentions) | done | `e2e-phase302.sh` **OK** |
 | Local E2E phase303 (multi-platform fidelity) | done | `e2e-phase303.sh` **OK** |
 | Local E2E phase304 (STATUS soft-complete) | done | `e2e-phase304.sh` **OK** |
+| Local E2E phase305 (walkthrough timeline) | done | `e2e-phase305.sh` **OK** |
+| Local E2E phase306 (timeline UI) | done | `e2e-phase306.sh` **OK** |
+| Local E2E phase307 (fidelity links) | done | `e2e-phase307.sh` **OK** |
+| Local E2E phase308 (wiring) | done | `e2e-phase308.sh` **OK** |
+| Local E2E phase309 (soft marker 312) | done | `e2e-phase309.sh` **OK** |
+| Local E2E phase310 (STATUS mentions) | done | `e2e-phase310.sh` **OK** |
+| Local E2E phase311 (typecheck) | done | `e2e-phase311.sh` **OK** |
+| Local E2E phase312 (STATUS soft-complete) | done | `e2e-phase312.sh` **OK** |
 
 ## Local commands
 
@@ -1092,6 +1108,14 @@ bash webui/scripts/e2e-phase301.sh
 bash webui/scripts/e2e-phase302.sh
 bash webui/scripts/e2e-phase303.sh
 bash webui/scripts/e2e-phase304.sh
+bash webui/scripts/e2e-phase305.sh
+bash webui/scripts/e2e-phase306.sh
+bash webui/scripts/e2e-phase307.sh
+bash webui/scripts/e2e-phase308.sh
+bash webui/scripts/e2e-phase309.sh
+bash webui/scripts/e2e-phase310.sh
+bash webui/scripts/e2e-phase311.sh
+bash webui/scripts/e2e-phase312.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

@@ -225,9 +225,12 @@ def expect_install_walkthrough(
     fwscript: str = "firewall.fw",
 ) -> dict[str, Any]:
     """Dry walkthrough of expect plan steps — all preview_only, none executed."""
+    from datetime import datetime, timezone
+
     plan = expect_install_plan(host_os, fwdir=fwdir, fwscript=fwscript)
+    started = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     steps_out: list[dict[str, Any]] = []
-    for step in plan.get("steps") or []:
+    for idx, step in enumerate(plan.get("steps") or []):
         steps_out.append(
             {
                 "id": step.get("id"),
@@ -235,10 +238,12 @@ def expect_install_walkthrough(
                 "status": "preview_only",
                 "runnable": False,
                 "implemented": False,
+                "ordinal": idx + 1,
                 "configlet": step.get("configlet"),
                 "has_preview": bool(step.get("preview")),
                 "detail": step.get("detail")
                 or "Not executed; WebUI has no expect/SSHSession runtime",
+                "simulated_at": started,
             }
         )
     return {
@@ -250,9 +255,11 @@ def expect_install_walkthrough(
         "steps": steps_out,
         "step_count": len(steps_out),
         "all_preview_only": True,
+        "timeline_start": started,
         "note": (
             "Walkthrough lists desktop expect steps with preview_only status. "
-            "No SSH session is opened and no step is run."
+            "No SSH session is opened and no step is run. "
+            "simulated_at is a timeline stamp only, not execution."
         ),
         "has_reg_user": plan.get("has_reg_user"),
         "has_safety_net_acl": plan.get("has_safety_net_acl"),
