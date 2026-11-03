@@ -206,6 +206,7 @@ export function FirewallExtras({
         const caps = cfgList as typeof cfgList & {
           recommended_webui_mode?: string;
           names?: string[];
+          expect_install_plan?: { note?: string; available?: boolean; executable?: boolean };
           expect_installer?: {
             note?: string;
             desktop_steps?: string[];
