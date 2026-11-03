@@ -156,6 +156,16 @@ export function FirewallExtras({
   const [activeGroup, setActiveGroup] = useState<string>("platform");
   const [activeStackIndex, setActiveStackIndex] = useState(0);
   const [showAllStacks, setShowAllStacks] = useState(false);
+  const [stackSwitchHints, setStackSwitchHints] = useState<
+    Array<{
+      stack: string;
+      option: string;
+      when_true: number;
+      when_false: number;
+      preview_only?: boolean;
+      note?: string;
+    }>
+  >([]);
   const [installerNote, setInstallerNote] = useState<string | null>(null);
   const [installerMode, setInstallerMode] = useState<string | null>(null);
   const [expectSteps, setExpectSteps] = useState<string[]>([]);
@@ -325,6 +335,7 @@ export function FirewallExtras({
         );
         setFields(schema.fields ?? {});
         setDefaults(schema.defaults ?? {});
+        setStackSwitchHints(schema.stack_switch ?? []);
         let preferred = nextGroups[0]?.id || "platform";
         try {
           const stored = sessionStorage.getItem(groupStorageKey(plat, hostOs || ""));
@@ -339,6 +350,7 @@ export function FirewallExtras({
           } · ${plat}${schema.compiler ? ` · ${schema.compiler}` : ""}`,
         );
       } else {
+        setStackSwitchHints([]);
         onStatus?.(`Options: ${Object.keys(o.options ?? {}).length} keys`);
       }
     } catch (err) {
@@ -462,6 +474,20 @@ export function FirewallExtras({
       /* ignore */
     }
   }, [activeStackIndex, activeGroup, platform, hostOs, stackedPages.length]);
+
+  // Follow desktop stack switches driven by a bool option (e.g. use_ULOG → logTargetStack).
+  useEffect(() => {
+    if (!stackedPages.length || !stackSwitchHints.length || showAllStacks) return;
+    const stackName = stackedPages[0]?.stack;
+    const hint = stackSwitchHints.find((h) => h.stack === stackName);
+    if (!hint?.option) return;
+    const raw = (options[hint.option] ?? "").trim().toLowerCase();
+    const truthy = raw === "true" || raw === "1" || raw === "yes";
+    const next = truthy ? hint.when_true : hint.when_false;
+    if (stackedPages.some((s) => s.stack_index === next)) {
+      setActiveStackIndex(next);
+    }
+  }, [options, stackedPages, stackSwitchHints, showAllStacks]);
 
   const optionSections = useMemo(() => {
     if (filter.trim() || showAll || !activeGroupMeta?.sections?.length) {

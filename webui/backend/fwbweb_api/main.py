@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "368"
+WEBUI_SOFT_COMPLETE_PHASE = "376"
 
 HARD_GAPS_OPEN = (
     "full_qt_pixel_layout",
@@ -47,8 +47,8 @@ HARD_GAP_NOTES = {
     "full_qt_pixel_layout": (
         "Grid/spacers/stretch/buddy_labels/alignment/sizePolicy/sizeHint/"
         "layout_tree/tab_position/sizeGrip/QStackedWidget pages extracted "
-        "(Firewall + Interface section chrome + empty pages + stack switcher); "
-        "exact pixel geometry still open."
+        "(Firewall + Interface section chrome + empty pages + stack switcher + "
+        "use_ULOG/device-type stack hints); exact pixel geometry still open."
     ),
     "expect_sshsession_runtime": (
         "Plan + walkthrough + configlet previews available; POST /run → 501; "

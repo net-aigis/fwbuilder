@@ -577,6 +577,15 @@ export function fetchOptionSchema(platform: string, hostOs = "") {
     featured_keys: string[];
     fields?: Record<string, OptionFieldMeta>;
     dialog_field_count?: number;
+    dialog_stem?: string | null;
+    stack_switch?: Array<{
+      stack: string;
+      option: string;
+      when_true: number;
+      when_false: number;
+      preview_only?: boolean;
+      note?: string;
+    }>;
   }>(`/api/v1/option-schema?${qs.toString()}`);
 }
 
@@ -655,6 +664,14 @@ export function fetchInterfaceOptionSchema(hostOs: string) {
       score_percent?: number;
       pixel_parity?: boolean;
       path?: string;
+    } | null;
+    stack_switch?: {
+      stack: string;
+      control?: string;
+      by_type: Record<string, number>;
+      default?: number;
+      preview_only?: boolean;
+      note?: string;
     } | null;
   }>(`/api/v1/interface-option-schema?${qs.toString()}`);
 }

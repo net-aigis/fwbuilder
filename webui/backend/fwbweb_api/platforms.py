@@ -33,6 +33,89 @@ COMMON_KEYS = (
     "debug",
 )
 
+# Desktop QStackedWidget switch maps (preview / follow-option; not pixel parity).
+_IFACE_STACK_SWITCH: dict[str, dict[str, Any]] = {
+    "linux24IfaceOptsDialog": {
+        "stack": "options_stack",
+        "control": "iface_type",
+        "by_type": {"ethernet": 0, "8021q": 1, "bridge": 2, "bonding": 3},
+        "default": 0,
+        "preview_only": True,
+        "note": "Desktop typeChanged(); WebUI device-type select is display/preview only.",
+    },
+    "bsdIfaceOptsDialog": {
+        "stack": "options_stack",
+        "control": "iface_type",
+        "by_type": {"ethernet": 1, "8021q": 2, "bridge": 3},
+        "default": 0,
+        "preview_only": True,
+        "note": "Desktop typeChanged(); empty page 0; ethernet uses index 1.",
+    },
+    "pixosIfaceOptsDialog": {
+        "stack": "options_stack",
+        "control": "iface_type",
+        "by_type": {"8021q": 1},
+        "default": 0,
+        "preview_only": True,
+        "note": "Desktop VLAN → stack index 1; else 0.",
+    },
+    "secuwallIfaceOptsDialog": {
+        "stack": "options_stack",
+        "control": "iface_type",
+        "by_type": {"8021q": 1},
+        "default": 0,
+        "preview_only": True,
+        "note": "Desktop VLAN → stack index 1; else 0.",
+    },
+}
+
+_OPTION_STACK_SWITCH: dict[str, list[dict[str, Any]]] = {
+    "iptAdvancedDialog": [
+        {
+            "stack": "logTargetStack",
+            "option": "use_ULOG",
+            "when_true": 1,
+            "when_false": 0,
+            "preview_only": False,
+            "note": "Desktop switchLOG_ULOG(); follow use_ULOG option.",
+        }
+    ],
+    "ipcopAdvancedDialog": [
+        {
+            "stack": "logTargetStack",
+            "option": "use_ULOG",
+            "when_true": 1,
+            "when_false": 0,
+            "preview_only": False,
+            "note": "Follow use_ULOG like iptAdvancedDialog.",
+        }
+    ],
+    "secuwallAdvancedDialog": [
+        {
+            "stack": "logTargetStack",
+            "option": "use_ULOG",
+            "when_true": 1,
+            "when_false": 0,
+            "preview_only": False,
+            "note": "Follow use_ULOG like iptAdvancedDialog.",
+        }
+    ],
+}
+
+
+def _iface_stack_switch(stem: str | None) -> dict[str, Any] | None:
+    if not stem:
+        return None
+    hint = _IFACE_STACK_SWITCH.get(stem)
+    return dict(hint) if hint else None
+
+
+def _option_stack_switch(stem: str | None) -> list[dict[str, Any]]:
+    if not stem:
+        return []
+    hints = _OPTION_STACK_SWITCH.get(stem) or []
+    return [dict(h) for h in hints]
+
 
 def _res_roots() -> list[Path]:
     roots: list[Path] = []
@@ -497,11 +580,14 @@ def option_schema(platform: str, host_os: str = "") -> dict[str, Any]:
 
     chrome = dialog_chrome_for(platform)
     fidelity = layout_fidelity_for(platform, host_os)
-    return {
+    stem = _dialog_stem(plat.get("dialog") or platform)
+    stack_switch = _option_stack_switch(stem)
+    out: dict[str, Any] = {
         "platform": plat["name"],
         "host_os": host_os or None,
         "compiler": plat.get("compiler"),
         "dialog": plat.get("dialog"),
+        "dialog_stem": stem,
         "description": plat.get("description"),
         "supported_os": plat.get("supported_os"),
         "capabilities": plat.get("capabilities"),
@@ -518,6 +604,9 @@ def option_schema(platform: str, host_os: str = "") -> dict[str, Any]:
             "path": "/api/v1/layout-fidelity",
         },
     }
+    if stack_switch:
+        out["stack_switch"] = stack_switch
+    return out
 
 
 def _rule_dialog_stem(rule_kind: str | None) -> str | None:
@@ -666,7 +755,7 @@ def interface_option_schema(host_os: str) -> dict[str, Any]:
             "pixel_parity": False,
             "path": "/api/v1/layout-fidelity",
         }
-    return {
+    out: dict[str, Any] = {
         "host_os": os_info["name"],
         "interface_dialog": iface_dialog or None,
         "dialog_stem": stem,
@@ -682,3 +771,7 @@ def interface_option_schema(host_os: str) -> dict[str, Any]:
         "dialog_pages": pages,
         "layout_fidelity": fidelity,
     }
+    stack_switch = _iface_stack_switch(stem)
+    if stack_switch:
+        out["stack_switch"] = stack_switch
+    return out

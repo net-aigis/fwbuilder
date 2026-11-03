@@ -748,6 +748,17 @@ pre.configlet-preview {
   align-items: center;
 }
 
+.option-stack-device-type label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.option-stack-device-type select {
+  max-width: 16rem;
+}
+
 .field.field-ui-disabled {
   opacity: 0.6;
 }

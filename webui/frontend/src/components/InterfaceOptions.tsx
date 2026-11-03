@@ -74,6 +74,14 @@ export function InterfaceOptions({
   const [activeGroup, setActiveGroup] = useState("interface");
   const [activeStackIndex, setActiveStackIndex] = useState(0);
   const [showAllStacks, setShowAllStacks] = useState(false);
+  const [previewDeviceType, setPreviewDeviceType] = useState("ethernet");
+  const [stackSwitch, setStackSwitch] = useState<{
+    stack: string;
+    by_type: Record<string, number>;
+    default?: number;
+    preview_only?: boolean;
+    note?: string;
+  } | null>(null);
   const [resolvedOs, setResolvedOs] = useState(hostOs || "");
   const [layoutFidelity, setLayoutFidelity] = useState<string | null>(null);
 
@@ -92,6 +100,17 @@ export function InterfaceOptions({
       const merged = { ...defaults, ...(res.options ?? {}) };
       setOptions(merged);
       setFields(schema?.fields ?? {});
+      setStackSwitch(schema?.stack_switch ?? null);
+      if (schema?.stack_switch?.by_type) {
+        const types = Object.keys(schema.stack_switch.by_type);
+        const def =
+          types.find((t) => schema.stack_switch!.by_type[t] === (schema.stack_switch!.default ?? 0)) ||
+          types[0] ||
+          "ethernet";
+        setPreviewDeviceType(def);
+      } else {
+        setPreviewDeviceType("ethernet");
+      }
       const nextGroups = schema?.groups?.length
         ? schema.groups
         : Object.keys(merged).length
@@ -269,6 +288,33 @@ export function InterfaceOptions({
           >
             →
           </button>
+        </div>
+      ) : null}
+      {stackSwitch?.by_type && Object.keys(stackSwitch.by_type).length ? (
+        <div className="pad option-stack-device-type">
+          <label className="muted" title={stackSwitch.note || "Desktop iface_type → stack (preview)"}>
+            Device type (stack preview)
+            <select
+              value={previewDeviceType}
+              disabled={busy}
+              onChange={(e) => {
+                const t = e.target.value;
+                setPreviewDeviceType(t);
+                setShowAllStacks(false);
+                const idx = stackSwitch.by_type[t];
+                if (idx != null) setActiveStackIndex(idx);
+              }}
+            >
+              {Object.keys(stackSwitch.by_type).map((t) => (
+                <option key={t} value={t}>
+                  {t} → stack[{stackSwitch.by_type[t]}]
+                </option>
+              ))}
+            </select>
+          </label>
+          {stackSwitch.preview_only ? (
+            <span className="muted"> · preview only (does not write Interface type)</span>
+          ) : null}
         </div>
       ) : null}
       {stackedPages.length > 1 ? (
