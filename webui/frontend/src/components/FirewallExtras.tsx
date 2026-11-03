@@ -65,6 +65,9 @@ export function FirewallExtras({
   const [fields, setFields] = useState<Record<string, OptionFieldMeta>>({});
   const [filter, setFilter] = useState("");
   const [mgmtAddr, setMgmtAddr] = useState("");
+  const [installEnabled, setInstallEnabled] = useState(false);
+  const [installCmd, setInstallCmd] = useState("");
+  const [installArgs, setInstallArgs] = useState("");
   const [deployHost, setDeployHost] = useState("");
   const [deployUser, setDeployUser] = useState("");
   const [remoteDir, setRemoteDir] = useState("");
@@ -98,6 +101,10 @@ export function FirewallExtras({
       ]);
       setOptions(o.options ?? {});
       setMgmtAddr(m.management?.address ?? "");
+      const script = m.management?.install_script;
+      setInstallEnabled(Boolean(script?.enabled));
+      setInstallCmd(script?.command || "");
+      setInstallArgs(script?.arguments || "");
       setDeployHost(m.management?.address || o.options?.altAddress || "");
       setDeployUser(o.options?.admUser || "");
       setRemoteDir(o.options?.firewall_dir || "/etc");
@@ -256,8 +263,19 @@ export function FirewallExtras({
     onBusy?.(true);
     onError?.(null);
     try {
-      await updateManagement(sessionId, firewallId, { address: mgmtAddr });
-      onStatus?.(`Management address → ${mgmtAddr}`);
+      await updateManagement(sessionId, firewallId, {
+        address: mgmtAddr,
+        install_script: {
+          enabled: installEnabled,
+          command: installCmd,
+          arguments: installArgs,
+        },
+      });
+      onStatus?.(
+        installEnabled && installCmd.trim()
+          ? `Management + install script → ${installCmd}`
+          : `Management address → ${mgmtAddr}`,
+      );
     } catch (err) {
       onError?.(err instanceof Error ? err.message : String(err));
     } finally {
@@ -519,6 +537,33 @@ export function FirewallExtras({
         <label className="field block">
           Management address
           <input value={mgmtAddr} disabled={busy} onChange={(e) => setMgmtAddr(e.target.value)} />
+        </label>
+        <label className="check" title="When enabled with a command, deploy runs this local script instead of scp/ssh">
+          <input
+            type="checkbox"
+            checked={installEnabled}
+            disabled={busy}
+            onChange={(e) => setInstallEnabled(e.target.checked)}
+          />
+          External install script
+        </label>
+        <label className="field block">
+          Install script command
+          <input
+            value={installCmd}
+            disabled={busy}
+            onChange={(e) => setInstallCmd(e.target.value)}
+            placeholder="/usr/local/bin/fw-install.sh"
+          />
+        </label>
+        <label className="field block">
+          Install script arguments
+          <input
+            value={installArgs}
+            disabled={busy}
+            onChange={(e) => setInstallArgs(e.target.value)}
+            placeholder="optional args"
+          />
         </label>
         <label className="field block">
           Deploy host override

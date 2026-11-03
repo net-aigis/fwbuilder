@@ -288,6 +288,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | openwrt installer configlet resolve | done | own dir or linux24; E2E phase143 |
 | Deploy use_scp override + Copy plan | done | body/UI; E2E phase145 |
 | ios use_scp configlet branches | done | copy vs config term; E2E phase146 |
+| External PolicyInstallScript deploy | done | local run like Unx; E2E phase147–148 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Soft-complete (feature/webui polish track)
@@ -457,6 +458,8 @@ Still open:
 | Local E2E phase144 (missing identity) | done | `e2e-phase144.sh` **OK** |
 | Local E2E phase145 (use_scp + copy plan) | done | `e2e-phase145.sh` **OK** |
 | Local E2E phase146 (ios use_scp branches) | done | `e2e-phase146.sh` **OK** |
+| Local E2E phase147 (external install script) | done | `e2e-phase147.sh` **OK** |
+| Local E2E phase148 (external install UI) | done | `e2e-phase148.sh` **OK** |
 
 ## Local commands
 
@@ -612,6 +615,8 @@ bash webui/scripts/e2e-phase143.sh
 bash webui/scripts/e2e-phase144.sh
 bash webui/scripts/e2e-phase145.sh
 bash webui/scripts/e2e-phase146.sh
+bash webui/scripts/e2e-phase147.sh
+bash webui/scripts/e2e-phase148.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

@@ -9,7 +9,7 @@ from pydantic import BaseModel, Field
 from ..auth import require_token
 from ..bridge import BridgeError
 from ..compile import CompileError, run_compiler
-from ..deploy import DeployError, plan_and_deploy
+from ..deploy import DeployError, plan_and_deploy, plan_external_install
 from ..sessions import store
 
 router = APIRouter(prefix="/api/v1/projects", tags=["deploy"])
@@ -71,11 +71,6 @@ def deploy_firewall(
     mgmt = mgmt_resp.get("management") or {}
 
     host = (body.host or options.get("altAddress") or mgmt.get("address") or "").strip()
-    if host in ("", "0.0.0.0", "::"):
-        raise HTTPException(
-            status_code=400,
-            detail="no management/alt address; set Management address or pass host",
-        )
     user = (body.user if body.user is not None else options.get("admUser") or "").strip()
     remote_dir = (body.remote_dir or options.get("firewall_dir") or "/etc").strip() or "/etc"
     activation = (
@@ -83,6 +78,14 @@ def deploy_firewall(
         if body.activation_cmd is not None
         else options.get("activationCmd") or ""
     )
+    pis = mgmt.get("install_script") or {}
+    pis_cmd = str(pis.get("command") or "").strip()
+    use_external = bool(pis_cmd) and bool(pis.get("enabled", True))
+    if not use_external and host in ("", "0.0.0.0", "::"):
+        raise HTTPException(
+            status_code=400,
+            detail="no management/alt address; set Management address or pass host",
+        )
 
     compile_result: dict[str, Any] | None = None
     if body.compile_first:
@@ -114,18 +117,61 @@ def deploy_firewall(
     else:
         last = session.meta.get("last_compile") or {}
         if last.get("firewall_id") != body.firewall_id or not last.get("destdir"):
+            if use_external:
+                compile_result = {
+                    "destdir": "",
+                    "outputs": [],
+                    "compiler": "(skipped; external install script)",
+                    "ok": True,
+                }
+            else:
+                raise HTTPException(
+                    status_code=400,
+                    detail="no prior compile for this firewall; set compile_first=true",
+                )
+        else:
+            compile_result = {
+                "destdir": last["destdir"],
+                "outputs": last.get("outputs") or [],
+                "compiler": "(cached)",
+                "ok": True,
+            }
+
+    # Desktop FirewallInstallerUnx: non-empty PolicyInstallScript command
+    # replaces scp/activate entirely (enabled flag still stored on the object).
+    if use_external:
+        try:
+            deploy_result = plan_external_install(
+                command=pis_cmd,
+                arguments=str(pis.get("arguments") or ""),
+                fwb_path=Path(session.work_path),
+                firewall_name=name,
+                work_dir=str(Path(session.work_path).parent),
+                dry_run=body.dry_run,
+                timeout=120.0,
+            )
+        except DeployError as exc:
             raise HTTPException(
                 status_code=400,
-                detail="no prior compile for this firewall; set compile_first=true",
-            )
-        compile_result = {
-            "destdir": last["destdir"],
-            "outputs": last.get("outputs") or [],
-            "compiler": "(cached)",
+                detail={"message": str(exc), "log": exc.log, "commands": exc.commands},
+            ) from exc
+        if not body.dry_run and deploy_result.get("ok"):
+            try:
+                session.bridge.request("touch_compiled", id=body.firewall_id)
+                session.bridge.request("touch_installed", id=body.firewall_id)
+                session.bridge.request("save")
+            except BridgeError:
+                pass
+        return {
             "ok": True,
+            "firewall": name,
+            "platform": platform,
+            "installer_options": {k: options.get(k, "") for k in INSTALLER_OPTION_KEYS},
+            "compile": compile_result,
+            "deploy": deploy_result,
         }
 
-    outputs = list(compile_result.get("outputs") or [])
+    outputs = list((compile_result or {}).get("outputs") or [])
     if not outputs:
         raise HTTPException(status_code=400, detail="compile produced no output files")
     preferred = options.get("output_file") or f"{name}.fw"

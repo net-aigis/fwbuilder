@@ -152,6 +152,66 @@ def _scp_host(host: str) -> str:
     return host
 
 
+def plan_external_install(
+    *,
+    command: str,
+    arguments: str = "",
+    fwb_path: Path,
+    firewall_name: str,
+    work_dir: str | None = None,
+    dry_run: bool = True,
+    timeout: float = 120.0,
+) -> dict[str, Any]:
+    """Run Management PolicyInstallScript locally (FirewallInstallerUnx path).
+
+    Desktop skips scp/activate entirely when install_script.command is set.
+    """
+    cmd_path = str(Path(command).expanduser())
+    extra = shlex.split(arguments) if (arguments or "").strip() else []
+    argv = [cmd_path, *extra, "-f", str(fwb_path)]
+    wdir = (work_dir or "").strip()
+    if wdir:
+        argv += ["-d", wdir]
+    argv.append(firewall_name)
+    plan_lines = [
+        "Installation plan:",
+        f"Run script {' '.join(argv)}",
+    ]
+    cmd_str = " ".join(shlex.quote(c) for c in argv)
+    result: dict[str, Any] = {
+        "ok": True,
+        "dry_run": dry_run,
+        "mode": "external_install_script",
+        "host": "",
+        "user": "",
+        "remote_path": "",
+        "local_script": "",
+        "files": [],
+        "manifest": [],
+        "activation_cmd": "",
+        "activation_source": "install_script",
+        "identity_file": None,
+        "plan": plan_lines,
+        "commands": [cmd_str],
+        "log": "",
+        "note": (
+            "Management PolicyInstallScript is set; WebUI runs it locally "
+            "(same as desktop FirewallInstallerUnx when install script is configured)."
+        ),
+    }
+    if dry_run:
+        result["log"] = "\n".join(plan_lines) + "\n\ndry_run: commands not executed\n" + cmd_str
+        return result
+    if not Path(cmd_path).is_file() and "/" in cmd_path:
+        # Absolute/relative path must exist; bare command names rely on PATH.
+        raise DeployError(f"install script missing: {cmd_path}", commands=[cmd_str])
+    code, out = _run(argv, timeout=timeout)
+    result["log"] = f"$ {cmd_str}\n{out}"
+    if code != 0:
+        raise DeployError(f"install script exited {code}", log=result["log"], commands=[cmd_str])
+    return result
+
+
 def plan_and_deploy(
     *,
     local_script: Path,
