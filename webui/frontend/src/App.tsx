@@ -122,6 +122,7 @@ export function App() {
   const [ruleTextFilter, setRuleTextFilter] = useState("");
   const [treeFilter, setTreeFilter] = useState("");
   const [unusedTypeFilter, setUnusedTypeFilter] = useState("");
+  const [trashTypeFilter, setTrashTypeFilter] = useState("");
   const [trashCount, setTrashCount] = useState(0);
   const [trashOpen, setTrashOpen] = useState(false);
   const [trashItems, setTrashItems] = useState<
@@ -208,6 +209,19 @@ export function App() {
     if (!unusedTypeFilter) return unusedHits;
     return unusedHits.filter((h) => h.type === unusedTypeFilter);
   }, [unusedHits, unusedTypeFilter]);
+
+  const trashTypes = useMemo(() => {
+    const set = new Set<string>();
+    for (const h of trashItems) {
+      if (h.type) set.add(h.type);
+    }
+    return Array.from(set).sort();
+  }, [trashItems]);
+
+  const visibleTrash = useMemo(() => {
+    if (!trashTypeFilter) return trashItems;
+    return trashItems.filter((h) => h.type === trashTypeFilter);
+  }, [trashItems, trashTypeFilter]);
 
   useEffect(() => {
     const onBeforeUnload = (e: BeforeUnloadEvent) => {
@@ -2108,6 +2122,7 @@ export function App() {
       setTrashCount(0);
       setTrashItems([]);
       setTrashOpen(false);
+      setTrashTypeFilter("");
       setUnusedHits([]);
       setUnusedTypeFilter("");
       setSessionsOpen(false);
@@ -2304,7 +2319,25 @@ export function App() {
           {trashOpen && trashItems.length ? (
             <div className="trash-panel">
               <div className="trash-panel-head">
-                <span>Deleted Objects</span>
+                <span>
+                  Deleted Objects ({visibleTrash.length}
+                  {visibleTrash.length !== trashItems.length ? `/${trashItems.length}` : ""})
+                </span>
+                {trashTypes.length > 1 ? (
+                  <select
+                    value={trashTypeFilter}
+                    disabled={busy}
+                    onChange={(e) => setTrashTypeFilter(e.target.value)}
+                    title="Filter deleted list by type"
+                  >
+                    <option value="">All types</option>
+                    {trashTypes.map((t) => (
+                      <option key={t} value={t}>
+                        {t}
+                      </option>
+                    ))}
+                  </select>
+                ) : null}
                 <button
                   type="button"
                   className="ghost"
@@ -2312,7 +2345,13 @@ export function App() {
                   title="Download Deleted Objects as JSON"
                   onClick={() => {
                     const blob = new Blob(
-                      [JSON.stringify({ count: trashItems.length, objects: trashItems }, null, 2)],
+                      [
+                        JSON.stringify(
+                          { count: visibleTrash.length, objects: visibleTrash },
+                          null,
+                          2,
+                        ),
+                      ],
                       { type: "application/json" },
                     );
                     const url = URL.createObjectURL(blob);
@@ -2321,7 +2360,7 @@ export function App() {
                     a.download = "fwbweb-deleted.json";
                     a.click();
                     URL.revokeObjectURL(url);
-                    setStatus(`Downloaded ${trashItems.length} deleted object(s)`);
+                    setStatus(`Downloaded ${visibleTrash.length} deleted object(s)`);
                   }}
                 >
                   JSON
@@ -2334,7 +2373,7 @@ export function App() {
                   onClick={() => {
                     const lines = [
                       "id\ttype\tname\tcomment\tdeleted_from_parent_id",
-                      ...trashItems.map(
+                      ...visibleTrash.map(
                         (h) =>
                           `${h.id}\t${h.type}\t${(h.name ?? "").replace(/\t|\n/g, " ")}\t${(h.comment ?? "").replace(/\t|\n/g, " ")}\t${h.deleted_from_parent_id ?? ""}`,
                       ),
@@ -2348,7 +2387,7 @@ export function App() {
                     a.download = "fwbweb-deleted.tsv";
                     a.click();
                     URL.revokeObjectURL(url);
-                    setStatus(`Downloaded ${trashItems.length} deleted object(s) as TSV`);
+                    setStatus(`Downloaded ${visibleTrash.length} deleted object(s) as TSV`);
                   }}
                 >
                   TSV
@@ -2371,7 +2410,7 @@ export function App() {
                   Empty
                 </button>
               </div>
-              {trashItems.map((item) => (
+              {visibleTrash.map((item) => (
                 <div key={item.id} className="trash-row">
                   <button
                     type="button"
