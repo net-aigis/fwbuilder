@@ -25,10 +25,24 @@ type Props = {
   onError?: (e: string | null) => void;
 };
 
+type GroupSection = {
+  id: string;
+  title: string;
+  keys: string[];
+  flat?: boolean;
+  checkable?: boolean;
+  checked?: boolean;
+  enabled?: boolean;
+  stacked?: boolean;
+  stack?: string;
+  stack_index?: number;
+};
+
 type Group = {
   id: string;
   title: string;
   keys: string[];
+  sections?: GroupSection[];
   spacers?: QtGridSpacer[];
   column_stretch?: number[];
   row_stretch?: number[];
@@ -141,6 +155,21 @@ export function InterfaceOptions({
     return Object.keys(options).sort();
   }, [groups, activeGroup, options]);
 
+  const activeGroupMeta = groups.find((g) => g.id === activeGroup) || null;
+
+  const optionSections = useMemo(() => {
+    if (!activeGroupMeta?.sections?.length) {
+      return [{ id: "all", title: "", keys }];
+    }
+    const keySet = new Set(keys);
+    const out: GroupSection[] = [];
+    for (const sec of activeGroupMeta.sections) {
+      const secKeys = sec.keys.filter((k) => keySet.has(k));
+      if (secKeys.length) out.push({ ...sec, keys: secKeys });
+    }
+    return out.length ? out : [{ id: "all", title: "", keys }];
+  }, [activeGroupMeta, keys]);
+
   return (
     <div className="firewall-extras">
       <header className="panel-header">
@@ -201,66 +230,103 @@ export function InterfaceOptions({
         </div>
       ) : null}
       {keys.length ? (
-        (() => {
-          const page = groups.find((g) => g.id === activeGroup);
-          const spacers = page?.spacers || [];
-          const stretch = page?.column_stretch || [];
-          const rowStretch = page?.row_stretch || [];
-          const notes = page?.annotations || [];
-          const buddyLabels = page?.buddy_labels || [];
-          const spacing = page?.spacing || {};
+        optionSections.map((sec, secIdx) => {
+          const pageSpacers = secIdx === 0 ? activeGroupMeta?.spacers || [] : [];
+          const pageStretch = secIdx === 0 ? activeGroupMeta?.column_stretch || [] : [];
+          const pageRowStretch = secIdx === 0 ? activeGroupMeta?.row_stretch || [] : [];
+          const pageNotes = secIdx === 0 ? activeGroupMeta?.annotations || [] : [];
+          const pageBuddyLabels = secIdx === 0 ? activeGroupMeta?.buddy_labels || [] : [];
+          const pageSpacing = secIdx === 0 ? activeGroupMeta?.spacing || {} : {};
           const grid = qtGridStyle(
-            keys,
+            sec.keys,
             fields,
-            spacers,
-            stretch,
-            [...notes, ...buddyLabels],
-            spacing,
-            rowStretch,
+            pageSpacers,
+            pageStretch,
+            [...pageNotes, ...pageBuddyLabels],
+            pageSpacing,
+            pageRowStretch,
           );
           return (
-            <div className={grid.className} style={grid.style}>
-              {spacers.map((sp, i) => (
-                <div
-                  key={sp.name || `spacer-${i}`}
-                  className="qt-spacer"
-                  aria-hidden="true"
-                  data-orientation={sp.orientation || undefined}
-                  style={qtSpacerStyle(sp)}
-                />
-              ))}
-              {notes.map((note, i) => (
-                <p
-                  key={note.name || `note-${i}`}
-                  className="qt-annotation muted"
-                  style={{ ...qtSpacerStyle(note), ...qtAlignmentStyle(note.alignment) }}
-                >
-                  {note.text}
-                </p>
-              ))}
-              {buddyLabels.map((bl, i) => (
-                <p
-                  key={bl.name || `buddy-${i}`}
-                  className="qt-annotation qt-buddy-label muted"
-                  data-buddy={bl.buddy}
-                  style={{ ...qtSpacerStyle(bl), ...qtAlignmentStyle(bl.alignment) }}
-                >
-                  {bl.text}
-                </p>
-              ))}
-              {keys.map((key) => (
-                <OptionField
-                  key={key}
-                  name={key}
-                  value={options[key] ?? ""}
-                  meta={metaFor(key, options[key] ?? "", fields)}
-                  disabled={busy}
-                  onChange={(v) => setOptions((prev) => ({ ...prev, [key]: v }))}
-                />
-              ))}
+            <div
+              key={sec.id || "all"}
+              className={[
+                "option-section",
+                sec.flat ? "option-section-flat" : "",
+                sec.checkable ? "option-section-checkable" : "",
+                sec.enabled === false ? "option-section-disabled" : "",
+                sec.stacked ? "option-section-stacked" : "",
+              ]
+                .filter(Boolean)
+                .join(" ")}
+              data-flat={sec.flat ? "1" : undefined}
+              data-checkable={sec.checkable ? "1" : undefined}
+              data-enabled={sec.enabled === false ? "0" : undefined}
+              data-stacked={sec.stacked ? "1" : undefined}
+              data-stack={sec.stack}
+            >
+              {sec.title ? (
+                <h4 className="option-section-title">
+                  {sec.checkable ? (
+                    <span className="muted" title="QGroupBox checkable in .ui (display only)">
+                      ☐{" "}
+                    </span>
+                  ) : null}
+                  {sec.stacked ? (
+                    <span className="muted" title="QStackedWidget page in .ui">
+                      ▤{" "}
+                    </span>
+                  ) : null}
+                  {sec.title}
+                  {sec.flat ? <span className="muted"> · flat</span> : null}
+                  {sec.stacked && sec.stack_index != null ? (
+                    <span className="muted"> · stack[{sec.stack_index}]</span>
+                  ) : null}
+                </h4>
+              ) : null}
+              <div className={grid.className} style={grid.style}>
+                {pageSpacers.map((sp, i) => (
+                  <div
+                    key={sp.name || `spacer-${i}`}
+                    className="qt-spacer"
+                    aria-hidden="true"
+                    data-orientation={sp.orientation || undefined}
+                    style={qtSpacerStyle(sp)}
+                  />
+                ))}
+                {pageNotes.map((note, i) => (
+                  <p
+                    key={note.name || `note-${i}`}
+                    className="qt-annotation muted"
+                    style={{ ...qtSpacerStyle(note), ...qtAlignmentStyle(note.alignment) }}
+                  >
+                    {note.text}
+                  </p>
+                ))}
+                {pageBuddyLabels.map((bl, i) => (
+                  <p
+                    key={bl.name || `buddy-${i}`}
+                    className="qt-annotation qt-buddy-label muted"
+                    data-buddy={bl.buddy}
+                    style={{ ...qtSpacerStyle(bl), ...qtAlignmentStyle(bl.alignment) }}
+                  >
+                    {bl.text}
+                  </p>
+                ))}
+                {sec.keys.map((key) => (
+                  <OptionField
+                    key={key}
+                    name={key}
+                    value={options[key] ?? ""}
+                    meta={metaFor(key, options[key] ?? "", fields)}
+                    disabled={busy}
+                    onChange={(v) => setOptions((prev) => ({ ...prev, [key]: v }))}
+                  />
+                ))}
+                {!sec.keys.length ? <p className="muted">No keys in this group.</p> : null}
+              </div>
             </div>
           );
-        })()
+        })
       ) : (
         <p className="muted pad">
           No InterfaceOptions schema for this OS

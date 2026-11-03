@@ -583,6 +583,18 @@ type SchemaGroup = {
   id: string;
   title: string;
   keys: string[];
+  sections?: Array<{
+    id: string;
+    title: string;
+    keys: string[];
+    flat?: boolean;
+    checkable?: boolean;
+    checked?: boolean;
+    enabled?: boolean;
+    stacked?: boolean;
+    stack?: string;
+    stack_index?: number;
+  }>;
   spacers?: Array<{
     row?: number;
     column?: number;
