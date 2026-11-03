@@ -175,22 +175,43 @@ export function InterfaceOptions({
         </div>
       ) : null}
       {keys.length ? (
-        <div
-          className={`typed-grid options-grid${
-            keys.some((k) => fields[k]?.grid) ? " qt-grid" : ""
-          }`}
-        >
-          {keys.map((key) => (
-            <OptionField
-              key={key}
-              name={key}
-              value={options[key] ?? ""}
-              meta={metaFor(key, options[key] ?? "", fields)}
-              disabled={busy}
-              onChange={(v) => setOptions((prev) => ({ ...prev, [key]: v }))}
-            />
-          ))}
-        </div>
+        (() => {
+          const useQt = keys.some((k) => fields[k]?.grid);
+          let maxCol = 3;
+          let maxRow = 0;
+          if (useQt) {
+            for (const k of keys) {
+              const g = fields[k]?.grid;
+              if (!g || g.row == null || g.column == null) continue;
+              maxRow = Math.max(maxRow, g.row + (g.rowspan || 1) - 1);
+              maxCol = Math.max(maxCol, g.column + (g.colspan || 1) - 1);
+            }
+          }
+          return (
+            <div
+              className={`typed-grid options-grid${useQt ? " qt-grid" : ""}`}
+              style={
+                useQt
+                  ? {
+                      gridTemplateColumns: `repeat(${maxCol + 1}, minmax(8rem, 1fr))`,
+                      gridTemplateRows: `repeat(${maxRow + 1}, auto)`,
+                    }
+                  : undefined
+              }
+            >
+              {keys.map((key) => (
+                <OptionField
+                  key={key}
+                  name={key}
+                  value={options[key] ?? ""}
+                  meta={metaFor(key, options[key] ?? "", fields)}
+                  disabled={busy}
+                  onChange={(v) => setOptions((prev) => ({ ...prev, [key]: v }))}
+                />
+              ))}
+            </div>
+          );
+        })()
       ) : (
         <p className="muted pad">
           No InterfaceOptions schema for this OS

@@ -314,6 +314,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Expandable expect desktop steps | done | FirewallExtras details; E2E phase171 |
 | Page-local QGridLayout positions | done | extract per tab page; E2E phase172 |
 | Dynamic CSS grid template from .ui extents | done | FirewallExtras; E2E phase173 |
+| Dynamic grid on Rule/Interface options | done | E2E phase174 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Soft-complete (feature/webui polish track)
@@ -512,6 +513,7 @@ Still open (hard backlog):
 | Local E2E phase171 (expect steps details) | done | `e2e-phase171.sh` **OK** |
 | Local E2E phase172 (page-local grids) | done | `e2e-phase172.sh` **OK** |
 | Local E2E phase173 (dynamic grid template) | done | `e2e-phase173.sh` **OK** |
+| Local E2E phase174 (rule/iface grid tmpl) | done | `e2e-phase174.sh` **OK** |
 
 ## Local commands
 
@@ -694,6 +696,7 @@ bash webui/scripts/e2e-phase170.sh
 bash webui/scripts/e2e-phase171.sh
 bash webui/scripts/e2e-phase172.sh
 bash webui/scripts/e2e-phase173.sh
+bash webui/scripts/e2e-phase174.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```
