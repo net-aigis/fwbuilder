@@ -402,6 +402,9 @@
         },
         "hashlimit_burst": {
           "key": "hashlimit_burst",
+          "minimum_size": {
+            "height": 25
+          },
           "type": "int",
           "widget": "ipt_hashlimit_burst",
           "widget_class": "QSpinBox"
@@ -421,6 +424,9 @@
         },
         "hashlimit_expire": {
           "key": "hashlimit_expire",
+          "minimum_size": {
+            "height": 25
+          },
           "tooltip": "After how many milliseconds do hash entries expire (omit this option in the generated script if set to 0)",
           "type": "int",
           "widget": "ipt_hashlimit_expire",
@@ -428,6 +434,9 @@
         },
         "hashlimit_gcinterval": {
           "key": "hashlimit_gcinterval",
+          "minimum_size": {
+            "height": 25
+          },
           "tooltip": "How many milliseconds between garbage collection intervals (omit this option in generated script if set to 0)",
           "type": "int",
           "widget": "ipt_hashlimit_gcinterval",
@@ -435,6 +444,9 @@
         },
         "hashlimit_max": {
           "key": "hashlimit_max",
+          "minimum_size": {
+            "height": 25
+          },
           "tooltip": "Maximum number of entries in the hash (omit this option in generated script if set to 0)",
           "type": "int",
           "widget": "ipt_hashlimit_max",
@@ -482,6 +494,9 @@
         },
         "hashlimit_size": {
           "key": "hashlimit_size",
+          "minimum_size": {
+            "height": 25
+          },
           "tooltip": "The number of buckets of the hash table (omit this option in generated script if set to 0)",
           "type": "int",
           "widget": "ipt_hashlimit_size",
@@ -495,6 +510,9 @@
             "/second"
           ],
           "key": "hashlimit_suffix",
+          "minimum_size": {
+            "height": 25
+          },
           "size_policy": {
             "horizontal": "Preferred",
             "vertical": "Fixed"
@@ -505,6 +523,9 @@
         },
         "hashlimit_value": {
           "key": "hashlimit_value",
+          "minimum_size": {
+            "height": 25
+          },
           "type": "int",
           "widget": "ipt_hashlimit",
           "widget_class": "QSpinBox"
@@ -613,6 +634,9 @@
             "rowspan": 1
           },
           "key": "ipfw_pipe_queue_num",
+          "minimum_size": {
+            "width": 80
+          },
           "type": "int",
           "widget": "usePortNum",
           "widget_class": "QSpinBox"
@@ -638,6 +662,9 @@
             "rowspan": 1
           },
           "key": "ipt_gw",
+          "minimum_size": {
+            "width": 250
+          },
           "type": "string",
           "widget": "ipt_gw",
           "widget_class": "QLineEdit"
@@ -871,6 +898,9 @@
             "rowspan": 1
           },
           "key": "pf_max_src_conn_overload_table",
+          "minimum_size": {
+            "width": 100
+          },
           "type": "string",
           "widget": "pf_overload_table",
           "widget_class": "QLineEdit"
@@ -983,6 +1013,9 @@
         },
         "pf_route_opt_addr": {
           "key": "pf_route_opt_addr",
+          "minimum_size": {
+            "width": 300
+          },
           "type": "string",
           "widget": "pf_route_opt_addr",
           "widget_class": "QLineEdit"
@@ -1734,6 +1767,9 @@
             "rowspan": 1
           },
           "key": "data_dir",
+          "minimum_size": {
+            "width": 300
+          },
           "type": "string",
           "widget": "freebsd_data_dir",
           "widget_class": "QLineEdit"
@@ -1814,6 +1850,9 @@
             "rowspan": 1
           },
           "key": "freebsd_path_ipf",
+          "minimum_size": {
+            "width": 200
+          },
           "size_policy": {
             "horizontal": "Fixed",
             "vertical": "Fixed"
@@ -1830,6 +1869,9 @@
             "rowspan": 1
           },
           "key": "freebsd_path_ipfw",
+          "minimum_size": {
+            "width": 200
+          },
           "size_policy": {
             "horizontal": "Fixed",
             "vertical": "Fixed"
@@ -1846,6 +1888,9 @@
             "rowspan": 1
           },
           "key": "freebsd_path_ipnat",
+          "minimum_size": {
+            "width": 200
+          },
           "type": "string",
           "widget": "freebsd_path_ipnat",
           "widget_class": "QLineEdit"
@@ -1858,6 +1903,9 @@
             "rowspan": 1
           },
           "key": "freebsd_path_pfctl",
+          "minimum_size": {
+            "width": 200
+          },
           "type": "string",
           "widget": "freebsd_path_pfctl",
           "widget_class": "QLineEdit"
@@ -1870,6 +1918,9 @@
             "rowspan": 1
           },
           "key": "freebsd_path_sysctl",
+          "minimum_size": {
+            "width": 200
+          },
           "type": "string",
           "widget": "freebsd_path_sysctl",
           "widget_class": "QLineEdit"
@@ -2289,6 +2340,9 @@
             "rowspan": 1
           },
           "key": "iosacl_acl_temp_addr",
+          "minimum_size": {
+            "width": 200
+          },
           "size_policy": {
             "horizontal": "Fixed",
             "vertical": "Fixed"
@@ -2496,6 +2550,9 @@
             "rowspan": 1
           },
           "key": "mgmt_addr",
+          "minimum_size": {
+            "width": 300
+          },
           "size_policy": {
             "horizontal": "Expanding",
             "vertical": "Fixed"
@@ -2525,12 +2582,18 @@
             "rowspan": 1
           },
           "key": "output_file",
+          "minimum_size": {
+            "width": 300
+          },
           "type": "string",
           "widget": "outputFileName",
           "widget_class": "QLineEdit"
         },
         "scpArgs": {
           "key": "scpArgs",
+          "minimum_size": {
+            "width": 300
+          },
           "size_policy": {
             "horizontal": "Expanding",
             "vertical": "Fixed"
@@ -2541,6 +2604,9 @@
         },
         "sshArgs": {
           "key": "sshArgs",
+          "minimum_size": {
+            "width": 300
+          },
           "size_policy": {
             "horizontal": "Expanding",
             "vertical": "Fixed"
@@ -2938,6 +3004,9 @@
             "rowspan": 1
           },
           "key": "activationCmd",
+          "minimum_size": {
+            "width": 250
+          },
           "size_policy": {
             "horizontal": "Fixed",
             "vertical": "Fixed"
@@ -2954,6 +3023,9 @@
             "rowspan": 1
           },
           "key": "admUser",
+          "minimum_size": {
+            "width": 250
+          },
           "size_policy": {
             "horizontal": "Fixed",
             "vertical": "Fixed"
@@ -2970,6 +3042,9 @@
             "rowspan": 1
           },
           "key": "altAddress",
+          "minimum_size": {
+            "width": 250
+          },
           "size_policy": {
             "horizontal": "Fixed",
             "vertical": "Fixed"
@@ -3057,6 +3132,9 @@
             "rowspan": 1
           },
           "key": "firewall_dir",
+          "minimum_size": {
+            "width": 250
+          },
           "size_policy": {
             "horizontal": "Fixed",
             "vertical": "Fixed"
@@ -3267,6 +3345,9 @@
         },
         "scpArgs": {
           "key": "scpArgs",
+          "minimum_size": {
+            "width": 300
+          },
           "size_policy": {
             "horizontal": "Expanding",
             "vertical": "Fixed"
@@ -3277,6 +3358,9 @@
         },
         "sshArgs": {
           "key": "sshArgs",
+          "minimum_size": {
+            "width": 300
+          },
           "size_policy": {
             "horizontal": "Expanding",
             "vertical": "Fixed"
@@ -5016,6 +5100,9 @@
         },
         "scpArgs": {
           "key": "scpArgs",
+          "minimum_size": {
+            "width": 300
+          },
           "size_policy": {
             "horizontal": "Expanding",
             "vertical": "Fixed"
@@ -5038,6 +5125,9 @@
         },
         "sshArgs": {
           "key": "sshArgs",
+          "minimum_size": {
+            "width": 300
+          },
           "size_policy": {
             "horizontal": "Expanding",
             "vertical": "Fixed"
@@ -5678,6 +5768,9 @@
         },
         "scpArgs": {
           "key": "scpArgs",
+          "minimum_size": {
+            "width": 300
+          },
           "size_policy": {
             "horizontal": "Expanding",
             "vertical": "Fixed"
@@ -5700,6 +5793,9 @@
         },
         "sshArgs": {
           "key": "sshArgs",
+          "minimum_size": {
+            "width": 300
+          },
           "size_policy": {
             "horizontal": "Expanding",
             "vertical": "Fixed"
@@ -6012,6 +6108,9 @@
             "rowspan": 1
           },
           "key": "activationCmd",
+          "minimum_size": {
+            "width": 250
+          },
           "size_policy": {
             "horizontal": "Fixed",
             "vertical": "Fixed"
@@ -6055,6 +6154,9 @@
             "rowspan": 1
           },
           "key": "admUser",
+          "minimum_size": {
+            "width": 250
+          },
           "size_policy": {
             "horizontal": "Fixed",
             "vertical": "Fixed"
@@ -6071,6 +6173,9 @@
             "rowspan": 1
           },
           "key": "altAddress",
+          "minimum_size": {
+            "width": 250
+          },
           "size_policy": {
             "horizontal": "Fixed",
             "vertical": "Fixed"
@@ -6152,6 +6257,9 @@
             "rowspan": 1
           },
           "key": "cmdline",
+          "minimum_size": {
+            "height": 25
+          },
           "type": "string",
           "widget": "compilerArgs",
           "widget_class": "QLineEdit"
@@ -6164,6 +6272,10 @@
             "rowspan": 1
           },
           "key": "compiler",
+          "minimum_size": {
+            "height": 25,
+            "width": 300
+          },
           "type": "string",
           "widget": "compiler",
           "widget_class": "QLineEdit"
@@ -6280,6 +6392,9 @@
             "rowspan": 1
           },
           "key": "firewall_dir",
+          "minimum_size": {
+            "width": 250
+          },
           "size_policy": {
             "horizontal": "Fixed",
             "vertical": "Fixed"
@@ -6532,6 +6647,10 @@
             "rowspan": 1
           },
           "key": "output_file",
+          "minimum_size": {
+            "height": 25,
+            "width": 300
+          },
           "type": "string",
           "widget": "outputFileName",
           "widget_class": "QLineEdit"
@@ -6571,6 +6690,9 @@
         },
         "scpArgs": {
           "key": "scpArgs",
+          "minimum_size": {
+            "width": 300
+          },
           "size_policy": {
             "horizontal": "Expanding",
             "vertical": "Fixed"
@@ -6587,12 +6709,19 @@
             "rowspan": 1
           },
           "key": "script_name_on_firewall",
+          "minimum_size": {
+            "height": 25,
+            "width": 300
+          },
           "type": "string",
           "widget": "fileNameOnFw",
           "widget_class": "QLineEdit"
         },
         "sshArgs": {
           "key": "sshArgs",
+          "minimum_size": {
+            "width": 300
+          },
           "size_policy": {
             "horizontal": "Expanding",
             "vertical": "Fixed"
@@ -7472,12 +7601,18 @@
             "rowspan": 1
           },
           "key": "output_file",
+          "minimum_size": {
+            "width": 300
+          },
           "type": "string",
           "widget": "outputFileName",
           "widget_class": "QLineEdit"
         },
         "scpArgs": {
           "key": "scpArgs",
+          "minimum_size": {
+            "width": 300
+          },
           "size_policy": {
             "horizontal": "Expanding",
             "vertical": "Fixed"
@@ -7488,6 +7623,9 @@
         },
         "sshArgs": {
           "key": "sshArgs",
+          "minimum_size": {
+            "width": 300
+          },
           "size_policy": {
             "horizontal": "Expanding",
             "vertical": "Fixed"
@@ -8127,6 +8265,9 @@
             "rowspan": 1
           },
           "key": "data_dir",
+          "minimum_size": {
+            "width": 300
+          },
           "type": "string",
           "widget": "linux24_data_dir",
           "widget_class": "QLineEdit"
@@ -8406,6 +8547,9 @@
             "rowspan": 1
           },
           "key": "linux24_path_iptables",
+          "minimum_size": {
+            "width": 300
+          },
           "type": "string",
           "widget": "linux24_path_iptables",
           "widget_class": "QLineEdit"
@@ -9364,6 +9508,9 @@
             "rowspan": 1
           },
           "key": "macosx_path_ipfw",
+          "minimum_size": {
+            "width": 200
+          },
           "size_policy": {
             "horizontal": "Fixed",
             "vertical": "Fixed"
@@ -9380,6 +9527,9 @@
             "rowspan": 1
           },
           "key": "macosx_path_sysctl",
+          "minimum_size": {
+            "width": 200
+          },
           "size_policy": {
             "horizontal": "Fixed",
             "vertical": "Fixed"
@@ -9670,6 +9820,9 @@
             "rowspan": 1
           },
           "key": "mgmt_addr",
+          "minimum_size": {
+            "width": 300
+          },
           "size_policy": {
             "horizontal": "Expanding",
             "vertical": "Fixed"
@@ -9756,6 +9909,9 @@
             "rowspan": 1
           },
           "key": "nxosacl_acl_temp_addr",
+          "minimum_size": {
+            "width": 200
+          },
           "size_policy": {
             "horizontal": "Fixed",
             "vertical": "Fixed"
@@ -9963,12 +10119,18 @@
             "rowspan": 1
           },
           "key": "output_file",
+          "minimum_size": {
+            "width": 300
+          },
           "type": "string",
           "widget": "outputFileName",
           "widget_class": "QLineEdit"
         },
         "scpArgs": {
           "key": "scpArgs",
+          "minimum_size": {
+            "width": 300
+          },
           "size_policy": {
             "horizontal": "Expanding",
             "vertical": "Fixed"
@@ -9979,6 +10141,9 @@
         },
         "sshArgs": {
           "key": "sshArgs",
+          "minimum_size": {
+            "width": 300
+          },
           "size_policy": {
             "horizontal": "Expanding",
             "vertical": "Fixed"
@@ -10374,6 +10539,9 @@
             "rowspan": 1
           },
           "key": "data_dir",
+          "minimum_size": {
+            "width": 200
+          },
           "type": "string",
           "widget": "openbsd_data_dir",
           "widget_class": "QLineEdit"
@@ -10471,6 +10639,9 @@
             "rowspan": 1
           },
           "key": "openbsd_path_pfctl",
+          "minimum_size": {
+            "width": 200
+          },
           "type": "string",
           "widget": "openbsd_path_pfctl",
           "widget_class": "QLineEdit"
@@ -10483,6 +10654,9 @@
             "rowspan": 1
           },
           "key": "openbsd_path_sysctl",
+          "minimum_size": {
+            "width": 200
+          },
           "type": "string",
           "widget": "openbsd_path_sysctl",
           "widget_class": "QLineEdit"
@@ -11984,6 +12158,9 @@
         },
         "scpArgs": {
           "key": "scpArgs",
+          "minimum_size": {
+            "width": 300
+          },
           "size_policy": {
             "horizontal": "Expanding",
             "vertical": "Fixed"
@@ -12006,6 +12183,9 @@
         },
         "sshArgs": {
           "key": "sshArgs",
+          "minimum_size": {
+            "width": 300
+          },
           "size_policy": {
             "horizontal": "Expanding",
             "vertical": "Fixed"
@@ -12881,6 +13061,9 @@
             "rowspan": 1
           },
           "key": "mgmt_addr",
+          "minimum_size": {
+            "width": 200
+          },
           "size_policy": {
             "horizontal": "Expanding",
             "vertical": "Fixed"
@@ -12961,6 +13144,9 @@
             "rowspan": 1
           },
           "key": "pix_acl_temp_addr",
+          "minimum_size": {
+            "width": 200
+          },
           "size_policy": {
             "horizontal": "Fixed",
             "vertical": "Fixed"
@@ -13187,6 +13373,9 @@
             "rowspan": 1
           },
           "key": "pix_logging_buffered_level",
+          "minimum_size": {
+            "height": 22
+          },
           "type": "string",
           "widget": "logging_buffered_level",
           "widget_class": "QComboBox"
@@ -13212,6 +13401,9 @@
             "rowspan": 1
           },
           "key": "pix_logging_console_level",
+          "minimum_size": {
+            "height": 22
+          },
           "type": "string",
           "widget": "logging_console_level",
           "widget_class": "QComboBox"
@@ -13503,6 +13695,9 @@
         },
         "scpArgs": {
           "key": "scpArgs",
+          "minimum_size": {
+            "width": 250
+          },
           "size_policy": {
             "horizontal": "Fixed",
             "vertical": "Fixed"
@@ -13599,6 +13794,9 @@
         },
         "sshArgs": {
           "key": "sshArgs",
+          "minimum_size": {
+            "width": 250
+          },
           "size_policy": {
             "horizontal": "Fixed",
             "vertical": "Fixed"
@@ -15041,6 +15239,9 @@
             "rowspan": 1
           },
           "key": "mgmt_addr",
+          "minimum_size": {
+            "width": 300
+          },
           "size_policy": {
             "horizontal": "Expanding",
             "vertical": "Fixed"
@@ -15070,6 +15271,9 @@
             "rowspan": 1
           },
           "key": "output_file",
+          "minimum_size": {
+            "width": 300
+          },
           "type": "string",
           "widget": "outputFileName",
           "widget_class": "QLineEdit"
@@ -15139,6 +15343,9 @@
             "rowspan": 1
           },
           "key": "procurve_acl_acl_temp_addr",
+          "minimum_size": {
+            "width": 199
+          },
           "size_policy": {
             "horizontal": "Fixed",
             "vertical": "Fixed"
@@ -15313,6 +15520,9 @@
         },
         "scpArgs": {
           "key": "scpArgs",
+          "minimum_size": {
+            "width": 300
+          },
           "size_policy": {
             "horizontal": "Expanding",
             "vertical": "Fixed"
@@ -15323,6 +15533,9 @@
         },
         "sshArgs": {
           "key": "sshArgs",
+          "minimum_size": {
+            "width": 300
+          },
           "size_policy": {
             "horizontal": "Expanding",
             "vertical": "Fixed"
@@ -15732,6 +15945,9 @@
             "rowspan": 1
           },
           "key": "activationCmd",
+          "minimum_size": {
+            "width": 250
+          },
           "size_policy": {
             "horizontal": "Fixed",
             "vertical": "Fixed"
@@ -15778,6 +15994,9 @@
             "rowspan": 1
           },
           "key": "altAddress",
+          "minimum_size": {
+            "width": 250
+          },
           "size_policy": {
             "horizontal": "Fixed",
             "vertical": "Fixed"
@@ -16180,6 +16399,9 @@
         },
         "scpArgs": {
           "key": "scpArgs",
+          "minimum_size": {
+            "width": 300
+          },
           "size_policy": {
             "horizontal": "Expanding",
             "vertical": "Fixed"
@@ -16190,6 +16412,9 @@
         },
         "sshArgs": {
           "key": "sshArgs",
+          "minimum_size": {
+            "width": 300
+          },
           "size_policy": {
             "horizontal": "Expanding",
             "vertical": "Fixed"
@@ -18134,6 +18359,9 @@
             "rowspan": 1
           },
           "key": "solaris_path_ipf",
+          "minimum_size": {
+            "width": 200
+          },
           "type": "string",
           "widget": "solaris_path_ipf",
           "widget_class": "QLineEdit"
@@ -18146,6 +18374,9 @@
             "rowspan": 1
           },
           "key": "solaris_path_ipnat",
+          "minimum_size": {
+            "width": 200
+          },
           "type": "string",
           "widget": "solaris_path_ipnat",
           "widget_class": "QLineEdit"

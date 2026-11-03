@@ -129,6 +129,17 @@ def get_expect_install_plan(
     return expect_install_plan(host_os, fwdir=fwdir, fwscript=fwscript)
 
 
+@router.post("/expect-install-plan/run")
+def run_expect_install_plan(
+    host_os: str = Query(..., min_length=1),
+    _: str = Depends(require_token),
+) -> dict[str, Any]:
+    """Explicit refusal: WebUI never executes the desktop expect installer."""
+    from ..expect_installer import refuse_expect_install
+
+    raise HTTPException(status_code=501, detail=refuse_expect_install(host_os))
+
+
 @router.get("/ssh-auth")
 def get_ssh_auth(_: str = Depends(require_token)) -> dict[str, Any]:
     """WebUI SSH authentication capabilities (BatchMode only today)."""

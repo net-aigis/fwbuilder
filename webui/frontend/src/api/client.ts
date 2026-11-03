@@ -487,6 +487,7 @@ export type OptionFieldMeta = {
   widget_class?: string;
   grid?: { row?: number; column?: number; rowspan?: number; colspan?: number };
   size_policy?: { horizontal?: string; vertical?: string };
+  minimum_size?: { width?: number; height?: number };
 };
 
 export function fetchOptionSchema(platform: string, hostOs = "") {

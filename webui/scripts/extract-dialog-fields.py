@@ -217,6 +217,35 @@ def parse_widget_size_policies(root: ET.Element | None) -> dict[str, dict[str, s
     return out
 
 
+def parse_widget_minimum_sizes(root: ET.Element | None) -> dict[str, dict[str, int]]:
+    """Map widget objectName → {width, height} minimumSize from .ui."""
+    out: dict[str, dict[str, int]] = {}
+    if root is None:
+        return out
+    for w in root.iter("widget"):
+        name = w.get("name")
+        if not name:
+            continue
+        prop = w.find("./property[@name='minimumSize']/size")
+        if prop is None:
+            continue
+        width_el = prop.find("width")
+        height_el = prop.find("height")
+        try:
+            width = int((width_el.text or "0").strip()) if width_el is not None else 0
+            height = int((height_el.text or "0").strip()) if height_el is not None else 0
+        except ValueError:
+            continue
+        if width > 0 or height > 0:
+            entry: dict[str, int] = {}
+            if width > 0:
+                entry["width"] = width
+            if height > 0:
+                entry["height"] = height
+            out[name] = entry
+    return out
+
+
 def _grids_in_subtree(node: ET.Element) -> dict[str, dict[str, int]]:
     """Collect QGridLayout positions under a page/subtree (first hit per widget)."""
     positions: dict[str, dict[str, int]] = {}
@@ -482,6 +511,7 @@ def extract_cpp(cpp_path: Path, ui_root: ET.Element | None, ui_widgets: dict[str
     tips = parse_widget_tooltips(ui_root)
     grid = parse_grid_positions(ui_root)
     size_policies = parse_widget_size_policies(ui_root)
+    min_sizes = parse_widget_minimum_sizes(ui_root)
     fields: dict[str, dict] = {}
     for m in REG_OPT.finditer(src):
         widget, key, _mapping = m.group(1), m.group(2), m.group(3)
@@ -496,6 +526,8 @@ def extract_cpp(cpp_path: Path, ui_root: ET.Element | None, ui_widgets: dict[str
             field["grid"] = grid[widget]
         if widget in size_policies:
             field["size_policy"] = size_policies[widget]
+        if widget in min_sizes:
+            field["minimum_size"] = min_sizes[widget]
         if ftype == "enum":
             choices = parse_combo_items(ui_root, widget) or KNOWN_ENUMS.get(key, [])
             if choices:

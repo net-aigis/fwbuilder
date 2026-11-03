@@ -9,6 +9,7 @@ type FieldMeta = {
   widget_class?: string;
   grid?: { row?: number; column?: number; rowspan?: number; colspan?: number };
   size_policy?: { horizontal?: string; vertical?: string };
+  minimum_size?: { width?: number; height?: number };
 };
 
 type Props = {
@@ -23,15 +24,18 @@ function isTruthy(v: string): boolean {
   return ["true", "1", "yes", "on"].includes(v.trim().toLowerCase());
 }
 
-function gridStyle(meta?: FieldMeta): CSSProperties | undefined {
+function fieldStyle(meta?: FieldMeta): CSSProperties | undefined {
+  const style: CSSProperties = {};
   const g = meta?.grid;
-  if (!g || g.row == null || g.column == null) return undefined;
-  const style: CSSProperties = {
-    gridRow: g.rowspan && g.rowspan > 1 ? `${g.row + 1} / span ${g.rowspan}` : g.row + 1,
-    gridColumn:
-      g.colspan && g.colspan > 1 ? `${g.column + 1} / span ${g.colspan}` : g.column + 1,
-  };
-  return style;
+  if (g && g.row != null && g.column != null) {
+    style.gridRow = g.rowspan && g.rowspan > 1 ? `${g.row + 1} / span ${g.rowspan}` : g.row + 1;
+    style.gridColumn =
+      g.colspan && g.colspan > 1 ? `${g.column + 1} / span ${g.colspan}` : g.column + 1;
+  }
+  const ms = meta?.minimum_size;
+  if (ms?.width && ms.width > 0) style.minWidth = ms.width;
+  if (ms?.height && ms.height > 0) style.minHeight = ms.height;
+  return Object.keys(style).length ? style : undefined;
 }
 
 function sizePolicyClass(meta?: FieldMeta): string {
@@ -49,7 +53,7 @@ export function OptionField({ name, value, meta, disabled, onChange }: Props) {
   const showKeyHint = Boolean(meta?.label && meta.label.trim() && meta.label.trim() !== name);
   const tip = (meta?.tooltip || "").trim();
   const title = tip || (showKeyHint ? name : undefined);
-  const style = gridStyle(meta);
+  const style = fieldStyle(meta);
   const sizeClass = sizePolicyClass(meta);
   const fieldClass = ["field", "block", sizeClass].filter(Boolean).join(" ");
 

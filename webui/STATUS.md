@@ -349,20 +349,24 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | size-h-/size-v- CSS on OptionField | done | E2E phase206 |
 | Download expect plan | done | FirewallExtras; E2E phase207 |
 | Soft-complete STATUS through 208 | done | E2E phase208 |
+| .ui minimumSize on option fields | done | dialog_fields minimum_size; E2E phase209 |
+| minWidth/minHeight from minimum_size | done | OptionField; E2E phase210 |
+| POST expect-install-plan/run → 501 | done | refuse_expect_install; E2E phase211 |
+| Soft-complete STATUS through 212 | done | E2E phase212 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Soft-complete (feature/webui polish track)
 
-WebUI on `feature/webui` remains soft-complete for the polish track; hard-gap slices continue through phase208+:
+WebUI on `feature/webui` remains soft-complete for the polish track; hard-gap slices continue through phase212+:
 
-- Deploy: manifest `# files:`, OS configlets, external PolicyInstallScript, copyFWB, use_scp, gzip transfer on compress, capabilities API, live gate + force_limited, expect stub + raw/expanded configlet preview + ordered expect plan download (still **no** expect/SSHSession runtime)
-- Options: .ui labels, free QLabel annotations, QRadio bool, QGroupBox sections, tooltips, page-local QGridLayout + spacers + columnstretch + sizePolicy CSS + layout hints + shared `qtGridStyle` on Firewall/Rule/Interface (still **not** full pixel Qt layout)
+- Deploy: manifest `# files:`, OS configlets, external PolicyInstallScript, copyFWB, use_scp, gzip transfer on compress, capabilities API, live gate + force_limited, expect stub + raw/expanded configlet preview + ordered expect plan download; `POST …/run` → 501 (still **no** expect/SSHSession runtime)
+- Options: .ui labels, free QLabel annotations, QRadio bool, QGroupBox sections, tooltips, page-local QGridLayout + spacers + columnstretch + sizePolicy + minimumSize + layout hints + shared `qtGridStyle` on Firewall/Rule/Interface (still **not** full pixel Qt layout)
 - SSH: BatchMode only; `GET /ssh-auth`, capabilities.ssh_auth, deploy plan line, and `allow_password_auth` → 400
 
 Still open (hard backlog):
 
-- Full Qt AdvancedDialog **pixel** layout parity (exact geometry; row/col + spacers + stretch + annotations + sizePolicy since phase165/177/181/189/205)
-- Full desktop **FirewallInstaller** expect/SSHSession for Cisco/Juniper/Procurve (plan/preview/download only; still no runtime)
+- Full Qt AdvancedDialog **pixel** layout parity (exact geometry; row/col + spacers + stretch + annotations + sizePolicy/minimumSize since phase165/177/181/189/205/209)
+- Full desktop **FirewallInstaller** expect/SSHSession for Cisco/Juniper/Procurve (plan/preview/download; run endpoint refuses with 501)
 - Password/keyboard-interactive SSH (API refuses `allow_password_auth`; BatchMode only)
 
 ## Phase 3 — compile / deploy
@@ -582,6 +586,10 @@ Still open (hard backlog):
 | Local E2E phase206 (size_policy CSS) | done | `e2e-phase206.sh` **OK** |
 | Local E2E phase207 (expect plan download) | done | `e2e-phase207.sh` **OK** |
 | Local E2E phase208 (STATUS soft-complete) | done | `e2e-phase208.sh` **OK** |
+| Local E2E phase209 (minimum_size extract) | done | `e2e-phase209.sh` **OK** |
+| Local E2E phase210 (minimum_size CSS) | done | `e2e-phase210.sh` **OK** |
+| Local E2E phase211 (expect run 501) | done | `e2e-phase211.sh` **OK** |
+| Local E2E phase212 (STATUS soft-complete) | done | `e2e-phase212.sh` **OK** |
 
 ## Local commands
 
@@ -799,6 +807,10 @@ bash webui/scripts/e2e-phase205.sh
 bash webui/scripts/e2e-phase206.sh
 bash webui/scripts/e2e-phase207.sh
 bash webui/scripts/e2e-phase208.sh
+bash webui/scripts/e2e-phase209.sh
+bash webui/scripts/e2e-phase210.sh
+bash webui/scripts/e2e-phase211.sh
+bash webui/scripts/e2e-phase212.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```
