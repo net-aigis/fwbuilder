@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "220"
+WEBUI_SOFT_COMPLETE_PHASE = "224"
 
 
 @app.get("/api/v1/health")

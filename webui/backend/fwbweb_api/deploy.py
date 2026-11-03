@@ -338,6 +338,10 @@ def plan_and_deploy(
             try:
                 gz_sz = gz_path.stat().st_size
                 gz_s = f" ({gz_sz} bytes gzip)" if gz_sz < 1024 else f" ({gz_sz / 1024:.1f} KiB gzip)"
+                raw_sz = local_path.stat().st_size
+                if raw_sz > 0 and gz_sz > 0:
+                    ratio = 100.0 * (1.0 - gz_sz / raw_sz)
+                    gz_s += f", −{ratio:.0f}%"
             except OSError:
                 gz_s = " (gzip)"
             remote_gz = f"{remote_path}.gz"

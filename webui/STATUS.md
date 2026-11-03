@@ -361,15 +361,20 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | soft-complete phase in resHint UI | done | FirewallExtras; E2E phase218 |
 | soft_complete marker consistency | done | E2E phase219 |
 | Soft-complete STATUS through 220 | done | honesty track marker; E2E phase220 |
+| hard_gap_open list in UI footer | done | FirewallExtras; E2E phase221 |
+| Compress ratio (−%) in deploy plan | done | E2E phase222 |
+| hard_gap wiring check | done | E2E phase223 |
+| Soft-complete STATUS through 224 | done | marker bumped; E2E phase224 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Soft-complete (feature/webui polish track)
 
-WebUI on `feature/webui` remains soft-complete for the polish track; hard-gap honesty/preview track is soft-complete through phase220 (`WEBUI_SOFT_COMPLETE_PHASE` in `/health` and `/res-status`):
+WebUI on `feature/webui` remains soft-complete for the polish track; hard-gap honesty/preview track is soft-complete through phase224 (`WEBUI_SOFT_COMPLETE_PHASE` in `/health` and `/res-status`):
 
-- Deploy: manifest `# files:`, OS configlets, external PolicyInstallScript, copyFWB, use_scp, gzip transfer on compress, capabilities API (+ expect_install_plan pointer), live gate + force_limited, expect stub + raw/expanded configlet preview + ordered expect plan download; `POST …/run` → 501 (still **no** expect/SSHSession runtime)
+- Deploy: manifest `# files:`, OS configlets, external PolicyInstallScript, copyFWB, use_scp, gzip transfer on compress (plan shows −%), capabilities API (+ expect_install_plan pointer), live gate + force_limited, expect stub + raw/expanded configlet preview + ordered expect plan download; `POST …/run` → 501 (still **no** expect/SSHSession runtime)
 - Options: .ui labels, free QLabel annotations, QRadio bool, QGroupBox sections, tooltips, page-local QGridLayout + spacers + columnstretch + sizePolicy + min/max size + layout hints + shared `qtGridStyle` on Firewall/Rule/Interface (still **not** full pixel Qt layout)
 - SSH: BatchMode only; `GET /ssh-auth`, capabilities.ssh_auth, deploy plan line, and `allow_password_auth` → 400
+- Honesty: UI lists `hard_gap_open` from `/res-status`
 
 Still open (hard backlog):
 
@@ -606,6 +611,10 @@ Still open (hard backlog):
 | Local E2E phase218 (soft_complete UI hint) | done | `e2e-phase218.sh` **OK** |
 | Local E2E phase219 (marker consistency) | done | `e2e-phase219.sh` **OK** |
 | Local E2E phase220 (STATUS soft-complete) | done | `e2e-phase220.sh` **OK** |
+| Local E2E phase221 (hard gaps UI) | done | `e2e-phase221.sh` **OK** |
+| Local E2E phase222 (compress ratio) | done | `e2e-phase222.sh` **OK** |
+| Local E2E phase223 (hard gap wiring) | done | `e2e-phase223.sh` **OK** |
+| Local E2E phase224 (STATUS soft-complete) | done | `e2e-phase224.sh` **OK** |
 
 ## Local commands
 
@@ -835,6 +844,10 @@ bash webui/scripts/e2e-phase217.sh
 bash webui/scripts/e2e-phase218.sh
 bash webui/scripts/e2e-phase219.sh
 bash webui/scripts/e2e-phase220.sh
+bash webui/scripts/e2e-phase221.sh
+bash webui/scripts/e2e-phase222.sh
+bash webui/scripts/e2e-phase223.sh
+bash webui/scripts/e2e-phase224.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

@@ -32,11 +32,16 @@ auth=(-H "Authorization: Bearer $TOKEN")
 curl -sf "http://127.0.0.1:$PORT/api/v1/health" >"$TMP/health.json"
 curl -sf "${auth[@]}" "http://127.0.0.1:$PORT/api/v1/res-status" >"$TMP/res.json"
 python3 - <<PY
-import json
+import json, re
+from pathlib import Path
+src = Path("$ROOT/webui/backend/fwbweb_api/main.py").read_text(encoding="utf-8")
+m = re.search(r'WEBUI_SOFT_COMPLETE_PHASE\s*=\s*"(\d+)"', src)
+assert m, "marker missing in main.py"
+want = m.group(1)
 h=json.load(open("$TMP/health.json"))
 r=json.load(open("$TMP/res.json"))
-assert h.get("soft_complete_phase") == "220"
-assert r.get("soft_complete_phase") == "220"
+assert h.get("soft_complete_phase") == want, (h.get("soft_complete_phase"), want)
+assert r.get("soft_complete_phase") == want
 assert "expect_sshsession_runtime" in (r.get("hard_gap_open") or [])
 print("soft_complete marker ok", h["soft_complete_phase"])
 print("cleaned")

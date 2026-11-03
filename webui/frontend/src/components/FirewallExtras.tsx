@@ -128,6 +128,7 @@ export function FirewallExtras({
   } | null>(null);
   const [expectPlanText, setExpectPlanText] = useState<string | null>(null);
   const [sshAuthNote, setSshAuthNote] = useState<string | null>(null);
+  const [hardGaps, setHardGaps] = useState<string[]>([]);
   const [resHint, setResHint] = useState<string | null>(null);
 
   async function reload() {
@@ -149,6 +150,8 @@ export function FirewallExtras({
       ]);
       if (sshAuth?.note) setSshAuthNote(sshAuth.note);
       else setSshAuthNote(null);
+      if (resSt?.hard_gap_open?.length) setHardGaps(resSt.hard_gap_open);
+      else setHardGaps([]);
       if (resSt?.configlets_ok) {
         const phase = resSt.soft_complete_phase
           ? ` · soft-complete phase${resSt.soft_complete_phase}`
@@ -1092,6 +1095,11 @@ export function FirewallExtras({
           </button>
         ) : null}
       </div>
+      {hardGaps.length ? (
+        <p className="muted pad-tight" title="hard_gap_open from /res-status">
+          Hard gaps still open: <code>{hardGaps.join(", ")}</code>
+        </p>
+      ) : null}
       <p className="muted pad">
         Dialog pages come from libgui AdvancedDialog <code>.ui</code> tabs. Pixel-perfect Qt layout
         is not claimed; scp/ssh deploy is simplified vs desktop FirewallInstaller.
