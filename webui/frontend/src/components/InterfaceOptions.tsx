@@ -6,6 +6,7 @@ import {
   type OptionFieldMeta,
 } from "../api/client";
 import { OptionField } from "./OptionField";
+import { qtGridStyle } from "../qtGrid";
 
 type Props = {
   sessionId: string;
@@ -176,29 +177,9 @@ export function InterfaceOptions({
       ) : null}
       {keys.length ? (
         (() => {
-          const useQt = keys.some((k) => fields[k]?.grid);
-          let maxCol = 3;
-          let maxRow = 0;
-          if (useQt) {
-            for (const k of keys) {
-              const g = fields[k]?.grid;
-              if (!g || g.row == null || g.column == null) continue;
-              maxRow = Math.max(maxRow, g.row + (g.rowspan || 1) - 1);
-              maxCol = Math.max(maxCol, g.column + (g.colspan || 1) - 1);
-            }
-          }
+          const grid = qtGridStyle(keys, fields);
           return (
-            <div
-              className={`typed-grid options-grid${useQt ? " qt-grid" : ""}`}
-              style={
-                useQt
-                  ? {
-                      gridTemplateColumns: `repeat(${maxCol + 1}, minmax(8rem, 1fr))`,
-                      gridTemplateRows: `repeat(${maxRow + 1}, auto)`,
-                    }
-                  : undefined
-              }
-            >
+            <div className={grid.className} style={grid.style}>
               {keys.map((key) => (
                 <OptionField
                   key={key}

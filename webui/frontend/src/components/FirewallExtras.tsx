@@ -13,6 +13,7 @@ import {
   type OptionFieldMeta,
 } from "../api/client";
 import { OptionField } from "./OptionField";
+import { qtGridStyle } from "../qtGrid";
 
 type Props = {
   sessionId: string;
@@ -632,31 +633,13 @@ export function FirewallExtras({
         </label>
       </div>
       {optionSections.map((sec) => {
-        const useQtGrid = useQtGridLayout && sec.keys.some((k) => fields[k]?.grid);
-        let maxCol = 3;
-        let maxRow = 0;
-        if (useQtGrid) {
-          for (const k of sec.keys) {
-            const g = fields[k]?.grid;
-            if (!g || g.row == null || g.column == null) continue;
-            maxRow = Math.max(maxRow, g.row + (g.rowspan || 1) - 1);
-            maxCol = Math.max(maxCol, g.column + (g.colspan || 1) - 1);
-          }
-        }
-        const gridStyle =
-          useQtGrid
-            ? {
-                gridTemplateColumns: `repeat(${maxCol + 1}, minmax(8rem, 1fr))`,
-                gridTemplateRows: `repeat(${maxRow + 1}, auto)`,
-              }
-            : undefined;
+        const grid = useQtGridLayout
+          ? qtGridStyle(sec.keys, fields)
+          : { className: "typed-grid options-grid" };
         return (
           <div key={sec.id || "all"} className="option-section">
             {sec.title ? <h4 className="option-section-title">{sec.title}</h4> : null}
-            <div
-              className={`typed-grid options-grid${useQtGrid ? " qt-grid" : ""}`}
-              style={gridStyle}
-            >
+            <div className={grid.className} style={grid.style}>
               {sec.keys.map((key) => (
                 <OptionField
                   key={key}
