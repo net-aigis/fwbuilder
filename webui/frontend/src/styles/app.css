@@ -499,6 +499,17 @@ button.linkish:disabled {
   margin: 0 0 0.5rem;
 }
 
+.expect-steps {
+  font-size: 0.85rem;
+  margin: 0 0 0.75rem;
+}
+
+.expect-steps ol {
+  margin: 0.35rem 0 0;
+  padding-left: 1.25rem;
+  color: var(--muted);
+}
+
 .error {
   color: var(--danger);
 }

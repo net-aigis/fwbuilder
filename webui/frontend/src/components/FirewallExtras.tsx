@@ -101,6 +101,7 @@ export function FirewallExtras({
   const [activeGroup, setActiveGroup] = useState<string>("platform");
   const [installerNote, setInstallerNote] = useState<string | null>(null);
   const [installerMode, setInstallerMode] = useState<string | null>(null);
+  const [expectSteps, setExpectSteps] = useState<string[]>([]);
   const [resHint, setResHint] = useState<string | null>(null);
 
   async function reload() {
@@ -176,20 +177,20 @@ export function FirewallExtras({
         };
         setInstallerMode(caps.recommended_webui_mode || null);
         if (cfgList.interactive_installer) {
-          const steps = caps.expect_installer?.desktop_steps?.length
-            ? ` Desktop steps: ${caps.expect_installer.desktop_steps.length}.`
-            : "";
+          const steps = caps.expect_installer?.desktop_steps || [];
+          setExpectSteps(steps);
           setInstallerNote(
-            (cfgList.note ||
-              "This OS uses interactive FirewallInstaller pre/post configlets; WebUI scp/ssh deploy is limited.") +
-              steps,
+            cfgList.note ||
+              "This OS uses interactive FirewallInstaller pre/post configlets; WebUI scp/ssh deploy is limited.",
           );
         } else {
+          setExpectSteps([]);
           setInstallerNote(null);
         }
       } else {
         setInstallerMode(null);
         setInstallerNote(null);
+        setExpectSteps([]);
       }
       if (schema) {
         const nextGroups = schema.groups ?? [];
@@ -662,9 +663,19 @@ export function FirewallExtras({
         </p>
       ) : null}
       {installerNote ? (
-        <p className="warn pad-tight" role="status">
-          {installerNote}
-        </p>
+        <div className="pad-tight" role="status">
+          <p className="warn">{installerNote}</p>
+          {expectSteps.length ? (
+            <details className="expect-steps">
+              <summary className="muted">Desktop expect installer steps ({expectSteps.length})</summary>
+              <ol>
+                {expectSteps.map((s) => (
+                  <li key={s}>{s}</li>
+                ))}
+              </ol>
+            </details>
+          ) : null}
+        </div>
       ) : null}
       <div className="typed-grid">
         <label className="field block">
