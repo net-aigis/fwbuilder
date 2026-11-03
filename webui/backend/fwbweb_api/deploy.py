@@ -171,6 +171,20 @@ SSH_AUTH_NOTE = (
 )
 
 
+def ssh_auth_capabilities() -> dict[str, Any]:
+    """Honest SSH auth capability summary for WebUI deploy."""
+    return {
+        "batch_mode": True,
+        "password_supported": False,
+        "keyboard_interactive_supported": False,
+        "identity_file_supported": True,
+        "ssh_agent_supported": True,
+        "implemented": ["batch_mode", "identity_file", "ssh_agent"],
+        "not_implemented": ["password", "keyboard_interactive"],
+        "note": SSH_AUTH_NOTE,
+    }
+
+
 def plan_external_install(
     *,
     command: str,

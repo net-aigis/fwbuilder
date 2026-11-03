@@ -107,8 +107,18 @@ def load_installer_configlet(host_os: str, *, user: str) -> str | None:
     return path.read_text(encoding="utf-8", errors="replace")
 
 
-def read_installer_configlet_file(host_os: str, name: str) -> dict[str, Any]:
-    """Read a named installer_commands* file (preview only; no expansion)."""
+def read_installer_configlet_file(
+    host_os: str,
+    name: str,
+    *,
+    expand: bool = False,
+    fwdir: str = "/etc",
+    fwscript: str = "firewall.fw",
+    firewall_name: str = "preview",
+    compress: bool = False,
+    use_scp: bool = True,
+) -> dict[str, Any]:
+    """Read a named installer_commands* file (preview only; optional expand)."""
     listing = list_installer_configlets(host_os)
     safe = (name or "").strip()
     if (
@@ -145,7 +155,7 @@ def read_installer_configlet_file(host_os: str, name: str) -> dict[str, Any]:
             "names": listing.get("names") or [],
         }
     text = path.read_text(encoding="utf-8", errors="replace")
-    return {
+    result: dict[str, Any] = {
         "ok": True,
         "host_os": host_os,
         "name": safe,
@@ -153,9 +163,47 @@ def read_installer_configlet_file(host_os: str, name: str) -> dict[str, Any]:
         "path": str(path),
         "size": len(text.encode("utf-8")),
         "text": text,
+        "expanded": False,
         "names": listing.get("names") or [],
         "note": "Raw configlet preview for desktop expect path; WebUI does not execute it.",
     }
+    if expand:
+        remote = f"{fwdir.rstrip('/')}/{fwscript}"
+        result["expanded"] = True
+        result["expanded_text"] = expand_configlet(
+            text,
+            variables={
+                "fwdir": fwdir.rstrip("/") or "/etc",
+                "fwscript": fwscript,
+                "remote_script": remote,
+                "firewall_name": firewall_name,
+                "fwbprompt": "# ",
+                "rbtimeout": "0",
+                "rbtimeout_sec": "0",
+                "fwbuilder_generated_configuration_lines": "# <generated config lines>",
+            },
+            flags={
+                "run": True,
+                "test": False,
+                "with_rollback": False,
+                "no_rollback": True,
+                "with_compression": bool(compress),
+                "no_compression": not bool(compress),
+                "rc_conf_format": False,
+                "shell_script_format": True,
+                "using_scp": bool(use_scp),
+                "not_using_scp": not bool(use_scp),
+                "schedule_rollback": False,
+                "cancel_rollback": False,
+            },
+            keep_inactive_if=True,
+            join_lines=False,
+        )
+        result["note"] = (
+            "Expanded configlet preview (dummy variables; inactive {{if}} as comments); "
+            "WebUI does not execute the desktop expect/SSHSession installer."
+        )
+    return result
 
 
 def expand_configlet(
@@ -163,8 +211,14 @@ def expand_configlet(
     *,
     variables: dict[str, str],
     flags: dict[str, bool] | None = None,
+    keep_inactive_if: bool = False,
+    join_lines: bool = True,
 ) -> str:
-    """Expand {{if flag}} / {{$var}} like Configlet::expand (subset)."""
+    """Expand {{if flag}} / {{$var}} like Configlet::expand (subset).
+
+    ``keep_inactive_if`` keeps false branches as ``# [if name]`` comments (preview).
+    ``join_lines`` matches desktop activation (one shell line); previews use False.
+    """
     flags = flags or {}
     # Drop ## documentation lines (same as removeComments for installer scripts)
     lines = [ln for ln in text.splitlines() if not ln.lstrip().startswith("##")]
@@ -173,7 +227,15 @@ def expand_configlet(
     def _if_repl(m: re.Match[str]) -> str:
         name = m.group(1)
         inner = m.group(2)
-        return inner if flags.get(name) else ""
+        if flags.get(name):
+            return inner
+        if not keep_inactive_if:
+            return ""
+        commented = "\n".join(
+            f"# [if {name}] {ln}" if ln.strip() else f"# [if {name}]"
+            for ln in inner.splitlines()
+        )
+        return commented
 
     body = _IF_BLOCK.sub(_if_repl, body)
 
@@ -181,9 +243,10 @@ def expand_configlet(
         return variables.get(m.group(1), "")
 
     body = _VAR.sub(_var_repl, body)
-    # Collapse blank lines from removed if-blocks
     out_lines = [ln.rstrip() for ln in body.splitlines() if ln.strip()]
-    return " ".join(out_lines) if out_lines else ""
+    if not out_lines:
+        return ""
+    return " ".join(out_lines) if join_lines else "\n".join(out_lines)
 
 
 def _truthy(value: str | bool | None) -> bool:

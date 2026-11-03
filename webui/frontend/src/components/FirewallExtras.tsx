@@ -9,6 +9,7 @@ import {
   fetchResStatus,
   fetchOptionSchema,
   fetchOptions,
+  fetchSshAuth,
   updateManagement,
   updateOptions,
   type OptionFieldMeta,
@@ -122,7 +123,9 @@ export function FirewallExtras({
   const [configletPreview, setConfigletPreview] = useState<{
     name: string;
     text: string;
+    expanded?: boolean;
   } | null>(null);
+  const [sshAuthNote, setSshAuthNote] = useState<string | null>(null);
   const [resHint, setResHint] = useState<string | null>(null);
 
   async function reload() {
@@ -130,7 +133,7 @@ export function FirewallExtras({
     onError?.(null);
     try {
       const plat = platform || "nftables";
-      const [o, m, schema, cfgList, resSt] = await Promise.all([
+      const [o, m, schema, cfgList, resSt, sshAuth] = await Promise.all([
         fetchOptions(sessionId, firewallId),
         fetchManagement(sessionId, firewallId),
         fetchOptionSchema(plat, hostOs || "").catch(() => null),
@@ -140,7 +143,10 @@ export function FirewallExtras({
             )
           : Promise.resolve(null),
         fetchResStatus().catch(() => null),
+        fetchSshAuth().catch(() => null),
       ]);
+      if (sshAuth?.note) setSshAuthNote(sshAuth.note);
+      else setSshAuthNote(null);
       if (resSt?.configlets_ok) {
         setResHint(`${resSt.configlet_os_count} installer OS configlet dirs`);
       } else if (resSt) {
@@ -751,9 +757,9 @@ export function FirewallExtras({
                       .filter((n) =>
                         n.includes("pre_config") || n.includes("post_config"),
                       )
-                      .map((n) => (
+                      .flatMap((n) => [
                         <button
-                          key={n}
+                          key={`${n}-raw`}
                           type="button"
                           className="ghost"
                           disabled={busy || !hostOs}
@@ -768,6 +774,7 @@ export function FirewallExtras({
                                 setConfigletPreview({
                                   name: r.name,
                                   text: r.text || "",
+                                  expanded: false,
                                 });
                                 onStatus?.(`Configlet preview: ${r.name}`);
                               } catch (e) {
@@ -779,8 +786,40 @@ export function FirewallExtras({
                           }}
                         >
                           Preview {n.replace("installer_commands_", "")}
-                        </button>
-                      ))}
+                        </button>,
+                        <button
+                          key={`${n}-exp`}
+                          type="button"
+                          className="ghost"
+                          disabled={busy || !hostOs}
+                          title="Expanded with dummy variables (not executed)"
+                          onClick={() => {
+                            if (!hostOs) return;
+                            void (async () => {
+                              onBusy?.(true);
+                              onError?.(null);
+                              try {
+                                const r = await fetchInstallerConfigletFile(hostOs, n, {
+                                  expand: true,
+                                  fwdir: remoteDir || "/etc",
+                                });
+                                setConfigletPreview({
+                                  name: `${r.name} (expanded)`,
+                                  text: r.expanded_text || r.text || "",
+                                  expanded: true,
+                                });
+                                onStatus?.(`Expanded configlet: ${r.name}`);
+                              } catch (e) {
+                                onError?.(e instanceof Error ? e.message : String(e));
+                              } finally {
+                                onBusy?.(false);
+                              }
+                            })();
+                          }}
+                        >
+                          Expand {n.replace("installer_commands_", "")}
+                        </button>,
+                      ])}
                   </div>
                   {configletPreview ? (
                     <pre className="deploy-log configlet-preview" tabIndex={0}>
@@ -853,8 +892,8 @@ export function FirewallExtras({
         </label>
       </div>
       <p className="muted pad-tight" title="ssh_auth.batch_mode">
-        SSH uses BatchMode (key/agent only). Password and keyboard-interactive auth are not
-        implemented in WebUI.
+        {sshAuthNote ||
+          "SSH uses BatchMode (key/agent only). Password and keyboard-interactive auth are not implemented in WebUI."}
       </p>
       <div className="btn-row">
         <button type="button" className="ghost" disabled={busy} onClick={() => void saveManagement()}>

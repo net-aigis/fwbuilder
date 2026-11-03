@@ -11,6 +11,7 @@ from ..configlets import (
     read_installer_configlet_file,
     resolve_configlet_dir,
 )
+from ..deploy import ssh_auth_capabilities
 from ..expect_installer import expect_installer_status
 from ..platforms import (
     get_os,
@@ -116,6 +117,12 @@ def get_expect_installer(
     return expect_installer_status(host_os)
 
 
+@router.get("/ssh-auth")
+def get_ssh_auth(_: str = Depends(require_token)) -> dict[str, Any]:
+    """WebUI SSH authentication capabilities (BatchMode only today)."""
+    return ssh_auth_capabilities()
+
+
 @router.get("/installer-configlet")
 def get_installer_configlet(
     host_os: str = Query(..., min_length=1),
@@ -161,10 +168,19 @@ def get_installer_configlet(
 def get_installer_configlet_file(
     host_os: str = Query(..., min_length=1),
     name: str = Query(..., min_length=1),
+    expand: bool = Query(False),
+    fwdir: str = Query("/etc"),
+    fwscript: str = Query("firewall.fw"),
     _: str = Depends(require_token),
 ) -> dict[str, Any]:
-    """Raw installer_commands* file preview (read-only; not executed)."""
-    result = read_installer_configlet_file(host_os, name)
+    """Raw or expanded installer_commands* file preview (read-only; not executed)."""
+    result = read_installer_configlet_file(
+        host_os,
+        name,
+        expand=expand,
+        fwdir=fwdir,
+        fwscript=fwscript,
+    )
     if not result.get("ok"):
         err = result.get("error")
         if err == "invalid_configlet_name":

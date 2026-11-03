@@ -669,8 +669,15 @@ export function fetchInstallerConfiglet(params: {
   }>(`/api/v1/installer-configlet?${q.toString()}`);
 }
 
-export function fetchInstallerConfigletFile(hostOs: string, name: string) {
+export function fetchInstallerConfigletFile(
+  hostOs: string,
+  name: string,
+  opts?: { expand?: boolean; fwdir?: string; fwscript?: string },
+) {
   const q = new URLSearchParams({ host_os: hostOs, name });
+  if (opts?.expand) q.set("expand", "true");
+  if (opts?.fwdir) q.set("fwdir", opts.fwdir);
+  if (opts?.fwscript) q.set("fwscript", opts.fwscript);
   return api<{
     ok: boolean;
     host_os: string;
@@ -679,9 +686,24 @@ export function fetchInstallerConfigletFile(hostOs: string, name: string) {
     path?: string;
     size?: number;
     text?: string;
+    expanded?: boolean;
+    expanded_text?: string;
     names?: string[];
     note?: string;
   }>(`/api/v1/installer-configlet-file?${q.toString()}`);
+}
+
+export function fetchSshAuth() {
+  return api<{
+    batch_mode: boolean;
+    password_supported: boolean;
+    keyboard_interactive_supported: boolean;
+    identity_file_supported?: boolean;
+    ssh_agent_supported?: boolean;
+    implemented?: string[];
+    not_implemented?: string[];
+    note: string;
+  }>("/api/v1/ssh-auth");
 }
 
 export function fetchInstallerConfiglets(hostOs: string) {
