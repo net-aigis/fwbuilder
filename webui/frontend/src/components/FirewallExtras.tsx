@@ -316,9 +316,14 @@ export function FirewallExtras({
   async function onDeploy() {
     if (!dryRun) {
       const external = installEnabled && installCmd.trim().length > 0;
-      const warn = external
+      let warn = external
         ? "LIVE deploy will run the external install script on this machine. Continue?"
         : "LIVE deploy will run scp/ssh against the management host. Continue?";
+      if (installerNote && !external) {
+        warn =
+          "This OS normally needs the desktop expect/SSHSession installer. " +
+          "WebUI will only run simplified scp/ssh. Continue anyway?";
+      }
       if (!window.confirm(warn)) {
         return;
       }

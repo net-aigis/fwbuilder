@@ -2694,6 +2694,7 @@ export function App() {
         `Deploy dry-run ${res.firewall} (${res.platform})\n` +
           `host=${res.deploy?.host || "(unset)"} user=${res.deploy?.user || "(unset)"}\n` +
           `remote=${res.deploy?.remote_path || ""}\n` +
+          (res.deploy?.mode ? `mode=${res.deploy.mode}\n` : "") +
           (res.deploy?.activation_source
             ? `activation_source=${res.deploy.activation_source}\n`
             : "") +
@@ -2741,6 +2742,7 @@ export function App() {
         `Deploy LIVE ${res.firewall} (${res.platform})\n` +
           `host=${res.deploy?.host || "(unset)"} user=${res.deploy?.user || "(unset)"}\n` +
           `remote=${res.deploy?.remote_path || ""}\n` +
+          (res.deploy?.mode ? `mode=${res.deploy.mode}\n` : "") +
           (res.deploy?.activation_source
             ? `activation_source=${res.deploy.activation_source}\n`
             : "") +
