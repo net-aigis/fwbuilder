@@ -82,6 +82,7 @@ export function FirewallExtras({
   const [compress, setCompress] = useState(false);
   const [useScp, setUseScp] = useState(true);
   const [copyFwb, setCopyFwb] = useState(false);
+  const [compileFirst, setCompileFirst] = useState(true);
   const [log, setLog] = useState<string | null>(null);
   const [lastPlan, setLastPlan] = useState<string[]>([]);
   const [showAll, setShowAll] = useState(false);
@@ -126,6 +127,7 @@ export function FirewallExtras({
             compress?: boolean;
             useScp?: boolean;
             copyFwb?: boolean;
+            compileFirst?: boolean;
             identityFile?: string;
             deployHost?: string;
             deployUser?: string;
@@ -136,6 +138,7 @@ export function FirewallExtras({
           if (typeof prefs.compress === "boolean") setCompress(prefs.compress);
           if (typeof prefs.useScp === "boolean") setUseScp(prefs.useScp);
           if (typeof prefs.copyFwb === "boolean") setCopyFwb(prefs.copyFwb);
+          if (typeof prefs.compileFirst === "boolean") setCompileFirst(prefs.compileFirst);
           if (typeof prefs.identityFile === "string") setIdentityFile(prefs.identityFile);
           if (typeof prefs.deployHost === "string" && prefs.deployHost) setDeployHost(prefs.deployHost);
           if (typeof prefs.deployUser === "string") setDeployUser(prefs.deployUser);
@@ -220,6 +223,7 @@ export function FirewallExtras({
           compress,
           useScp,
           copyFwb,
+          compileFirst,
           identityFile,
           deployHost,
           deployUser,
@@ -236,6 +240,7 @@ export function FirewallExtras({
     compress,
     useScp,
     copyFwb,
+    compileFirst,
     identityFile,
     deployHost,
     deployUser,
@@ -363,7 +368,7 @@ export function FirewallExtras({
         user: deployUser || undefined,
         remote_dir: remoteDir || undefined,
         identity_file: identityFile.trim() || undefined,
-        compile_first: true,
+        compile_first: compileFirst,
         dry_run: dryRun,
         activate,
         compress,
@@ -709,8 +714,20 @@ export function FirewallExtras({
           />
           Copy .fwb
         </label>
+        <label
+          className="check"
+          title="Uncheck to reuse last compile (or skip compile for external install script)"
+        >
+          <input
+            type="checkbox"
+            checked={compileFirst}
+            disabled={busy}
+            onChange={(e) => setCompileFirst(e.target.checked)}
+          />
+          Compile first
+        </label>
         <button type="button" disabled={busy} onClick={() => void onDeploy()}>
-          Compile + deploy
+          {compileFirst ? "Compile + deploy" : "Deploy"}
         </button>
         <button
           type="button"
