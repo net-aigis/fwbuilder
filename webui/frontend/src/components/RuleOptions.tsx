@@ -59,6 +59,7 @@ export function RuleOptions({
   const [groups, setGroups] = useState<Group[]>([]);
   const [activeGroup, setActiveGroup] = useState("rule");
   const [showAll, setShowAll] = useState(false);
+  const [layoutFidelity, setLayoutFidelity] = useState<string | null>(null);
 
   async function reload() {
     onBusy?.(true);
@@ -78,6 +79,10 @@ export function RuleOptions({
           : [];
       setGroups(nextGroups);
       if (nextGroups[0]?.id) setActiveGroup(nextGroups[0].id);
+      const score = schema?.layout_fidelity?.score_percent;
+      setLayoutFidelity(
+        score != null ? `${score}% .ui signals (not pixel parity)` : null,
+      );
       onStatus?.(
         `Rule options: ${Object.keys(stored).length}` +
           (schema ? ` · dialog fields ${schema.dialog_field_count ?? 0}` : ""),
@@ -121,7 +126,10 @@ export function RuleOptions({
   return (
     <div className="rule-options">
       <header className="panel-header">
-        <h3>Rule options · {ruleKind}</h3>
+        <h3>
+          Rule options · {ruleKind}
+          {layoutFidelity ? <span className="muted"> · fidelity {layoutFidelity}</span> : null}
+        </h3>
         <div className="btn-row">
           <button type="button" className="ghost" disabled={busy} onClick={() => setShowAll((v) => !v)}>
             {showAll ? "Grouped" : "All stored"}

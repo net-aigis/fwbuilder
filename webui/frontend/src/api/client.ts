@@ -634,6 +634,11 @@ export function fetchInterfaceOptionSchema(hostOs: string) {
     featured_keys: string[];
     fields?: Record<string, OptionFieldMeta>;
     dialog_field_count?: number;
+    layout_fidelity?: {
+      score_percent?: number;
+      pixel_parity?: boolean;
+      path?: string;
+    } | null;
   }>(`/api/v1/interface-option-schema?${qs.toString()}`);
 }
 
@@ -646,6 +651,11 @@ export function fetchRuleOptionSchema(ruleKind: string = "policy") {
     featured_keys: string[];
     fields?: Record<string, OptionFieldMeta>;
     dialog_field_count?: number;
+    layout_fidelity?: {
+      score_percent?: number;
+      pixel_parity?: boolean;
+      path?: string;
+    } | null;
   }>(`/api/v1/rule-option-schema?${qs.toString()}`);
 }
 

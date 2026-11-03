@@ -461,15 +461,23 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Shared fidelity helper check | done | E2E phase318 |
 | Hard gaps still 3 @ 320 | done | E2E phase319 |
 | Soft-complete STATUS through 320 | done | E2E phase320 |
+| Rule/Interface fidelity headers | done | E2E phase321 |
+| Soft marker 328 | done | E2E phase322 |
+| STATUS 321+ mentions | done | E2E phase323 |
+| Fidelity on all option panels | done | E2E phase324 |
+| Hard gaps still 3 @ 328 | done | E2E phase325 |
+| Typecheck after 321 | done | E2E phase326 |
+| e2e-all lists 321–328 | done | E2E phase327 |
+| Soft-complete STATUS through 328 | done | E2E phase328 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Soft-complete (feature/webui polish track)
 
 WebUI on `feature/webui` remains soft-complete for the polish track.
 
-### Hard-gap honesty/preview track — soft-fertig (phase256); preview slices through 320
+### Hard-gap honesty/preview track — soft-fertig (phase256); preview slices through 328
 
-`WEBUI_SOFT_COMPLETE_PHASE=320`; `/hard-gaps` sets `soft_fertig_honesty_track: true` + `hard_gap_notes` + `layout_fidelity_path`; `GET /layout-fidelity` / option-schema + rule/iface schemas report heuristic `score_percent` (**not** pixel parity).
+`WEBUI_SOFT_COMPLETE_PHASE=328`; `/hard-gaps` sets `soft_fertig_honesty_track: true` + `hard_gap_notes` + `layout_fidelity_path`; `GET /layout-fidelity` / option-schema + rule/iface schemas report heuristic `score_percent` (**not** pixel parity); Firewall/Rule/Interface headers show it.
 
 - Deploy: manifest `# files:`, OS configlets, external PolicyInstallScript, copyFWB, use_scp, gzip transfer on compress (plan shows −%), capabilities API (+ expect_install_plan / walkthrough pointers), live gate + force_limited, expect stub + raw/expanded configlet preview + ordered expect plan (reg_user + safety_net_acl + download + sessionStorage) + dry walkthrough (preview_only + simulated_at timeline, sessionStorage + download); `POST …/run` (+ optional `step=`) → 501 / step_refused (still **no** expect/SSHSession runtime)
 - Options: .ui labels, free QLabel annotations (+ alignment), buddy_labels (external_label controls), enabled/visible respect, QRadio bool, QGroupBox sections (flat/checkable), tooltips, page-local QGridLayout + spacers (sizeHint) + column/row stretch + spacing/margins (CSS + page hint) + sizePolicy + min/max size + layout hints + layout_tree + dialog windowTitle/geometry/tab_position/sizeGrip (header WxH + tabs + CSS max-height) + shared `qtGridStyle` + layout-fidelity score on Firewall/Rule/Interface (still **not** full pixel Qt layout)
@@ -811,6 +819,14 @@ Still open (hard backlog — **not** soft-fertig):
 | Local E2E phase318 (shared fidelity) | done | `e2e-phase318.sh` **OK** |
 | Local E2E phase319 (hard gaps still 3) | done | `e2e-phase319.sh` **OK** |
 | Local E2E phase320 (STATUS soft-complete) | done | `e2e-phase320.sh` **OK** |
+| Local E2E phase321 (rule/iface fidelity UI) | done | `e2e-phase321.sh` **OK** |
+| Local E2E phase322 (soft marker 328) | done | `e2e-phase322.sh` **OK** |
+| Local E2E phase323 (STATUS mentions) | done | `e2e-phase323.sh` **OK** |
+| Local E2E phase324 (all panels fidelity) | done | `e2e-phase324.sh` **OK** |
+| Local E2E phase325 (hard gaps still 3) | done | `e2e-phase325.sh` **OK** |
+| Local E2E phase326 (typecheck) | done | `e2e-phase326.sh` **OK** |
+| Local E2E phase327 (e2e-all list) | done | `e2e-phase327.sh` **OK** |
+| Local E2E phase328 (STATUS soft-complete) | done | `e2e-phase328.sh` **OK** |
 
 ## Local commands
 
@@ -1140,6 +1156,14 @@ bash webui/scripts/e2e-phase317.sh
 bash webui/scripts/e2e-phase318.sh
 bash webui/scripts/e2e-phase319.sh
 bash webui/scripts/e2e-phase320.sh
+bash webui/scripts/e2e-phase321.sh
+bash webui/scripts/e2e-phase322.sh
+bash webui/scripts/e2e-phase323.sh
+bash webui/scripts/e2e-phase324.sh
+bash webui/scripts/e2e-phase325.sh
+bash webui/scripts/e2e-phase326.sh
+bash webui/scripts/e2e-phase327.sh
+bash webui/scripts/e2e-phase328.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

@@ -58,6 +58,7 @@ export function InterfaceOptions({
   const [groups, setGroups] = useState<Group[]>([]);
   const [activeGroup, setActiveGroup] = useState("interface");
   const [resolvedOs, setResolvedOs] = useState(hostOs || "");
+  const [layoutFidelity, setLayoutFidelity] = useState<string | null>(null);
 
   async function reload() {
     onBusy?.(true);
@@ -80,6 +81,10 @@ export function InterfaceOptions({
           ? [{ id: "interface", title: "Interface", keys: Object.keys(merged).sort() }]
           : [];
       setGroups(nextGroups);
+      const score = schema?.layout_fidelity?.score_percent;
+      setLayoutFidelity(
+        score != null ? `${score}% .ui signals (not pixel parity)` : null,
+      );
       let preferred = nextGroups[0]?.id || "interface";
       try {
         const stored = sessionStorage.getItem(`fwbweb.ifaceOptionGroup.${os || "unknown"}`);
@@ -139,7 +144,10 @@ export function InterfaceOptions({
   return (
     <div className="firewall-extras">
       <header className="panel-header">
-        <h3>Interface options{resolvedOs ? ` · ${resolvedOs}` : ""}</h3>
+        <h3>
+          Interface options{resolvedOs ? ` · ${resolvedOs}` : ""}
+          {layoutFidelity ? <span className="muted"> · fidelity {layoutFidelity}</span> : null}
+        </h3>
         <div className="btn-row">
           <button type="button" className="ghost" disabled={busy} onClick={() => void reload()}>
             Reload
