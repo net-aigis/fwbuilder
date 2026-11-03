@@ -300,6 +300,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Persist last deploy plan | done | sessionStorage; E2E phase157 |
 | Compile-first deploy toggle | done | FirewallExtras; E2E phase158 |
 | Res/configlets status API | done | `GET /res-status`; E2E phase159 |
+| Live gate for interactive OS installers | done | `force_limited_installer`; E2E phase160 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Soft-complete (feature/webui polish track)
@@ -482,6 +483,7 @@ Still open:
 | Local E2E phase157 (persist deploy plan) | done | `e2e-phase157.sh` **OK** |
 | Local E2E phase158 (compile-first toggle) | done | `e2e-phase158.sh` **OK** |
 | Local E2E phase159 (res-status) | done | `e2e-phase159.sh` **OK** |
+| Local E2E phase160 (force limited installer) | done | `e2e-phase160.sh` **OK** |
 
 ## Local commands
 
@@ -650,6 +652,7 @@ bash webui/scripts/e2e-phase156.sh
 bash webui/scripts/e2e-phase157.sh
 bash webui/scripts/e2e-phase158.sh
 bash webui/scripts/e2e-phase159.sh
+bash webui/scripts/e2e-phase160.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

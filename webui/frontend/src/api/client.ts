@@ -665,6 +665,7 @@ export function deployFirewall(
     compress?: boolean;
     use_scp?: boolean;
     copy_fwb?: boolean;
+    force_limited_installer?: boolean;
   },
 ) {
   return api<{

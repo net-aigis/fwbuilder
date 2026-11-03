@@ -44,6 +44,8 @@ class DeployRequest(BaseModel):
     use_scp: bool | None = None
     # Desktop Installer preference copyFWB — also scp the .fwb project file.
     copy_fwb: bool = False
+    # Live scp/ssh on Cisco/Juniper/… is incomplete; require explicit opt-in.
+    force_limited_installer: bool = False
 
 
 @router.post("/{session_id}/deploy")
@@ -182,6 +184,19 @@ def deploy_firewall(
 
     try:
         host_os = str((fw.get("attrs") or {}).get("host_OS") or "")
+        if host_os and not body.dry_run and not body.force_limited_installer:
+            from ..configlets import list_installer_configlets
+
+            listing = list_installer_configlets(host_os)
+            if listing.get("interactive_installer"):
+                raise HTTPException(
+                    status_code=400,
+                    detail=(
+                        f"host_OS={host_os} needs the desktop expect/SSHSession installer. "
+                        "Use dry_run=true, or pass force_limited_installer=true to run "
+                        "simplified WebUI scp/ssh anyway."
+                    ),
+                )
 
         def _opt_bool(key: str, default: bool = False) -> bool:
             raw = (options.get(key) or "").strip().lower()

@@ -358,6 +358,7 @@ export function FirewallExtras({
         return;
       }
     }
+    const forceLimited = Boolean(installerNote) && !dryRun;
     onBusy?.(true);
     onError?.(null);
     setLog(null);
@@ -374,6 +375,7 @@ export function FirewallExtras({
         compress,
         use_scp: useScp,
         copy_fwb: copyFwb,
+        force_limited_installer: forceLimited || undefined,
       });
       const deployAny = res.deploy as typeof res.deploy & {
         plan?: string[];
