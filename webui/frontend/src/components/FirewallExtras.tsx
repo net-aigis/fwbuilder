@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   deployFirewall,
+  fetchInstallerConfiglet,
   fetchManagement,
   fetchOptionSchema,
   fetchOptions,
@@ -274,6 +275,53 @@ export function FirewallExtras({
     );
   }
 
+  async function onPreviewConfiglet() {
+    const os = (hostOs || "").trim();
+    if (!os) {
+      onError?.("host_OS missing; cannot preview installer configlet");
+      return;
+    }
+    onBusy?.(true);
+    onError?.(null);
+    try {
+      const fwdir = (remoteDir || options.firewall_dir || "/etc").trim() || "/etc";
+      const fwscript = (options.output_file || "firewall.fw").trim() || "firewall.fw";
+      const user = (deployUser || options.admUser || "fwadmin").trim() || "fwadmin";
+      const res = await fetchInstallerConfiglet({
+        host_os: os,
+        user,
+        fwdir,
+        fwscript,
+        generate_rc_conf: ["true", "1", "yes", "on"].includes(
+          (options.generate_rc_conf_file || "").trim().toLowerCase(),
+        ),
+        use_scp: !["false", "0", "no", "off"].includes(
+          (options.use_scp || "true").trim().toLowerCase(),
+        ),
+      });
+      const prev = res.preview || { ok: false, command: "" };
+      setLog(
+        [
+          `host_os=${res.host_os} family=${res.family || ""}`,
+          `configlet_dir=${res.configlet_dir || "(none)"}`,
+          `user=${res.user}`,
+          res.interactive_installer ? "interactive_installer=true" : "interactive_installer=false",
+          res.note || "",
+          prev.source ? `source=${prev.source}` : "",
+          "",
+          prev.ok ? prev.command || "(empty command)" : "(no activation configlet)",
+        ]
+          .filter(Boolean)
+          .join("\n"),
+      );
+      onStatus?.(`Installer configlet preview for ${os}`);
+    } catch (err) {
+      onError?.(err instanceof Error ? err.message : String(err));
+    } finally {
+      onBusy?.(false);
+    }
+  }
+
   return (
     <div className="firewall-extras">
       <header className="panel-header">
@@ -436,6 +484,15 @@ export function FirewallExtras({
         </label>
         <button type="button" disabled={busy} onClick={() => void onDeploy()}>
           Compile + deploy
+        </button>
+        <button
+          type="button"
+          className="ghost"
+          disabled={busy || !hostOs}
+          title="Preview expanded OS installer activation configlet"
+          onClick={() => void onPreviewConfiglet()}
+        >
+          Preview configlet
         </button>
         {log ? (
           <button type="button" className="ghost" disabled={busy} onClick={onCopyLog}>

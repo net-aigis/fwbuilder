@@ -277,6 +277,9 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Option key hint beside .ui label | done | OptionField; E2E phase132 |
 | Installer configlet preview API | done | `GET /installer-configlet`; E2E phase133 |
 | Deploy plan in App compile log | done | dry-run/live; E2E phase134 |
+| Configlet resolve without linux24 leak | done | family/linux-only fallback; FreeBSD rc_conf; E2E phase135 |
+| List installer configlets API | done | `GET /installer-configlets`; E2E phase136 |
+| Preview configlet in FirewallExtras | done | button + client; E2E phase137 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Soft-complete (feature/webui polish track)
@@ -434,6 +437,9 @@ Still open:
 | Local E2E phase132 (option key hint) | done | `e2e-phase132.sh` **OK** |
 | Local E2E phase133 (configlet preview) | done | `e2e-phase133.sh` **OK** |
 | Local E2E phase134 (deploy plan log) | done | `e2e-phase134.sh` **OK** |
+| Local E2E phase135 (configlet resolve/flags) | done | `e2e-phase135.sh` **OK** |
+| Local E2E phase136 (configlet list) | done | `e2e-phase136.sh` **OK** |
+| Local E2E phase137 (preview configlet UI) | done | `e2e-phase137.sh` **OK** |
 
 ## Local commands
 
@@ -577,6 +583,9 @@ bash webui/scripts/e2e-phase131.sh
 bash webui/scripts/e2e-phase132.sh
 bash webui/scripts/e2e-phase133.sh
 bash webui/scripts/e2e-phase134.sh
+bash webui/scripts/e2e-phase135.sh
+bash webui/scripts/e2e-phase136.sh
+bash webui/scripts/e2e-phase137.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

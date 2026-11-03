@@ -5,7 +5,11 @@ from typing import Any
 from fastapi import APIRouter, Depends, HTTPException, Query
 
 from ..auth import require_token
-from ..configlets import default_activation_cmd, resolve_configlet_dir
+from ..configlets import (
+    default_activation_cmd,
+    list_installer_configlets,
+    resolve_configlet_dir,
+)
 from ..platforms import (
     get_os,
     get_platform,
@@ -71,12 +75,24 @@ def get_interface_option_schema(
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
 
+@router.get("/installer-configlets")
+def get_installer_configlets(
+    host_os: str = Query(..., min_length=1),
+    _: str = Depends(require_token),
+) -> dict[str, Any]:
+    """List installer_commands* configlets resolved for host_OS (family fallback)."""
+    return list_installer_configlets(host_os)
+
+
 @router.get("/installer-configlet")
 def get_installer_configlet(
     host_os: str = Query(..., min_length=1),
     user: str = Query("fwadmin"),
     fwdir: str = Query("/etc"),
     fwscript: str = Query("firewall.fw"),
+    compress: bool = Query(False),
+    generate_rc_conf: bool = Query(False),
+    use_scp: bool = Query(True),
     _: str = Depends(require_token),
 ) -> dict[str, Any]:
     """Preview expanded FirewallInstaller activation configlet for an OS/user."""
@@ -88,6 +104,9 @@ def get_installer_configlet(
         fwscript=fwscript,
         remote_path=f"{fwdir.rstrip('/')}/{fwscript}",
         firewall_name="preview",
+        compress=compress,
+        generate_rc_conf=generate_rc_conf,
+        use_scp=use_scp,
     )
     family = ""
     try:
@@ -100,6 +119,9 @@ def get_installer_configlet(
         "configlet_dir": str(directory) if directory else None,
         "user": user,
         "preview": preview,
+        "interactive_installer": preview.get("interactive_installer"),
+        "names": preview.get("names") or [],
+        "note": preview.get("note"),
     }
 
 

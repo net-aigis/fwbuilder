@@ -131,6 +131,13 @@ def deploy_firewall(
 
     try:
         host_os = str((fw.get("attrs") or {}).get("host_OS") or "")
+
+        def _opt_bool(key: str, default: bool = False) -> bool:
+            raw = (options.get(key) or "").strip().lower()
+            if not raw:
+                return default
+            return raw in {"1", "true", "yes", "on"}
+
         deploy_result = plan_and_deploy(
             local_script=local_script,
             host=host,
@@ -143,6 +150,9 @@ def deploy_firewall(
             activation_cmd=activation,
             host_os=host_os,
             firewall_name=name,
+            compress=_opt_bool("compressScript") or _opt_bool("compress"),
+            generate_rc_conf=_opt_bool("generate_rc_conf_file"),
+            use_scp=_opt_bool("use_scp", default=True),
             ssh_args=options.get("sshArgs") or "",
             scp_args=options.get("scpArgs") or "",
             identity_file=body.identity_file,

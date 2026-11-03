@@ -585,6 +585,53 @@ export function updateManagement(
   );
 }
 
+export function fetchInstallerConfiglet(params: {
+  host_os: string;
+  user?: string;
+  fwdir?: string;
+  fwscript?: string;
+  compress?: boolean;
+  generate_rc_conf?: boolean;
+  use_scp?: boolean;
+}) {
+  const q = new URLSearchParams();
+  q.set("host_os", params.host_os);
+  if (params.user) q.set("user", params.user);
+  if (params.fwdir) q.set("fwdir", params.fwdir);
+  if (params.fwscript) q.set("fwscript", params.fwscript);
+  if (params.compress != null) q.set("compress", String(params.compress));
+  if (params.generate_rc_conf != null) q.set("generate_rc_conf", String(params.generate_rc_conf));
+  if (params.use_scp != null) q.set("use_scp", String(params.use_scp));
+  return api<{
+    host_os: string;
+    family?: string;
+    configlet_dir?: string | null;
+    user: string;
+    interactive_installer?: boolean;
+    names?: string[];
+    note?: string | null;
+    preview: {
+      ok: boolean;
+      source?: string | null;
+      command?: string;
+      interactive_installer?: boolean;
+      note?: string | null;
+    };
+  }>(`/api/v1/installer-configlet?${q.toString()}`);
+}
+
+export function fetchInstallerConfiglets(hostOs: string) {
+  const q = new URLSearchParams({ host_os: hostOs });
+  return api<{
+    host_os: string;
+    family?: string;
+    configlet_dir?: string | null;
+    names: string[];
+    interactive_installer?: boolean;
+    note?: string | null;
+  }>(`/api/v1/installer-configlets?${q.toString()}`);
+}
+
 export function deployFirewall(
   sessionId: string,
   body: {

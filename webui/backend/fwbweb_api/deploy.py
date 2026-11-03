@@ -163,6 +163,9 @@ def plan_and_deploy(
     activation_cmd: str = "",
     host_os: str = "",
     firewall_name: str = "",
+    compress: bool = False,
+    generate_rc_conf: bool = False,
+    use_scp: bool = True,
     ssh_args: str = "",
     scp_args: str = "",
     identity_file: str | None = None,
@@ -205,6 +208,7 @@ def plan_and_deploy(
 
     act = (activation_cmd or "").strip()
     activation_source: str | None = None
+    interactive_note: str | None = None
     if activate:
         if not act:
             from .configlets import default_activation_cmd
@@ -216,7 +220,11 @@ def plan_and_deploy(
                 fwscript=fwscript,
                 remote_path=main_remote,
                 firewall_name=firewall_name,
+                compress=compress,
+                generate_rc_conf=generate_rc_conf,
+                use_scp=use_scp,
             )
+            interactive_note = conf.get("note") if isinstance(conf.get("note"), str) else None
             if conf.get("ok") and conf.get("command"):
                 act = str(conf["command"])
                 activation_source = conf.get("source")
@@ -224,6 +232,11 @@ def plan_and_deploy(
                 # Fallback: same idea as GUI for regular users.
                 act = f"sudo {main_remote}" if user and user != "root" else main_remote
                 activation_source = "fallback"
+            if conf.get("interactive_installer"):
+                plan_lines.append(
+                    "Note: OS has pre/post installer configlets; "
+                    "WebUI cannot run the full expect/SSHSession installer."
+                )
         else:
             act = expand_activation_cmd(
                 act,
@@ -240,6 +253,12 @@ def plan_and_deploy(
         plan_lines.append("Activate: (skipped)")
 
     manifest = parse_fw_manifest(local_script)
+    note = (
+        "WebUI installer (ssh/scp) with FirewallInstaller-style manifest copy "
+        "and OS installer configlets. Not the full desktop expect/SSHSession installer."
+    )
+    if interactive_note:
+        note = f"{note} {interactive_note}"
     result: dict[str, Any] = {
         "ok": True,
         "dry_run": dry_run,
@@ -254,10 +273,7 @@ def plan_and_deploy(
         "plan": plan_lines,
         "commands": commands,
         "log": "",
-        "note": (
-            "WebUI installer (ssh/scp) with FirewallInstaller-style manifest copy "
-            "and OS installer configlets. Not the full desktop expect/SSHSession installer."
-        ),
+        "note": note,
     }
 
     if dry_run:
