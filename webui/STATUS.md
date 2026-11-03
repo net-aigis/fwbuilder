@@ -230,6 +230,9 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Stats TSV download | done | stats panel; E2E phase85 |
 | Insert / Ctrl+Enter add rule | done | bottom / Shift=top; E2E phase86 |
 | Slash focuses search | done | `/`; E2E phase87 |
+| Persist theme | done | localStorage; E2E phase88 |
+| Search dblclick opens Policy | done | Firewall/Cluster; E2E phase89 |
+| Theme toggle shortcut | done | Ctrl+Shift+L; E2E phase90 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Phase 3 — compile / deploy
@@ -328,6 +331,9 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase85 (stats TSV) | done | `e2e-phase85.sh` **OK** |
 | Local E2E phase86 (insert rule) | done | `e2e-phase86.sh` **OK** |
 | Local E2E phase87 (slash search) | done | `e2e-phase87.sh` **OK** |
+| Local E2E phase88 (theme persist) | done | `e2e-phase88.sh` **OK** |
+| Local E2E phase89 (search dblclick) | done | `e2e-phase89.sh` **OK** |
+| Local E2E phase90 (theme shortcut) | done | `e2e-phase90.sh` **OK** |
 
 ## Local commands
 
@@ -424,6 +430,9 @@ bash webui/scripts/e2e-phase84.sh
 bash webui/scripts/e2e-phase85.sh
 bash webui/scripts/e2e-phase86.sh
 bash webui/scripts/e2e-phase87.sh
+bash webui/scripts/e2e-phase88.sh
+bash webui/scripts/e2e-phase89.sh
+bash webui/scripts/e2e-phase90.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

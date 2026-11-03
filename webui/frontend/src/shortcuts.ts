@@ -12,6 +12,7 @@ export const SHORTCUTS: ShortcutEntry[] = [
   { keys: "Ctrl+Shift+F", action: "Focus rule text filter", scope: "rules" },
   { keys: "Ctrl+Shift+C", action: "Copy object id", scope: "object" },
   { keys: "Ctrl+Shift+P", action: "Copy object path", scope: "object" },
+  { keys: "Ctrl+Shift+L", action: "Toggle light/dark theme" },
   { keys: "F2", action: "Rename selected object", scope: "object" },
   { keys: "/", action: "Focus object search" },
   { keys: "Alt+R", action: "Open Policy rules (Firewall/Cluster)" },

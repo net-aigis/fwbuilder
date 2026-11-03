@@ -72,9 +72,15 @@ type RulesWhich = "policy" | "nat" | "routing";
 type PickerTarget = { ruleId: string; element: string };
 
 export function App() {
-  const [theme, setTheme] = useState<Theme>(() =>
-    window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light",
-  );
+  const [theme, setTheme] = useState<Theme>(() => {
+    try {
+      const stored = localStorage.getItem("fwbweb.theme");
+      if (stored === "dark" || stored === "light") return stored;
+    } catch {
+      /* ignore */
+    }
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  });
   const [token, setTokenState] = useState(getToken());
   const [path, setPath] = useState(() => {
     try {
@@ -235,6 +241,14 @@ export function App() {
     window.addEventListener("beforeunload", onBeforeUnload);
     return () => window.removeEventListener("beforeunload", onBeforeUnload);
   }, [dirty]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("fwbweb.theme", theme);
+    } catch {
+      /* ignore */
+    }
+  }, [theme]);
 
   useEffect(() => {
     void refreshObjectPath(selected?.id ?? null);
@@ -832,6 +846,11 @@ export function App() {
         e.preventDefault();
         searchInputRef.current?.focus();
         searchInputRef.current?.select();
+        return;
+      }
+      if (mod && e.shiftKey && e.key.toLowerCase() === "l" && !typing) {
+        e.preventDefault();
+        setTheme((t) => (t === "dark" ? "light" : "dark"));
         return;
       }
       if (
@@ -2541,6 +2560,7 @@ export function App() {
           <button
             type="button"
             className="ghost"
+            title="Toggle theme (Ctrl+Shift+L)"
             onClick={() => setTheme((t) => (t === "dark" ? "light" : "dark"))}
           >
             {theme === "dark" ? "Light" : "Dark"}
@@ -2754,7 +2774,7 @@ export function App() {
           <div className="search-row">
             <input
               ref={searchInputRef}
-              placeholder="Search… (Ctrl+F)"
+              placeholder="Search… (Ctrl+F /)"
               value={searchQ}
               disabled={!sessionId || busy}
               onChange={(e) => setSearchQ(e.target.value)}
@@ -2994,7 +3014,17 @@ export function App() {
                     e.dataTransfer.effectAllowed = "copy";
                   }}
                   onClick={() => void onSelect(h)}
-                  title={h.comment || h.id}
+                  onDoubleClick={() => {
+                    void onSelect(h);
+                    if (h.type === "Firewall" || h.type === "Cluster") {
+                      void loadRules(h.id, "policy");
+                    }
+                  }}
+                  title={
+                    h.type === "Firewall" || h.type === "Cluster"
+                      ? `${h.comment || h.id} · double-click opens Policy`
+                      : h.comment || h.id
+                  }
                 >
                   <span className="tree-type">{h.type}</span>
                   <span className="tree-name">{h.name}</span>
