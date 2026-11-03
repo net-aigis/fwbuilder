@@ -2945,6 +2945,43 @@ export function App() {
                         </button>
                       ) : null}
                     </div>
+                    {selected.type === "Firewall" || selected.type === "Cluster" ? (
+                      <div className="btn-row pad">
+                        <button
+                          type="button"
+                          disabled={busy}
+                          title="Open Policy rules (Alt+R)"
+                          onClick={() => void loadRules(selected.id, "policy")}
+                        >
+                          Open Policy
+                        </button>
+                        <button
+                          type="button"
+                          className="ghost"
+                          disabled={busy}
+                          onClick={() => void loadRules(selected.id, "nat")}
+                        >
+                          Open NAT
+                        </button>
+                        <button
+                          type="button"
+                          className="ghost"
+                          disabled={busy}
+                          onClick={() => void loadRules(selected.id, "routing")}
+                        >
+                          Open Routing
+                        </button>
+                        <button
+                          type="button"
+                          className="ghost"
+                          disabled={busy}
+                          title="Compile then deploy dry-run (Alt+D)"
+                          onClick={() => void onDeployDryRun(selected.id)}
+                        >
+                          Deploy dry-run
+                        </button>
+                      </div>
+                    ) : null}
                     {selected.type === "Firewall" ? (
                       <FirewallExtras
                         sessionId={sessionId}
