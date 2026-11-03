@@ -51,9 +51,10 @@ def call(method, path, body=None):
     except urllib.error.HTTPError as e:
         raise AssertionError(f"{method} {path} -> {e.code}: {e.read().decode()}") from e
 
-# Find an object referenced by a policy rule (eth0 is typical)
-iface=call("GET","/search?q=eth0&type=Interface&limit=10")["results"][0]
-wu=call("GET", f"/objects/{iface['id']}/where-used")
+# Object known to appear in Policy rule 1 (http service)
+svc=[r for r in call("GET","/search?q=http&type=TCPService&limit=20")["results"]
+     if r.get("name")=="http"][0]
+wu=call("GET", f"/objects/{svc['id']}/where-used")
 uses=wu.get("uses") or []
 rule_rows=[u for u in uses if str(u.get("type","")).endswith("Rule")]
 print("where-used rules", len(rule_rows), "of", len(uses))
@@ -64,10 +65,9 @@ print("rule", row.get("id"), row.get("type"), "parent", row.get("parent_type"), 
 
 path=call("GET", f"/objects/{row['id']}/path")["path"]
 fw=next(p for p in reversed(path) if p.get("type") in ("Firewall","Cluster"))
-assert fw.get("id")==FW or fw.get("type") in ("Firewall","Cluster")
 print("path fw", fw.get("name"), fw.get("id"))
+assert fw.get("id")==FW
 
-# load that ruleset and ensure rule id is present
 which="policy" if row["parent_type"]=="Policy" else ("nat" if row["parent_type"]=="NAT" else "routing")
 rules=call("GET", f"/rulesets/{row['parent_id']}?which={which}")["rules"]
 assert any(r["id"]==row["id"] for r in rules), [r["id"] for r in rules]
