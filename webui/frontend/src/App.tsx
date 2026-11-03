@@ -770,11 +770,37 @@ export function App() {
           setSearchQ("");
           return;
         }
+        if (
+          tab === "rules" &&
+          (ruleTextFilter ||
+            ruleGroupFilter ||
+            ruleActionFilter ||
+            hideDisabled ||
+            onlyDisabled)
+        ) {
+          e.preventDefault();
+          setRuleTextFilter("");
+          setRuleGroupFilter("");
+          setRuleActionFilter("");
+          setHideDisabled(false);
+          setOnlyDisabled(false);
+          setStatus("Filters cleared");
+          return;
+        }
       }
       if (mod && e.shiftKey && e.key.toLowerCase() === "c" && selected) {
         e.preventDefault();
         void navigator.clipboard.writeText(selected.id).then(
           () => setStatus(`Copied object id ${selected.id}`),
+          () => setError("Clipboard write failed"),
+        );
+        return;
+      }
+      if (mod && e.shiftKey && e.key.toLowerCase() === "p" && objectPath.length) {
+        e.preventDefault();
+        const text = objectPath.map((p) => p.name || p.type).join(" / ");
+        void navigator.clipboard.writeText(text).then(
+          () => setStatus("Copied object path"),
           () => setError("Clipboard write failed"),
         );
         return;
@@ -790,6 +816,23 @@ export function App() {
           void onDuplicateObject();
           return;
         }
+      }
+      if (
+        tab === "rules" &&
+        !typing &&
+        !e.altKey &&
+        rulesFwId &&
+        ((e.key === "Insert" && !mod) || (e.key === "Enter" && mod && !e.metaKey))
+      ) {
+        e.preventDefault();
+        void onAddRule(e.shiftKey ? "top" : "bottom");
+        return;
+      }
+      if (!mod && !e.altKey && e.key === "/" && !typing) {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+        searchInputRef.current?.select();
+        return;
       }
       if (
         tab === "object" &&
@@ -980,6 +1023,10 @@ export function App() {
     helpOpen,
     rulesFwId,
     rulesWhich,
+    ruleTextFilter,
+    ruleGroupFilter,
+    ruleActionFilter,
+    objectPath,
   ]);
 
   async function onApplyObject(patch: {
@@ -1359,6 +1406,51 @@ export function App() {
     a.click();
     URL.revokeObjectURL(url);
     setStatus("Downloaded stats JSON");
+  }
+
+  function statsToTsv(): string {
+    if (!stats) return "";
+    const rows: Array<[string, string]> = [
+      ["libraries", String(stats.libraries)],
+      ["objects", String(stats.objects)],
+      ["firewalls", String(stats.firewalls)],
+      ["clusters", String(stats.clusters ?? 0)],
+      ["hosts", String(stats.hosts)],
+      ["interfaces", String(stats.interfaces)],
+      ["addresses", String(stats.addresses)],
+      ["services", String(stats.services)],
+      ["rulesets", String(stats.rulesets ?? 0)],
+      ["rules", String(stats.rules)],
+      ["deleted", String(stats.deleted)],
+      ["unused", String(stats.unused ?? 0)],
+    ];
+    const lines = ["metric\tvalue", ...rows.map(([k, v]) => `${k}\t${v}`)];
+    if (statsFirewalls.length) {
+      lines.push("", "firewall_id\tname\tplatform\thost_OS");
+      for (const f of statsFirewalls) {
+        lines.push(
+          [
+            f.id,
+            (f.name || "").replace(/\t|\n/g, " "),
+            String(f.attrs?.platform ?? "").replace(/\t|\n/g, " "),
+            String(f.attrs?.host_OS ?? "").replace(/\t|\n/g, " "),
+          ].join("\t"),
+        );
+      }
+    }
+    return lines.join("\n");
+  }
+
+  function onDownloadStatsTsv() {
+    if (!stats) return;
+    const blob = new Blob([statsToTsv()], { type: "text/tab-separated-values" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "fwbweb-stats.tsv";
+    a.click();
+    URL.revokeObjectURL(url);
+    setStatus("Downloaded stats TSV");
   }
 
   function onDownloadCompileLog() {
@@ -2967,7 +3059,7 @@ export function App() {
                     type="button"
                     className="ghost"
                     disabled={busy}
-                    title="Copy object path"
+                    title="Copy object path (Ctrl+Shift+P)"
                     onClick={() => {
                       const text = objectPath.map((p) => p.name || p.type).join(" / ");
                       void navigator.clipboard.writeText(text).then(
@@ -3382,7 +3474,12 @@ export function App() {
                       Delete ruleset
                     </button>
                   ) : null}
-                  <button type="button" disabled={!canOperate} onClick={() => void onAddRule("bottom")}>
+                  <button
+                    type="button"
+                    disabled={!canOperate}
+                    title="Add rule at bottom (Insert / Ctrl+Enter; Shift+Insert = top)"
+                    onClick={() => void onAddRule("bottom")}
+                  >
                     Add
                   </button>
                   <button
@@ -4042,6 +4139,9 @@ export function App() {
               <div className="btn-row">
                 <button type="button" className="ghost" onClick={onDownloadStats}>
                   Download JSON
+                </button>
+                <button type="button" className="ghost" onClick={onDownloadStatsTsv}>
+                  Download TSV
                 </button>
                 <button type="button" className="ghost" onClick={() => setStats(null)}>
                   Close

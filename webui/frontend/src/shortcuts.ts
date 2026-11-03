@@ -3,7 +3,7 @@ export type ShortcutEntry = { keys: string; action: string; scope?: string };
 
 export const SHORTCUTS: ShortcutEntry[] = [
   { keys: "?", action: "Show this shortcuts help" },
-  { keys: "Esc", action: "Close picker / overlay / clear search" },
+  { keys: "Esc", action: "Close overlay / clear search / clear rule filters" },
   { keys: "Ctrl+S", action: "Save" },
   { keys: "Ctrl+Shift+S", action: "Save as" },
   { keys: "Ctrl+E", action: "Compile current firewall", scope: "rules" },
@@ -11,7 +11,9 @@ export const SHORTCUTS: ShortcutEntry[] = [
   { keys: "Ctrl+I", action: "Project stats" },
   { keys: "Ctrl+Shift+F", action: "Focus rule text filter", scope: "rules" },
   { keys: "Ctrl+Shift+C", action: "Copy object id", scope: "object" },
+  { keys: "Ctrl+Shift+P", action: "Copy object path", scope: "object" },
   { keys: "F2", action: "Rename selected object", scope: "object" },
+  { keys: "/", action: "Focus object search" },
   { keys: "Alt+R", action: "Open Policy rules (Firewall/Cluster)" },
   { keys: "Alt+N", action: "Open NAT rules (Firewall/Cluster)" },
   { keys: "Alt+G", action: "Open Routing rules (Firewall/Cluster)" },
@@ -21,6 +23,7 @@ export const SHORTCUTS: ShortcutEntry[] = [
   { keys: "↑ / ↓", action: "Select previous / next visible rule", scope: "rules" },
   { keys: "Home / End", action: "First / last visible rule", scope: "rules" },
   { keys: "PageUp / PageDown", action: "Jump ±10 visible rules", scope: "rules" },
+  { keys: "Insert / Ctrl+Enter", action: "Add rule at bottom (Shift+Insert = top)", scope: "rules" },
   { keys: "Space", action: "Toggle rule disabled", scope: "rules" },
   { keys: "Delete / Ctrl+D", action: "Delete selected rule", scope: "rules" },
   { keys: "f", action: "Cycle disabled filter (all → hide → only)", scope: "rules" },

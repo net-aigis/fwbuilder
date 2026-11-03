@@ -225,6 +225,11 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Cycle group filter | done | `u` / Cycle group; E2E phase80 |
 | PageUp/PageDown rule jump | done | ±10 visible; E2E phase81 |
 | Alt+P cycle Policy/NAT/Routing | done | keyboard; E2E phase82 |
+| Copy object path shortcut | done | Ctrl+Shift+P; E2E phase83 |
+| Esc clears rule filters | done | rules tab; E2E phase84 |
+| Stats TSV download | done | stats panel; E2E phase85 |
+| Insert / Ctrl+Enter add rule | done | bottom / Shift=top; E2E phase86 |
+| Slash focuses search | done | `/`; E2E phase87 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Phase 3 — compile / deploy
@@ -318,6 +323,11 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Local E2E phase80 (cycle group) | done | `e2e-phase80.sh` **OK** |
 | Local E2E phase81 (PageUp/Down) | done | `e2e-phase81.sh` **OK** |
 | Local E2E phase82 (Alt+P cycle) | done | `e2e-phase82.sh` **OK** |
+| Local E2E phase83 (object path) | done | `e2e-phase83.sh` **OK** |
+| Local E2E phase84 (clear filters) | done | `e2e-phase84.sh` **OK** |
+| Local E2E phase85 (stats TSV) | done | `e2e-phase85.sh` **OK** |
+| Local E2E phase86 (insert rule) | done | `e2e-phase86.sh` **OK** |
+| Local E2E phase87 (slash search) | done | `e2e-phase87.sh` **OK** |
 
 ## Local commands
 
@@ -409,6 +419,11 @@ bash webui/scripts/e2e-phase79.sh
 bash webui/scripts/e2e-phase80.sh
 bash webui/scripts/e2e-phase81.sh
 bash webui/scripts/e2e-phase82.sh
+bash webui/scripts/e2e-phase83.sh
+bash webui/scripts/e2e-phase84.sh
+bash webui/scripts/e2e-phase85.sh
+bash webui/scripts/e2e-phase86.sh
+bash webui/scripts/e2e-phase87.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```
