@@ -208,6 +208,12 @@ function buildHonestyBundle(payload: Record<string, unknown>) {
       soft_fertig_session_storage_clear_note:
         payload.soft_fertig_session_storage_clear_note,
     },
+    surface_version: {
+      soft_fertig_honesty_surface_version:
+        payload.soft_fertig_honesty_surface_version,
+      soft_fertig_honesty_surface_version_note:
+        payload.soft_fertig_honesty_surface_version_note,
+    },
     honesty_exports: {
       soft_fertig_honesty_export_keys: payload.soft_fertig_honesty_export_keys,
       soft_fertig_honesty_export_key_count:
@@ -3385,6 +3391,66 @@ export function FirewallExtras({
                 }}
               >
                 Copy clear catalogs
+              </button>
+            ) : null}
+            {hardGapsPayload ? (
+              <button
+                type="button"
+                className="ghost"
+                disabled={busy}
+                title="Download soft_fertig_honesty_surface_version (+ note) from /hard-gaps"
+                onClick={() => {
+                  const catalog: Record<string, unknown> = {
+                    soft_fertig_honesty_surface_version:
+                      hardGapsPayload.soft_fertig_honesty_surface_version,
+                    soft_fertig_honesty_surface_version_note:
+                      hardGapsPayload.soft_fertig_honesty_surface_version_note,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  const text = JSON.stringify(catalog, null, 2);
+                  const blob = new Blob([text + "\n"], {
+                    type: "application/json;charset=utf-8",
+                  });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `fwbweb-honesty-surface-version-${firewallId || "fw"}.json`;
+                  a.click();
+                  URL.revokeObjectURL(url);
+                  onStatus?.("Downloaded honesty surface version");
+                }}
+              >
+                Download surface version
+              </button>
+            ) : null}
+            {hardGapsPayload ? (
+              <button
+                type="button"
+                className="ghost"
+                disabled={busy}
+                title="Copy soft_fertig_honesty_surface_version (+ note) to clipboard"
+                onClick={() => {
+                  void (async () => {
+                    const catalog: Record<string, unknown> = {
+                      soft_fertig_honesty_surface_version:
+                        hardGapsPayload.soft_fertig_honesty_surface_version,
+                      soft_fertig_honesty_surface_version_note:
+                        hardGapsPayload.soft_fertig_honesty_surface_version_note,
+                      soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                      honesty_milestone: hardGapsPayload.honesty_milestone,
+                    };
+                    const text = JSON.stringify(catalog, null, 2) + "\n";
+                    try {
+                      await navigator.clipboard.writeText(text);
+                      onStatus?.("Copied honesty surface version");
+                    } catch (e) {
+                      onError?.(e instanceof Error ? e.message : String(e));
+                    }
+                  })();
+                }}
+              >
+                Copy surface version
               </button>
             ) : null}
             <button
