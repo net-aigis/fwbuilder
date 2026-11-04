@@ -238,6 +238,10 @@ function buildHonestyBundle(payload: Record<string, unknown>) {
     soft_complete_note: {
       soft_fertig_soft_complete_note: payload.soft_fertig_soft_complete_note,
     },
+    surface_changelog: {
+      soft_fertig_honesty_surface_changelog:
+        payload.soft_fertig_honesty_surface_changelog,
+    },
     honesty_exports: {
       soft_fertig_honesty_export_keys: payload.soft_fertig_honesty_export_keys,
       soft_fertig_honesty_export_key_count:
