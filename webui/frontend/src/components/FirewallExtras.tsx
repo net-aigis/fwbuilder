@@ -261,6 +261,10 @@ function buildHonestyBundle(payload: Record<string, unknown>) {
     hard_gap_roster: {
       soft_fertig_hard_gap_roster: payload.soft_fertig_hard_gap_roster,
     },
+    hard_gap_refusal_roster: {
+      soft_fertig_hard_gap_refusal_roster:
+        payload.soft_fertig_hard_gap_refusal_roster,
+    },
     honesty_exports: {
       soft_fertig_honesty_export_keys: payload.soft_fertig_honesty_export_keys,
       soft_fertig_honesty_export_key_count:
