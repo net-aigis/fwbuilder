@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "1080"
+WEBUI_SOFT_COMPLETE_PHASE = "1088"
 # Honesty/preview track milestone (last thematic checkpoint; soft marker may be higher).
 # 600: refusals/closure; 650: health/summary/paths + fidelity sample;
 # 700: expect step_notes + SSH alternative/refusal notes;
@@ -54,13 +54,13 @@ WEBUI_SOFT_COMPLETE_PHASE = "1080"
 # 1350: sample_key_count + with_visible + spacers_with_size_hint +
 #       signal_key_count + with_whats_this on hard-gaps sample;
 # 1400: with_enabled/alignment/read_only + pages row_stretch/tooltip samples;
-# 1450: with_external_label + pages_with_buddy_labels samples (catalog complete).
-WEBUI_HONESTY_MILESTONE = 1450
+# 1450: with_external_label + pages_with_buddy_labels samples (catalog complete);
+# 1500: layout_fidelity_sample_catalog_complete flag on hard-gaps/summary.
+WEBUI_HONESTY_MILESTONE = 1500
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 1450: hard-gaps sample catalog covers "
-    "with_external_label and pages_with_buddy_labels — all extracted "
-    "field/page score signals are now mirrored on /hard-gaps (+ summary). "
-    "Still not pixel parity. Hard gaps remain open."
+    "Honesty surface checkpoint 1500: /hard-gaps (+ summary) expose "
+    "layout_fidelity_sample_catalog_complete when the required sample-key "
+    "catalog is present — still not pixel parity. Hard gaps remain open."
 )
 
 HARD_GAPS_OPEN = (
