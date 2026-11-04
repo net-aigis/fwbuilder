@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "2248"
+WEBUI_SOFT_COMPLETE_PHASE = "2264"
 SOFT_FERTIG_HONESTY_TRACK_NOTE = (
     "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
     "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
@@ -131,11 +131,13 @@ SOFT_FERTIG_HONESTY_TRACK_NOTE = (
 # 4950: operator_brief added to sessionStorage + clear catalogs;
 # 5000: Soft 2200+ honesty surface checkpoint (operator brief cycle complete);
 # 5050: soft_fertig_hard_gap_roster compact open-gap labels/closure titles;
-# 5100: hard_gap_roster listed in honesty export + bundle sections.
-WEBUI_HONESTY_MILESTONE = 5100
+# 5100: hard_gap_roster listed in honesty export + bundle sections;
+# 5150: soft_fertig_honesty_surface_version bumped to 1.8 (hard_gap_roster).
+WEBUI_HONESTY_MILESTONE = 5150
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 5100: soft_fertig_hard_gap_roster is "
-    "listed in honesty export and bundle catalogs — hard gaps remain open."
+    "Honesty surface checkpoint 5150: soft_fertig_honesty_surface_version "
+    "1.8 documents soft_fertig_hard_gap_roster on honesty endpoints "
+    "and in export/bundle — hard gaps remain open."
 )
 SOFT_FERTIG_SOFT_COMPLETE_NOTE = (
     "WEBUI_SOFT_COMPLETE_PHASE marks soft-fertig honesty/preview catalog "
@@ -443,9 +445,9 @@ SOFT_FERTIG_SESSION_STORAGE_CLEAR_NOTE = (
 )
 
 # Soft-fertig honesty/preview catalog schema version (documentation; not a lock).
-SOFT_FERTIG_HONESTY_SURFACE_VERSION = "1.7"
+SOFT_FERTIG_HONESTY_SURFACE_VERSION = "1.8"
 SOFT_FERTIG_HONESTY_SURFACE_VERSION_NOTE = (
-    "Schema 1.7: schema 1.6 plus soft_fertig_honesty_operator_brief on "
+    "Schema 1.8: schema 1.7 plus soft_fertig_hard_gap_roster on "
     "/health and honesty endpoints (+ export/bundle); hard gaps remain open."
 )
 
@@ -623,6 +625,10 @@ SOFT_FERTIG_HONESTY_SURFACE_CHANGELOG = {
     ),
     "1.7": (
         "soft_fertig_honesty_operator_brief on /health and honesty "
+        "endpoints (+ export/bundle)."
+    ),
+    "1.8": (
+        "soft_fertig_hard_gap_roster on /health and honesty "
         "endpoints (+ export/bundle)."
     ),
 }
