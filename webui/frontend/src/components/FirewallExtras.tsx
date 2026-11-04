@@ -2122,8 +2122,25 @@ export function FirewallExtras({
                           : "";
                       const plat = s.layout_fidelity_sample_platform || "iptables";
                       const hos = s.layout_fidelity_sample_host_os || "linux24";
+                      const spacerBits = [
+                        typeof s.layout_fidelity_sample_spacers === "number"
+                          ? `spacers=${s.layout_fidelity_sample_spacers}`
+                          : "",
+                        typeof s.layout_fidelity_sample_spacers_with_orientation ===
+                        "number"
+                          ? `orient=${s.layout_fidelity_sample_spacers_with_orientation}`
+                          : "",
+                        typeof s.layout_fidelity_sample_spacers_with_size_type ===
+                        "number"
+                          ? `sizeType=${s.layout_fidelity_sample_spacers_with_size_type}`
+                          : "",
+                      ]
+                        .filter(Boolean)
+                        .join(", ");
                       setHardGapsSummaryFidelity(
-                        `Sample fidelity ${plat}/${hos}: ${s.layout_fidelity_sample_score_percent}%${parts} (not pixel)`,
+                        `Sample fidelity ${plat}/${hos}: ${s.layout_fidelity_sample_score_percent}%${parts}` +
+                          (spacerBits ? `; ${spacerBits}` : "") +
+                          " (not pixel)",
                       );
                     } else {
                       setHardGapsSummaryFidelity(null);

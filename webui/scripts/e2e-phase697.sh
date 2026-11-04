@@ -11,7 +11,7 @@ grep -Fq 'data-size-type' webui/frontend/src/components/RuleOptions.tsx
 grep -Fq 'data-size-type' webui/frontend/src/components/InterfaceOptions.tsx
 PYTHONPATH=webui/backend python3 - <<'PY'
 from fwbweb_api import main as m
-assert m.WEBUI_SOFT_COMPLETE_PHASE == "704"
+assert int(m.WEBUI_SOFT_COMPLETE_PHASE) >= 704
 print("soft 704 + size_type UI wired")
 PY
 echo "cleaned"

@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "704"
+WEBUI_SOFT_COMPLETE_PHASE = "712"
 # Honesty/preview track milestone (last thematic checkpoint; soft marker may be higher).
 # 600: refusals/closure; 650: health/summary/paths + fidelity sample;
 # 700: expect step_notes + SSH alternative/refusal notes surface.
@@ -60,7 +60,8 @@ HARD_GAP_NOTES = {
         "use_ULOG/device-type stack hints + option_enable follow); "
         "fidelity counts with_visible + sections flat/checkable + signal_keys + "
         "layout_tree_max_depth + spacers_with_orientation/size_type; "
-        "visible=false keeps field-ui-hidden grid holes; "
+        "UI applies data-size-type Expanding/Fixed via qtSpacerStyle (still not "
+        "desktop-equivalent geometry); visible=false keeps field-ui-hidden grid holes; "
         "exact pixel geometry still open."
     ),
     "expect_sshsession_runtime": (
@@ -237,6 +238,19 @@ def hard_gaps_summary(_: str = Depends(require_token)) -> dict[str, object]:
         "layout_fidelity_sample_host_os": "linux24",
         "layout_fidelity_sample_score_percent": sample_score,
         "layout_fidelity_sample_score_parts_count": sample_parts,
+        "layout_fidelity_sample_spacers": (
+            (sample_fid.get("pages") or {}).get("spacers") if sample_fid.get("ok") else None
+        ),
+        "layout_fidelity_sample_spacers_with_orientation": (
+            (sample_fid.get("pages") or {}).get("spacers_with_orientation")
+            if sample_fid.get("ok")
+            else None
+        ),
+        "layout_fidelity_sample_spacers_with_size_type": (
+            (sample_fid.get("pages") or {}).get("spacers_with_size_type")
+            if sample_fid.get("ok")
+            else None
+        ),
         "layout_fidelity_pixel_parity": False,
         "parent_path": "/api/v1/hard-gaps",
         "closure_path": "/api/v1/hard-gaps/closure",
