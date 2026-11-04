@@ -492,6 +492,9 @@ export function FirewallExtras({
           typeof gaps.layout_fidelity_sample_with_read_only === "number"
             ? `readOnly=${gaps.layout_fidelity_sample_with_read_only}`
             : "",
+          typeof gaps.layout_fidelity_sample_pages_with_row_stretch === "number"
+            ? `rowStretch=${gaps.layout_fidelity_sample_pages_with_row_stretch}`
+            : "",
           typeof gaps.layout_fidelity_sample_pages === "number"
             ? `pages=${gaps.layout_fidelity_sample_pages}`
             : "",
@@ -2385,6 +2388,9 @@ export function FirewallExtras({
                           : "",
                         typeof s.layout_fidelity_sample_with_read_only === "number"
                           ? `readOnly=${s.layout_fidelity_sample_with_read_only}`
+                          : "",
+                        typeof s.layout_fidelity_sample_pages_with_row_stretch === "number"
+                          ? `rowStretch=${s.layout_fidelity_sample_pages_with_row_stretch}`
                           : "",
                         typeof s.layout_fidelity_sample_pages === "number"
                           ? `pages=${s.layout_fidelity_sample_pages}`
