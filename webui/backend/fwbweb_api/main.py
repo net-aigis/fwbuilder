@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "960"
+WEBUI_SOFT_COMPLETE_PHASE = "968"
 # Honesty/preview track milestone (last thematic checkpoint; soft marker may be higher).
 # 600: refusals/closure; 650: health/summary/paths + fidelity sample;
 # 700: expect step_notes + SSH alternative/refusal notes;
@@ -80,7 +80,7 @@ HARD_GAP_NOTES = {
         "with_grid/label/tooltip field samples + pages/sections/stack_names counts + "
         "chrome window_title/tab_position samples; UI truncates long sample "
         "fidelity lines (title keeps full text); with_size_policy total sample + "
-        "layout_fidelity_sample_key_count; "
+        "layout_fidelity_sample_key_count + with_visible field sample; "
         "UI applies data-size-type Expanding/Fixed/Maximum/Minimum/Preferred via "
         "qtSpacerStyle/CSS and field size-h/v Expanding/Minimum/Preferred/Fixed classes "
         "(still not desktop-equivalent geometry); visible=false keeps field-ui-hidden "
@@ -332,6 +332,11 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
             if sample_fid.get("ok")
             else None
         ),
+        "layout_fidelity_sample_with_visible": (
+            (sample_fid.get("fields") or {}).get("with_visible")
+            if sample_fid.get("ok")
+            else None
+        ),
         "layout_fidelity_sample_fields": (
             (sample_fid.get("fields") or {}).get("fields")
             if sample_fid.get("ok")
@@ -550,6 +555,11 @@ def hard_gaps_summary(_: str = Depends(require_token)) -> dict[str, object]:
         ),
         "layout_fidelity_sample_with_tooltip": (
             (sample_fid.get("fields") or {}).get("with_tooltip")
+            if sample_fid.get("ok")
+            else None
+        ),
+        "layout_fidelity_sample_with_visible": (
+            (sample_fid.get("fields") or {}).get("with_visible")
             if sample_fid.get("ok")
             else None
         ),
