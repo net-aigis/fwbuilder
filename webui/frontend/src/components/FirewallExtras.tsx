@@ -424,6 +424,25 @@ export function FirewallExtras({
           typeof gaps.layout_fidelity_sample_annotations === "number"
             ? `annotations=${gaps.layout_fidelity_sample_annotations}`
             : "",
+          typeof gaps.layout_fidelity_sample_pages_with_column_stretch === "number"
+            ? `colStretch=${gaps.layout_fidelity_sample_pages_with_column_stretch}`
+            : "",
+          typeof gaps.layout_fidelity_sample_pages_with_spacing === "number"
+            ? `spacing=${gaps.layout_fidelity_sample_pages_with_spacing}`
+            : "",
+          typeof gaps.layout_fidelity_sample_pages_with_layout_tree === "number"
+            ? `layoutTree=${gaps.layout_fidelity_sample_pages_with_layout_tree}`
+            : "",
+          gaps.layout_fidelity_sample_chrome_geometry === true
+            ? "geometry=1"
+            : gaps.layout_fidelity_sample_chrome_geometry === false
+              ? "geometry=0"
+              : "",
+          gaps.layout_fidelity_sample_chrome_size_grip_enabled === true
+            ? "sizeGrip=1"
+            : gaps.layout_fidelity_sample_chrome_size_grip_enabled === false
+              ? "sizeGrip=0"
+              : "",
         ]
           .filter(Boolean)
           .join(", ");
@@ -2234,6 +2253,27 @@ export function FirewallExtras({
                         typeof s.layout_fidelity_sample_annotations === "number"
                           ? `annotations=${s.layout_fidelity_sample_annotations}`
                           : "",
+                        typeof s.layout_fidelity_sample_pages_with_column_stretch ===
+                        "number"
+                          ? `colStretch=${s.layout_fidelity_sample_pages_with_column_stretch}`
+                          : "",
+                        typeof s.layout_fidelity_sample_pages_with_spacing === "number"
+                          ? `spacing=${s.layout_fidelity_sample_pages_with_spacing}`
+                          : "",
+                        typeof s.layout_fidelity_sample_pages_with_layout_tree ===
+                        "number"
+                          ? `layoutTree=${s.layout_fidelity_sample_pages_with_layout_tree}`
+                          : "",
+                        s.layout_fidelity_sample_chrome_geometry === true
+                          ? "geometry=1"
+                          : s.layout_fidelity_sample_chrome_geometry === false
+                            ? "geometry=0"
+                            : "",
+                        s.layout_fidelity_sample_chrome_size_grip_enabled === true
+                          ? "sizeGrip=1"
+                          : s.layout_fidelity_sample_chrome_size_grip_enabled === false
+                            ? "sizeGrip=0"
+                            : "",
                       ]
                         .filter(Boolean)
                         .join(", ");

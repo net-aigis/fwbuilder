@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "856"
+WEBUI_SOFT_COMPLETE_PHASE = "864"
 # Honesty/preview track milestone (last thematic checkpoint; soft marker may be higher).
 # 600: refusals/closure; 650: health/summary/paths + fidelity sample;
 # 700: expect step_notes + SSH alternative/refusal notes;
@@ -69,7 +69,8 @@ HARD_GAP_NOTES = {
         "with_size_policy_expanding/fixed/minimum/preferred + with_minimum_size/maximum_size "
         "(also score weights) + "
         "layout_tree_max_depth/buddy_labels + stacked_sections + "
-        "sections_with_flat/checkable + annotations samples; "
+        "sections_with_flat/checkable + annotations + "
+        "pages_with_column_stretch/spacing/layout_tree + chrome geometry/size_grip samples; "
         "UI applies data-size-type Expanding/Fixed/Maximum/Minimum/Preferred via "
         "qtSpacerStyle/CSS and field size-h/v Expanding/Minimum/Preferred/Fixed classes "
         "(still not desktop-equivalent geometry); visible=false keeps field-ui-hidden "
@@ -266,6 +267,31 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
             if sample_fid.get("ok")
             else None
         ),
+        "layout_fidelity_sample_pages_with_column_stretch": (
+            (sample_fid.get("pages") or {}).get("pages_with_column_stretch")
+            if sample_fid.get("ok")
+            else None
+        ),
+        "layout_fidelity_sample_pages_with_spacing": (
+            (sample_fid.get("pages") or {}).get("pages_with_spacing")
+            if sample_fid.get("ok")
+            else None
+        ),
+        "layout_fidelity_sample_pages_with_layout_tree": (
+            (sample_fid.get("pages") or {}).get("pages_with_layout_tree")
+            if sample_fid.get("ok")
+            else None
+        ),
+        "layout_fidelity_sample_chrome_geometry": (
+            (sample_fid.get("chrome") or {}).get("geometry")
+            if sample_fid.get("ok")
+            else None
+        ),
+        "layout_fidelity_sample_chrome_size_grip_enabled": (
+            (sample_fid.get("chrome") or {}).get("size_grip_enabled")
+            if sample_fid.get("ok")
+            else None
+        ),
         "layout_fidelity_pixel_parity": False,
         "stack_switch_path": honesty_paths["stack_switch"],
         "option_enable_path": honesty_paths["option_enable"],
@@ -402,6 +428,31 @@ def hard_gaps_summary(_: str = Depends(require_token)) -> dict[str, object]:
         ),
         "layout_fidelity_sample_annotations": (
             (sample_fid.get("pages") or {}).get("annotations")
+            if sample_fid.get("ok")
+            else None
+        ),
+        "layout_fidelity_sample_pages_with_column_stretch": (
+            (sample_fid.get("pages") or {}).get("pages_with_column_stretch")
+            if sample_fid.get("ok")
+            else None
+        ),
+        "layout_fidelity_sample_pages_with_spacing": (
+            (sample_fid.get("pages") or {}).get("pages_with_spacing")
+            if sample_fid.get("ok")
+            else None
+        ),
+        "layout_fidelity_sample_pages_with_layout_tree": (
+            (sample_fid.get("pages") or {}).get("pages_with_layout_tree")
+            if sample_fid.get("ok")
+            else None
+        ),
+        "layout_fidelity_sample_chrome_geometry": (
+            (sample_fid.get("chrome") or {}).get("geometry")
+            if sample_fid.get("ok")
+            else None
+        ),
+        "layout_fidelity_sample_chrome_size_grip_enabled": (
+            (sample_fid.get("chrome") or {}).get("size_grip_enabled")
             if sample_fid.get("ok")
             else None
         ),
