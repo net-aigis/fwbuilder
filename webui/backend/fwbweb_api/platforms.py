@@ -378,6 +378,7 @@ def _layout_fidelity_from_dialog(stem: str, info: dict[str, Any]) -> dict[str, A
         ),
         "annotations": sum(len(p.get("annotations") or []) for p in pages),
         "buddy_labels": sum(len(p.get("buddy_labels") or []) for p in pages),
+        "pages_with_tooltip": sum(1 for p in pages if p.get("tooltip")),
         "pages_with_column_stretch": sum(1 for p in pages if p.get("column_stretch")),
         "pages_with_row_stretch": sum(1 for p in pages if p.get("row_stretch")),
         "pages_with_spacing": sum(1 for p in pages if p.get("spacing")),
@@ -574,6 +575,8 @@ def option_schema(platform: str, host_os: str = "") -> dict[str, Any]:
             g: dict[str, Any] = {"id": p["id"], "title": p["title"], "keys": p["keys"]}
             if p.get("sections"):
                 g["sections"] = p["sections"]
+            if p.get("tooltip"):
+                g["tooltip"] = p["tooltip"]
             if p.get("spacers"):
                 g["spacers"] = p["spacers"]
             if p.get("column_stretch"):
@@ -690,6 +693,8 @@ def _groups_from_pages(pages: list[dict[str, Any]]) -> list[dict[str, Any]]:
         }
         if p.get("sections"):
             g["sections"] = p["sections"]
+        if p.get("tooltip"):
+            g["tooltip"] = p["tooltip"]
         if p.get("spacers"):
             g["spacers"] = p["spacers"]
         if p.get("column_stretch"):

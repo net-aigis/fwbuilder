@@ -43,6 +43,7 @@ type Group = {
   id: string;
   title: string;
   keys: string[];
+  tooltip?: string;
   sections?: GroupSection[];
   spacers?: QtGridSpacer[];
   column_stretch?: number[];
@@ -270,6 +271,7 @@ export function InterfaceOptions({
               aria-selected={g.id === activeGroup}
               className={g.id === activeGroup ? undefined : "ghost"}
               disabled={busy}
+              title={g.tooltip || undefined}
               onClick={() => setActiveGroup(g.id)}
             >
               {g.title}

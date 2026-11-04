@@ -75,6 +75,7 @@ type Group = {
   id: string;
   title: string;
   keys: string[];
+  tooltip?: string;
   sections?: GroupSection[];
   spacers?: QtGridSpacer[];
   column_stretch?: number[];
@@ -818,6 +819,7 @@ export function FirewallExtras({
               aria-selected={activeGroup === g.id}
               className={activeGroup === g.id ? undefined : "ghost"}
               disabled={busy}
+              title={g.tooltip || undefined}
               onClick={() => setActiveGroup(g.id)}
             >
               {g.title}

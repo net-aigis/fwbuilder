@@ -21463,7 +21463,8 @@
               }
             }
           ],
-          "title": "Management"
+          "title": "Management",
+          "tooltip": "secunet wall Management settings"
         },
         {
           "annotations": [
@@ -21600,7 +21601,8 @@
               }
             }
           ],
-          "title": "DNS Client"
+          "title": "DNS Client",
+          "tooltip": "secunet wall DNS settings"
         },
         {
           "annotations": [

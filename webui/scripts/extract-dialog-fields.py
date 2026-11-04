@@ -760,10 +760,15 @@ def parse_pages(root: ET.Element | None) -> list[dict]:
             if page.tag != "widget" or page.get("class") != "QWidget":
                 continue
             title = ""
+            page_tooltip = ""
             for attr in page.findall("attribute"):
-                if attr.get("name") == "title":
-                    s = attr.find("string")
-                    title = (s.text or "").strip() if s is not None else ""
+                aname = attr.get("name")
+                s = attr.find("string")
+                text = (s.text or "").strip() if s is not None else ""
+                if aname == "title":
+                    title = text
+                elif aname == "toolTip" and text:
+                    page_tooltip = text
             widgets: list[str] = []
             for w in page.iter("widget"):
                 name = w.get("name")
@@ -777,6 +782,8 @@ def parse_pages(root: ET.Element | None) -> list[dict]:
                 "widgets": widgets,
                 "sections": sections,
             }
+            if page_tooltip:
+                page_entry["tooltip"] = page_tooltip
             spacers = _spacers_in_subtree(page)
             if spacers:
                 page_entry["spacers"] = spacers
@@ -936,6 +943,8 @@ def pages_with_keys(pages: list[dict], fields: dict[str, dict]) -> list[dict]:
             entry: dict = {"id": page["id"], "title": page["title"], "keys": keys}
             if sections_out:
                 entry["sections"] = sections_out
+            if page.get("tooltip"):
+                entry["tooltip"] = page["tooltip"]
             if page.get("spacers"):
                 entry["spacers"] = page["spacers"]
             if page.get("column_stretch"):

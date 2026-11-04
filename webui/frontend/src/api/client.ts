@@ -521,6 +521,7 @@ export function fetchOptionSchema(platform: string, hostOs = "") {
       id: string;
       title: string;
       keys: string[];
+      tooltip?: string;
       sections?: Array<{
         id: string;
         title: string;
@@ -595,6 +596,7 @@ type SchemaGroup = {
   id: string;
   title: string;
   keys: string[];
+  tooltip?: string;
   sections?: Array<{
     id: string;
     title: string;
