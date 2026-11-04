@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "1976"
+WEBUI_SOFT_COMPLETE_PHASE = "1992"
 SOFT_FERTIG_HONESTY_TRACK_NOTE = (
     "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
     "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
@@ -114,12 +114,13 @@ SOFT_FERTIG_HONESTY_TRACK_NOTE = (
 # 4100: readiness listed in honesty export + bundle sections;
 # 4150: soft_fertig_honesty_surface_version bumped to 1.3 (readiness);
 # 4200: readiness added to sessionStorage + clear catalogs;
-# 4250: catalog_summary includes soft_fertig_catalogs_complete + hard_gaps_remain.
-WEBUI_HONESTY_MILESTONE = 4250
+# 4250: catalog_summary includes soft_fertig_catalogs_complete + hard_gaps_remain;
+# 4300: soft_fertig_honesty_surface_version bumped to 1.4 (catalog flags).
+WEBUI_HONESTY_MILESTONE = 4300
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 4250: soft_fertig_catalog_summary includes "
-    "soft_fertig_catalogs_complete and hard_gaps_remain flags — hard gaps "
-    "remain open."
+    "Honesty surface checkpoint 4300: soft_fertig_honesty_surface_version "
+    "1.4 documents soft_fertig_catalogs_complete and hard_gaps_remain on "
+    "catalog_summary — hard gaps remain open."
 )
 
 HARD_GAPS_OPEN = (
@@ -386,10 +387,10 @@ SOFT_FERTIG_SESSION_STORAGE_CLEAR_NOTE = (
 )
 
 # Soft-fertig honesty/preview catalog schema version (documentation; not a lock).
-SOFT_FERTIG_HONESTY_SURFACE_VERSION = "1.3"
+SOFT_FERTIG_HONESTY_SURFACE_VERSION = "1.4"
 SOFT_FERTIG_HONESTY_SURFACE_VERSION_NOTE = (
-    "Schema 1.3: schema 1.2 plus soft_fertig_honesty_readiness on "
-    "/health and honesty endpoints (+ export/bundle); hard gaps remain open."
+    "Schema 1.4: schema 1.3 plus soft_fertig_catalogs_complete and "
+    "hard_gaps_remain flags on soft_fertig_catalog_summary; hard gaps remain open."
 )
 
 # Downloadable honesty/preview JSON catalogs the UI can export (documentation).

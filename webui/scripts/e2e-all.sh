@@ -1985,6 +1985,22 @@ scripts=(
   e2e-phase1974
   e2e-phase1975
   e2e-phase1976
+  e2e-phase1977
+  e2e-phase1978
+  e2e-phase1979
+  e2e-phase1980
+  e2e-phase1981
+  e2e-phase1982
+  e2e-phase1983
+  e2e-phase1984
+  e2e-phase1985
+  e2e-phase1986
+  e2e-phase1987
+  e2e-phase1988
+  e2e-phase1989
+  e2e-phase1990
+  e2e-phase1991
+  e2e-phase1992
 )
 for s in "${scripts[@]}"; do
   script="webui/scripts/${s}.sh"
