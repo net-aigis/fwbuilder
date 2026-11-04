@@ -415,6 +415,15 @@ export function FirewallExtras({
           typeof gaps.layout_fidelity_sample_empty_stacked_sections === "number"
             ? `emptyStacked=${gaps.layout_fidelity_sample_empty_stacked_sections}`
             : "",
+          typeof gaps.layout_fidelity_sample_sections_with_flat === "number"
+            ? `flat=${gaps.layout_fidelity_sample_sections_with_flat}`
+            : "",
+          typeof gaps.layout_fidelity_sample_sections_with_checkable === "number"
+            ? `checkable=${gaps.layout_fidelity_sample_sections_with_checkable}`
+            : "",
+          typeof gaps.layout_fidelity_sample_annotations === "number"
+            ? `annotations=${gaps.layout_fidelity_sample_annotations}`
+            : "",
         ]
           .filter(Boolean)
           .join(", ");
@@ -2214,6 +2223,16 @@ export function FirewallExtras({
                         typeof s.layout_fidelity_sample_empty_stacked_sections ===
                         "number"
                           ? `emptyStacked=${s.layout_fidelity_sample_empty_stacked_sections}`
+                          : "",
+                        typeof s.layout_fidelity_sample_sections_with_flat === "number"
+                          ? `flat=${s.layout_fidelity_sample_sections_with_flat}`
+                          : "",
+                        typeof s.layout_fidelity_sample_sections_with_checkable ===
+                        "number"
+                          ? `checkable=${s.layout_fidelity_sample_sections_with_checkable}`
+                          : "",
+                        typeof s.layout_fidelity_sample_annotations === "number"
+                          ? `annotations=${s.layout_fidelity_sample_annotations}`
                           : "",
                       ]
                         .filter(Boolean)

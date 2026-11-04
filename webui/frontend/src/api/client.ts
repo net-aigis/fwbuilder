@@ -975,6 +975,9 @@ export function fetchHardGaps() {
     layout_fidelity_sample_buddy_labels?: number | null;
     layout_fidelity_sample_stacked_sections?: number | null;
     layout_fidelity_sample_empty_stacked_sections?: number | null;
+    layout_fidelity_sample_sections_with_flat?: number | null;
+    layout_fidelity_sample_sections_with_checkable?: number | null;
+    layout_fidelity_sample_annotations?: number | null;
     layout_fidelity_pixel_parity?: boolean;
     note?: string;
   }>("/api/v1/hard-gaps");
@@ -1007,6 +1010,9 @@ export function fetchHardGapsSummary() {
     layout_fidelity_sample_buddy_labels?: number | null;
     layout_fidelity_sample_stacked_sections?: number | null;
     layout_fidelity_sample_empty_stacked_sections?: number | null;
+    layout_fidelity_sample_sections_with_flat?: number | null;
+    layout_fidelity_sample_sections_with_checkable?: number | null;
+    layout_fidelity_sample_annotations?: number | null;
     layout_fidelity_pixel_parity?: boolean;
     parent_path?: string;
     closure_path?: string;
