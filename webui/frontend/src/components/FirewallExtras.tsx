@@ -540,6 +540,9 @@ export function FirewallExtras({
           typeof gaps.layout_fidelity_alt_sample_buddy_labels === "number"
             ? `altBuddies=${gaps.layout_fidelity_alt_sample_buddy_labels}`
             : "",
+          typeof gaps.layout_fidelity_alt_sample_pages_with_buddy_labels === "number"
+            ? `altPageBuddies=${gaps.layout_fidelity_alt_sample_pages_with_buddy_labels}`
+            : "",
           typeof gaps.layout_fidelity_alt_sample_with_external_label === "number"
             ? `altExtLabel=${gaps.layout_fidelity_alt_sample_with_external_label}`
             : "",
@@ -2465,6 +2468,9 @@ export function FirewallExtras({
                           : "",
                         typeof s.layout_fidelity_alt_sample_buddy_labels === "number"
                           ? `altBuddies=${s.layout_fidelity_alt_sample_buddy_labels}`
+                          : "",
+                        typeof s.layout_fidelity_alt_sample_pages_with_buddy_labels === "number"
+                          ? `altPageBuddies=${s.layout_fidelity_alt_sample_pages_with_buddy_labels}`
                           : "",
                         typeof s.layout_fidelity_alt_sample_with_external_label === "number"
                           ? `altExtLabel=${s.layout_fidelity_alt_sample_with_external_label}`

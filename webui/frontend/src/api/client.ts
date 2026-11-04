@@ -1009,6 +1009,7 @@ export function fetchHardGaps() {
     layout_fidelity_alt_sample_host_os?: string | null;
     layout_fidelity_alt_sample_score_percent?: number | null;
     layout_fidelity_alt_sample_buddy_labels?: number | null;
+    layout_fidelity_alt_sample_pages_with_buddy_labels?: number | null;
     layout_fidelity_alt_sample_with_external_label?: number | null;
     layout_fidelity_alt2_sample_platform?: string | null;
     layout_fidelity_alt2_sample_host_os?: string | null;
@@ -1082,6 +1083,7 @@ export function fetchHardGapsSummary() {
     layout_fidelity_alt_sample_host_os?: string | null;
     layout_fidelity_alt_sample_score_percent?: number | null;
     layout_fidelity_alt_sample_buddy_labels?: number | null;
+    layout_fidelity_alt_sample_pages_with_buddy_labels?: number | null;
     layout_fidelity_alt_sample_with_external_label?: number | null;
     layout_fidelity_alt2_sample_platform?: string | null;
     layout_fidelity_alt2_sample_host_os?: string | null;
