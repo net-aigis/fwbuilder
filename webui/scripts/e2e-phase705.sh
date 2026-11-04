@@ -14,7 +14,7 @@ assert s.get("layout_fidelity_sample_spacers_with_orientation") == s["layout_fid
 )
 assert isinstance(s.get("layout_fidelity_sample_spacers_with_size_type"), int)
 assert "qtSpacerStyle" in (m.HARD_GAP_NOTES.get("full_qt_pixel_layout") or "")
-assert m.WEBUI_SOFT_COMPLETE_PHASE == "712"
+assert int(m.WEBUI_SOFT_COMPLETE_PHASE) >= 712
 print("summary spacers", s["layout_fidelity_sample_spacers"], s["layout_fidelity_sample_spacers_with_size_type"])
 PY
 echo "cleaned"
