@@ -290,6 +290,9 @@ function buildHonestyBundle(payload: Record<string, unknown>) {
     honesty_export_roster: {
       soft_fertig_honesty_export_roster: payload.soft_fertig_honesty_export_roster,
     },
+    honesty_bundle_roster: {
+      soft_fertig_honesty_bundle_roster: payload.soft_fertig_honesty_bundle_roster,
+    },
     honesty_exports: {
       soft_fertig_honesty_export_keys: payload.soft_fertig_honesty_export_keys,
       soft_fertig_honesty_export_key_count:
