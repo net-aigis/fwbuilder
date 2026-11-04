@@ -6,6 +6,7 @@ type FieldMeta = {
   choices?: string[];
   label?: string;
   tooltip?: string;
+  whats_this?: string;
   widget?: string;
   widget_class?: string;
   grid?: { row?: number; column?: number; rowspan?: number; colspan?: number };
@@ -67,7 +68,11 @@ export function OptionField({ name, value, meta, disabled, onChange }: Props) {
     !external && meta?.label && meta.label.trim() && meta.label.trim() !== name,
   );
   const tip = (meta?.tooltip || "").trim() || (external ? (meta?.label || "").trim() : "");
-  const title = tip || (showKeyHint ? name : undefined) || (external ? name : undefined);
+  const whats = (meta?.whats_this || "").trim();
+  const title =
+    [tip, whats].filter(Boolean).join(" — ") ||
+    (showKeyHint ? name : undefined) ||
+    (external ? name : undefined);
   const style = fieldStyle(meta);
   const sizeClass = sizePolicyClass(meta);
   if (meta?.visible === false) {

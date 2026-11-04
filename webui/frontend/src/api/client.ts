@@ -483,6 +483,7 @@ export type OptionFieldMeta = {
   choices?: string[];
   label?: string;
   tooltip?: string;
+  whats_this?: string;
   widget?: string;
   widget_class?: string;
   grid?: { row?: number; column?: number; rowspan?: number; colspan?: number };

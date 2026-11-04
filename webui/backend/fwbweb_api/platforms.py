@@ -355,6 +355,7 @@ def _layout_fidelity_from_dialog(stem: str, info: dict[str, Any]) -> dict[str, A
         "with_grid": sum(1 for v in fields.values() if v.get("grid")),
         "with_label": sum(1 for v in fields.values() if v.get("label")),
         "with_tooltip": sum(1 for v in fields.values() if v.get("tooltip")),
+        "with_whats_this": sum(1 for v in fields.values() if v.get("whats_this")),
         "with_size_policy": sum(1 for v in fields.values() if v.get("size_policy")),
         "with_minimum_size": sum(1 for v in fields.values() if v.get("minimum_size")),
         "with_maximum_size": sum(1 for v in fields.values() if v.get("maximum_size")),
@@ -524,18 +525,21 @@ def _infer_type(key: str, value: str, meta: dict[str, Any] | None) -> dict[str, 
             "widget": meta.get("widget"),
             "widget_class": meta.get("widget_class"),
         }
-        if meta.get("label"):
-            out["label"] = meta.get("label")
-        if meta.get("tooltip"):
-            out["tooltip"] = meta.get("tooltip")
-        if meta.get("grid"):
-            out["grid"] = meta.get("grid")
-        if meta.get("size_policy"):
-            out["size_policy"] = meta.get("size_policy")
-        if meta.get("minimum_size"):
-            out["minimum_size"] = meta.get("minimum_size")
-        if meta.get("maximum_size"):
-            out["maximum_size"] = meta.get("maximum_size")
+        for flag in (
+            "label",
+            "tooltip",
+            "whats_this",
+            "grid",
+            "size_policy",
+            "minimum_size",
+            "maximum_size",
+            "alignment",
+            "external_label",
+            "enabled",
+            "visible",
+        ):
+            if flag in meta and meta.get(flag) is not None:
+                out[flag] = meta.get(flag)
         return out
 
     low = (value or "").strip().lower()

@@ -7,6 +7,7 @@ import {
   fetchExpectInstallWalkthrough,
   fetchHardGaps,
   fetchLayoutFidelity,
+  fetchStackSwitch,
   refuseExpectInstallStep,
   refusePasswordSsh,
   fetchInstallerConfigletFile,
@@ -182,6 +183,9 @@ export function FirewallExtras({
   const [hardGapsNote, setHardGapsNote] = useState<string | null>(null);
   const [hardGapNotes, setHardGapNotes] = useState<Record<string, string>>({});
   const [hardGapClosure, setHardGapClosure] = useState<Record<string, string>>({});
+  const [layoutFidelityPath, setLayoutFidelityPath] = useState<string | null>(null);
+  const [stackSwitchPath, setStackSwitchPath] = useState<string | null>(null);
+  const [stackSwitchSummary, setStackSwitchSummary] = useState<string | null>(null);
   const [layoutFidelity, setLayoutFidelity] = useState<string | null>(null);
   const [resHint, setResHint] = useState<string | null>(null);
 
@@ -211,17 +215,40 @@ export function FirewallExtras({
       setHardGapsNote(gaps?.note || null);
       setHardGapNotes(gaps?.hard_gap_notes || {});
       setHardGapClosure(gaps?.hard_gap_closure || {});
+      setLayoutFidelityPath(gaps?.layout_fidelity_path || "/api/v1/layout-fidelity");
+      setStackSwitchPath(gaps?.stack_switch_path || "/api/v1/stack-switch");
       try {
         const fid = await fetchLayoutFidelity(plat, hostOs || "");
         if (fid.ok && fid.score_percent != null) {
+          const stacked = Number((fid.pages as { stacked_sections?: number } | undefined)?.stacked_sections || 0);
           setLayoutFidelity(
-            `${fid.score_percent}% .ui signals (${fid.dialog || plat}; not pixel parity)`,
+            `${fid.score_percent}% .ui signals (${fid.dialog || plat}` +
+              (stacked ? `; stacked×${stacked}` : "") +
+              "; not pixel parity)",
           );
         } else {
           setLayoutFidelity(null);
         }
       } catch {
         setLayoutFidelity(null);
+      }
+      try {
+        const sw = await fetchStackSwitch(plat, hostOs || "");
+        const optN = sw.option_stack_switch?.length || 0;
+        const ifaceTypes = sw.iface_stack_switch?.by_type
+          ? Object.keys(sw.iface_stack_switch.by_type).length
+          : 0;
+        if (optN || ifaceTypes) {
+          setStackSwitchSummary(
+            `stack-switch: option maps ${optN}` +
+              (ifaceTypes ? ` · iface types ${ifaceTypes}` : "") +
+              " (preview/follow)",
+          );
+        } else {
+          setStackSwitchSummary(null);
+        }
+      } catch {
+        setStackSwitchSummary(null);
       }
       if (resSt?.configlets_ok) {
         const phase = resSt.soft_complete_phase
@@ -1527,6 +1554,22 @@ export function FirewallExtras({
               )}
             </ul>
           ) : null}
+          {layoutFidelityPath || stackSwitchPath ? (
+            <p className="muted">
+              {layoutFidelityPath ? (
+                <>
+                  Layout fidelity: <code>{layoutFidelityPath}</code>
+                </>
+              ) : null}
+              {layoutFidelityPath && stackSwitchPath ? " · " : null}
+              {stackSwitchPath ? (
+                <>
+                  Stack switch: <code>{stackSwitchPath}</code>
+                </>
+              ) : null}
+            </p>
+          ) : null}
+          {stackSwitchSummary ? <p className="muted">{stackSwitchSummary}</p> : null}
         </div>
       ) : null}
       <p className="muted pad">

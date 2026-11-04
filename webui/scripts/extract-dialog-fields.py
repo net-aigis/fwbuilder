@@ -177,7 +177,7 @@ def parse_widget_labels(root: ET.Element | None) -> dict[str, str]:
 
 
 def parse_widget_tooltips(root: ET.Element | None) -> dict[str, str]:
-    """Map widget objectName → toolTip / whatsThis from .ui."""
+    """Map widget objectName → toolTip from .ui."""
     tips: dict[str, str] = {}
     if root is None:
         return tips
@@ -185,12 +185,25 @@ def parse_widget_tooltips(root: ET.Element | None) -> dict[str, str]:
         name = w.get("name")
         if not name:
             continue
-        for prop_name in ("toolTip", "whatsThis"):
-            prop = w.find(f"./property[@name='{prop_name}']/string")
-            if prop is not None and (prop.text or "").strip():
-                tips[name] = prop.text.strip()
-                break
+        prop = w.find("./property[@name='toolTip']/string")
+        if prop is not None and (prop.text or "").strip():
+            tips[name] = prop.text.strip()
     return tips
+
+
+def parse_widget_whats_this(root: ET.Element | None) -> dict[str, str]:
+    """Map widget objectName → whatsThis from .ui (separate from toolTip)."""
+    out: dict[str, str] = {}
+    if root is None:
+        return out
+    for w in root.iter("widget"):
+        name = w.get("name")
+        if not name:
+            continue
+        prop = w.find("./property[@name='whatsThis']/string")
+        if prop is not None and (prop.text or "").strip():
+            out[name] = prop.text.strip()
+    return out
 
 
 def parse_widget_size_policies(root: ET.Element | None) -> dict[str, dict[str, str]]:
@@ -782,6 +795,7 @@ def extract_cpp(cpp_path: Path, ui_root: ET.Element | None, ui_widgets: dict[str
     src = cpp_path.read_text(encoding="utf-8", errors="replace")
     labels = parse_widget_labels(ui_root)
     tips = parse_widget_tooltips(ui_root)
+    whats_this = parse_widget_whats_this(ui_root)
     grid = parse_grid_positions(ui_root)
     size_policies = parse_widget_size_policies(ui_root)
     min_sizes = parse_widget_minimum_sizes(ui_root)
@@ -808,6 +822,8 @@ def extract_cpp(cpp_path: Path, ui_root: ET.Element | None, ui_widgets: dict[str
             field["external_label"] = True
         if widget in tips:
             field["tooltip"] = tips[widget]
+        if widget in whats_this:
+            field["whats_this"] = whats_this[widget]
         if widget in grid:
             field["grid"] = grid[widget]
         if widget in size_policies:

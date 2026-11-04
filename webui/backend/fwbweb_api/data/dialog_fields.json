@@ -4759,8 +4759,8 @@
             "rowspan": 1
           },
           "key": "linux24_log_martians",
-          "tooltip": "whats this text",
           "type": "enum",
+          "whats_this": "whats this text",
           "widget": "linux24_log_martians",
           "widget_class": "QComboBox"
         },
@@ -10135,8 +10135,8 @@
             "rowspan": 1
           },
           "key": "linux24_log_martians",
-          "tooltip": "whats this text",
           "type": "enum",
+          "whats_this": "whats this text",
           "widget": "linux24_log_martians",
           "widget_class": "QComboBox"
         },
@@ -20852,8 +20852,8 @@
             "rowspan": 1
           },
           "key": "linux24_log_martians",
-          "tooltip": "whats this text",
           "type": "enum",
+          "whats_this": "whats this text",
           "widget": "linux24_log_martians",
           "widget_class": "QComboBox"
         },
