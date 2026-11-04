@@ -394,6 +394,12 @@ export function FirewallExtras({
           typeof gaps.layout_fidelity_sample_with_size_policy_minimum === "number"
             ? `minimum=${gaps.layout_fidelity_sample_with_size_policy_minimum}`
             : "",
+          typeof gaps.layout_fidelity_sample_with_minimum_size === "number"
+            ? `minSize=${gaps.layout_fidelity_sample_with_minimum_size}`
+            : "",
+          typeof gaps.layout_fidelity_sample_with_maximum_size === "number"
+            ? `maxSize=${gaps.layout_fidelity_sample_with_maximum_size}`
+            : "",
         ]
           .filter(Boolean)
           .join(", ");
@@ -2169,6 +2175,12 @@ export function FirewallExtras({
                         typeof s.layout_fidelity_sample_with_size_policy_minimum ===
                         "number"
                           ? `minimum=${s.layout_fidelity_sample_with_size_policy_minimum}`
+                          : "",
+                        typeof s.layout_fidelity_sample_with_minimum_size === "number"
+                          ? `minSize=${s.layout_fidelity_sample_with_minimum_size}`
+                          : "",
+                        typeof s.layout_fidelity_sample_with_maximum_size === "number"
+                          ? `maxSize=${s.layout_fidelity_sample_with_maximum_size}`
                           : "",
                       ]
                         .filter(Boolean)
