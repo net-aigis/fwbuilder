@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "2056"
+WEBUI_SOFT_COMPLETE_PHASE = "2072"
 SOFT_FERTIG_HONESTY_TRACK_NOTE = (
     "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
     "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
@@ -119,12 +119,13 @@ SOFT_FERTIG_HONESTY_TRACK_NOTE = (
 # 4350: soft_fertig_soft_complete_note clarifies soft-complete phase marker vs hard gaps;
 # 4400: soft_complete_note listed in honesty export + bundle sections;
 # 4450: soft_fertig_honesty_surface_version bumped to 1.5 (soft_complete_note);
-# 4500: soft_complete_note added to sessionStorage + clear catalogs.
-WEBUI_HONESTY_MILESTONE = 4500
+# 4500: soft_complete_note added to sessionStorage + clear catalogs;
+# 4550: UI expandable soft-complete-note detail + sessionStorage restore on load.
+WEBUI_HONESTY_MILESTONE = 4550
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 4500: soft_fertig_soft_complete_note is "
-    "persisted via sessionStorage (fwbweb.softCompleteNote.*) and clear "
-    "catalogs — hard gaps remain open."
+    "Honesty surface checkpoint 4550: soft_fertig_soft_complete_note has "
+    "expandable UI detail and restores from sessionStorage "
+    "(fwbweb.softCompleteNote.*) on load — hard gaps remain open."
 )
 SOFT_FERTIG_SOFT_COMPLETE_NOTE = (
     "WEBUI_SOFT_COMPLETE_PHASE marks soft-fertig honesty/preview catalog "
@@ -393,7 +394,7 @@ SOFT_FERTIG_SESSION_STORAGE_NOTES = {
     ),
     "soft_complete_note": (
         "Persists last downloaded/copied soft_fertig_soft_complete_note per "
-        "firewall; UI restores soft-complete note text on load."
+        "firewall; UI restores expandable soft-complete-note detail on load."
     ),
 }
 

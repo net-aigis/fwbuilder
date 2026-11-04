@@ -396,6 +396,7 @@ export function FirewallExtras({
   const [softFertigHonestyTrackNote, setSoftFertigHonestyTrackNote] = useState<string | null>(null);
   const [trackNoteDetail, setTrackNoteDetail] = useState<string | null>(null);
   const [softCompleteNote, setSoftCompleteNote] = useState<string | null>(null);
+  const [softCompleteNoteDetail, setSoftCompleteNoteDetail] = useState<string | null>(null);
   const [honestyPathsSummary, setHonestyPathsSummary] = useState<string | null>(null);
   const [honestyPathsDetail, setHonestyPathsDetail] = useState<string | null>(null);
   const [hardGapsSummaryPath, setHardGapsSummaryPath] = useState<string | null>(null);
@@ -844,6 +845,11 @@ export function FirewallExtras({
           ? gaps.soft_fertig_soft_complete_note
           : null,
       );
+      setSoftCompleteNoteDetail(
+        typeof gaps?.soft_fertig_soft_complete_note === "string"
+          ? gaps.soft_fertig_soft_complete_note
+          : null,
+      );
       if (gaps?.honesty_paths && Object.keys(gaps.honesty_paths).length) {
         const entries = Object.entries(gaps.honesty_paths);
         const n =
@@ -1234,11 +1240,14 @@ export function FirewallExtras({
             };
             if (typeof parsed.soft_fertig_soft_complete_note === "string") {
               setSoftCompleteNote(parsed.soft_fertig_soft_complete_note);
+              setSoftCompleteNoteDetail(parsed.soft_fertig_soft_complete_note);
             } else {
               setSoftCompleteNote(softCompleteRaw);
+              setSoftCompleteNoteDetail(softCompleteRaw);
             }
           } catch {
             setSoftCompleteNote(softCompleteRaw);
+            setSoftCompleteNoteDetail(softCompleteRaw);
           }
         }
       } catch {
@@ -3025,6 +3034,14 @@ export function FirewallExtras({
               </pre>
             </details>
           ) : null}
+          {softCompleteNoteDetail ? (
+            <details className="muted">
+              <summary>Soft-fertig soft-complete note</summary>
+              <pre className="deploy-log configlet-preview" tabIndex={0}>
+                {softCompleteNoteDetail}
+              </pre>
+            </details>
+          ) : null}
           <div className="btn-row pad-tight">
             {hardGapsPayload ? (
               <button
@@ -4172,6 +4189,7 @@ export function FirewallExtras({
                 setTrackNoteDetail(null);
                 setHonestyReadinessDetail(null);
                 setSoftCompleteNote(null);
+                setSoftCompleteNoteDetail(null);
                 onStatus?.("Cleared honesty catalogs");
               }}
             >
