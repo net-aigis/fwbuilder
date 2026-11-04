@@ -984,6 +984,7 @@ export function fetchHardGaps() {
     soft_fertig_surface_roster?: Record<string, unknown>;
     soft_fertig_changelog_roster?: Record<string, unknown>;
     soft_fertig_expect_step_roster?: Record<string, unknown>;
+    soft_fertig_ssh_honesty_roster?: Record<string, unknown>;
     soft_fertig_honesty_export_keys?: string[];
     soft_fertig_honesty_export_key_count?: number;
     soft_fertig_honesty_export_key_titles?: Record<string, string>;
