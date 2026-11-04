@@ -443,6 +443,18 @@ export function FirewallExtras({
             : gaps.layout_fidelity_sample_chrome_size_grip_enabled === false
               ? "sizeGrip=0"
               : "",
+          typeof gaps.layout_fidelity_sample_fields === "number"
+            ? `fields=${gaps.layout_fidelity_sample_fields}`
+            : "",
+          typeof gaps.layout_fidelity_sample_with_grid === "number"
+            ? `grid=${gaps.layout_fidelity_sample_with_grid}`
+            : "",
+          typeof gaps.layout_fidelity_sample_with_label === "number"
+            ? `labels=${gaps.layout_fidelity_sample_with_label}`
+            : "",
+          typeof gaps.layout_fidelity_sample_with_tooltip === "number"
+            ? `tooltips=${gaps.layout_fidelity_sample_with_tooltip}`
+            : "",
         ]
           .filter(Boolean)
           .join(", ");
@@ -2274,6 +2286,18 @@ export function FirewallExtras({
                           : s.layout_fidelity_sample_chrome_size_grip_enabled === false
                             ? "sizeGrip=0"
                             : "",
+                        typeof s.layout_fidelity_sample_fields === "number"
+                          ? `fields=${s.layout_fidelity_sample_fields}`
+                          : "",
+                        typeof s.layout_fidelity_sample_with_grid === "number"
+                          ? `grid=${s.layout_fidelity_sample_with_grid}`
+                          : "",
+                        typeof s.layout_fidelity_sample_with_label === "number"
+                          ? `labels=${s.layout_fidelity_sample_with_label}`
+                          : "",
+                        typeof s.layout_fidelity_sample_with_tooltip === "number"
+                          ? `tooltips=${s.layout_fidelity_sample_with_tooltip}`
+                          : "",
                       ]
                         .filter(Boolean)
                         .join(", ");

@@ -983,6 +983,10 @@ export function fetchHardGaps() {
     layout_fidelity_sample_pages_with_layout_tree?: number | null;
     layout_fidelity_sample_chrome_geometry?: boolean | null;
     layout_fidelity_sample_chrome_size_grip_enabled?: boolean | null;
+    layout_fidelity_sample_with_grid?: number | null;
+    layout_fidelity_sample_with_label?: number | null;
+    layout_fidelity_sample_with_tooltip?: number | null;
+    layout_fidelity_sample_fields?: number | null;
     layout_fidelity_pixel_parity?: boolean;
     note?: string;
   }>("/api/v1/hard-gaps");
@@ -1023,6 +1027,10 @@ export function fetchHardGapsSummary() {
     layout_fidelity_sample_pages_with_layout_tree?: number | null;
     layout_fidelity_sample_chrome_geometry?: boolean | null;
     layout_fidelity_sample_chrome_size_grip_enabled?: boolean | null;
+    layout_fidelity_sample_with_grid?: number | null;
+    layout_fidelity_sample_with_label?: number | null;
+    layout_fidelity_sample_with_tooltip?: number | null;
+    layout_fidelity_sample_fields?: number | null;
     layout_fidelity_pixel_parity?: boolean;
     parent_path?: string;
     closure_path?: string;
