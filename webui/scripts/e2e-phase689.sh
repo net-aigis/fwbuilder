@@ -16,7 +16,7 @@ assert pages.get("spacers_with_orientation", 0) > 0
 assert pages.get("spacers_with_size_type", 0) > 0
 assert f.get("score_parts_count") >= 21
 assert "spacers_with_orientation" in (m.HARD_GAP_NOTES.get("full_qt_pixel_layout") or "")
-assert m.WEBUI_SOFT_COMPLETE_PHASE == "696"
+assert int(m.WEBUI_SOFT_COMPLETE_PHASE) >= 696
 print(
     "spacer fidelity",
     pages["spacers_with_orientation"],

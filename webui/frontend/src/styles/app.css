@@ -704,6 +704,15 @@ button.linkish:disabled {
   min-height: 0.75rem;
 }
 
+.options-grid.qt-grid .qt-spacer[data-size-type="Expanding"],
+.options-grid.qt-grid .qt-spacer[data-size-type="MinimumExpanding"] {
+  flex-grow: 1;
+}
+
+.options-grid.qt-grid .qt-spacer[data-size-type="Fixed"] {
+  flex-grow: 0;
+}
+
 pre.configlet-preview {
   max-height: 14rem;
   overflow: auto;

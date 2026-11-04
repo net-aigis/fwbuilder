@@ -7,6 +7,7 @@ export type QtGridSpacer = {
   rowspan?: number;
   colspan?: number;
   orientation?: string;
+  size_type?: string;
   name?: string;
   size_hint?: { width?: number; height?: number };
 };
@@ -123,6 +124,18 @@ export function qtSpacerStyle(spacer: QtGridSpacer): CSSProperties | undefined {
       if (hint.width && hint.width > 0) style.minWidth = hint.width;
       if (hint.height && hint.height > 0) style.minHeight = hint.height;
     }
+  }
+  const sizeType = (spacer.size_type || "").toLowerCase();
+  if (sizeType === "expanding" || sizeType === "minimumexpanding") {
+    const orient = (spacer.orientation || "").toLowerCase();
+    if (orient === "horizontal") style.flexGrow = 1;
+    else if (orient === "vertical") style.alignSelf = "stretch";
+    else {
+      style.flexGrow = 1;
+      style.alignSelf = "stretch";
+    }
+  } else if (sizeType === "fixed" && !hint) {
+    style.flexGrow = 0;
   }
   return style;
 }

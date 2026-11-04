@@ -473,6 +473,7 @@ export function InterfaceOptions({
                     className="qt-spacer"
                     aria-hidden="true"
                     data-orientation={sp.orientation || undefined}
+                    data-size-type={sp.size_type || undefined}
                     style={qtSpacerStyle(sp)}
                   />
                 ))}

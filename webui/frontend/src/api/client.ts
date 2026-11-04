@@ -548,6 +548,7 @@ export function fetchOptionSchema(platform: string, hostOs = "") {
         rowspan?: number;
         colspan?: number;
         orientation?: string;
+        size_type?: string;
         name?: string;
         size_hint?: { width?: number; height?: number };
       }>;
@@ -628,6 +629,7 @@ type SchemaGroup = {
     rowspan?: number;
     colspan?: number;
     orientation?: string;
+    size_type?: string;
     name?: string;
     size_hint?: { width?: number; height?: number };
   }>;
