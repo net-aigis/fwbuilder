@@ -486,6 +486,9 @@ export function FirewallExtras({
           typeof gaps.layout_fidelity_sample_with_enabled === "number"
             ? `enabled=${gaps.layout_fidelity_sample_with_enabled}`
             : "",
+          typeof gaps.layout_fidelity_sample_with_alignment === "number"
+            ? `align=${gaps.layout_fidelity_sample_with_alignment}`
+            : "",
           typeof gaps.layout_fidelity_sample_pages === "number"
             ? `pages=${gaps.layout_fidelity_sample_pages}`
             : "",
@@ -2373,6 +2376,9 @@ export function FirewallExtras({
                           : "",
                         typeof s.layout_fidelity_sample_with_enabled === "number"
                           ? `enabled=${s.layout_fidelity_sample_with_enabled}`
+                          : "",
+                        typeof s.layout_fidelity_sample_with_alignment === "number"
+                          ? `align=${s.layout_fidelity_sample_with_alignment}`
                           : "",
                         typeof s.layout_fidelity_sample_pages === "number"
                           ? `pages=${s.layout_fidelity_sample_pages}`
