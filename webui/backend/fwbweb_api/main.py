@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "888"
+WEBUI_SOFT_COMPLETE_PHASE = "896"
 # Honesty/preview track milestone (last thematic checkpoint; soft marker may be higher).
 # 600: refusals/closure; 650: health/summary/paths + fidelity sample;
 # 700: expect step_notes + SSH alternative/refusal notes;
@@ -73,7 +73,7 @@ HARD_GAP_NOTES = {
         "layout_tree_max_depth/buddy_labels + stacked_sections + "
         "sections_with_flat/checkable + annotations + "
         "pages_with_column_stretch/spacing/layout_tree + chrome geometry/size_grip + "
-        "with_grid/label/tooltip field samples; "
+        "with_grid/label/tooltip field samples + pages/sections/stack_names counts; "
         "UI applies data-size-type Expanding/Fixed/Maximum/Minimum/Preferred via "
         "qtSpacerStyle/CSS and field size-h/v Expanding/Minimum/Preferred/Fixed classes "
         "(still not desktop-equivalent geometry); visible=false keeps field-ui-hidden "
@@ -315,6 +315,26 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
             if sample_fid.get("ok")
             else None
         ),
+        "layout_fidelity_sample_pages": (
+            (sample_fid.get("pages") or {}).get("pages")
+            if sample_fid.get("ok")
+            else None
+        ),
+        "layout_fidelity_sample_sections": (
+            (sample_fid.get("pages") or {}).get("sections")
+            if sample_fid.get("ok")
+            else None
+        ),
+        "layout_fidelity_sample_stack_names": (
+            list((sample_fid.get("pages") or {}).get("stack_names") or [])
+            if sample_fid.get("ok")
+            else None
+        ),
+        "layout_fidelity_sample_stack_names_count": (
+            len((sample_fid.get("pages") or {}).get("stack_names") or [])
+            if sample_fid.get("ok")
+            else None
+        ),
         "layout_fidelity_pixel_parity": False,
         "stack_switch_path": honesty_paths["stack_switch"],
         "option_enable_path": honesty_paths["option_enable"],
@@ -496,6 +516,26 @@ def hard_gaps_summary(_: str = Depends(require_token)) -> dict[str, object]:
         ),
         "layout_fidelity_sample_fields": (
             (sample_fid.get("fields") or {}).get("fields")
+            if sample_fid.get("ok")
+            else None
+        ),
+        "layout_fidelity_sample_pages": (
+            (sample_fid.get("pages") or {}).get("pages")
+            if sample_fid.get("ok")
+            else None
+        ),
+        "layout_fidelity_sample_sections": (
+            (sample_fid.get("pages") or {}).get("sections")
+            if sample_fid.get("ok")
+            else None
+        ),
+        "layout_fidelity_sample_stack_names": (
+            list((sample_fid.get("pages") or {}).get("stack_names") or [])
+            if sample_fid.get("ok")
+            else None
+        ),
+        "layout_fidelity_sample_stack_names_count": (
+            len((sample_fid.get("pages") or {}).get("stack_names") or [])
             if sample_fid.get("ok")
             else None
         ),

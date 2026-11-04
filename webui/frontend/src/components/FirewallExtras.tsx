@@ -455,6 +455,15 @@ export function FirewallExtras({
           typeof gaps.layout_fidelity_sample_with_tooltip === "number"
             ? `tooltips=${gaps.layout_fidelity_sample_with_tooltip}`
             : "",
+          typeof gaps.layout_fidelity_sample_pages === "number"
+            ? `pages=${gaps.layout_fidelity_sample_pages}`
+            : "",
+          typeof gaps.layout_fidelity_sample_sections === "number"
+            ? `sections=${gaps.layout_fidelity_sample_sections}`
+            : "",
+          typeof gaps.layout_fidelity_sample_stack_names_count === "number"
+            ? `stacks=${gaps.layout_fidelity_sample_stack_names_count}`
+            : "",
         ]
           .filter(Boolean)
           .join(", ");
@@ -2297,6 +2306,15 @@ export function FirewallExtras({
                           : "",
                         typeof s.layout_fidelity_sample_with_tooltip === "number"
                           ? `tooltips=${s.layout_fidelity_sample_with_tooltip}`
+                          : "",
+                        typeof s.layout_fidelity_sample_pages === "number"
+                          ? `pages=${s.layout_fidelity_sample_pages}`
+                          : "",
+                        typeof s.layout_fidelity_sample_sections === "number"
+                          ? `sections=${s.layout_fidelity_sample_sections}`
+                          : "",
+                        typeof s.layout_fidelity_sample_stack_names_count === "number"
+                          ? `stacks=${s.layout_fidelity_sample_stack_names_count}`
                           : "",
                       ]
                         .filter(Boolean)
