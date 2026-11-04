@@ -245,6 +245,7 @@ export function FirewallExtras({
   const [honestyMilestone, setHonestyMilestone] = useState<number | null>(null);
   const [hardGapsOpenLabels, setHardGapsOpenLabels] = useState<Record<string, string> | null>(null);
   const [hardGapsClosureTitles, setHardGapsClosureTitles] = useState<Record<string, string> | null>(null);
+  const [hardGapRelatedRefusalTitles, setHardGapRelatedRefusalTitles] = useState<Record<string, string> | null>(null);
   const [expectPlanStepTitles, setExpectPlanStepTitles] = useState<Record<string, string> | null>(null);
   const [sshAlternativeTitles, setSshAlternativeTitles] = useState<Record<string, string> | null>(null);
   const [honestyPathTitles, setHonestyPathTitles] = useState<Record<string, string> | null>(null);
@@ -380,6 +381,12 @@ export function FirewallExtras({
       setHardGapsClosureTitles(
         gaps?.hard_gap_closure_titles && typeof gaps.hard_gap_closure_titles === "object"
           ? (gaps.hard_gap_closure_titles as Record<string, string>)
+          : null,
+      );
+      setHardGapRelatedRefusalTitles(
+        gaps?.hard_gap_related_refusal_titles &&
+          typeof gaps.hard_gap_related_refusal_titles === "object"
+          ? (gaps.hard_gap_related_refusal_titles as Record<string, string>)
           : null,
       );
       setExpectPlanStepTitles(
@@ -2146,6 +2153,12 @@ export function FirewallExtras({
               <span className="muted" title={Object.entries(hardGapsClosureTitles).map(([k,v]) => `${k}: ${v}`).join(" · ")}>
                 · closure titles{" "}
                 <code>{Object.keys(hardGapsClosureTitles).length}</code>
+              </span>
+            ) : null}
+            {hardGapRelatedRefusalTitles && Object.keys(hardGapRelatedRefusalTitles).length > 0 ? (
+              <span className="muted" title={Object.entries(hardGapRelatedRefusalTitles).map(([k,v]) => `${k}: ${v}`).join(" · ")}>
+                · related refusal titles{" "}
+                <code>{Object.keys(hardGapRelatedRefusalTitles).length}</code>
               </span>
             ) : null}
             {expectPlanStepTitles && Object.keys(expectPlanStepTitles).length > 0 ? (

@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "1248"
+WEBUI_SOFT_COMPLETE_PHASE = "1256"
 # Honesty/preview track milestone (last thematic checkpoint; soft marker may be higher).
 # 600: refusals/closure; 650: health/summary/paths + fidelity sample;
 # 700: expect step_notes + SSH alternative/refusal notes;
@@ -90,6 +90,29 @@ HARD_GAP_CLOSURE_TITLES = {
     "full_qt_pixel_layout": "Desktop-equivalent geometry within stated tolerance",
     "expect_sshsession_runtime": "Live SSHSession/expect install path (not 501)",
     "password_keyboard_interactive_ssh": "Working password/keyboard-interactive deploy auth",
+}
+
+# Related refuse status codes for each open hard gap (honesty documentation).
+HARD_GAP_RELATED_REFUSALS = {
+    "full_qt_pixel_layout": {
+        "layout_fidelity_pixel_parity": False,
+        "note": "No HTTP refuse; pixel parity stays false on fidelity endpoints.",
+    },
+    "expect_sshsession_runtime": {
+        "expect_install_plan_run": 501,
+        "expect_install_plan_run_step": 501,
+        "note": "POST /expect-install-plan/run (+ optional step=) → 501.",
+    },
+    "password_keyboard_interactive_ssh": {
+        "deploy_allow_password_auth": 400,
+        "ssh_auth_password": 501,
+        "note": "allow_password_auth → 400; POST /ssh-auth/password → 501.",
+    },
+}
+HARD_GAP_RELATED_REFUSAL_TITLES = {
+    "full_qt_pixel_layout": "Pixel parity stays false (no HTTP refuse)",
+    "expect_sshsession_runtime": "Expect run/step → 501",
+    "password_keyboard_interactive_ssh": "Password SSH → 400/501",
 }
 
 HONESTY_PATH_TITLES = {
@@ -349,6 +372,16 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
             k: HARD_GAP_CLOSURE_TITLES[k]
             for k in HARD_GAPS_OPEN
             if k in HARD_GAP_CLOSURE_TITLES
+        },
+        "hard_gap_related_refusals": {
+            k: dict(HARD_GAP_RELATED_REFUSALS[k])
+            for k in HARD_GAPS_OPEN
+            if k in HARD_GAP_RELATED_REFUSALS
+        },
+        "hard_gap_related_refusal_titles": {
+            k: HARD_GAP_RELATED_REFUSAL_TITLES[k]
+            for k in HARD_GAPS_OPEN
+            if k in HARD_GAP_RELATED_REFUSAL_TITLES
         },
         "hard_gap_count": len(HARD_GAPS_OPEN),
         "hard_gap_notes": dict(HARD_GAP_NOTES),
@@ -697,6 +730,9 @@ def hard_gaps_summary(_: str = Depends(require_token)) -> dict[str, object]:
             for k in HARD_GAPS_OPEN
             if k in HARD_GAP_CLOSURE_TITLES
         },
+        "hard_gap_related_refusal_titles": dict(
+            full.get("hard_gap_related_refusal_titles") or {}
+        ),
         "hard_gap_count": len(HARD_GAPS_OPEN),
         "honesty_paths_count": int(full.get("honesty_paths_count") or 0),
         "honesty_path_titles": dict(full.get("honesty_path_titles") or {}),

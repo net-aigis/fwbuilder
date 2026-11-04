@@ -930,6 +930,8 @@ export function fetchHardGaps() {
     hard_gap_open: string[];
     hard_gap_open_labels?: Record<string, string>;
     hard_gap_closure_titles?: Record<string, string>;
+    hard_gap_related_refusals?: Record<string, Record<string, object>>;
+    hard_gap_related_refusal_titles?: Record<string, string>;
     hard_gap_count?: number;
     hard_gap_notes?: Record<string, string>;
     hard_gap_closure?: Record<string, string>;
