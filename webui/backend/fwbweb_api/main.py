@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "624"
+WEBUI_SOFT_COMPLETE_PHASE = "632"
 # Honesty/preview track milestone (last thematic checkpoint; soft marker may be higher).
 WEBUI_HONESTY_MILESTONE = 600
 
@@ -135,6 +135,7 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
     signal_catalog = sample_fid.get("signal_keys") if sample_fid.get("ok") else None
     honesty_paths = {
         "hard_gaps": "/api/v1/hard-gaps",
+        "summary": "/api/v1/hard-gaps/summary",
         "closure": "/api/v1/hard-gaps/closure",
         "layout_fidelity": "/api/v1/layout-fidelity",
         "stack_switch": "/api/v1/stack-switch",
@@ -169,6 +170,7 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
         "honesty_milestone": WEBUI_HONESTY_MILESTONE,
         "honesty_paths": honesty_paths,
         "honesty_paths_count": len(honesty_paths),
+        "summary_path": "/api/v1/hard-gaps/summary",
         "note": (
             "Honesty/preview track is soft-complete (soft_fertig); these items remain "
             "unimplemented (full Qt pixel layout, expect/SSHSession runtime, password SSH). "
@@ -180,7 +182,28 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
             "step ids (all refused; unknown step → expect_installer_unknown_step). "
             "ssh_refusal_paths documents BatchMode-only refuse status codes. "
             "hard_gap_closure documents what would close each gap. "
-            "honesty_paths catalogs honesty/preview endpoints."
+            "honesty_paths catalogs honesty/preview endpoints. "
+            "GET /hard-gaps/summary is the compact honesty snapshot."
+        ),
+    }
+
+
+@app.get("/api/v1/hard-gaps/summary")
+def hard_gaps_summary(_: str = Depends(require_token)) -> dict[str, object]:
+    """Compact honesty-track snapshot (counts + open ids; no full notes/paths)."""
+    full = hard_gaps()
+    return {
+        "soft_complete_phase": WEBUI_SOFT_COMPLETE_PHASE,
+        "soft_fertig_honesty_track": True,
+        "honesty_milestone": WEBUI_HONESTY_MILESTONE,
+        "hard_gap_open": list(HARD_GAPS_OPEN),
+        "hard_gap_count": len(HARD_GAPS_OPEN),
+        "honesty_paths_count": int(full.get("honesty_paths_count") or 0),
+        "parent_path": "/api/v1/hard-gaps",
+        "closure_path": "/api/v1/hard-gaps/closure",
+        "note": (
+            "Compact honesty snapshot. Prefer GET /hard-gaps for full paths/notes "
+            "and GET /hard-gaps/closure for closure criteria."
         ),
     }
 
@@ -197,6 +220,7 @@ def hard_gap_closure(_: str = Depends(require_token)) -> dict[str, object]:
         "hard_gap_closure": dict(HARD_GAP_CLOSURE),
         "hard_gap_notes": dict(HARD_GAP_NOTES),
         "parent_path": "/api/v1/hard-gaps",
+        "summary_path": "/api/v1/hard-gaps/summary",
         "note": (
             "Criteria for closing each hard gap. Meeting layout-fidelity score alone "
             "does not close full_qt_pixel_layout. hard_gap_notes summarize the "

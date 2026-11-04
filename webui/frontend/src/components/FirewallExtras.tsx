@@ -9,6 +9,7 @@ import {
   fetchExpectPlanStepRefusals,
   fetchHardGapClosure,
   fetchHardGaps,
+  fetchHardGapsSummary,
   fetchLayoutFidelity,
   fetchStackSwitch,
   refuseExpectInstallStep,
@@ -122,6 +123,10 @@ function hardGapsSnapshotKey(firewallId: string) {
   return `fwbweb.hardGaps.${firewallId}`;
 }
 
+function hardGapsSummaryKey(firewallId: string) {
+  return `fwbweb.hardGapsSummary.${firewallId}`;
+}
+
 export function FirewallExtras({
   sessionId,
   firewallId,
@@ -225,6 +230,8 @@ export function FirewallExtras({
   const [softFertigHonestyTrack, setSoftFertigHonestyTrack] = useState<boolean | null>(null);
   const [honestyPathsSummary, setHonestyPathsSummary] = useState<string | null>(null);
   const [honestyPathsDetail, setHonestyPathsDetail] = useState<string | null>(null);
+  const [hardGapsSummaryPath, setHardGapsSummaryPath] = useState<string | null>(null);
+  const [hardGapsSummaryText, setHardGapsSummaryText] = useState<string | null>(null);
   const [stackSwitchSummary, setStackSwitchSummary] = useState<string | null>(null);
   const [layoutFidelity, setLayoutFidelity] = useState<string | null>(null);
   const [resHint, setResHint] = useState<string | null>(null);
@@ -262,6 +269,7 @@ export function FirewallExtras({
       setHardGapNotes(gaps?.hard_gap_notes || {});
       setHardGapClosure(gaps?.hard_gap_closure || {});
       setHardGapsClosurePath(gaps?.closure_path || "/api/v1/hard-gaps/closure");
+      setHardGapsSummaryPath(gaps?.summary_path || "/api/v1/hard-gaps/summary");
       setHardGapCount(
         typeof gaps?.hard_gap_count === "number"
           ? gaps.hard_gap_count
@@ -470,6 +478,8 @@ export function FirewallExtras({
             /* ignore */
           }
         }
+        const summaryRaw = sessionStorage.getItem(hardGapsSummaryKey(firewallId));
+        if (summaryRaw) setHardGapsSummaryText(summaryRaw);
       } catch {
         /* ignore */
       }
@@ -1861,6 +1871,12 @@ export function FirewallExtras({
                 · closure <code>{hardGapsClosurePath}</code>
               </>
             ) : null}
+            {hardGapsSummaryPath ? (
+              <>
+                {" "}
+                · summary <code>{hardGapsSummaryPath}</code>
+              </>
+            ) : null}
           </p>
           {hardGapsNote ? <p className="muted">{hardGapsNote}</p> : null}
           {Object.keys(hardGapNotes).length ? (
@@ -2020,6 +2036,76 @@ export function FirewallExtras({
               type="button"
               className="ghost"
               disabled={busy}
+              title="GET /hard-gaps/summary — compact honesty snapshot"
+              onClick={() => {
+                void (async () => {
+                  onBusy?.(true);
+                  onError?.(null);
+                  try {
+                    const s = await fetchHardGapsSummary();
+                    const text = JSON.stringify(s, null, 2);
+                    setHardGapsSummaryText(text);
+                    try {
+                      sessionStorage.setItem(hardGapsSummaryKey(firewallId), text);
+                    } catch {
+                      /* ignore */
+                    }
+                    onStatus?.(
+                      `Hard-gaps summary: ${s.hard_gap_count ?? (s.hard_gap_open || []).length} open`,
+                    );
+                  } catch (e) {
+                    onError?.(e instanceof Error ? e.message : String(e));
+                  } finally {
+                    onBusy?.(false);
+                  }
+                })();
+              }}
+            >
+              Show hard-gaps summary
+            </button>
+            <button
+              type="button"
+              className="ghost"
+              disabled={busy || !hardGapsSummaryText}
+              title="Download compact /hard-gaps/summary JSON"
+              onClick={() => {
+                if (!hardGapsSummaryText) return;
+                const blob = new Blob([hardGapsSummaryText + "\n"], {
+                  type: "application/json;charset=utf-8",
+                });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = `fwbweb-hard-gaps-summary-${firewallId || "fw"}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+                onStatus?.("Downloaded hard-gaps summary");
+              }}
+            >
+              Download summary
+            </button>
+            <button
+              type="button"
+              className="ghost"
+              disabled={busy || (!hardGapsPayload && !hardGapsSummaryText)}
+              title="Clear sessionStorage hard-gaps snapshot and summary"
+              onClick={() => {
+                try {
+                  sessionStorage.removeItem(hardGapsSnapshotKey(firewallId));
+                  sessionStorage.removeItem(hardGapsSummaryKey(firewallId));
+                } catch {
+                  /* ignore */
+                }
+                setHardGapsSummaryText(null);
+                onStatus?.("Cleared hard-gaps snapshot");
+              }}
+            >
+              Clear hard-gaps snapshot
+            </button>
+            <button
+              type="button"
+              className="ghost"
+              disabled={busy}
               title="GET /hard-gaps/closure — show closure criteria"
               onClick={() => {
                 void (async () => {
@@ -2091,6 +2177,11 @@ export function FirewallExtras({
               Download closure
             </button>
           </div>
+          {hardGapsSummaryText ? (
+            <pre className="deploy-log configlet-preview" tabIndex={0}>
+              {hardGapsSummaryText}
+            </pre>
+          ) : null}
           {hardGapsClosureText ? (
             <pre className="deploy-log configlet-preview" tabIndex={0}>
               {hardGapsClosureText}
