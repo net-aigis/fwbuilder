@@ -400,6 +400,12 @@ export function FirewallExtras({
           typeof gaps.layout_fidelity_sample_with_maximum_size === "number"
             ? `maxSize=${gaps.layout_fidelity_sample_with_maximum_size}`
             : "",
+          typeof gaps.layout_fidelity_sample_layout_tree_max_depth === "number"
+            ? `treeDepth=${gaps.layout_fidelity_sample_layout_tree_max_depth}`
+            : "",
+          typeof gaps.layout_fidelity_sample_buddy_labels === "number"
+            ? `buddies=${gaps.layout_fidelity_sample_buddy_labels}`
+            : "",
         ]
           .filter(Boolean)
           .join(", ");
@@ -2181,6 +2187,13 @@ export function FirewallExtras({
                           : "",
                         typeof s.layout_fidelity_sample_with_maximum_size === "number"
                           ? `maxSize=${s.layout_fidelity_sample_with_maximum_size}`
+                          : "",
+                        typeof s.layout_fidelity_sample_layout_tree_max_depth ===
+                        "number"
+                          ? `treeDepth=${s.layout_fidelity_sample_layout_tree_max_depth}`
+                          : "",
+                        typeof s.layout_fidelity_sample_buddy_labels === "number"
+                          ? `buddies=${s.layout_fidelity_sample_buddy_labels}`
                           : "",
                       ]
                         .filter(Boolean)
