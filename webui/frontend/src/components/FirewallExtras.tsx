@@ -248,6 +248,8 @@ export function FirewallExtras({
   const [expectPlanStepTitles, setExpectPlanStepTitles] = useState<Record<string, string> | null>(null);
   const [sshAlternativeTitles, setSshAlternativeTitles] = useState<Record<string, string> | null>(null);
   const [honestyPathTitles, setHonestyPathTitles] = useState<Record<string, string> | null>(null);
+  const [honestyPathNotes, setHonestyPathNotes] = useState<Record<string, string> | null>(null);
+  const [honestyPathNotesCount, setHonestyPathNotesCount] = useState<number | null>(null);
   const [honestyMilestoneNote, setHonestyMilestoneNote] = useState<string | null>(null);
   const [softFertigHonestyTrack, setSoftFertigHonestyTrack] = useState<boolean | null>(null);
   const [honestyPathsSummary, setHonestyPathsSummary] = useState<string | null>(null);
@@ -393,6 +395,16 @@ export function FirewallExtras({
           ? (gaps.honesty_path_titles as Record<string, string>)
           : null,
       );
+      setHonestyPathNotes(
+        gaps?.honesty_path_notes && typeof gaps.honesty_path_notes === "object"
+          ? (gaps.honesty_path_notes as Record<string, string>)
+          : null,
+      );
+      setHonestyPathNotesCount(
+        typeof gaps?.honesty_path_notes_count === "number"
+          ? gaps.honesty_path_notes_count
+          : null,
+      );
       setHonestyMilestoneNote(gaps?.honesty_milestone_note || null);
       setSoftFertigHonestyTrack(
         typeof gaps?.soft_fertig_honesty_track === "boolean"
@@ -405,8 +417,26 @@ export function FirewallExtras({
           typeof gaps.honesty_paths_count === "number"
             ? gaps.honesty_paths_count
             : entries.length;
+        const titles =
+          gaps?.honesty_path_titles && typeof gaps.honesty_path_titles === "object"
+            ? (gaps.honesty_path_titles as Record<string, string>)
+            : {};
+        const notes =
+          gaps?.honesty_path_notes && typeof gaps.honesty_path_notes === "object"
+            ? (gaps.honesty_path_notes as Record<string, string>)
+            : {};
         setHonestyPathsSummary(`Honesty paths: ${n}`);
-        setHonestyPathsDetail(entries.map(([k, v]) => `${k}: ${v}`).join("\n"));
+        setHonestyPathsDetail(
+          entries
+            .map(([k, v]) => {
+              const title = titles[k];
+              const note = notes[k];
+              let line = title ? `${k} (${title}): ${v}` : `${k}: ${v}`;
+              if (note) line += ` — ${note}`;
+              return line;
+            })
+            .join("\n"),
+        );
       } else {
         setHonestyPathsSummary(null);
         setHonestyPathsDetail(null);
@@ -2121,6 +2151,19 @@ export function FirewallExtras({
               <span className="muted" title={Object.entries(honestyPathTitles).map(([k,v]) => `${k}: ${v}`).join(" · ")}>
                 · honesty path titles{" "}
                 <code>{Object.keys(honestyPathTitles).length}</code>
+              </span>
+            ) : null}
+            {honestyPathNotesCount != null && honestyPathNotesCount > 0 ? (
+              <span
+                className="muted"
+                title={
+                  honestyPathNotes
+                    ? Object.entries(honestyPathNotes).map(([k, v]) => `${k}: ${v}`).join(" · ")
+                    : undefined
+                }
+              >
+                · honesty path notes{" "}
+                <code>{honestyPathNotesCount}</code>
               </span>
             ) : null}
             {honestyMilestone != null ? (

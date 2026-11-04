@@ -950,6 +950,8 @@ export function fetchHardGaps() {
     ssh_alternative_titles?: Record<string, string>;
     ssh_refusal_path_titles?: Record<string, string>;
     honesty_path_titles?: Record<string, string>;
+    honesty_path_notes?: Record<string, string>;
+    honesty_path_notes_count?: number;
     expect_plan_step_notes?: Record<string, string>;
     expect_plan_step_notes_count?: number;
     ssh_auth_path?: string;
@@ -1039,6 +1041,7 @@ export function fetchHardGapsSummary() {
     hard_gap_closure_titles?: Record<string, string>;
     hard_gap_count?: number;
     honesty_paths_count?: number;
+    honesty_path_notes_count?: number;
     expect_plan_step_count?: number;
     layout_fidelity_sample_platform?: string;
     layout_fidelity_sample_host_os?: string;

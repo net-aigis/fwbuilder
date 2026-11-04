@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "1216"
+WEBUI_SOFT_COMPLETE_PHASE = "1224"
 # Honesty/preview track milestone (last thematic checkpoint; soft marker may be higher).
 # 600: refusals/closure; 650: health/summary/paths + fidelity sample;
 # 700: expect step_notes + SSH alternative/refusal notes;
@@ -101,6 +101,20 @@ HONESTY_PATH_TITLES = {
     "expect_steps_refusals": "Expect step refusal previews",
     "ssh_auth": "SSH auth capabilities",
     "password_ssh": "Password SSH endpoint (501)",
+}
+
+HONESTY_PATH_NOTES = {
+    "hard_gaps": "Full honesty/preview snapshot with open hard gaps.",
+    "summary": "Compact honesty snapshot (counts + titles; no full notes).",
+    "closure": "Criteria that would close each open hard gap.",
+    "layout_fidelity": "Heuristic signal coverage score (not pixel parity).",
+    "stack_switch": "Desktop QStackedWidget switch maps for preview/follow.",
+    "option_enable": "Desktop option enable/follow maps (bonding, LOG/ULOG).",
+    "expect_run": "POST expect-install-plan/run stays 501 (no SSHSession).",
+    "expect_steps": "Canonical refused expect plan step ids.",
+    "expect_steps_refusals": "Per-step 501 refusal payload previews.",
+    "ssh_auth": "BatchMode-only SSH capability summary.",
+    "password_ssh": "POST /ssh-auth/password stays 501.",
 }
 
 HARD_GAP_NOTES = {
@@ -566,6 +580,14 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
             for k in honesty_paths
             if k in HONESTY_PATH_TITLES
         },
+        "honesty_path_notes": {
+            k: HONESTY_PATH_NOTES[k]
+            for k in honesty_paths
+            if k in HONESTY_PATH_NOTES
+        },
+        "honesty_path_notes_count": sum(
+            1 for k in honesty_paths if k in HONESTY_PATH_NOTES
+        ),
         "honesty_paths_count": len(honesty_paths),
         "summary_path": "/api/v1/hard-gaps/summary",
         "note": (
@@ -619,6 +641,7 @@ def hard_gaps_summary(_: str = Depends(require_token)) -> dict[str, object]:
         "hard_gap_count": len(HARD_GAPS_OPEN),
         "honesty_paths_count": int(full.get("honesty_paths_count") or 0),
         "honesty_path_titles": dict(full.get("honesty_path_titles") or {}),
+        "honesty_path_notes_count": int(full.get("honesty_path_notes_count") or 0),
         "expect_plan_step_count": int(full.get("expect_plan_step_notes_count") or 0),
         "expect_plan_step_titles": dict(full.get("expect_plan_step_titles") or {}),
         "ssh_alternative_titles": dict(full.get("ssh_alternative_titles") or {}),
