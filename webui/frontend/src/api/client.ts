@@ -995,6 +995,7 @@ export function fetchHardGaps() {
     layout_fidelity_sample_with_read_only?: number | null;
     layout_fidelity_sample_pages_with_row_stretch?: number | null;
     layout_fidelity_sample_pages_with_tooltip?: number | null;
+    layout_fidelity_sample_with_external_label?: number | null;
     layout_fidelity_sample_fields?: number | null;
     layout_fidelity_sample_pages?: number | null;
     layout_fidelity_sample_sections?: number | null;
@@ -1056,6 +1057,7 @@ export function fetchHardGapsSummary() {
     layout_fidelity_sample_with_read_only?: number | null;
     layout_fidelity_sample_pages_with_row_stretch?: number | null;
     layout_fidelity_sample_pages_with_tooltip?: number | null;
+    layout_fidelity_sample_with_external_label?: number | null;
     layout_fidelity_sample_fields?: number | null;
     layout_fidelity_sample_pages?: number | null;
     layout_fidelity_sample_sections?: number | null;
