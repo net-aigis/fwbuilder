@@ -306,12 +306,14 @@ export function FirewallExtras({
             (fid.signal_keys?.fields?.length || 0) +
             (fid.signal_keys?.pages?.length || 0) +
             (fid.signal_keys?.chrome?.length || 0);
+          const partsN = fid.score_parts_count || 0;
           setLayoutFidelity(
             `${fid.score_percent}% .ui signals (${fid.dialog || plat}` +
               (stacked ? `; stacked×${stacked}` : "") +
               (vis ? `; visible×${vis}` : "") +
               (treeDepth ? `; layout_tree≤${treeDepth}` : "") +
               (sigN ? `; keys×${sigN}` : "") +
+              (partsN ? `; weights×${partsN}` : "") +
               "; not pixel parity)",
           );
         } else {

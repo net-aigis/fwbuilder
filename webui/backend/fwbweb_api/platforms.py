@@ -445,6 +445,7 @@ def _layout_fidelity_schema_summary(fidelity: dict[str, Any] | None) -> dict[str
     )
     return {
         "score_percent": fidelity.get("score_percent"),
+        "score_parts_count": fidelity.get("score_parts_count"),
         "pixel_parity": False,
         "path": "/api/v1/layout-fidelity",
         "stacked_sections": pages.get("stacked_sections"),
@@ -532,6 +533,8 @@ def _layout_fidelity_from_dialog(stem: str, info: dict[str, Any]) -> dict[str, A
         1.0 if page_stats["pages_with_buddy_labels"] else 0.0,
         1.0 if page_stats["pages_with_tooltip"] else 0.0,
         1.0 if page_stats["sections_with_flat"] or page_stats["sections_with_checkable"] else 0.0,
+        field_stats["with_enabled"] / n,
+        field_stats["with_alignment"] / n,
     ]
     score = round(100.0 * (sum(score_parts) / len(score_parts)), 1)
     signal_keys = {
@@ -544,9 +547,12 @@ def _layout_fidelity_from_dialog(stem: str, info: dict[str, Any]) -> dict[str, A
         "dialog": stem,
         "pixel_parity": False,
         "score_percent": score,
+        "score_parts_count": len(score_parts),
         "note": (
             "Heuristic coverage of extracted .ui layout signals. "
             "score_percent is not pixel-perfect Qt parity. "
+            "Adding more score weights can lower the percentage without "
+            "removing features — compare score_parts_count across phases. "
             "signal_keys lists counted field/page/chrome signals."
         ),
         "fields": field_stats,

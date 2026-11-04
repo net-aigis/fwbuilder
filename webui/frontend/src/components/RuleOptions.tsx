@@ -89,6 +89,7 @@ export function RuleOptions({
           lf?.layout_tree_max_depth ? `layout_tree≤${lf.layout_tree_max_depth}` : "",
           lf?.buddy_labels ? `buddy×${lf.buddy_labels}` : "",
           lf?.signal_key_count ? `keys×${lf.signal_key_count}` : "",
+          lf?.score_parts_count ? `weights×${lf.score_parts_count}` : "",
         ].filter(Boolean);
         setLayoutFidelity(
           `${score}% .ui signals` +

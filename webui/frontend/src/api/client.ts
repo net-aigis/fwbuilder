@@ -511,6 +511,7 @@ export function fetchOptionSchema(platform: string, hostOs = "") {
     size_grip_enabled?: boolean;
     layout_fidelity?: {
       score_percent?: number;
+      score_parts_count?: number;
       pixel_parity?: boolean;
       path?: string;
       stacked_sections?: number;
@@ -677,6 +678,7 @@ export function fetchInterfaceOptionSchema(hostOs: string) {
     dialog_field_count?: number;
     layout_fidelity?: {
       score_percent?: number;
+      score_parts_count?: number;
       pixel_parity?: boolean;
       path?: string;
       stacked_sections?: number;
@@ -714,6 +716,7 @@ export function fetchRuleOptionSchema(ruleKind: string = "policy") {
     dialog_field_count?: number;
     layout_fidelity?: {
       score_percent?: number;
+      score_parts_count?: number;
       pixel_parity?: boolean;
       path?: string;
       stacked_sections?: number;
@@ -847,6 +850,7 @@ export function fetchLayoutFidelity(platform: string, hostOs = "") {
     dialog?: string;
     pixel_parity: boolean;
     score_percent?: number;
+    score_parts_count?: number;
     note?: string;
     fields?: Record<string, number>;
     pages?: Record<string, unknown>;
