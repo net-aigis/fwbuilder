@@ -327,6 +327,14 @@ def _spacers_in_subtree(node: ET.Element) -> list[dict[str, Any]]:
                 }
                 if orient:
                     entry["orientation"] = orient
+                size_type_el = child.find("./property[@name='sizeType']/enum")
+                size_type = (
+                    (size_type_el.text or "").strip() if size_type_el is not None else ""
+                )
+                if size_type.startswith("QSizePolicy::"):
+                    size_type = size_type[len("QSizePolicy::") :]
+                if size_type:
+                    entry["size_type"] = size_type
                 name = child.get("name")
                 if name:
                     entry["name"] = name

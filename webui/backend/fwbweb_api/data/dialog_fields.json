@@ -1202,7 +1202,8 @@
               "rowspan": 1,
               "size_hint": {
                 "width": 40
-              }
+              },
+              "size_type": "MinimumExpanding"
             },
             {
               "colspan": 1,
@@ -1276,7 +1277,8 @@
               "rowspan": 1,
               "size_hint": {
                 "height": 20
-              }
+              },
+              "size_type": "MinimumExpanding"
             },
             {
               "colspan": 1,
@@ -1286,7 +1288,8 @@
               "rowspan": 1,
               "size_hint": {
                 "width": 20
-              }
+              },
+              "size_type": "MinimumExpanding"
             }
           ],
           "spacing": {
@@ -1354,14 +1357,16 @@
               "size_hint": {
                 "height": 20,
                 "width": 40
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
               "column": 7,
               "orientation": "Horizontal",
               "row": 1,
-              "rowspan": 1
+              "rowspan": 1,
+              "size_type": "MinimumExpanding"
             },
             {
               "colspan": 6,
@@ -1383,7 +1388,8 @@
               "rowspan": 1,
               "size_hint": {
                 "width": 20
-              }
+              },
+              "size_type": "MinimumExpanding"
             }
           ],
           "spacing": {
@@ -1456,7 +1462,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 40
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -1479,7 +1486,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -1489,7 +1497,8 @@
               "rowspan": 1,
               "size_hint": {
                 "width": 20
-              }
+              },
+              "size_type": "MinimumExpanding"
             }
           ],
           "spacing": {
@@ -1565,7 +1574,8 @@
               "rowspan": 1,
               "size_hint": {
                 "width": 20
-              }
+              },
+              "size_type": "MinimumExpanding"
             }
           ],
           "spacing": {
@@ -1612,7 +1622,8 @@
               "size_hint": {
                 "height": 81,
                 "width": 615
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 3,
@@ -1624,7 +1635,8 @@
               "size_hint": {
                 "height": 108,
                 "width": 609
-              }
+              },
+              "size_type": "MinimumExpanding"
             }
           ],
           "spacing": {
@@ -1684,7 +1696,8 @@
               "size_hint": {
                 "height": 169,
                 "width": 1105
-              }
+              },
+              "size_type": "MinimumExpanding"
             }
           ],
           "spacing": {
@@ -2004,7 +2017,8 @@
               "size_hint": {
                 "height": 16,
                 "width": 20
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -2324,7 +2338,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 20
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -2335,7 +2350,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 40
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -2437,7 +2453,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 40
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -2448,7 +2465,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 40
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -2459,7 +2477,8 @@
               "size_hint": {
                 "height": 40,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "title": "Path"
@@ -2510,7 +2529,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 20
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -2591,7 +2611,8 @@
               "size_hint": {
                 "height": 40,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "title": "General"
@@ -3148,7 +3169,8 @@
               "size_hint": {
                 "height": 170,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "spacing": {
@@ -3258,7 +3280,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -3269,7 +3292,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 120
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -3280,7 +3304,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 110
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "spacing": {
@@ -3394,7 +3419,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -3466,7 +3492,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 40
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -3477,7 +3504,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 40
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "spacing": {
@@ -3597,7 +3625,8 @@
               "size_hint": {
                 "height": 121,
                 "width": 675
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "title": "Logging"
@@ -4168,7 +4197,8 @@
               "size_hint": {
                 "height": 150,
                 "width": 30
-              }
+              },
+              "size_type": "Maximum"
             },
             {
               "colspan": 1,
@@ -4179,7 +4209,8 @@
               "size_hint": {
                 "height": 50,
                 "width": 30
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -4190,7 +4221,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "spacing": {
@@ -4295,7 +4327,8 @@
               "size_hint": {
                 "height": 100,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "title": "Installer"
@@ -4355,7 +4388,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 40
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -4513,7 +4547,8 @@
               "size_hint": {
                 "height": 40,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -4524,7 +4559,8 @@
               "size_hint": {
                 "height": 16,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -4535,7 +4571,8 @@
               "size_hint": {
                 "height": 16,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "spacing": {
@@ -4579,7 +4616,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 40
-              }
+              },
+              "size_type": "MinimumExpanding"
             },
             {
               "colspan": 1,
@@ -4590,7 +4628,8 @@
               "size_hint": {
                 "height": 120,
                 "width": 30
-              }
+              },
+              "size_type": "Maximum"
             },
             {
               "colspan": 1,
@@ -4601,7 +4640,8 @@
               "size_hint": {
                 "height": 200,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "title": "Script"
@@ -5174,7 +5214,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 20
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -5185,7 +5226,8 @@
               "size_hint": {
                 "height": 150,
                 "width": 40
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -5196,7 +5238,8 @@
               "size_hint": {
                 "height": 21,
                 "width": 141
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -5207,7 +5250,8 @@
               "size_hint": {
                 "height": 21,
                 "width": 93
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "title": "Options"
@@ -5326,7 +5370,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 20
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -5337,7 +5382,8 @@
               "size_hint": {
                 "height": 30,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -5348,7 +5394,8 @@
               "size_hint": {
                 "height": 50,
                 "width": 100
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -5359,7 +5406,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 150
-              }
+              },
+              "size_type": "Fixed"
             }
           ],
           "title": "TCP"
@@ -5507,7 +5555,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 20
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -5518,7 +5567,8 @@
               "size_hint": {
                 "height": 60,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "title": "Path"
@@ -6207,7 +6257,8 @@
               "size_hint": {
                 "height": 16,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "title": "Compiler"
@@ -6255,7 +6306,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 20
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -6266,7 +6318,8 @@
               "size_hint": {
                 "height": 100,
                 "width": 40
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -6277,7 +6330,8 @@
               "size_hint": {
                 "height": 270,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "title": "Protocol Helpers"
@@ -6377,7 +6431,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 20
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -6388,7 +6443,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "title": "Installer"
@@ -6448,7 +6504,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 40
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -6459,7 +6516,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 40
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "title": "Prolog/Epilog"
@@ -6509,7 +6567,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 20
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -6520,7 +6579,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 130
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -6531,7 +6591,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 120
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -6542,7 +6603,8 @@
               "size_hint": {
                 "height": 240,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -6553,7 +6615,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 20
-              }
+              },
+              "size_type": "Fixed"
             }
           ],
           "title": "Logging"
@@ -6597,7 +6660,8 @@
               "size_hint": {
                 "height": 70,
                 "width": 40
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -6608,7 +6672,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 20
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -6619,7 +6684,8 @@
               "size_hint": {
                 "height": 200,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "title": "Script Options"
@@ -7016,7 +7082,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 20
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 2,
@@ -7027,7 +7094,8 @@
               "size_hint": {
                 "height": 40,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "title": "Compiler"
@@ -7127,7 +7195,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "title": "Installer"
@@ -7187,7 +7256,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 40
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -7198,7 +7268,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 40
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "title": "Prolog/Epilog"
@@ -7240,7 +7311,8 @@
               "size_hint": {
                 "height": 70,
                 "width": 40
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -7251,7 +7323,8 @@
               "size_hint": {
                 "height": 230,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -7262,7 +7335,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 20
-              }
+              },
+              "size_type": "Fixed"
             }
           ],
           "title": "Script Options"
@@ -8199,7 +8273,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -8323,7 +8398,8 @@
               "size_hint": {
                 "height": 100,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "spacing": {
@@ -8404,7 +8480,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 40
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "spacing": {
@@ -8569,7 +8646,8 @@
               "size_hint": {
                 "height": 40,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -8580,7 +8658,8 @@
               "size_hint": {
                 "height": 16,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -8591,7 +8670,8 @@
               "size_hint": {
                 "height": 16,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "spacing": {
@@ -8659,7 +8739,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 30
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -8671,7 +8752,8 @@
               "size_hint": {
                 "height": 18,
                 "width": 556
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -8683,7 +8765,8 @@
               "size_hint": {
                 "height": 18,
                 "width": 556
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -8695,7 +8778,8 @@
               "size_hint": {
                 "height": 40,
                 "width": 556
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -8706,7 +8790,8 @@
               "size_hint": {
                 "height": 200,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "title": "Script"
@@ -8776,7 +8861,8 @@
               "size_hint": {
                 "height": 40,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "title": "General"
@@ -9198,7 +9284,8 @@
               "size_hint": {
                 "height": 170,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "spacing": {
@@ -9344,7 +9431,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -9422,7 +9510,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 40
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -9433,7 +9522,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 40
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "spacing": {
@@ -9553,7 +9643,8 @@
               "size_hint": {
                 "height": 121,
                 "width": 675
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "spacing": {
@@ -9813,7 +9904,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 20
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -9824,7 +9916,8 @@
               "size_hint": {
                 "height": 40,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "title": "Path"
@@ -9883,7 +9976,8 @@
               "size_hint": {
                 "height": 80,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -9894,7 +9988,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 30
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -9905,7 +10000,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 150
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -9916,7 +10012,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 20
-              }
+              },
+              "size_type": "Fixed"
             }
           ],
           "title": "Prompts"
@@ -10565,7 +10662,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 20
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -10576,7 +10674,8 @@
               "size_hint": {
                 "height": 150,
                 "width": 40
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -10587,7 +10686,8 @@
               "size_hint": {
                 "height": 21,
                 "width": 141
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -10598,7 +10698,8 @@
               "size_hint": {
                 "height": 21,
                 "width": 93
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "title": "Options"
@@ -10717,7 +10818,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 20
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -10728,7 +10830,8 @@
               "size_hint": {
                 "height": 30,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -10739,7 +10842,8 @@
               "size_hint": {
                 "height": 50,
                 "width": 100
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -10750,7 +10854,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 150
-              }
+              },
+              "size_type": "Fixed"
             }
           ],
           "title": "TCP"
@@ -10910,7 +11015,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 20
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -10921,7 +11027,8 @@
               "size_hint": {
                 "height": 60,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "title": "Path"
@@ -11057,7 +11164,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 20
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -11292,7 +11400,8 @@
               "size_hint": {
                 "height": 16,
                 "width": 20
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -11512,7 +11621,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 151
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -11523,7 +11633,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -11534,7 +11645,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 40
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -11545,7 +11657,8 @@
               "size_hint": {
                 "height": 40,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "spacing": {
@@ -11610,7 +11723,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 40
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -11621,7 +11735,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 40
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -11632,7 +11747,8 @@
               "size_hint": {
                 "height": 40,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "spacing": {
@@ -11707,7 +11823,8 @@
               "size_hint": {
                 "height": 40,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "title": "General"
@@ -12277,7 +12394,8 @@
               "size_hint": {
                 "height": 170,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "spacing": {
@@ -12387,7 +12505,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -12398,7 +12517,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 120
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -12409,7 +12529,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 110
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "spacing": {
@@ -12529,7 +12650,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -12607,7 +12729,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 40
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -12618,7 +12741,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 40
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "spacing": {
@@ -12738,7 +12862,8 @@
               "size_hint": {
                 "height": 121,
                 "width": 675
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "spacing": {
@@ -12968,7 +13093,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 20
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -12979,7 +13105,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 40
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -12990,7 +13117,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 231
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -13001,7 +13129,8 @@
               "size_hint": {
                 "height": 51,
                 "width": 93
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "title": "Options"
@@ -13060,7 +13189,8 @@
               "size_hint": {
                 "height": 40,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -13071,7 +13201,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 40
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -13082,7 +13213,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 40
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "title": "Path"
@@ -13133,7 +13265,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 20
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -14740,7 +14873,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 20
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -14751,7 +14885,8 @@
               "size_hint": {
                 "height": 110,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "spacing": {
@@ -15059,7 +15194,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -15171,7 +15307,8 @@
               "size_hint": {
                 "height": 80,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "spacing": {
@@ -15243,7 +15380,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 40
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 2,
@@ -15254,7 +15392,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 40
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 3,
@@ -15265,7 +15404,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 410
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "spacing": {
@@ -15313,7 +15453,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 20
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -15324,7 +15465,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 70
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -15335,7 +15477,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 130
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -15346,7 +15489,8 @@
               "size_hint": {
                 "height": 320,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "spacing": {
@@ -15439,7 +15583,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 20
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -15450,7 +15595,8 @@
               "size_hint": {
                 "height": 230,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "title": "Script"
@@ -16687,7 +16833,8 @@
               "size_hint": {
                 "height": 170,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -16843,7 +16990,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 40
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -16854,7 +17002,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 40
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "title": "Prolog/Epilog"
@@ -17075,7 +17224,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 40
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -17086,7 +17236,8 @@
               "size_hint": {
                 "height": 30,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "spacing": {
@@ -17222,7 +17373,8 @@
               "size_hint": {
                 "height": 40,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 2,
@@ -17233,7 +17385,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 40
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -17268,7 +17421,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 40
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -17374,7 +17528,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 110
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -17385,7 +17540,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 120
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "title": "Script"
@@ -17529,7 +17685,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "spacing": {
@@ -17797,7 +17954,8 @@
               "size_hint": {
                 "height": 40,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "spacing": {
@@ -17911,7 +18069,8 @@
               "size_hint": {
                 "height": 30,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "spacing": {
@@ -18014,7 +18173,8 @@
               "size_hint": {
                 "height": 40,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "spacing": {
@@ -18058,7 +18218,8 @@
               "size_hint": {
                 "height": 162,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -18069,7 +18230,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "spacing": {
@@ -18173,7 +18335,8 @@
               "size_hint": {
                 "height": 16,
                 "width": 20
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -18736,7 +18899,8 @@
               "size_hint": {
                 "height": 170,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "spacing": {
@@ -18835,7 +18999,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 120
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -18846,7 +19011,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 110
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -19033,7 +19199,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 40
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -19044,7 +19211,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 40
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "spacing": {
@@ -19164,7 +19332,8 @@
               "size_hint": {
                 "height": 121,
                 "width": 675
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "title": "Logging"
@@ -19889,7 +20058,8 @@
               "name": "verticalSpacer",
               "orientation": "Vertical",
               "row": 3,
-              "rowspan": 2
+              "rowspan": 2,
+              "size_type": "Maximum"
             },
             {
               "colspan": 1,
@@ -19900,7 +20070,8 @@
               "size_hint": {
                 "height": 150,
                 "width": 30
-              }
+              },
+              "size_type": "Maximum"
             },
             {
               "colspan": 1,
@@ -19911,7 +20082,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 80
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -19922,7 +20094,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 72
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -19933,7 +20106,8 @@
               "size_hint": {
                 "height": 50,
                 "width": 30
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -19944,7 +20118,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "title": "Compiler"
@@ -20013,7 +20188,8 @@
               "size_hint": {
                 "height": 120,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "spacing": {
@@ -20085,7 +20261,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 40
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "spacing": {
@@ -20250,7 +20427,8 @@
               "size_hint": {
                 "height": 40,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -20261,7 +20439,8 @@
               "size_hint": {
                 "height": 16,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -20272,7 +20451,8 @@
               "size_hint": {
                 "height": 16,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "spacing": {
@@ -20352,7 +20532,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 30
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -20364,7 +20545,8 @@
               "size_hint": {
                 "height": 18,
                 "width": 556
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -20376,7 +20558,8 @@
               "size_hint": {
                 "height": 18,
                 "width": 556
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -20388,7 +20571,8 @@
               "size_hint": {
                 "height": 40,
                 "width": 556
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -20399,7 +20583,8 @@
               "size_hint": {
                 "height": 200,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "title": "Script"
@@ -20590,7 +20775,8 @@
               "size_hint": {
                 "height": 16,
                 "width": 20
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -20601,7 +20787,8 @@
               "size_hint": {
                 "height": 16,
                 "width": 20
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -20624,7 +20811,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 20
-              }
+              },
+              "size_type": "Minimum"
             },
             {
               "colspan": 1,
@@ -21416,7 +21604,8 @@
               "size_hint": {
                 "height": 16,
                 "width": 20
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -21427,7 +21616,8 @@
               "size_hint": {
                 "height": 16,
                 "width": 20
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -21438,7 +21628,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 40
-              }
+              },
+              "size_type": "Minimum"
             },
             {
               "colspan": 1,
@@ -21449,7 +21640,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 170
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -21543,7 +21735,8 @@
               "size_hint": {
                 "height": 16,
                 "width": 20
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -21554,7 +21747,8 @@
               "size_hint": {
                 "height": 16,
                 "width": 20
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -21565,7 +21759,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 170
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 2,
@@ -21576,7 +21771,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 40
-              }
+              },
+              "size_type": "Minimum"
             },
             {
               "colspan": 2,
@@ -21587,7 +21783,8 @@
               "size_hint": {
                 "height": 16,
                 "width": 20
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 2,
@@ -21738,7 +21935,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 40
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -21760,7 +21958,8 @@
               "size_hint": {
                 "height": 16,
                 "width": 20
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -21771,7 +21970,8 @@
               "size_hint": {
                 "height": 16,
                 "width": 20
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -21782,7 +21982,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 250
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "title": "Options"
@@ -21901,7 +22102,8 @@
               "size_hint": {
                 "height": 16,
                 "width": 20
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -21912,7 +22114,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 40
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -21934,7 +22137,8 @@
               "size_hint": {
                 "height": 16,
                 "width": 20
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -21945,7 +22149,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 250
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "title": "TCP"
@@ -22001,7 +22206,8 @@
               "size_hint": {
                 "height": 16,
                 "width": 20
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -22012,7 +22218,8 @@
               "size_hint": {
                 "height": 16,
                 "width": 20
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -22253,7 +22460,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 151
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -22264,7 +22472,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 20
-              }
+              },
+              "size_type": "Fixed"
             },
             {
               "colspan": 1,
@@ -22275,7 +22484,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 40
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -22286,7 +22496,8 @@
               "size_hint": {
                 "height": 40,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "spacing": {
@@ -22348,7 +22559,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 40
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -22359,7 +22571,8 @@
               "size_hint": {
                 "height": 20,
                 "width": 40
-              }
+              },
+              "size_type": "Expanding"
             },
             {
               "colspan": 1,
@@ -22370,7 +22583,8 @@
               "size_hint": {
                 "height": 40,
                 "width": 20
-              }
+              },
+              "size_type": "Expanding"
             }
           ],
           "spacing": {

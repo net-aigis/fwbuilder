@@ -489,6 +489,12 @@ def _layout_fidelity_from_dialog(stem: str, info: dict[str, Any]) -> dict[str, A
         "spacers_with_size_hint": sum(
             1 for p in pages for s in (p.get("spacers") or []) if s.get("size_hint")
         ),
+        "spacers_with_orientation": sum(
+            1 for p in pages for s in (p.get("spacers") or []) if s.get("orientation")
+        ),
+        "spacers_with_size_type": sum(
+            1 for p in pages for s in (p.get("spacers") or []) if s.get("size_type")
+        ),
         "annotations": sum(len(p.get("annotations") or []) for p in pages),
         "buddy_labels": sum(len(p.get("buddy_labels") or []) for p in pages),
         "pages_with_buddy_labels": sum(1 for p in pages if p.get("buddy_labels")),
@@ -522,6 +528,16 @@ def _layout_fidelity_from_dialog(stem: str, info: dict[str, Any]) -> dict[str, A
         field_stats["with_whats_this"] / n,
         field_stats["with_tooltip"] / n,
         min(page_stats["spacers_with_size_hint"], n) / n if page_stats["spacers"] else 0.0,
+        (
+            min(page_stats["spacers_with_orientation"], n) / n
+            if page_stats["spacers"]
+            else 0.0
+        ),
+        (
+            min(page_stats["spacers_with_size_type"], n) / n
+            if page_stats["spacers"]
+            else 0.0
+        ),
         1.0 if chrome["geometry"] else 0.0,
         1.0 if chrome["tab_position"] else 0.0,
         1.0 if page_stats["pages_with_spacing"] else 0.0,
