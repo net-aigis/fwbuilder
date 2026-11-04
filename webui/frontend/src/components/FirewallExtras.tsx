@@ -219,7 +219,13 @@ export function FirewallExtras({
         fetchSshAuth().catch(() => null),
         fetchHardGaps().catch(() => null),
       ]);
-      if (sshAuth?.note) setSshAuthNote(sshAuth.note);
+      if (sshAuth?.note) {
+        const alt = sshAuth.alternatives?.length
+          ? ` Alternatives: ${sshAuth.alternatives.join(", ")}.`
+          : "";
+        const only = sshAuth.batch_mode_only ? " BatchMode only." : "";
+        setSshAuthNote(`${sshAuth.note}${only}${alt}`.trim());
+      }
       else setSshAuthNote(null);
       if (gaps?.hard_gap_open?.length) setHardGaps(gaps.hard_gap_open);
       else if (resSt?.hard_gap_open?.length) setHardGaps(resSt.hard_gap_open);
@@ -250,10 +256,26 @@ export function FirewallExtras({
       try {
         const fid = await fetchLayoutFidelity(plat, hostOs || "");
         if (fid.ok && fid.score_percent != null) {
-          const stacked = Number((fid.pages as { stacked_sections?: number } | undefined)?.stacked_sections || 0);
+          const pages = fid.pages as
+            | {
+                stacked_sections?: number;
+                with_visible?: number;
+                sections_with_flat?: number;
+                buddy_labels?: number;
+              }
+            | undefined;
+          const fields = fid.fields as { with_visible?: number } | undefined;
+          const stacked = Number(pages?.stacked_sections || 0);
+          const vis = Number(fields?.with_visible || 0);
+          const sigN =
+            (fid.signal_keys?.fields?.length || 0) +
+            (fid.signal_keys?.pages?.length || 0) +
+            (fid.signal_keys?.chrome?.length || 0);
           setLayoutFidelity(
             `${fid.score_percent}% .ui signals (${fid.dialog || plat}` +
               (stacked ? `; stacked×${stacked}` : "") +
+              (vis ? `; visible×${vis}` : "") +
+              (sigN ? `; keys×${sigN}` : "") +
               "; not pixel parity)",
           );
         } else {
@@ -1128,9 +1150,13 @@ export function FirewallExtras({
                         const plan = await fetchExpectInstallPlan(hostOs, {
                           fwdir: remoteDir || "/etc",
                         });
+                        const canon = plan.canonical_step_ids?.length
+                          ? `canonical_step_ids=${plan.canonical_step_ids.join(",")}`
+                          : "";
                         const lines = [
                           `# expect plan for ${plan.host_os} (executable=${plan.executable})`,
                           plan.note || "",
+                          ...(canon ? [canon] : []),
                           "",
                           ...plan.steps.map((s, i) => {
                             const head = `${i + 1}. [${s.id}] ${s.title}`;

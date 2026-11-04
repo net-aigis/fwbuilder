@@ -836,6 +836,11 @@ export function fetchLayoutFidelity(platform: string, hostOs = "") {
     fields?: Record<string, number>;
     pages?: Record<string, unknown>;
     chrome?: Record<string, boolean>;
+    signal_keys?: {
+      fields?: string[];
+      pages?: string[];
+      chrome?: string[];
+    };
     stack_switch?: Array<{
       stack: string;
       option: string;
@@ -1026,12 +1031,15 @@ export async function refuseExpectInstallStep(
 export function fetchSshAuth() {
   return api<{
     batch_mode: boolean;
+    batch_mode_only?: boolean;
     password_supported: boolean;
     keyboard_interactive_supported: boolean;
     identity_file_supported?: boolean;
     ssh_agent_supported?: boolean;
     implemented?: string[];
     not_implemented?: string[];
+    alternatives?: string[];
+    refusal_paths?: Record<string, number>;
     note: string;
   }>("/api/v1/ssh-auth");
 }

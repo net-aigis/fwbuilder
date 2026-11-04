@@ -228,12 +228,16 @@ def get_ssh_auth(_: str = Depends(require_token)) -> dict[str, Any]:
 @router.post("/ssh-auth/password")
 def refuse_password_ssh(_: str = Depends(require_token)) -> dict[str, Any]:
     """Explicit refusal endpoint for password/keyboard-interactive SSH."""
+    caps = ssh_auth_capabilities()
     raise HTTPException(
         status_code=501,
         detail={
             "ok": False,
             "error": "password_auth_not_implemented",
-            "ssh_auth": ssh_auth_capabilities(),
+            "batch_mode_only": True,
+            "alternatives": caps.get("alternatives"),
+            "refusal_paths": caps.get("refusal_paths"),
+            "ssh_auth": caps,
             "note": (
                 "Password and keyboard-interactive SSH are not implemented. "
                 "Use BatchMode key/agent auth only."

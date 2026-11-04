@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "488"
+WEBUI_SOFT_COMPLETE_PHASE = "496"
 
 HARD_GAPS_OPEN = (
     "full_qt_pixel_layout",
@@ -57,7 +57,8 @@ HARD_GAP_NOTES = {
         "expect_plan_step_ids on /hard-gaps."
     ),
     "password_keyboard_interactive_ssh": (
-        "BatchMode only; allow_password_auth → 400; POST /ssh-auth/password → 501."
+        "BatchMode only (batch_mode_only); allow_password_auth → 400; "
+        "POST /ssh-auth/password → 501 with alternatives/refusal_paths."
     ),
 }
 

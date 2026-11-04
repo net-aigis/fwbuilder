@@ -432,6 +432,7 @@ def _layout_fidelity_from_dialog(stem: str, info: dict[str, Any]) -> dict[str, A
         "with_alignment": sum(1 for v in fields.values() if v.get("alignment")),
         "with_external_label": sum(1 for v in fields.values() if v.get("external_label")),
         "with_enabled": sum(1 for v in fields.values() if "enabled" in v),
+        "with_visible": sum(1 for v in fields.values() if "visible" in v),
         "with_read_only": sum(1 for v in fields.values() if "read_only" in v),
     }
     stacked_secs = [
@@ -440,6 +441,7 @@ def _layout_fidelity_from_dialog(stem: str, info: dict[str, Any]) -> dict[str, A
         for s in (p.get("sections") or [])
         if s.get("stacked")
     ]
+    all_secs = [s for p in pages for s in (p.get("sections") or [])]
     page_stats = {
         "pages": len(pages),
         "spacers": sum(len(p.get("spacers") or []) for p in pages),
@@ -453,6 +455,9 @@ def _layout_fidelity_from_dialog(stem: str, info: dict[str, Any]) -> dict[str, A
         "pages_with_row_stretch": sum(1 for p in pages if p.get("row_stretch")),
         "pages_with_spacing": sum(1 for p in pages if p.get("spacing")),
         "pages_with_layout_tree": sum(1 for p in pages if p.get("layout_tree")),
+        "sections": len(all_secs),
+        "sections_with_flat": sum(1 for s in all_secs if "flat" in s),
+        "sections_with_checkable": sum(1 for s in all_secs if "checkable" in s),
         "stacked_sections": len(stacked_secs),
         "empty_stacked_sections": sum(1 for s in stacked_secs if s.get("empty")),
         "stack_names": sorted({s.get("stack") for s in stacked_secs if s.get("stack")}),
@@ -467,14 +472,22 @@ def _layout_fidelity_from_dialog(stem: str, info: dict[str, Any]) -> dict[str, A
         field_stats["with_grid"] / n,
         field_stats["with_label"] / n,
         field_stats["with_size_policy"] / n,
+        field_stats["with_visible"] / n,
         min(page_stats["spacers_with_size_hint"], n) / n if page_stats["spacers"] else 0.0,
         1.0 if chrome["geometry"] else 0.0,
         1.0 if page_stats["pages_with_spacing"] else 0.0,
         1.0 if page_stats["pages_with_layout_tree"] else 0.0,
         # Presence of QStackedWidget extraction (not desktop pixel switch behavior).
         1.0 if page_stats["stacked_sections"] else 0.0,
+        1.0 if page_stats["buddy_labels"] else 0.0,
+        1.0 if page_stats["sections_with_flat"] or page_stats["sections_with_checkable"] else 0.0,
     ]
     score = round(100.0 * (sum(score_parts) / len(score_parts)), 1)
+    signal_keys = {
+        "fields": sorted(field_stats.keys()),
+        "pages": sorted(page_stats.keys()),
+        "chrome": sorted(chrome.keys()),
+    }
     return {
         "ok": True,
         "dialog": stem,
@@ -482,11 +495,13 @@ def _layout_fidelity_from_dialog(stem: str, info: dict[str, Any]) -> dict[str, A
         "score_percent": score,
         "note": (
             "Heuristic coverage of extracted .ui layout signals. "
-            "score_percent is not pixel-perfect Qt parity."
+            "score_percent is not pixel-perfect Qt parity. "
+            "signal_keys lists counted field/page/chrome signals."
         ),
         "fields": field_stats,
         "pages": page_stats,
         "chrome": chrome,
+        "signal_keys": signal_keys,
     }
 
 

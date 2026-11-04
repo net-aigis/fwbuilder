@@ -175,12 +175,18 @@ def ssh_auth_capabilities() -> dict[str, Any]:
     """Honest SSH auth capability summary for WebUI deploy."""
     return {
         "batch_mode": True,
+        "batch_mode_only": True,
         "password_supported": False,
         "keyboard_interactive_supported": False,
         "identity_file_supported": True,
         "ssh_agent_supported": True,
         "implemented": ["batch_mode", "identity_file", "ssh_agent"],
         "not_implemented": ["password", "keyboard_interactive"],
+        "alternatives": ["identity_file", "ssh_agent"],
+        "refusal_paths": {
+            "deploy_allow_password_auth": 400,
+            "ssh_auth_password": 501,
+        },
         "note": SSH_AUTH_NOTE,
     }
 
