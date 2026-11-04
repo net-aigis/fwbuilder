@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "1800"
+WEBUI_SOFT_COMPLETE_PHASE = "1816"
 # Honesty/preview track milestone (last thematic checkpoint; soft marker may be higher).
 # 600: refusals/closure; 650: health/summary/paths + fidelity sample;
 # 700: expect step_notes + SSH alternative/refusal notes;
@@ -99,11 +99,12 @@ WEBUI_SOFT_COMPLETE_PHASE = "1800"
 # 3550: surface_version listed in honesty export + bundle sections;
 # 3600: soft_fertig_catalog_summary compact counts on health + honesty endpoints;
 # 3650: UI expandable catalog summary detail + download/copy;
-# 3700: catalog_summary listed in honesty export + bundle sections.
-WEBUI_HONESTY_MILESTONE = 3700
+# 3700: catalog_summary listed in honesty export + bundle sections;
+# 3750: soft_fertig_honesty_surface_version bumped to 1.1 (catalog_summary).
+WEBUI_HONESTY_MILESTONE = 3750
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 3700: catalog_summary is listed in "
-    "honesty export and bundle sections — hard gaps remain open."
+    "Honesty surface checkpoint 3750: soft_fertig_honesty_surface_version "
+    "1.1 adds catalog_summary on /health and honesty catalogs — hard gaps remain open."
 )
 
 HARD_GAPS_OPEN = (
@@ -352,10 +353,10 @@ SOFT_FERTIG_SESSION_STORAGE_CLEAR_NOTE = (
 )
 
 # Soft-fertig honesty/preview catalog schema version (documentation; not a lock).
-SOFT_FERTIG_HONESTY_SURFACE_VERSION = "1.0"
+SOFT_FERTIG_HONESTY_SURFACE_VERSION = "1.1"
 SOFT_FERTIG_HONESTY_SURFACE_VERSION_NOTE = (
-    "Schema 1.0: surface keys + sessionStorage catalogs + honesty exports/"
-    "bundle sections + clear keys; hard gaps remain open."
+    "Schema 1.1: schema 1.0 plus soft_fertig_catalog_summary on /health "
+    "and honesty endpoints (+ export/bundle); hard gaps remain open."
 )
 
 # Downloadable honesty/preview JSON catalogs the UI can export (documentation).
