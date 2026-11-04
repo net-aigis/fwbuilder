@@ -246,6 +246,7 @@ export function FirewallExtras({
   const [hardGapsOpenLabels, setHardGapsOpenLabels] = useState<Record<string, string> | null>(null);
   const [hardGapsClosureTitles, setHardGapsClosureTitles] = useState<Record<string, string> | null>(null);
   const [hardGapRelatedRefusalTitles, setHardGapRelatedRefusalTitles] = useState<Record<string, string> | null>(null);
+  const [relatedRefusalsDetail, setRelatedRefusalsDetail] = useState<string | null>(null);
   const [expectPlanStepTitles, setExpectPlanStepTitles] = useState<Record<string, string> | null>(null);
   const [sshAlternativeTitles, setSshAlternativeTitles] = useState<Record<string, string> | null>(null);
   const [honestyPathTitles, setHonestyPathTitles] = useState<Record<string, string> | null>(null);
@@ -391,6 +392,38 @@ export function FirewallExtras({
           ? (gaps.hard_gap_related_refusal_titles as Record<string, string>)
           : null,
       );
+      {
+        const refs =
+          gaps?.hard_gap_related_refusals &&
+          typeof gaps.hard_gap_related_refusals === "object"
+            ? (gaps.hard_gap_related_refusals as Record<string, Record<string, unknown>>)
+            : null;
+        const titles =
+          gaps?.hard_gap_related_refusal_titles &&
+          typeof gaps.hard_gap_related_refusal_titles === "object"
+            ? (gaps.hard_gap_related_refusal_titles as Record<string, string>)
+            : {};
+        if (refs && Object.keys(refs).length) {
+          setRelatedRefusalsDetail(
+            Object.entries(refs)
+              .map(([k, v]) => {
+                const title = titles[k];
+                const note = typeof v?.note === "string" ? v.note : "";
+                const bits = Object.entries(v)
+                  .filter(([ik]) => ik !== "note")
+                  .map(([ik, iv]) => `${ik}=${String(iv)}`)
+                  .join(", ");
+                let line = title ? `${k} (${title})` : k;
+                if (bits) line += `: ${bits}`;
+                if (note) line += ` — ${note}`;
+                return line;
+              })
+              .join("\n"),
+          );
+        } else {
+          setRelatedRefusalsDetail(null);
+        }
+      }
       setExpectPlanStepTitles(
         gaps?.expect_plan_step_titles && typeof gaps.expect_plan_step_titles === "object"
           ? (gaps.expect_plan_step_titles as Record<string, string>)
@@ -2413,6 +2446,19 @@ export function FirewallExtras({
               </summary>
               <pre className="deploy-log configlet-preview" tabIndex={0}>
                 {softFertigSurfaceDetail}
+              </pre>
+            </details>
+          ) : null}
+          {relatedRefusalsDetail ? (
+            <details className="muted">
+              <summary>
+                Related hard-gap refusals
+                {hardGapRelatedRefusalTitles
+                  ? ` (${Object.keys(hardGapRelatedRefusalTitles).length})`
+                  : ""}
+              </summary>
+              <pre className="deploy-log configlet-preview" tabIndex={0}>
+                {relatedRefusalsDetail}
               </pre>
             </details>
           ) : null}
