@@ -388,6 +388,7 @@ export function FirewallExtras({
   const [softFertigHonestyTrack, setSoftFertigHonestyTrack] = useState<boolean | null>(null);
   const [softFertigHonestyTrackNote, setSoftFertigHonestyTrackNote] = useState<string | null>(null);
   const [trackNoteDetail, setTrackNoteDetail] = useState<string | null>(null);
+  const [softCompleteNote, setSoftCompleteNote] = useState<string | null>(null);
   const [honestyPathsSummary, setHonestyPathsSummary] = useState<string | null>(null);
   const [honestyPathsDetail, setHonestyPathsDetail] = useState<string | null>(null);
   const [hardGapsSummaryPath, setHardGapsSummaryPath] = useState<string | null>(null);
@@ -829,6 +830,11 @@ export function FirewallExtras({
       setTrackNoteDetail(
         typeof gaps?.soft_fertig_honesty_track_note === "string"
           ? gaps.soft_fertig_honesty_track_note
+          : null,
+      );
+      setSoftCompleteNote(
+        typeof gaps?.soft_fertig_soft_complete_note === "string"
+          ? gaps.soft_fertig_soft_complete_note
           : null,
       );
       if (gaps?.honesty_paths && Object.keys(gaps.honesty_paths).length) {
@@ -2728,9 +2734,15 @@ export function FirewallExtras({
               </span>
             ) : null}
             {softFertigHonestyTrack != null ? (
-              <span title={softFertigHonestyTrackNote || undefined}>
+              <span title={softFertigHonestyTrackNote || softCompleteNote || undefined}>
                 {" "}
                 · soft-fertig track <code>{softFertigHonestyTrack ? "yes" : "no"}</code>
+              </span>
+            ) : null}
+            {softCompleteNote ? (
+              <span className="muted" title={softCompleteNote}>
+                {" "}
+                · <em>{softCompleteNote.slice(0, 72)}{softCompleteNote.length > 72 ? "…" : ""}</em>
               </span>
             ) : null}
             {hardGapsClosurePath ? (
