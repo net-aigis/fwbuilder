@@ -408,6 +408,9 @@ export function FirewallExtras({
   const [honestySurfaceChangelogDetail, setHonestySurfaceChangelogDetail] = useState<
     string | null
   >(null);
+  const [honestyOperatorBriefDetail, setHonestyOperatorBriefDetail] = useState<
+    string | null
+  >(null);
   const [honestyPathsSummary, setHonestyPathsSummary] = useState<string | null>(null);
   const [honestyPathsDetail, setHonestyPathsDetail] = useState<string | null>(null);
   const [hardGapsSummaryPath, setHardGapsSummaryPath] = useState<string | null>(null);
@@ -882,6 +885,22 @@ export function FirewallExtras({
         } else {
           setHonestySurfaceChangelogDetail(null);
         }
+      }
+      {
+        const brief =
+          gaps?.soft_fertig_honesty_operator_brief &&
+          typeof gaps.soft_fertig_honesty_operator_brief === "object"
+            ? (gaps.soft_fertig_honesty_operator_brief as Record<string, unknown>)
+            : null;
+        setHonestyOperatorBriefDetail(
+          brief && Object.keys(brief).length
+            ? Object.entries(brief)
+                .map(([k, v]) =>
+                  `${k}: ${Array.isArray(v) ? v.join(", ") : String(v)}`,
+                )
+                .join("\n")
+            : null,
+        );
       }
       if (gaps?.honesty_paths && Object.keys(gaps.honesty_paths).length) {
         const entries = Object.entries(gaps.honesty_paths);
@@ -3113,6 +3132,14 @@ export function FirewallExtras({
               </pre>
             </details>
           ) : null}
+          {honestyOperatorBriefDetail ? (
+            <details className="muted">
+              <summary>Soft-fertig honesty operator brief</summary>
+              <pre className="deploy-log configlet-preview" tabIndex={0}>
+                {honestyOperatorBriefDetail}
+              </pre>
+            </details>
+          ) : null}
           <div className="btn-row pad-tight">
             {hardGapsPayload ? (
               <button
@@ -4053,6 +4080,62 @@ export function FirewallExtras({
                 Copy surface changelog
               </button>
             ) : null}
+            {hardGapsPayload ? (
+              <button
+                type="button"
+                className="ghost"
+                disabled={busy}
+                title="Download soft_fertig_honesty_operator_brief from /hard-gaps"
+                onClick={() => {
+                  const catalog: Record<string, unknown> = {
+                    soft_fertig_honesty_operator_brief:
+                      hardGapsPayload.soft_fertig_honesty_operator_brief,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  const text = JSON.stringify(catalog, null, 2);
+                  const blob = new Blob([text + "\n"], {
+                    type: "application/json;charset=utf-8",
+                  });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `fwbweb-honesty-operator-brief-${firewallId || "fw"}.json`;
+                  a.click();
+                  URL.revokeObjectURL(url);
+                  onStatus?.("Downloaded honesty operator brief");
+                }}
+              >
+                Download operator brief
+              </button>
+            ) : null}
+            {hardGapsPayload ? (
+              <button
+                type="button"
+                className="ghost"
+                disabled={busy}
+                title="Copy soft_fertig_honesty_operator_brief to clipboard"
+                onClick={() => {
+                  void (async () => {
+                    const catalog: Record<string, unknown> = {
+                      soft_fertig_honesty_operator_brief:
+                        hardGapsPayload.soft_fertig_honesty_operator_brief,
+                      soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                      honesty_milestone: hardGapsPayload.honesty_milestone,
+                    };
+                    const text = JSON.stringify(catalog, null, 2) + "\n";
+                    try {
+                      await navigator.clipboard.writeText(text);
+                      onStatus?.("Copied honesty operator brief");
+                    } catch (e) {
+                      onError?.(e instanceof Error ? e.message : String(e));
+                    }
+                  })();
+                }}
+              >
+                Copy operator brief
+              </button>
+            ) : null}
             <button
               type="button"
               className="ghost"
@@ -4335,6 +4418,7 @@ export function FirewallExtras({
                 setSoftCompleteNote(null);
                 setSoftCompleteNoteDetail(null);
                 setHonestySurfaceChangelogDetail(null);
+                setHonestyOperatorBriefDetail(null);
                 onStatus?.("Cleared honesty catalogs");
               }}
             >
