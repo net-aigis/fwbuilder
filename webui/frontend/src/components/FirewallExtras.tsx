@@ -2534,6 +2534,82 @@ export function FirewallExtras({
                 Copy hard-gaps JSON
               </button>
             ) : null}
+            {hardGapsPayload ? (
+              <button
+                type="button"
+                className="ghost"
+                disabled={busy}
+                title="Download soft_fertig_surface_* catalog subset from /hard-gaps"
+                onClick={() => {
+                  const keys = Array.isArray(hardGapsPayload.soft_fertig_surface_keys)
+                    ? (hardGapsPayload.soft_fertig_surface_keys as string[])
+                    : [];
+                  const catalog: Record<string, unknown> = {
+                    soft_fertig_surface_keys: keys,
+                    soft_fertig_surface_key_count:
+                      hardGapsPayload.soft_fertig_surface_key_count,
+                    soft_fertig_surface_key_titles:
+                      hardGapsPayload.soft_fertig_surface_key_titles,
+                    soft_fertig_surface_notes:
+                      hardGapsPayload.soft_fertig_surface_notes,
+                    soft_fertig_surface_notes_count:
+                      hardGapsPayload.soft_fertig_surface_notes_count,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  const text = JSON.stringify(catalog, null, 2);
+                  const blob = new Blob([text + "\n"], {
+                    type: "application/json;charset=utf-8",
+                  });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `fwbweb-soft-fertig-surface-${firewallId || "fw"}.json`;
+                  a.click();
+                  URL.revokeObjectURL(url);
+                  onStatus?.("Downloaded soft-fertig surface catalog");
+                }}
+              >
+                Download soft-fertig surface
+              </button>
+            ) : null}
+            {hardGapsPayload ? (
+              <button
+                type="button"
+                className="ghost"
+                disabled={busy}
+                title="Copy soft_fertig_surface_* catalog subset to clipboard"
+                onClick={() => {
+                  void (async () => {
+                    const keys = Array.isArray(hardGapsPayload.soft_fertig_surface_keys)
+                      ? (hardGapsPayload.soft_fertig_surface_keys as string[])
+                      : [];
+                    const catalog: Record<string, unknown> = {
+                      soft_fertig_surface_keys: keys,
+                      soft_fertig_surface_key_count:
+                        hardGapsPayload.soft_fertig_surface_key_count,
+                      soft_fertig_surface_key_titles:
+                        hardGapsPayload.soft_fertig_surface_key_titles,
+                      soft_fertig_surface_notes:
+                        hardGapsPayload.soft_fertig_surface_notes,
+                      soft_fertig_surface_notes_count:
+                        hardGapsPayload.soft_fertig_surface_notes_count,
+                      soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                      honesty_milestone: hardGapsPayload.honesty_milestone,
+                    };
+                    const text = JSON.stringify(catalog, null, 2) + "\n";
+                    try {
+                      await navigator.clipboard.writeText(text);
+                      onStatus?.("Copied soft-fertig surface catalog");
+                    } catch (e) {
+                      onError?.(e instanceof Error ? e.message : String(e));
+                    }
+                  })();
+                }}
+              >
+                Copy soft-fertig surface
+              </button>
+            ) : null}
             <button
               type="button"
               className="ghost"
