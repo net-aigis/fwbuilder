@@ -180,6 +180,10 @@ function hardGapRosterStorageKey(firewallId: string) {
   return `fwbweb.hardGapRoster.${firewallId}`;
 }
 
+function hardGapRefusalRosterStorageKey(firewallId: string) {
+  return `fwbweb.hardGapRefusalRoster.${firewallId}`;
+}
+
 function buildHonestyBundle(payload: Record<string, unknown>) {
   const surfaceKeys = Array.isArray(payload.soft_fertig_surface_keys)
     ? (payload.soft_fertig_surface_keys as string[])
@@ -1465,6 +1469,45 @@ export function FirewallExtras({
             }
           } catch {
             setHardGapRosterDetail(hardGapRosterRaw);
+          }
+        }
+        const hardGapRefusalRosterRaw = sessionStorage.getItem(
+          hardGapRefusalRosterStorageKey(firewallId),
+        );
+        if (hardGapRefusalRosterRaw) {
+          try {
+            const parsed = JSON.parse(hardGapRefusalRosterRaw) as {
+              soft_fertig_hard_gap_refusal_roster?: unknown;
+            };
+            const roster = parsed.soft_fertig_hard_gap_refusal_roster;
+            if (roster && typeof roster === "object") {
+              const rec = roster as Record<string, unknown>;
+              const entries = Array.isArray(rec.entries)
+                ? (rec.entries as Array<Record<string, unknown>>)
+                : [];
+              setHardGapRefusalRosterDetail(
+                [
+                  `hard_gap_count: ${String(rec.hard_gap_count ?? "")}`,
+                  `entry_count: ${String(rec.entry_count ?? "")}`,
+                  `hard_gaps_remain: ${String(rec.hard_gaps_remain ?? "")}`,
+                  `note: ${String(rec.note ?? "")}`,
+                  ...entries.map((e) => {
+                    const keys = Array.isArray(e.refusal_keys)
+                      ? (e.refusal_keys as unknown[]).map(String).join(", ")
+                      : "";
+                    return (
+                      `${String(e.id ?? "")}: ${String(e.label ?? "")} — ` +
+                      `${String(e.refusal_title ?? "")} [${keys}]` +
+                      (e.note ? ` (${String(e.note)})` : "")
+                    );
+                  }),
+                ].join("\n"),
+              );
+            } else {
+              setHardGapRefusalRosterDetail(hardGapRefusalRosterRaw);
+            }
+          } catch {
+            setHardGapRefusalRosterDetail(hardGapRefusalRosterRaw);
           }
         }
       } catch {
@@ -4389,6 +4432,14 @@ export function FirewallExtras({
                     honesty_milestone: hardGapsPayload.honesty_milestone,
                   };
                   const text = JSON.stringify(catalog, null, 2);
+                  try {
+                    sessionStorage.setItem(
+                      hardGapRefusalRosterStorageKey(firewallId),
+                      text,
+                    );
+                  } catch {
+                    /* ignore */
+                  }
                   const blob = new Blob([text + "\n"], {
                     type: "application/json;charset=utf-8",
                   });
@@ -4418,6 +4469,14 @@ export function FirewallExtras({
                       soft_complete_phase: hardGapsPayload.soft_complete_phase,
                       honesty_milestone: hardGapsPayload.honesty_milestone,
                     };
+                    try {
+                      sessionStorage.setItem(
+                        hardGapRefusalRosterStorageKey(firewallId),
+                        JSON.stringify(catalog, null, 2),
+                      );
+                    } catch {
+                      /* ignore */
+                    }
                     const text = JSON.stringify(catalog, null, 2) + "\n";
                     try {
                       await navigator.clipboard.writeText(text);
@@ -4689,7 +4748,7 @@ export function FirewallExtras({
               type="button"
               className="ghost"
               disabled={busy || (!hardGapsPayload && !hardGapsSummaryText)}
-              title="Clear sessionStorage hard-gaps snapshot, summary, surface, refusals, honesty paths, track note, readiness, soft-complete note, surface changelog, operator brief, hard-gap roster"
+              title="Clear sessionStorage hard-gaps snapshot, summary, surface, refusals, honesty paths, track note, readiness, soft-complete note, surface changelog, operator brief, hard-gap roster, hard-gap refusal roster"
               onClick={() => {
                 try {
                   sessionStorage.removeItem(hardGapsSnapshotKey(firewallId));
@@ -4704,6 +4763,7 @@ export function FirewallExtras({
                   sessionStorage.removeItem(honestySurfaceChangelogStorageKey(firewallId));
                   sessionStorage.removeItem(honestyOperatorBriefStorageKey(firewallId));
                   sessionStorage.removeItem(hardGapRosterStorageKey(firewallId));
+                  sessionStorage.removeItem(hardGapRefusalRosterStorageKey(firewallId));
                 } catch {
                   /* ignore */
                 }
