@@ -271,6 +271,7 @@ export function FirewallExtras({
   const [softFertigSurfaceNotesCount, setSoftFertigSurfaceNotesCount] = useState<number | null>(null);
   const [sessionStorageKeyCount, setSessionStorageKeyCount] = useState<number | null>(null);
   const [sessionStorageKeyTitles, setSessionStorageKeyTitles] = useState<Record<string, string> | null>(null);
+  const [sessionStorageKeysDetail, setSessionStorageKeysDetail] = useState<string | null>(null);
   const [honestyMilestoneNote, setHonestyMilestoneNote] = useState<string | null>(null);
   const [softFertigHonestyTrack, setSoftFertigHonestyTrack] = useState<boolean | null>(null);
   const [honestyPathsSummary, setHonestyPathsSummary] = useState<string | null>(null);
@@ -508,6 +509,30 @@ export function FirewallExtras({
           ? (gaps.soft_fertig_session_storage_key_titles as Record<string, string>)
           : null,
       );
+      {
+        const keys =
+          gaps?.soft_fertig_session_storage_keys &&
+          typeof gaps.soft_fertig_session_storage_keys === "object"
+            ? (gaps.soft_fertig_session_storage_keys as Record<string, string>)
+            : null;
+        const titles =
+          gaps?.soft_fertig_session_storage_key_titles &&
+          typeof gaps.soft_fertig_session_storage_key_titles === "object"
+            ? (gaps.soft_fertig_session_storage_key_titles as Record<string, string>)
+            : {};
+        setSessionStorageKeysDetail(
+          keys && Object.keys(keys).length
+            ? Object.entries(keys)
+                .map(([k, prefix]) => {
+                  const title = titles[k];
+                  return title
+                    ? `${k} (${title}): ${prefix}<firewallId>`
+                    : `${k}: ${prefix}<firewallId>`;
+                })
+                .join("\n")
+            : null,
+        );
+      }
         setSoftFertigSurfaceDetail(
           keys && keys.length
             ? keys
@@ -2522,6 +2547,17 @@ export function FirewallExtras({
               </summary>
               <pre className="deploy-log configlet-preview" tabIndex={0}>
                 {relatedRefusalsDetail}
+              </pre>
+            </details>
+          ) : null}
+          {sessionStorageKeysDetail ? (
+            <details className="muted">
+              <summary>
+                Soft-fertig sessionStorage keys
+                {sessionStorageKeyCount != null ? ` (${sessionStorageKeyCount})` : ""}
+              </summary>
+              <pre className="deploy-log configlet-preview" tabIndex={0}>
+                {sessionStorageKeysDetail}
               </pre>
             </details>
           ) : null}
