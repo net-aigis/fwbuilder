@@ -484,6 +484,7 @@ export type OptionFieldMeta = {
   label?: string;
   tooltip?: string;
   whats_this?: string;
+  read_only?: boolean;
   widget?: string;
   widget_class?: string;
   grid?: { row?: number; column?: number; rowspan?: number; colspan?: number };
@@ -880,6 +881,8 @@ export function fetchHardGaps() {
     closure_path?: string;
     layout_fidelity_path?: string;
     stack_switch_path?: string;
+    expect_run_path?: string;
+    password_ssh_path?: string;
     note?: string;
   }>("/api/v1/hard-gaps");
 }

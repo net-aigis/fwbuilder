@@ -185,6 +185,9 @@ export function FirewallExtras({
   const [hardGapClosure, setHardGapClosure] = useState<Record<string, string>>({});
   const [layoutFidelityPath, setLayoutFidelityPath] = useState<string | null>(null);
   const [stackSwitchPath, setStackSwitchPath] = useState<string | null>(null);
+  const [expectRunPath, setExpectRunPath] = useState<string | null>(null);
+  const [passwordSshPath, setPasswordSshPath] = useState<string | null>(null);
+  const [softCompletePhase, setSoftCompletePhase] = useState<string | null>(null);
   const [stackSwitchSummary, setStackSwitchSummary] = useState<string | null>(null);
   const [layoutFidelity, setLayoutFidelity] = useState<string | null>(null);
   const [resHint, setResHint] = useState<string | null>(null);
@@ -217,6 +220,9 @@ export function FirewallExtras({
       setHardGapClosure(gaps?.hard_gap_closure || {});
       setLayoutFidelityPath(gaps?.layout_fidelity_path || "/api/v1/layout-fidelity");
       setStackSwitchPath(gaps?.stack_switch_path || "/api/v1/stack-switch");
+      setExpectRunPath(gaps?.expect_run_path || "/api/v1/expect-install-plan/run");
+      setPasswordSshPath(gaps?.password_ssh_path || "/api/v1/ssh-auth/password");
+      setSoftCompletePhase(gaps?.soft_complete_phase || resSt?.soft_complete_phase || null);
       try {
         const fid = await fetchLayoutFidelity(plat, hostOs || "");
         if (fid.ok && fid.score_percent != null) {
@@ -1538,6 +1544,12 @@ export function FirewallExtras({
         <div className="pad-tight">
           <p className="muted" title="hard_gap_open from /hard-gaps">
             Hard gaps still open: <code>{hardGaps.join(", ")}</code>
+            {softCompletePhase ? (
+              <>
+                {" "}
+                · soft-complete phase<code>{softCompletePhase}</code>
+              </>
+            ) : null}
           </p>
           {hardGapsNote ? <p className="muted">{hardGapsNote}</p> : null}
           {Object.keys(hardGapNotes).length ? (
@@ -1554,7 +1566,7 @@ export function FirewallExtras({
               )}
             </ul>
           ) : null}
-          {layoutFidelityPath || stackSwitchPath ? (
+          {layoutFidelityPath || stackSwitchPath || expectRunPath || passwordSshPath ? (
             <p className="muted">
               {layoutFidelityPath ? (
                 <>
@@ -1565,6 +1577,18 @@ export function FirewallExtras({
               {stackSwitchPath ? (
                 <>
                   Stack switch: <code>{stackSwitchPath}</code>
+                </>
+              ) : null}
+              {(layoutFidelityPath || stackSwitchPath) && expectRunPath ? " · " : null}
+              {expectRunPath ? (
+                <>
+                  Expect run (501): <code>{expectRunPath}</code>
+                </>
+              ) : null}
+              {expectRunPath && passwordSshPath ? " · " : null}
+              {passwordSshPath ? (
+                <>
+                  Password SSH (501): <code>{passwordSshPath}</code>
                 </>
               ) : null}
             </p>

@@ -362,6 +362,7 @@ def _layout_fidelity_from_dialog(stem: str, info: dict[str, Any]) -> dict[str, A
         "with_alignment": sum(1 for v in fields.values() if v.get("alignment")),
         "with_external_label": sum(1 for v in fields.values() if v.get("external_label")),
         "with_enabled": sum(1 for v in fields.values() if "enabled" in v),
+        "with_read_only": sum(1 for v in fields.values() if "read_only" in v),
     }
     stacked_secs = [
         s
@@ -537,6 +538,7 @@ def _infer_type(key: str, value: str, meta: dict[str, Any] | None) -> dict[str, 
             "external_label",
             "enabled",
             "visible",
+            "read_only",
         ):
             if flag in meta and meta.get(flag) is not None:
                 out[flag] = meta.get(flag)

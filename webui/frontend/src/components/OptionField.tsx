@@ -17,6 +17,7 @@ type FieldMeta = {
   external_label?: boolean;
   enabled?: boolean;
   visible?: boolean;
+  read_only?: boolean;
 };
 
 type Props = {
@@ -61,7 +62,7 @@ function sizePolicyClass(meta?: FieldMeta): string {
 export function OptionField({ name, value, meta, disabled, onChange }: Props) {
   const type = meta?.type || "string";
   const external = Boolean(meta?.external_label);
-  const uiDisabled = Boolean(disabled || meta?.enabled === false);
+  const uiDisabled = Boolean(disabled || meta?.enabled === false || meta?.read_only);
   // When .ui puts caption in a separate buddy QLabel cell, avoid duplicating it on the control.
   const label = external ? "" : (meta?.label || "").trim() || name;
   const showKeyHint = Boolean(

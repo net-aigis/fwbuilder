@@ -3638,6 +3638,7 @@
           "minimum_size": {
             "width": 250
           },
+          "read_only": true,
           "size_policy": {
             "horizontal": "Fixed",
             "vertical": "Fixed"
@@ -3657,6 +3658,7 @@
           "minimum_size": {
             "width": 250
           },
+          "read_only": true,
           "size_policy": {
             "horizontal": "Fixed",
             "vertical": "Fixed"
@@ -3774,6 +3776,7 @@
           "minimum_size": {
             "width": 250
           },
+          "read_only": true,
           "size_policy": {
             "horizontal": "Fixed",
             "vertical": "Fixed"
@@ -3974,6 +3977,7 @@
             "height": 22,
             "width": 32767
           },
+          "read_only": true,
           "type": "string",
           "widget": "outputFileName",
           "widget_class": "QLineEdit"
