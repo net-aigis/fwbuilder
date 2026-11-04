@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "976"
+WEBUI_SOFT_COMPLETE_PHASE = "984"
 # Honesty/preview track milestone (last thematic checkpoint; soft marker may be higher).
 # 600: refusals/closure; 650: health/summary/paths + fidelity sample;
 # 700: expect step_notes + SSH alternative/refusal notes;
@@ -80,7 +80,7 @@ HARD_GAP_NOTES = {
         "with_grid/label/tooltip field samples + pages/sections/stack_names counts + "
         "chrome window_title/tab_position samples; UI truncates long sample "
         "fidelity lines (title keeps full text); with_size_policy total sample + "
-        "layout_fidelity_sample_key_count + with_visible field sample + spacers_with_size_hint sample; "
+        "layout_fidelity_sample_key_count + with_visible field sample + spacers_with_size_hint sample + signal_key_count sample; "
         "UI applies data-size-type Expanding/Fixed/Maximum/Minimum/Preferred via "
         "qtSpacerStyle/CSS and field size-h/v Expanding/Minimum/Preferred/Fixed classes "
         "(still not desktop-equivalent geometry); visible=false keeps field-ui-hidden "
@@ -125,6 +125,20 @@ def _layout_fidelity_sample_key_count(payload: dict[str, object]) -> int:
         for k in payload
         if k.startswith("layout_fidelity_sample_")
         and k != "layout_fidelity_sample_key_count"
+    )
+
+
+def _layout_fidelity_signal_key_count(sample_fid: dict[str, object]) -> int | None:
+    """Total extracted signal keys (fields + pages + chrome) for a fidelity payload."""
+    if not sample_fid.get("ok"):
+        return None
+    sk = sample_fid.get("signal_keys") or {}
+    if not isinstance(sk, dict):
+        return None
+    return (
+        len(sk.get("fields") or [])
+        + len(sk.get("pages") or [])
+        + len(sk.get("chrome") or [])
     )
 
 
@@ -377,6 +391,9 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
             if sample_fid.get("ok")
             else None
         ),
+        "layout_fidelity_sample_signal_key_count": _layout_fidelity_signal_key_count(
+            sample_fid
+        ),
         "layout_fidelity_pixel_parity": False,
         "stack_switch_path": honesty_paths["stack_switch"],
         "option_enable_path": honesty_paths["option_enable"],
@@ -607,6 +624,9 @@ def hard_gaps_summary(_: str = Depends(require_token)) -> dict[str, object]:
             (sample_fid.get("chrome") or {}).get("tab_position")
             if sample_fid.get("ok")
             else None
+        ),
+        "layout_fidelity_sample_signal_key_count": _layout_fidelity_signal_key_count(
+            sample_fid
         ),
         "layout_fidelity_pixel_parity": False,
         "parent_path": "/api/v1/hard-gaps",
