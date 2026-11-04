@@ -968,6 +968,7 @@ export function fetchHardGaps() {
     layout_fidelity_sample_with_size_policy_expanding?: number | null;
     layout_fidelity_sample_with_size_policy_fixed?: number | null;
     layout_fidelity_sample_with_size_policy_minimum?: number | null;
+    layout_fidelity_sample_with_size_policy_preferred?: number | null;
     layout_fidelity_sample_with_minimum_size?: number | null;
     layout_fidelity_sample_with_maximum_size?: number | null;
     layout_fidelity_sample_layout_tree_max_depth?: number | null;
@@ -997,6 +998,7 @@ export function fetchHardGapsSummary() {
     layout_fidelity_sample_with_size_policy_expanding?: number | null;
     layout_fidelity_sample_with_size_policy_fixed?: number | null;
     layout_fidelity_sample_with_size_policy_minimum?: number | null;
+    layout_fidelity_sample_with_size_policy_preferred?: number | null;
     layout_fidelity_sample_with_minimum_size?: number | null;
     layout_fidelity_sample_with_maximum_size?: number | null;
     layout_fidelity_sample_layout_tree_max_depth?: number | null;
