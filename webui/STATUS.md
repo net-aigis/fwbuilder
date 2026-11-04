@@ -549,24 +549,32 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | STATUS tab tooltips 401–408 | done | E2E phase406 |
 | Typecheck after tab tooltips | done | E2E phase407 |
 | Soft-complete STATUS through 408 | done | E2E phase408 |
+| iface option_enable (bonding→xmit) | done | E2E phase409 |
+| InterfaceOptions option_enable UI | done | E2E phase410 |
+| Soft marker 416 | done | E2E phase411 |
+| STATUS option_enable 409–416 | done | E2E phase412 |
+| Typecheck after option_enable | done | E2E phase413 |
+| e2e-all lists 409–416 | done | E2E phase414 |
+| option_enable table present | done | E2E phase415 |
+| Soft-complete STATUS through 416 | done | E2E phase416 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Soft-complete (feature/webui polish track)
 
 WebUI on `feature/webui` remains soft-complete for the polish track.
 
-### Hard-gap honesty/preview track — soft-fertig (phase256); preview slices through 408
+### Hard-gap honesty/preview track — soft-fertig (phase256); preview slices through 416
 
-`WEBUI_SOFT_COMPLETE_PHASE=408`; `/hard-gaps` (+ `/hard-gaps/closure`) sets `soft_fertig_honesty_track: true` + `hard_gap_notes` + `hard_gap_closure` + `layout_fidelity_path` + `stack_switch_path` + `expect_run_path` + `password_ssh_path`; `GET /layout-fidelity` / option-schema + rule/iface schemas report heuristic `score_percent` (**not** pixel parity; includes `stacked_sections` / `with_whats_this` / `with_read_only` / `pages_with_tooltip`); `GET /stack-switch` exposes desktop stack maps; Firewall UI shows fidelity + refuse paths + soft-complete phase.
+`WEBUI_SOFT_COMPLETE_PHASE=416`; `/hard-gaps` (+ `/hard-gaps/closure`) sets `soft_fertig_honesty_track: true` + `hard_gap_notes` + `hard_gap_closure` + `layout_fidelity_path` + `stack_switch_path` + `expect_run_path` + `password_ssh_path`; `GET /layout-fidelity` / option-schema + rule/iface schemas report heuristic `score_percent` (**not** pixel parity; includes `stacked_sections` / `with_whats_this` / `with_read_only` / `pages_with_tooltip`); `GET /stack-switch` exposes desktop stack maps; iface `option_enable` follows bonding→xmit; Firewall UI shows fidelity + refuse paths + soft-complete phase.
 
 - Deploy: manifest `# files:`, OS configlets, external PolicyInstallScript, copyFWB, use_scp, gzip transfer on compress (plan shows −%), capabilities API (+ expect_install_plan / walkthrough pointers), live gate + force_limited, expect stub + raw/expanded configlet preview + ordered expect plan (reg_user + safety_net_acl + download + sessionStorage) + dry walkthrough (preview_only + simulated_at timeline, sessionStorage + download); `POST …/run` (+ optional `step=`) → 501 / step_refused (still **no** expect/SSHSession runtime)
-- Options: .ui labels, free QLabel annotations (+ alignment), buddy_labels (external_label controls), enabled/visible/readOnly respect, QRadio bool, QGroupBox sections (flat/checkable) + QStackedWidget pages (FirewallExtras + InterfaceOptions section chrome + empty pages + stack switcher + stack_switch hints: device-type preview / use_ULOG follow + `/stack-switch` API), tooltips + whatsThis + tab page toolTips, page-local QGridLayout + spacers (sizeHint) + column/row stretch + spacing/margins (CSS + page hint) + sizePolicy + min/max size + layout hints + layout_tree + dialog windowTitle/geometry/tab_position/sizeGrip (header WxH + tabs + CSS max-height) + shared `qtGridStyle` + layout-fidelity score on Firewall/Rule/Interface (still **not** full pixel Qt layout)
+- Options: .ui labels, free QLabel annotations (+ alignment), buddy_labels (external_label controls), enabled/visible/readOnly respect (+ option_enable follow for bonding→xmit_hash), QRadio bool, QGroupBox sections (flat/checkable) + QStackedWidget pages (FirewallExtras + InterfaceOptions section chrome + empty pages + stack switcher + stack_switch hints: device-type preview / use_ULOG follow + `/stack-switch` API), tooltips + whatsThis + tab page toolTips, page-local QGridLayout + spacers (sizeHint) + column/row stretch + spacing/margins (CSS + page hint) + sizePolicy + min/max size + layout hints + layout_tree + dialog windowTitle/geometry/tab_position/sizeGrip (header WxH + tabs + CSS max-height) + shared `qtGridStyle` + layout-fidelity score on Firewall/Rule/Interface (still **not** full pixel Qt layout)
 - SSH: BatchMode only; `GET /ssh-auth`, capabilities.ssh_auth, deploy plan line, `allow_password_auth` → 400, `POST /ssh-auth/password` → 501
 - Honesty: UI lists `hard_gap_open` + notes + closure criteria via `fetchHardGaps`; `GET /hard-gaps` documents remaining gaps; layout-fidelity score is coverage of extracted signals only
 
 Still open (hard backlog — **not** soft-fertig):
 
-- Full Qt AdvancedDialog **pixel** layout parity (exact geometry; dialog size + grid spacing since phase226/241; row/col + spacers/sizeHint + stretch + annotations/buddy_labels/alignment + sizePolicy/min/max/enabled/visible/readOnly + QGroupBox flat + QStackedWidget pages (Firewall+Interface chrome, empty pages, stack switcher, stack_switch hints, fidelity stacked_sections, `/stack-switch`) + whatsThis + tab page toolTips + layout_tree + tab_position/sizeGrip since phase165/177/181/189/205/209/213/257–291/345–408; fidelity score since 297; closure criteria since 329)
+- Full Qt AdvancedDialog **pixel** layout parity (exact geometry; dialog size + grid spacing since phase226/241; row/col + spacers/sizeHint + stretch + annotations/buddy_labels/alignment + sizePolicy/min/max/enabled/visible/readOnly + option_enable follow + QGroupBox flat + QStackedWidget pages (Firewall+Interface chrome, empty pages, stack switcher, stack_switch hints, fidelity stacked_sections, `/stack-switch`) + whatsThis + tab page toolTips + layout_tree + tab_position/sizeGrip since phase165/177/181/189/205/209/213/257–291/345–416; fidelity score since 297; closure criteria since 329)
 - Full desktop **FirewallInstaller** expect/SSHSession for Cisco/Juniper/Procurve (plan/preview/walkthrough+timeline/download; run/step endpoint refuses with 501)
 - Password/keyboard-interactive SSH (API refuses `allow_password_auth` and `POST /ssh-auth/password`; BatchMode only)
 
@@ -987,6 +995,14 @@ Still open (hard backlog — **not** soft-fertig):
 | Local E2E phase406 (STATUS mentions) | done | `e2e-phase406.sh` **OK** |
 | Local E2E phase407 (typecheck) | done | `e2e-phase407.sh` **OK** |
 | Local E2E phase408 (STATUS soft-complete) | done | `e2e-phase408.sh` **OK** |
+| Local E2E phase409 (option_enable hints) | done | `e2e-phase409.sh` **OK** |
+| Local E2E phase410 (option_enable UI) | done | `e2e-phase410.sh` **OK** |
+| Local E2E phase411 (soft marker 416) | done | `e2e-phase411.sh` **OK** |
+| Local E2E phase412 (STATUS mentions) | done | `e2e-phase412.sh` **OK** |
+| Local E2E phase413 (typecheck) | done | `e2e-phase413.sh` **OK** |
+| Local E2E phase414 (e2e-all list) | done | `e2e-phase414.sh` **OK** |
+| Local E2E phase415 (option_enable table) | done | `e2e-phase415.sh` **OK** |
+| Local E2E phase416 (STATUS soft-complete) | done | `e2e-phase416.sh` **OK** |
 
 ## Local commands
 
@@ -1404,6 +1420,14 @@ bash webui/scripts/e2e-phase405.sh
 bash webui/scripts/e2e-phase406.sh
 bash webui/scripts/e2e-phase407.sh
 bash webui/scripts/e2e-phase408.sh
+bash webui/scripts/e2e-phase409.sh
+bash webui/scripts/e2e-phase410.sh
+bash webui/scripts/e2e-phase411.sh
+bash webui/scripts/e2e-phase412.sh
+bash webui/scripts/e2e-phase413.sh
+bash webui/scripts/e2e-phase414.sh
+bash webui/scripts/e2e-phase415.sh
+bash webui/scripts/e2e-phase416.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

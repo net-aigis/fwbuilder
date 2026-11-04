@@ -83,6 +83,9 @@ export function InterfaceOptions({
     preview_only?: boolean;
     note?: string;
   } | null>(null);
+  const [optionEnable, setOptionEnable] = useState<
+    Array<{ target: string; when_option: string; when_in: string[]; note?: string }>
+  >([]);
   const [resolvedOs, setResolvedOs] = useState(hostOs || "");
   const [layoutFidelity, setLayoutFidelity] = useState<string | null>(null);
 
@@ -102,6 +105,7 @@ export function InterfaceOptions({
       setOptions(merged);
       setFields(schema?.fields ?? {});
       setStackSwitch(schema?.stack_switch ?? null);
+      setOptionEnable(schema?.option_enable ?? []);
       if (schema?.stack_switch?.by_type) {
         const types = Object.keys(schema.stack_switch.by_type);
         const def =
@@ -215,6 +219,18 @@ export function InterfaceOptions({
     }
     setActiveStackIndex(preferred);
   }, [activeGroup, resolvedOs, stackedPages]);
+
+  const effectiveFields = useMemo(() => {
+    if (!optionEnable.length) return fields;
+    const next: Record<string, OptionFieldMeta> = { ...fields };
+    for (const rule of optionEnable) {
+      const raw = (options[rule.when_option] ?? "").trim();
+      const ok = rule.when_in.includes(raw);
+      const prev = next[rule.target] || { type: "string" as const };
+      next[rule.target] = { ...prev, enabled: ok };
+    }
+    return next;
+  }, [fields, optionEnable, options]);
 
   const optionSections = useMemo(() => {
     if (!activeGroupMeta?.sections?.length) {
@@ -366,7 +382,7 @@ export function InterfaceOptions({
           const pageSpacing = secIdx === 0 ? activeGroupMeta?.spacing || {} : {};
           const grid = qtGridStyle(
             sec.keys,
-            fields,
+            effectiveFields,
             pageSpacers,
             pageStretch,
             [...pageNotes, ...pageBuddyLabels],
@@ -447,7 +463,7 @@ export function InterfaceOptions({
                     key={key}
                     name={key}
                     value={options[key] ?? ""}
-                    meta={metaFor(key, options[key] ?? "", fields)}
+                    meta={metaFor(key, options[key] ?? "", effectiveFields)}
                     disabled={busy}
                     onChange={(v) => setOptions((prev) => ({ ...prev, [key]: v }))}
                   />

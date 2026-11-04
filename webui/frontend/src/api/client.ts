@@ -677,6 +677,12 @@ export function fetchInterfaceOptionSchema(hostOs: string) {
       preview_only?: boolean;
       note?: string;
     } | null;
+    option_enable?: Array<{
+      target: string;
+      when_option: string;
+      when_in: string[];
+      note?: string;
+    }>;
   }>(`/api/v1/interface-option-schema?${qs.toString()}`);
 }
 

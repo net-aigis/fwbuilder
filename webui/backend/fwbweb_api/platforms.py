@@ -117,6 +117,25 @@ def _option_stack_switch(stem: str | None) -> list[dict[str, Any]]:
     return [dict(h) for h in hints]
 
 
+# Desktop setEnabled() dependencies between options (preview/follow; not full dialog logic).
+_IFACE_OPTION_ENABLE: dict[str, list[dict[str, Any]]] = {
+    "linux24IfaceOptsDialog": [
+        {
+            "target": "xmit_hash_policy",
+            "when_option": "bonding_policy",
+            "when_in": ["802.3ad", "balance-xor"],
+            "note": "Desktop bondingPolicyChanged(); enable xmit hash only for these policies.",
+        }
+    ],
+}
+
+
+def _iface_option_enable(stem: str | None) -> list[dict[str, Any]]:
+    if not stem:
+        return []
+    return [dict(h) for h in (_IFACE_OPTION_ENABLE.get(stem) or [])]
+
+
 def _res_roots() -> list[Path]:
     roots: list[Path] = []
     if settings.res_dir:
@@ -841,4 +860,7 @@ def interface_option_schema(host_os: str) -> dict[str, Any]:
     stack_switch = _iface_stack_switch(stem)
     if stack_switch:
         out["stack_switch"] = stack_switch
+    option_enable = _iface_option_enable(stem)
+    if option_enable:
+        out["option_enable"] = option_enable
     return out
