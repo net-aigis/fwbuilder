@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "848"
+WEBUI_SOFT_COMPLETE_PHASE = "856"
 # Honesty/preview track milestone (last thematic checkpoint; soft marker may be higher).
 # 600: refusals/closure; 650: health/summary/paths + fidelity sample;
 # 700: expect step_notes + SSH alternative/refusal notes;
@@ -43,12 +43,13 @@ WEBUI_SOFT_COMPLETE_PHASE = "848"
 # 800: with_size_policy_expanding in fidelity sample;
 # 850: field CSS Minimum/Preferred/Fixed sizePolicy mapping (still not pixel);
 # 900: fixed/minimum sizePolicy fidelity + spacer Max/Min/Pref CSS + min/max size samples;
-# 950: preferred sizePolicy + treeDepth/buddies + stacked_sections hard-gaps samples.
-WEBUI_HONESTY_MILESTONE = 950
+# 950: preferred sizePolicy + treeDepth/buddies + stacked_sections hard-gaps samples;
+# 1000: flat/checkable/annotations samples + min/max size as score weights.
+WEBUI_HONESTY_MILESTONE = 1000
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 950: with_size_policy_preferred in score/sample; "
-    "hard-gaps expose layout_tree_max_depth, buddy_labels, stacked_sections/"
-    "empty_stacked_sections — still not pixel parity. Hard gaps remain open."
+    "Honesty surface checkpoint 1000: hard-gaps sample covers sections_with_flat/"
+    "checkable + annotations; with_minimum_size/maximum_size are score weights — "
+    "still not pixel parity. Hard gaps remain open."
 )
 
 HARD_GAPS_OPEN = (
