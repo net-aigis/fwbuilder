@@ -283,6 +283,9 @@ function buildHonestyBundle(payload: Record<string, unknown>) {
     session_storage_roster: {
       soft_fertig_session_storage_roster: payload.soft_fertig_session_storage_roster,
     },
+    honesty_export_roster: {
+      soft_fertig_honesty_export_roster: payload.soft_fertig_honesty_export_roster,
+    },
     honesty_exports: {
       soft_fertig_honesty_export_keys: payload.soft_fertig_honesty_export_keys,
       soft_fertig_honesty_export_key_count:
