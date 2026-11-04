@@ -962,6 +962,9 @@ export function fetchHardGaps() {
     layout_fidelity_sample_host_os?: string;
     layout_fidelity_sample_score_percent?: number | null;
     layout_fidelity_sample_score_parts_count?: number | null;
+    layout_fidelity_sample_spacers?: number | null;
+    layout_fidelity_sample_spacers_with_orientation?: number | null;
+    layout_fidelity_sample_spacers_with_size_type?: number | null;
     layout_fidelity_pixel_parity?: boolean;
     note?: string;
   }>("/api/v1/hard-gaps");

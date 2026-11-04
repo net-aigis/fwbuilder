@@ -375,8 +375,23 @@ export function FirewallExtras({
             : "";
         const plat = gaps.layout_fidelity_sample_platform || "iptables";
         const hos = gaps.layout_fidelity_sample_host_os || "linux24";
+        const spacerBits = [
+          typeof gaps.layout_fidelity_sample_spacers === "number"
+            ? `spacers=${gaps.layout_fidelity_sample_spacers}`
+            : "",
+          typeof gaps.layout_fidelity_sample_spacers_with_orientation === "number"
+            ? `orient=${gaps.layout_fidelity_sample_spacers_with_orientation}`
+            : "",
+          typeof gaps.layout_fidelity_sample_spacers_with_size_type === "number"
+            ? `sizeType=${gaps.layout_fidelity_sample_spacers_with_size_type}`
+            : "",
+        ]
+          .filter(Boolean)
+          .join(", ");
         setHardGapsSummaryFidelity(
-          `Sample fidelity ${plat}/${hos}: ${gaps.layout_fidelity_sample_score_percent}%${parts} (not pixel)`,
+          `Sample fidelity ${plat}/${hos}: ${gaps.layout_fidelity_sample_score_percent}%${parts}` +
+            (spacerBits ? `; ${spacerBits}` : "") +
+            " (not pixel)",
         );
       }
       try {

@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "720"
+WEBUI_SOFT_COMPLETE_PHASE = "728"
 # Honesty/preview track milestone (last thematic checkpoint; soft marker may be higher).
 # 600: refusals/closure; 650: health/summary/paths + fidelity sample;
 # 700: expect step_notes + SSH alternative/refusal notes;
@@ -177,6 +177,19 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
         ),
         "layout_fidelity_sample_score_parts_count": (
             sample_fid.get("score_parts_count") if sample_fid.get("ok") else None
+        ),
+        "layout_fidelity_sample_spacers": (
+            (sample_fid.get("pages") or {}).get("spacers") if sample_fid.get("ok") else None
+        ),
+        "layout_fidelity_sample_spacers_with_orientation": (
+            (sample_fid.get("pages") or {}).get("spacers_with_orientation")
+            if sample_fid.get("ok")
+            else None
+        ),
+        "layout_fidelity_sample_spacers_with_size_type": (
+            (sample_fid.get("pages") or {}).get("spacers_with_size_type")
+            if sample_fid.get("ok")
+            else None
         ),
         "layout_fidelity_pixel_parity": False,
         "stack_switch_path": honesty_paths["stack_switch"],
