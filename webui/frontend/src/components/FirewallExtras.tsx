@@ -464,6 +464,16 @@ export function FirewallExtras({
           typeof gaps.layout_fidelity_sample_stack_names_count === "number"
             ? `stacks=${gaps.layout_fidelity_sample_stack_names_count}`
             : "",
+          gaps.layout_fidelity_sample_chrome_window_title === true
+            ? "windowTitle=1"
+            : gaps.layout_fidelity_sample_chrome_window_title === false
+              ? "windowTitle=0"
+              : "",
+          gaps.layout_fidelity_sample_chrome_tab_position === true
+            ? "tabPos=1"
+            : gaps.layout_fidelity_sample_chrome_tab_position === false
+              ? "tabPos=0"
+              : "",
         ]
           .filter(Boolean)
           .join(", ");
@@ -2316,6 +2326,16 @@ export function FirewallExtras({
                         typeof s.layout_fidelity_sample_stack_names_count === "number"
                           ? `stacks=${s.layout_fidelity_sample_stack_names_count}`
                           : "",
+                        s.layout_fidelity_sample_chrome_window_title === true
+                          ? "windowTitle=1"
+                          : s.layout_fidelity_sample_chrome_window_title === false
+                            ? "windowTitle=0"
+                            : "",
+                        s.layout_fidelity_sample_chrome_tab_position === true
+                          ? "tabPos=1"
+                          : s.layout_fidelity_sample_chrome_tab_position === false
+                            ? "tabPos=0"
+                            : "",
                       ]
                         .filter(Boolean)
                         .join(", ");
