@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "600"
+WEBUI_SOFT_COMPLETE_PHASE = "608"
 
 HARD_GAPS_OPEN = (
     "full_qt_pixel_layout",
@@ -143,6 +143,7 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
         "ssh_batch_mode_only": bool(ssh.get("batch_mode_only")),
         "ssh_alternatives": list(ssh.get("alternatives") or []),
         "ssh_refusal_paths": dict(ssh.get("refusal_paths") or {}),
+        "honesty_milestone": 600,
         "note": (
             "Honesty/preview track is soft-complete (soft_fertig); these items remain "
             "unimplemented (full Qt pixel layout, expect/SSHSession runtime, password SSH). "

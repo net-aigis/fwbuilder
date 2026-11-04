@@ -217,6 +217,7 @@ export function FirewallExtras({
   const [sshAuthPath, setSshAuthPath] = useState<string | null>(null);
   const [sshRefusalSummary, setSshRefusalSummary] = useState<string | null>(null);
   const [softCompletePhase, setSoftCompletePhase] = useState<string | null>(null);
+  const [honestyMilestone, setHonestyMilestone] = useState<number | null>(null);
   const [stackSwitchSummary, setStackSwitchSummary] = useState<string | null>(null);
   const [layoutFidelity, setLayoutFidelity] = useState<string | null>(null);
   const [resHint, setResHint] = useState<string | null>(null);
@@ -310,6 +311,9 @@ export function FirewallExtras({
         setSshRefusalSummary(null);
       }
       setSoftCompletePhase(gaps?.soft_complete_phase || resSt?.soft_complete_phase || null);
+      setHonestyMilestone(
+        typeof gaps?.honesty_milestone === "number" ? gaps.honesty_milestone : null,
+      );
       try {
         const fid = await fetchLayoutFidelity(plat, hostOs || "");
         if (fid.ok && fid.score_percent != null) {
@@ -1795,6 +1799,12 @@ export function FirewallExtras({
               <>
                 {" "}
                 · soft-complete phase <code>{softCompletePhase}</code>
+              </>
+            ) : null}
+            {honestyMilestone != null ? (
+              <>
+                {" "}
+                · honesty milestone <code>{honestyMilestone}</code>
               </>
             ) : null}
             {hardGapsClosurePath ? (

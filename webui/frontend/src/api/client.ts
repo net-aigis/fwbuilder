@@ -947,6 +947,7 @@ export function fetchHardGaps() {
     ssh_batch_mode_only?: boolean;
     ssh_alternatives?: string[];
     ssh_refusal_paths?: Record<string, number>;
+    honesty_milestone?: number;
     note?: string;
   }>("/api/v1/hard-gaps");
 }
