@@ -6,9 +6,9 @@ cd "$ROOT"
 PYTHONPATH=webui/backend python3 - <<'PY'
 from fwbweb_api import main as m
 assert hasattr(m, "WEBUI_HONESTY_MILESTONE")
-assert m.WEBUI_HONESTY_MILESTONE == 600
+assert m.WEBUI_HONESTY_MILESTONE >= 600
 c = m.hard_gap_closure()
-assert c.get("honesty_milestone") == 600
+assert c.get("honesty_milestone") == m.WEBUI_HONESTY_MILESTONE
 assert c.get("soft_fertig_honesty_track") is True
 assert int(m.WEBUI_SOFT_COMPLETE_PHASE) >= 616
 print("closure honesty metadata ok")

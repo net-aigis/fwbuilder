@@ -35,9 +35,15 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "648"
+WEBUI_SOFT_COMPLETE_PHASE = "656"
 # Honesty/preview track milestone (last thematic checkpoint; soft marker may be higher).
-WEBUI_HONESTY_MILESTONE = 600
+# 600: refusals/closure surface; 650: health/summary/paths + fidelity sample surface.
+WEBUI_HONESTY_MILESTONE = 650
+WEBUI_HONESTY_MILESTONE_NOTE = (
+    "Honesty surface checkpoint 650: /health + /res-status + /hard-gaps "
+    "(+ summary/closure/honesty_paths) expose milestone/counts; layout_fidelity "
+    "sample score is heuristic only (not pixel). Hard gaps remain open."
+)
 
 HARD_GAPS_OPEN = (
     "full_qt_pixel_layout",
@@ -92,6 +98,7 @@ def health() -> dict[str, object]:
         "soft_complete_phase": WEBUI_SOFT_COMPLETE_PHASE,
         "soft_fertig_honesty_track": True,
         "honesty_milestone": WEBUI_HONESTY_MILESTONE,
+        "honesty_milestone_note": WEBUI_HONESTY_MILESTONE_NOTE,
         "hard_gap_count": len(HARD_GAPS_OPEN),
     }
 
@@ -118,6 +125,7 @@ def res_status(_: str = Depends(require_token)) -> dict[str, object]:
         "soft_complete_phase": WEBUI_SOFT_COMPLETE_PHASE,
         "soft_fertig_honesty_track": True,
         "honesty_milestone": WEBUI_HONESTY_MILESTONE,
+        "honesty_milestone_note": WEBUI_HONESTY_MILESTONE_NOTE,
         "hard_gap_open": list(HARD_GAPS_OPEN),
         "hard_gap_count": len(HARD_GAPS_OPEN),
     }
@@ -177,6 +185,7 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
         "ssh_alternatives": list(ssh.get("alternatives") or []),
         "ssh_refusal_paths": dict(ssh.get("refusal_paths") or {}),
         "honesty_milestone": WEBUI_HONESTY_MILESTONE,
+        "honesty_milestone_note": WEBUI_HONESTY_MILESTONE_NOTE,
         "honesty_paths": honesty_paths,
         "honesty_paths_count": len(honesty_paths),
         "summary_path": "/api/v1/hard-gaps/summary",
@@ -211,6 +220,7 @@ def hard_gaps_summary(_: str = Depends(require_token)) -> dict[str, object]:
         "soft_complete_phase": WEBUI_SOFT_COMPLETE_PHASE,
         "soft_fertig_honesty_track": True,
         "honesty_milestone": WEBUI_HONESTY_MILESTONE,
+        "honesty_milestone_note": WEBUI_HONESTY_MILESTONE_NOTE,
         "hard_gap_open": list(HARD_GAPS_OPEN),
         "hard_gap_count": len(HARD_GAPS_OPEN),
         "honesty_paths_count": int(full.get("honesty_paths_count") or 0),
@@ -238,6 +248,7 @@ def hard_gap_closure(_: str = Depends(require_token)) -> dict[str, object]:
         "soft_complete_phase": WEBUI_SOFT_COMPLETE_PHASE,
         "soft_fertig_honesty_track": True,
         "honesty_milestone": WEBUI_HONESTY_MILESTONE,
+        "honesty_milestone_note": WEBUI_HONESTY_MILESTONE_NOTE,
         "hard_gap_open": list(HARD_GAPS_OPEN),
         "hard_gap_count": len(HARD_GAPS_OPEN),
         "hard_gap_closure": dict(HARD_GAP_CLOSURE),

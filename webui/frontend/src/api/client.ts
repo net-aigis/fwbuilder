@@ -948,6 +948,7 @@ export function fetchHardGaps() {
     ssh_alternatives?: string[];
     ssh_refusal_paths?: Record<string, number>;
     honesty_milestone?: number;
+    honesty_milestone_note?: string;
     honesty_paths?: Record<string, string>;
     honesty_paths_count?: number;
     summary_path?: string;
@@ -965,6 +966,7 @@ export function fetchHardGapsSummary() {
     soft_complete_phase: string;
     soft_fertig_honesty_track?: boolean;
     honesty_milestone?: number;
+    honesty_milestone_note?: string;
     hard_gap_open: string[];
     hard_gap_count?: number;
     honesty_paths_count?: number;
@@ -1056,6 +1058,7 @@ export function fetchHardGapClosure() {
     soft_complete_phase: string;
     soft_fertig_honesty_track?: boolean;
     honesty_milestone?: number;
+    honesty_milestone_note?: string;
     hard_gap_open: string[];
     hard_gap_count?: number;
     hard_gap_closure: Record<string, string>;
@@ -1283,6 +1286,7 @@ export function fetchResStatus() {
     soft_complete_phase?: string;
     soft_fertig_honesty_track?: boolean;
     honesty_milestone?: number;
+    honesty_milestone_note?: string;
     hard_gap_open?: string[];
     hard_gap_count?: number;
   }>("/api/v1/res-status");

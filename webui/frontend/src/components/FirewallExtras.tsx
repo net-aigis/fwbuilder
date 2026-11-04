@@ -227,6 +227,7 @@ export function FirewallExtras({
   const [sshRefusalSummary, setSshRefusalSummary] = useState<string | null>(null);
   const [softCompletePhase, setSoftCompletePhase] = useState<string | null>(null);
   const [honestyMilestone, setHonestyMilestone] = useState<number | null>(null);
+  const [honestyMilestoneNote, setHonestyMilestoneNote] = useState<string | null>(null);
   const [softFertigHonestyTrack, setSoftFertigHonestyTrack] = useState<boolean | null>(null);
   const [honestyPathsSummary, setHonestyPathsSummary] = useState<string | null>(null);
   const [honestyPathsDetail, setHonestyPathsDetail] = useState<string | null>(null);
@@ -340,6 +341,7 @@ export function FirewallExtras({
       setHonestyMilestone(
         typeof gaps?.honesty_milestone === "number" ? gaps.honesty_milestone : null,
       );
+      setHonestyMilestoneNote(gaps?.honesty_milestone_note || null);
       setSoftFertigHonestyTrack(
         typeof gaps?.soft_fertig_honesty_track === "boolean"
           ? gaps.soft_fertig_honesty_track
@@ -1873,6 +1875,12 @@ export function FirewallExtras({
                 {" "}
                 · honesty milestone <code>{honestyMilestone}</code>
               </>
+            ) : null}
+            {honestyMilestoneNote ? (
+              <span className="muted" title={honestyMilestoneNote}>
+                {" "}
+                · <em>{honestyMilestoneNote.slice(0, 72)}{honestyMilestoneNote.length > 72 ? "…" : ""}</em>
+              </span>
             ) : null}
             {softFertigHonestyTrack != null ? (
               <>

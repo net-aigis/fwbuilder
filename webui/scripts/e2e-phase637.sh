@@ -6,7 +6,7 @@ cd "$ROOT"
 PYTHONPATH=webui/backend python3 - <<'PY'
 from fwbweb_api import main as m
 assert int(m.WEBUI_SOFT_COMPLETE_PHASE) >= 640
-assert m.health()["honesty_milestone"] == 600
+assert m.health()["honesty_milestone"] == m.WEBUI_HONESTY_MILESTONE
 print("marker 640 ok")
 PY
 echo "cleaned"

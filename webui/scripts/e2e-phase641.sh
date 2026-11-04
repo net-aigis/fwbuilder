@@ -11,7 +11,7 @@ assert isinstance(h.get("layout_fidelity_sample_score_percent"), (int, float))
 assert h.get("layout_fidelity_sample_platform") == "iptables"
 s = m.hard_gaps_summary()
 assert h["layout_fidelity_sample_score_percent"] == s["layout_fidelity_sample_score_percent"]
-assert m.WEBUI_SOFT_COMPLETE_PHASE == "648"
+assert int(m.WEBUI_SOFT_COMPLETE_PHASE) >= 648
 print("hard-gaps sample fidelity", h["layout_fidelity_sample_score_percent"])
 PY
 echo "cleaned"
