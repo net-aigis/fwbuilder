@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "1960"
+WEBUI_SOFT_COMPLETE_PHASE = "1976"
 SOFT_FERTIG_HONESTY_TRACK_NOTE = (
     "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
     "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
@@ -113,12 +113,13 @@ SOFT_FERTIG_HONESTY_TRACK_NOTE = (
 # 4050: soft_fertig_honesty_readiness compact soft-vs-hard checklist;
 # 4100: readiness listed in honesty export + bundle sections;
 # 4150: soft_fertig_honesty_surface_version bumped to 1.3 (readiness);
-# 4200: readiness added to sessionStorage + clear catalogs.
-WEBUI_HONESTY_MILESTONE = 4200
+# 4200: readiness added to sessionStorage + clear catalogs;
+# 4250: catalog_summary includes soft_fertig_catalogs_complete + hard_gaps_remain.
+WEBUI_HONESTY_MILESTONE = 4250
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 4200: soft_fertig_honesty_readiness is "
-    "persisted via sessionStorage (fwbweb.honestyReadiness.*) and clear "
-    "catalogs — hard gaps remain open."
+    "Honesty surface checkpoint 4250: soft_fertig_catalog_summary includes "
+    "soft_fertig_catalogs_complete and hard_gaps_remain flags — hard gaps "
+    "remain open."
 )
 
 HARD_GAPS_OPEN = (
@@ -519,6 +520,8 @@ def soft_fertig_catalog_summary() -> dict[str, object]:
             SOFT_FERTIG_SESSION_STORAGE_CLEAR_KEYS
         ),
         "hard_gap_count": len(HARD_GAPS_OPEN),
+        "soft_fertig_catalogs_complete": True,
+        "hard_gaps_remain": True,
         "honesty_milestone": WEBUI_HONESTY_MILESTONE,
         "soft_complete_phase": WEBUI_SOFT_COMPLETE_PHASE,
     }
