@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "2456"
+WEBUI_SOFT_COMPLETE_PHASE = "2472"
 SOFT_FERTIG_HONESTY_TRACK_NOTE = (
     "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
     "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
@@ -144,11 +144,12 @@ SOFT_FERTIG_HONESTY_TRACK_NOTE = (
 # 5600: honesty_path_roster listed in honesty export + bundle sections;
 # 5650: soft_fertig_honesty_surface_version bumped to 2.0 (honesty_path_roster);
 # 5700: honesty_path_roster added to sessionStorage + clear catalogs;
-# 5750: Soft 2440+ honesty surface checkpoint (honesty_path_roster cycle complete).
-WEBUI_HONESTY_MILESTONE = 5750
+# 5750: Soft 2440+ honesty surface checkpoint (honesty_path_roster cycle complete);
+# 5800: soft_fertig_session_storage_roster compact sessionStorage key titles/notes.
+WEBUI_HONESTY_MILESTONE = 5800
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 5750: soft-fertig honesty/preview catalogs "
-    "through Soft 2440+ (schema 2.0, honesty_path_roster sessionStorage) — "
+    "Honesty surface checkpoint 5800: soft_fertig_session_storage_roster lists "
+    "sessionStorage key ids with titles and notes for operators — "
     "hard gaps remain open."
 )
 SOFT_FERTIG_SOFT_COMPLETE_NOTE = (
@@ -295,6 +296,7 @@ SOFT_FERTIG_SURFACE_KEYS = (
     "soft_fertig_hard_gap_roster",
     "soft_fertig_hard_gap_refusal_roster",
     "soft_fertig_honesty_path_roster",
+    "soft_fertig_session_storage_roster",
 )
 SOFT_FERTIG_SURFACE_KEY_TITLES = {
     "soft_complete_phase": "Soft-complete phase marker",
@@ -352,6 +354,9 @@ SOFT_FERTIG_SURFACE_KEY_TITLES = {
     ),
     "soft_fertig_honesty_path_roster": (
         "Honesty/preview path ids with titles and notes"
+    ),
+    "soft_fertig_session_storage_roster": (
+        "sessionStorage key ids with titles and notes"
     ),
 }
 
@@ -417,6 +422,9 @@ SOFT_FERTIG_SURFACE_NOTES = {
     ),
     "soft_fertig_honesty_path_roster": (
         "Per honesty path: id, API path, short title, and note."
+    ),
+    "soft_fertig_session_storage_roster": (
+        "Per sessionStorage catalog key: id, prefix, title, and note."
     ),
 }
 
@@ -831,6 +839,28 @@ def soft_fertig_honesty_path_roster() -> dict[str, object]:
     }
 
 
+
+def soft_fertig_session_storage_roster() -> dict[str, object]:
+    """sessionStorage key roster with titles and notes (documentation)."""
+    entries = [
+        {
+            "id": key_id,
+            "prefix": SOFT_FERTIG_SESSION_STORAGE_KEYS[key_id],
+            "title": SOFT_FERTIG_SESSION_STORAGE_KEY_TITLES.get(key_id, ""),
+            "note": SOFT_FERTIG_SESSION_STORAGE_NOTES.get(key_id, ""),
+        }
+        for key_id in SOFT_FERTIG_SESSION_STORAGE_KEYS
+    ]
+    return {
+        "hard_gaps_remain": True,
+        "entries": entries,
+        "entry_count": len(entries),
+        "note": (
+            "Catalog of soft-fertig sessionStorage keys only; catalogs "
+            "do not close hard gaps."
+        ),
+    }
+
 def soft_fertig_catalog_summary() -> dict[str, object]:
     """Compact soft-fertig catalog counts for /health and honesty endpoints."""
     return {
@@ -864,6 +894,9 @@ def soft_fertig_catalog_summary() -> dict[str, object]:
         "soft_fertig_honesty_path_roster_entry_count": soft_fertig_honesty_path_roster()[
             "entry_count"
         ],
+        "soft_fertig_session_storage_roster_entry_count": (
+            soft_fertig_session_storage_roster()["entry_count"]
+        ),
         "honesty_milestone": WEBUI_HONESTY_MILESTONE,
         "soft_complete_phase": WEBUI_SOFT_COMPLETE_PHASE,
     }
@@ -987,6 +1020,7 @@ def health() -> dict[str, object]:
         "soft_fertig_hard_gap_roster": soft_fertig_hard_gap_roster(),
         "soft_fertig_hard_gap_refusal_roster": soft_fertig_hard_gap_refusal_roster(),
         "soft_fertig_honesty_path_roster": soft_fertig_honesty_path_roster(),
+        "soft_fertig_session_storage_roster": soft_fertig_session_storage_roster(),
         "soft_fertig_honesty_surface_version": SOFT_FERTIG_HONESTY_SURFACE_VERSION,
     }
 
@@ -1025,6 +1059,7 @@ def res_status(_: str = Depends(require_token)) -> dict[str, object]:
         "soft_fertig_hard_gap_roster": soft_fertig_hard_gap_roster(),
         "soft_fertig_hard_gap_refusal_roster": soft_fertig_hard_gap_refusal_roster(),
         "soft_fertig_honesty_path_roster": soft_fertig_honesty_path_roster(),
+        "soft_fertig_session_storage_roster": soft_fertig_session_storage_roster(),
         "soft_fertig_honesty_surface_version": SOFT_FERTIG_HONESTY_SURFACE_VERSION,
     }
 
@@ -1400,6 +1435,7 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
         "soft_fertig_hard_gap_roster": soft_fertig_hard_gap_roster(),
         "soft_fertig_hard_gap_refusal_roster": soft_fertig_hard_gap_refusal_roster(),
         "soft_fertig_honesty_path_roster": soft_fertig_honesty_path_roster(),
+        "soft_fertig_session_storage_roster": soft_fertig_session_storage_roster(),
         "soft_fertig_honesty_export_keys": list(SOFT_FERTIG_HONESTY_EXPORT_KEYS),
         "soft_fertig_honesty_export_key_count": len(SOFT_FERTIG_HONESTY_EXPORT_KEYS),
         "soft_fertig_honesty_export_key_titles": {
@@ -1567,6 +1603,9 @@ def hard_gaps_summary(_: str = Depends(require_token)) -> dict[str, object]:
         ),
         "soft_fertig_honesty_path_roster": dict(
             full.get("soft_fertig_honesty_path_roster") or {}
+        ),
+        "soft_fertig_session_storage_roster": dict(
+            full.get("soft_fertig_session_storage_roster") or {}
         ),
         "soft_fertig_honesty_export_keys": list(
             full.get("soft_fertig_honesty_export_keys") or []
@@ -1933,6 +1972,7 @@ def hard_gap_closure(_: str = Depends(require_token)) -> dict[str, object]:
         "soft_fertig_hard_gap_roster": soft_fertig_hard_gap_roster(),
         "soft_fertig_hard_gap_refusal_roster": soft_fertig_hard_gap_refusal_roster(),
         "soft_fertig_honesty_path_roster": soft_fertig_honesty_path_roster(),
+        "soft_fertig_session_storage_roster": soft_fertig_session_storage_roster(),
         "soft_fertig_honesty_export_keys": list(SOFT_FERTIG_HONESTY_EXPORT_KEYS),
         "soft_fertig_honesty_export_key_count": len(SOFT_FERTIG_HONESTY_EXPORT_KEYS),
         "soft_fertig_honesty_export_key_titles": {
