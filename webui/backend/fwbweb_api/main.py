@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "1560"
+WEBUI_SOFT_COMPLETE_PHASE = "1576"
 # Honesty/preview track milestone (last thematic checkpoint; soft marker may be higher).
 # 600: refusals/closure; 650: health/summary/paths + fidelity sample;
 # 700: expect step_notes + SSH alternative/refusal notes;
@@ -84,11 +84,12 @@ WEBUI_SOFT_COMPLETE_PHASE = "1560"
 # 2800: UI expandable soft_fertig_session_storage_keys detail;
 # 2850: UI download/copy soft_fertig_session_storage_keys catalog;
 # 2900: session storage keys included in soft_fertig_surface_keys catalog;
-# 2950: soft_fertig_session_storage_notes (+ count) on honesty endpoints.
-WEBUI_HONESTY_MILESTONE = 2950
+# 2950: soft_fertig_session_storage_notes (+ count) on honesty endpoints;
+# 3000: session storage notes included in soft_fertig_surface_keys catalog.
+WEBUI_HONESTY_MILESTONE = 3000
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 2950: soft_fertig_session_storage_notes "
-    "(+ count) document each sessionStorage prefix — hard gaps remain open."
+    "Honesty surface checkpoint 3000: soft_fertig_surface_keys includes "
+    "soft_fertig_session_storage_notes (+ count) — hard gaps remain open."
 )
 
 HARD_GAPS_OPEN = (
@@ -189,6 +190,8 @@ SOFT_FERTIG_SURFACE_KEYS = (
     "soft_fertig_session_storage_keys",
     "soft_fertig_session_storage_key_count",
     "soft_fertig_session_storage_key_titles",
+    "soft_fertig_session_storage_notes",
+    "soft_fertig_session_storage_notes_count",
 )
 SOFT_FERTIG_SURFACE_KEY_TITLES = {
     "soft_complete_phase": "Soft-complete phase marker",
@@ -217,6 +220,8 @@ SOFT_FERTIG_SURFACE_KEY_TITLES = {
     "soft_fertig_session_storage_keys": "UI sessionStorage key prefixes",
     "soft_fertig_session_storage_key_count": "Count of sessionStorage key prefixes",
     "soft_fertig_session_storage_key_titles": "Titles for sessionStorage key prefixes",
+    "soft_fertig_session_storage_notes": "Notes for sessionStorage key prefixes",
+    "soft_fertig_session_storage_notes_count": "Count of sessionStorage key notes",
 }
 
 SOFT_FERTIG_SURFACE_NOTES = {
@@ -246,6 +251,8 @@ SOFT_FERTIG_SURFACE_NOTES = {
     "soft_fertig_session_storage_keys": "Prefixes for UI sessionStorage honesty catalogs.",
     "soft_fertig_session_storage_key_count": "Number of documented sessionStorage prefixes.",
     "soft_fertig_session_storage_key_titles": "Short titles for sessionStorage prefixes.",
+    "soft_fertig_session_storage_notes": "Short notes for each sessionStorage prefix.",
+    "soft_fertig_session_storage_notes_count": "Number of sessionStorage prefix notes.",
 }
 
 # Browser sessionStorage key prefixes used by the WebUI honesty track
