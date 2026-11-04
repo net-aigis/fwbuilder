@@ -483,6 +483,9 @@ export function FirewallExtras({
           typeof gaps.layout_fidelity_sample_with_whats_this === "number"
             ? `whatsThis=${gaps.layout_fidelity_sample_with_whats_this}`
             : "",
+          typeof gaps.layout_fidelity_sample_with_enabled === "number"
+            ? `enabled=${gaps.layout_fidelity_sample_with_enabled}`
+            : "",
           typeof gaps.layout_fidelity_sample_pages === "number"
             ? `pages=${gaps.layout_fidelity_sample_pages}`
             : "",
@@ -2367,6 +2370,9 @@ export function FirewallExtras({
                           : "",
                         typeof s.layout_fidelity_sample_with_whats_this === "number"
                           ? `whatsThis=${s.layout_fidelity_sample_with_whats_this}`
+                          : "",
+                        typeof s.layout_fidelity_sample_with_enabled === "number"
+                          ? `enabled=${s.layout_fidelity_sample_with_enabled}`
                           : "",
                         typeof s.layout_fidelity_sample_pages === "number"
                           ? `pages=${s.layout_fidelity_sample_pages}`
