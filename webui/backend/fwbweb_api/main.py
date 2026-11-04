@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "1528"
+WEBUI_SOFT_COMPLETE_PHASE = "1544"
 # Honesty/preview track milestone (last thematic checkpoint; soft marker may be higher).
 # 600: refusals/closure; 650: health/summary/paths + fidelity sample;
 # 700: expect step_notes + SSH alternative/refusal notes;
@@ -82,11 +82,12 @@ WEBUI_SOFT_COMPLETE_PHASE = "1528"
 # 2700: soft_fertig_session_storage_keys catalog on /hard-gaps;
 # 2750: session storage keys also on summary + closure;
 # 2800: UI expandable soft_fertig_session_storage_keys detail;
-# 2850: UI download/copy soft_fertig_session_storage_keys catalog.
-WEBUI_HONESTY_MILESTONE = 2850
+# 2850: UI download/copy soft_fertig_session_storage_keys catalog;
+# 2900: session storage keys included in soft_fertig_surface_keys catalog.
+WEBUI_HONESTY_MILESTONE = 2900
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 2850: UI can download/copy "
-    "soft_fertig_session_storage_keys (+ titles) — hard gaps remain open."
+    "Honesty surface checkpoint 2900: soft_fertig_surface_keys includes "
+    "soft_fertig_session_storage_keys (+ count/titles) — hard gaps remain open."
 )
 
 HARD_GAPS_OPEN = (
@@ -184,6 +185,9 @@ SOFT_FERTIG_SURFACE_KEYS = (
     "ssh_alternative_titles",
     "ssh_refusal_path_titles",
     "layout_fidelity_sample_catalog_complete",
+    "soft_fertig_session_storage_keys",
+    "soft_fertig_session_storage_key_count",
+    "soft_fertig_session_storage_key_titles",
 )
 SOFT_FERTIG_SURFACE_KEY_TITLES = {
     "soft_complete_phase": "Soft-complete phase marker",
@@ -209,6 +213,9 @@ SOFT_FERTIG_SURFACE_KEY_TITLES = {
     "ssh_alternative_titles": "Titles for BatchMode SSH alternatives",
     "ssh_refusal_path_titles": "Titles for SSH refusal paths",
     "layout_fidelity_sample_catalog_complete": "Sample fidelity catalog complete flag",
+    "soft_fertig_session_storage_keys": "UI sessionStorage key prefixes",
+    "soft_fertig_session_storage_key_count": "Count of sessionStorage key prefixes",
+    "soft_fertig_session_storage_key_titles": "Titles for sessionStorage key prefixes",
 }
 
 SOFT_FERTIG_SURFACE_NOTES = {
@@ -235,6 +242,9 @@ SOFT_FERTIG_SURFACE_NOTES = {
     "ssh_alternative_titles": "Titles for BatchMode SSH alternatives.",
     "ssh_refusal_path_titles": "Titles for SSH refusal paths.",
     "layout_fidelity_sample_catalog_complete": "True when sample fidelity catalog is complete.",
+    "soft_fertig_session_storage_keys": "Prefixes for UI sessionStorage honesty catalogs.",
+    "soft_fertig_session_storage_key_count": "Number of documented sessionStorage prefixes.",
+    "soft_fertig_session_storage_key_titles": "Short titles for sessionStorage prefixes.",
 }
 
 # Browser sessionStorage key prefixes used by the WebUI honesty track
