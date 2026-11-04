@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "2024"
+WEBUI_SOFT_COMPLETE_PHASE = "2040"
 SOFT_FERTIG_HONESTY_TRACK_NOTE = (
     "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
     "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
@@ -117,11 +117,13 @@ SOFT_FERTIG_HONESTY_TRACK_NOTE = (
 # 4250: catalog_summary includes soft_fertig_catalogs_complete + hard_gaps_remain;
 # 4300: soft_fertig_honesty_surface_version bumped to 1.4 (catalog flags);
 # 4350: soft_fertig_soft_complete_note clarifies soft-complete phase marker vs hard gaps;
-# 4400: soft_complete_note listed in honesty export + bundle sections.
-WEBUI_HONESTY_MILESTONE = 4400
+# 4400: soft_complete_note listed in honesty export + bundle sections;
+# 4450: soft_fertig_honesty_surface_version bumped to 1.5 (soft_complete_note).
+WEBUI_HONESTY_MILESTONE = 4450
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 4400: soft_fertig_soft_complete_note is "
-    "listed in honesty export and bundle catalogs — hard gaps remain open."
+    "Honesty surface checkpoint 4450: soft_fertig_honesty_surface_version "
+    "1.5 documents soft_fertig_soft_complete_note on honesty endpoints and "
+    "in export/bundle — hard gaps remain open."
 )
 SOFT_FERTIG_SOFT_COMPLETE_NOTE = (
     "WEBUI_SOFT_COMPLETE_PHASE marks soft-fertig honesty/preview catalog "
@@ -396,10 +398,10 @@ SOFT_FERTIG_SESSION_STORAGE_CLEAR_NOTE = (
 )
 
 # Soft-fertig honesty/preview catalog schema version (documentation; not a lock).
-SOFT_FERTIG_HONESTY_SURFACE_VERSION = "1.4"
+SOFT_FERTIG_HONESTY_SURFACE_VERSION = "1.5"
 SOFT_FERTIG_HONESTY_SURFACE_VERSION_NOTE = (
-    "Schema 1.4: schema 1.3 plus soft_fertig_catalogs_complete and "
-    "hard_gaps_remain flags on soft_fertig_catalog_summary; hard gaps remain open."
+    "Schema 1.5: schema 1.4 plus soft_fertig_soft_complete_note on "
+    "/health and honesty endpoints (+ export/bundle); hard gaps remain open."
 )
 
 # Downloadable honesty/preview JSON catalogs the UI can export (documentation).
