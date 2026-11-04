@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "1384"
+WEBUI_SOFT_COMPLETE_PHASE = "1400"
 # Honesty/preview track milestone (last thematic checkpoint; soft marker may be higher).
 # 600: refusals/closure; 650: health/summary/paths + fidelity sample;
 # 700: expect step_notes + SSH alternative/refusal notes;
@@ -73,11 +73,12 @@ WEBUI_SOFT_COMPLETE_PHASE = "1384"
 # 2250: hard_gap_related_refusals also on closure + full map on summary;
 # 2300: soft_fertig_surface keys/titles/notes on hard-gaps summary;
 # 2350: soft_fertig_surface catalog also on hard-gaps/closure;
-# 2400: honesty_paths + honesty_path_notes mirrored on hard-gaps summary.
-WEBUI_HONESTY_MILESTONE = 2400
+# 2400: honesty_paths + honesty_path_notes mirrored on hard-gaps summary;
+# 2450: honesty_paths (+ titles/notes) also on hard-gaps/closure.
+WEBUI_HONESTY_MILESTONE = 2450
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 2400: /hard-gaps/summary mirrors "
-    "honesty_paths and honesty_path_notes (+ titles/counts) — hard gaps remain open."
+    "Honesty surface checkpoint 2450: /hard-gaps/closure exposes "
+    "honesty_paths / titles / notes (+ counts) — hard gaps remain open."
 )
 
 HARD_GAPS_OPEN = (
@@ -1113,6 +1114,23 @@ def hard_gap_closure(_: str = Depends(require_token)) -> dict[str, object]:
         "soft_fertig_surface_notes_count": sum(
             1 for k in SOFT_FERTIG_SURFACE_KEYS if k in SOFT_FERTIG_SURFACE_NOTES
         ),
+        "honesty_paths": {
+            "hard_gaps": "/api/v1/hard-gaps",
+            "summary": "/api/v1/hard-gaps/summary",
+            "closure": "/api/v1/hard-gaps/closure",
+            "layout_fidelity": "/api/v1/layout-fidelity",
+            "stack_switch": "/api/v1/stack-switch",
+            "option_enable": "/api/v1/option-enable",
+            "expect_run": "/api/v1/expect-install-plan/run",
+            "expect_steps": "/api/v1/expect-install-plan/steps",
+            "expect_steps_refusals": "/api/v1/expect-install-plan/steps/refusals",
+            "ssh_auth": "/api/v1/ssh-auth",
+            "password_ssh": "/api/v1/ssh-auth/password",
+        },
+        "honesty_paths_count": len(HONESTY_PATH_TITLES),
+        "honesty_path_titles": dict(HONESTY_PATH_TITLES),
+        "honesty_path_notes": dict(HONESTY_PATH_NOTES),
+        "honesty_path_notes_count": len(HONESTY_PATH_NOTES),
         "parent_path": "/api/v1/hard-gaps",
         "summary_path": "/api/v1/hard-gaps/summary",
         "note": (
