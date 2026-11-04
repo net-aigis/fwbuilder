@@ -26,6 +26,7 @@ from ..platforms import (
     list_platforms,
     option_schema,
     rule_option_schema,
+    option_enable_for,
     stack_switch_for,
 )
 
@@ -192,6 +193,16 @@ def get_stack_switch(
 ) -> dict[str, Any]:
     """Desktop QStackedWidget switch maps (preview/follow; not pixel parity)."""
     return stack_switch_for(platform, host_os)
+
+
+@router.get("/option-enable")
+def get_option_enable(
+    platform: str = Query(""),
+    host_os: str = Query(""),
+    _: str = Depends(require_token),
+) -> dict[str, Any]:
+    """Desktop option enable/disable dependency maps (preview/follow)."""
+    return option_enable_for(platform, host_os)
 
 
 @router.get("/ssh-auth")

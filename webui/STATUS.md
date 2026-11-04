@@ -597,15 +597,23 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Hard gaps still 3 @ 456 | done | E2E phase454 |
 | Health soft-phase wiring | done | E2E phase455 |
 | Soft-complete STATUS through 456 | done | E2E phase456 |
+| GET /option-enable | done | E2E phase457 |
+| hard-gaps option_enable_path + UI | done | E2E phase458 |
+| Soft marker 464 | done | E2E phase459 |
+| STATUS 457–464 | done | E2E phase460 |
+| Typecheck after option-enable API | done | E2E phase461 |
+| e2e-all lists 457–464 | done | E2E phase462 |
+| Hard gaps still 3 @ 464 | done | E2E phase463 |
+| Soft-complete STATUS through 464 | done | E2E phase464 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Soft-complete (feature/webui polish track)
 
 WebUI on `feature/webui` remains soft-complete for the polish track.
 
-### Hard-gap honesty/preview track — soft-fertig (phase256); preview slices through 456
+### Hard-gap honesty/preview track — soft-fertig (phase256); preview slices through 464
 
-`WEBUI_SOFT_COMPLETE_PHASE=456`; `/hard-gaps` (+ `/hard-gaps/closure`) sets `soft_fertig_honesty_track: true` + `hard_gap_notes` + `hard_gap_closure` + `layout_fidelity_path` + `stack_switch_path` + `expect_run_path` + `password_ssh_path`; `GET /layout-fidelity` / option-schema + rule/iface schemas report heuristic `score_percent` (**not** pixel parity; includes `stacked_sections` / `with_whats_this` / `with_read_only` / `pages_with_tooltip`); `GET /stack-switch` exposes desktop stack maps + option_enable/iface_option_enable; `option_enable` follows bonding→xmit and LOG/ULOG (ipt/ipcop/secuwall); iface Device type writes `options.type` and drives stack (no duplicate type field); Firewall UI shows fidelity + refuse paths + soft-complete phase + enable-rules summary; read_only fields use `field-ui-readonly`.
+`WEBUI_SOFT_COMPLETE_PHASE=464`; `/hard-gaps` (+ `/hard-gaps/closure`) sets `soft_fertig_honesty_track: true` + `hard_gap_notes` + `hard_gap_closure` + `layout_fidelity_path` + `stack_switch_path` + `option_enable_path` + `expect_run_path` + `password_ssh_path`; `GET /layout-fidelity` / option-schema + rule/iface schemas report heuristic `score_percent` (**not** pixel parity; includes `stacked_sections` / `with_whats_this` / `with_read_only` / `pages_with_tooltip`); `GET /stack-switch` + `GET /option-enable` expose desktop maps; `option_enable` follows bonding→xmit and LOG/ULOG (ipt/ipcop/secuwall); iface Device type writes `options.type` and drives stack (no duplicate type field); Firewall UI shows fidelity + refuse paths + soft-complete phase + enable-rules summary; read_only fields use `field-ui-readonly`.
 
 - Deploy: manifest `# files:`, OS configlets, external PolicyInstallScript, copyFWB, use_scp, gzip transfer on compress (plan shows −%), capabilities API (+ expect_install_plan / walkthrough pointers), live gate + force_limited, expect stub + raw/expanded configlet preview + ordered expect plan (reg_user + safety_net_acl + download + sessionStorage) + dry walkthrough (preview_only + simulated_at timeline, sessionStorage + download); `POST …/run` (+ optional `step=`) → 501 / step_refused (still **no** expect/SSHSession runtime)
 - Options: .ui labels, free QLabel annotations (+ alignment), buddy_labels (external_label controls), enabled/visible/readOnly respect (+ option_enable follow for bonding→xmit_hash and LOG/ULOG on ipt/ipcop/secuwall), QRadio bool, QGroupBox sections (flat/checkable) + QStackedWidget pages (FirewallExtras + InterfaceOptions section chrome + empty pages + stack switcher + stack_switch hints: device-type → `options.type` + stack / use_ULOG follow + `/stack-switch` API with option_enable maps), tooltips + whatsThis + tab page toolTips, page-local QGridLayout + spacers (sizeHint) + column/row stretch + spacing/margins (CSS + page hint) + sizePolicy + min/max size + layout hints + layout_tree + dialog windowTitle/geometry/tab_position/sizeGrip (header WxH + tabs + CSS max-height) + shared `qtGridStyle` + layout-fidelity score on Firewall/Rule/Interface (still **not** full pixel Qt layout)
@@ -614,7 +622,7 @@ WebUI on `feature/webui` remains soft-complete for the polish track.
 
 Still open (hard backlog — **not** soft-fertig):
 
-- Full Qt AdvancedDialog **pixel** layout parity (exact geometry; dialog size + grid spacing since phase226/241; row/col + spacers/sizeHint + stretch + annotations/buddy_labels/alignment + sizePolicy/min/max/enabled/visible/readOnly + option_enable follow + QGroupBox flat + QStackedWidget pages (Firewall+Interface chrome, empty pages, stack switcher, stack_switch hints, fidelity stacked_sections, `/stack-switch`) + whatsThis + tab page toolTips + layout_tree + tab_position/sizeGrip since phase165/177/181/189/205/209/213/257–291/345–456; fidelity score since 297; closure criteria since 329)
+- Full Qt AdvancedDialog **pixel** layout parity (exact geometry; dialog size + grid spacing since phase226/241; row/col + spacers/sizeHint + stretch + annotations/buddy_labels/alignment + sizePolicy/min/max/enabled/visible/readOnly + option_enable follow + QGroupBox flat + QStackedWidget pages (Firewall+Interface chrome, empty pages, stack switcher, stack_switch hints, fidelity stacked_sections, `/stack-switch`, `/option-enable`) + whatsThis + tab page toolTips + layout_tree + tab_position/sizeGrip since phase165/177/181/189/205/209/213/257–291/345–464; fidelity score since 297; closure criteria since 329)
 - Full desktop **FirewallInstaller** expect/SSHSession for Cisco/Juniper/Procurve (plan/preview/walkthrough+timeline/download; run/step endpoint refuses with 501)
 - Password/keyboard-interactive SSH (API refuses `allow_password_auth` and `POST /ssh-auth/password`; BatchMode only)
 
@@ -1083,6 +1091,14 @@ Still open (hard backlog — **not** soft-fertig):
 | Local E2E phase454 (hard gaps @ 456) | done | `e2e-phase454.sh` **OK** |
 | Local E2E phase455 (health soft phase) | done | `e2e-phase455.sh` **OK** |
 | Local E2E phase456 (STATUS soft-complete) | done | `e2e-phase456.sh` **OK** |
+| Local E2E phase457 (GET /option-enable) | done | `e2e-phase457.sh` **OK** |
+| Local E2E phase458 (option_enable_path UI) | done | `e2e-phase458.sh` **OK** |
+| Local E2E phase459 (soft marker 464) | done | `e2e-phase459.sh` **OK** |
+| Local E2E phase460 (STATUS mentions) | done | `e2e-phase460.sh` **OK** |
+| Local E2E phase461 (typecheck) | done | `e2e-phase461.sh` **OK** |
+| Local E2E phase462 (e2e-all list) | done | `e2e-phase462.sh` **OK** |
+| Local E2E phase463 (hard gaps @ 464) | done | `e2e-phase463.sh` **OK** |
+| Local E2E phase464 (STATUS soft-complete) | done | `e2e-phase464.sh` **OK** |
 
 ## Local commands
 
@@ -1548,6 +1564,14 @@ bash webui/scripts/e2e-phase453.sh
 bash webui/scripts/e2e-phase454.sh
 bash webui/scripts/e2e-phase455.sh
 bash webui/scripts/e2e-phase456.sh
+bash webui/scripts/e2e-phase457.sh
+bash webui/scripts/e2e-phase458.sh
+bash webui/scripts/e2e-phase459.sh
+bash webui/scripts/e2e-phase460.sh
+bash webui/scripts/e2e-phase461.sh
+bash webui/scripts/e2e-phase462.sh
+bash webui/scripts/e2e-phase463.sh
+bash webui/scripts/e2e-phase464.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

@@ -189,6 +189,7 @@ export function FirewallExtras({
   const [hardGapClosure, setHardGapClosure] = useState<Record<string, string>>({});
   const [layoutFidelityPath, setLayoutFidelityPath] = useState<string | null>(null);
   const [stackSwitchPath, setStackSwitchPath] = useState<string | null>(null);
+  const [optionEnablePath, setOptionEnablePath] = useState<string | null>(null);
   const [expectRunPath, setExpectRunPath] = useState<string | null>(null);
   const [passwordSshPath, setPasswordSshPath] = useState<string | null>(null);
   const [softCompletePhase, setSoftCompletePhase] = useState<string | null>(null);
@@ -224,6 +225,7 @@ export function FirewallExtras({
       setHardGapClosure(gaps?.hard_gap_closure || {});
       setLayoutFidelityPath(gaps?.layout_fidelity_path || "/api/v1/layout-fidelity");
       setStackSwitchPath(gaps?.stack_switch_path || "/api/v1/stack-switch");
+      setOptionEnablePath(gaps?.option_enable_path || "/api/v1/option-enable");
       setExpectRunPath(gaps?.expect_run_path || "/api/v1/expect-install-plan/run");
       setPasswordSshPath(gaps?.password_ssh_path || "/api/v1/ssh-auth/password");
       setSoftCompletePhase(gaps?.soft_complete_phase || resSt?.soft_complete_phase || null);
@@ -1587,7 +1589,11 @@ export function FirewallExtras({
               )}
             </ul>
           ) : null}
-          {layoutFidelityPath || stackSwitchPath || expectRunPath || passwordSshPath ? (
+          {layoutFidelityPath ||
+          stackSwitchPath ||
+          optionEnablePath ||
+          expectRunPath ||
+          passwordSshPath ? (
             <p className="muted">
               {layoutFidelityPath ? (
                 <>
@@ -1600,7 +1606,15 @@ export function FirewallExtras({
                   Stack switch: <code>{stackSwitchPath}</code>
                 </>
               ) : null}
-              {(layoutFidelityPath || stackSwitchPath) && expectRunPath ? " · " : null}
+              {(layoutFidelityPath || stackSwitchPath) && optionEnablePath ? " · " : null}
+              {optionEnablePath ? (
+                <>
+                  Option enable: <code>{optionEnablePath}</code>
+                </>
+              ) : null}
+              {(layoutFidelityPath || stackSwitchPath || optionEnablePath) && expectRunPath
+                ? " · "
+                : null}
               {expectRunPath ? (
                 <>
                   Expect run (501): <code>{expectRunPath}</code>

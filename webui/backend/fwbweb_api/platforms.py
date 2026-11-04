@@ -553,10 +553,44 @@ def stack_switch_for(platform: str = "", host_os: str = "") -> dict[str, Any]:
         "option_enable": _option_option_enable(plat_stem),
         "iface_option_enable": _iface_option_enable(iface_stem),
         "pixel_parity": False,
+        "option_enable_path": "/api/v1/option-enable",
         "note": (
             "Maps how desktop switches QStackedWidget pages and related option_enable "
-            "rules; WebUI uses them for preview/follow only — not full pixel layout "
-            "or Interface type writes."
+            "rules; WebUI uses them for preview/follow only — not full pixel layout. "
+            "Iface device type may write options.type when stack_switch.writes_option is set."
+        ),
+    }
+
+
+def option_enable_for(platform: str = "", host_os: str = "") -> dict[str, Any]:
+    """Desktop option enable/disable dependency maps (preview/follow)."""
+    plat_stem: str | None = None
+    if platform:
+        try:
+            plat = get_platform(platform)
+            plat_stem = _dialog_stem(plat.get("dialog") or platform)
+        except KeyError:
+            plat_stem = _dialog_stem(platform)
+    iface_stem: str | None = None
+    if host_os:
+        try:
+            os_info = get_os(host_os)
+            iface_stem = _iface_dialog_stem(os_info.get("interface_dialog") or "")
+        except KeyError:
+            iface_stem = None
+    return {
+        "ok": True,
+        "platform": platform or None,
+        "host_os": host_os or None,
+        "dialog_stem": plat_stem,
+        "interface_dialog_stem": iface_stem,
+        "option_enable": _option_option_enable(plat_stem),
+        "iface_option_enable": _iface_option_enable(iface_stem),
+        "pixel_parity": False,
+        "stack_switch_path": "/api/v1/stack-switch",
+        "note": (
+            "Desktop setEnabled() dependencies between options; WebUI follows these "
+            "for field enabled state (not full dialog logic)."
         ),
     }
 

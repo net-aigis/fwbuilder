@@ -908,10 +908,37 @@ export function fetchHardGaps() {
     closure_path?: string;
     layout_fidelity_path?: string;
     stack_switch_path?: string;
+    option_enable_path?: string;
     expect_run_path?: string;
     password_ssh_path?: string;
     note?: string;
   }>("/api/v1/hard-gaps");
+}
+
+export function fetchOptionEnable(platform = "", hostOs = "") {
+  const qs = new URLSearchParams();
+  if (platform) qs.set("platform", platform);
+  if (hostOs) qs.set("host_os", hostOs);
+  return api<{
+    ok: boolean;
+    platform?: string | null;
+    host_os?: string | null;
+    option_enable: Array<{
+      target: string;
+      when_option: string;
+      when_in: string[];
+      note?: string;
+    }>;
+    iface_option_enable: Array<{
+      target: string;
+      when_option: string;
+      when_in: string[];
+      note?: string;
+    }>;
+    pixel_parity: boolean;
+    stack_switch_path?: string;
+    note?: string;
+  }>(`/api/v1/option-enable?${qs.toString()}`);
 }
 
 export function fetchHardGapClosure() {
