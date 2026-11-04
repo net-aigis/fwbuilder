@@ -35,16 +35,18 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "736"
+WEBUI_SOFT_COMPLETE_PHASE = "744"
 # Honesty/preview track milestone (last thematic checkpoint; soft marker may be higher).
 # 600: refusals/closure; 650: health/summary/paths + fidelity sample;
 # 700: expect step_notes + SSH alternative/refusal notes;
-# 750: spacer sizeType extract + qtSpacerStyle/CSS (still not pixel).
-WEBUI_HONESTY_MILESTONE = 750
+# 750: spacer sizeType extract + qtSpacerStyle/CSS;
+# 800: with_size_policy_expanding in fidelity sample (still not pixel).
+WEBUI_HONESTY_MILESTONE = 800
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 750: spacer sizeType extracted and applied via "
-    "qtSpacerStyle/data-size-type; layout_fidelity sample counts "
-    "spacers_with_orientation/size_type — still not pixel parity. Hard gaps remain open."
+    "Honesty surface checkpoint 800: layout_fidelity counts "
+    "with_size_policy_expanding alongside spacer sizeType signals; "
+    "sample exposed on /hard-gaps and summary — still not pixel parity. "
+    "Hard gaps remain open."
 )
 
 HARD_GAPS_OPEN = (

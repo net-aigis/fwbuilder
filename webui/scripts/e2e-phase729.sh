@@ -15,7 +15,7 @@ s = m.hard_gaps_summary()
 assert h.get("layout_fidelity_sample_with_size_policy_expanding") == f["fields"]["with_size_policy_expanding"]
 assert s.get("layout_fidelity_sample_with_size_policy_expanding") == f["fields"]["with_size_policy_expanding"]
 assert "with_size_policy_expanding" in (m.HARD_GAP_NOTES.get("full_qt_pixel_layout") or "")
-assert m.WEBUI_SOFT_COMPLETE_PHASE == "736"
+assert int(m.WEBUI_SOFT_COMPLETE_PHASE) >= 736
 print("expanding", f["fields"]["with_size_policy_expanding"], "score", f["score_percent"])
 PY
 echo "cleaned"
