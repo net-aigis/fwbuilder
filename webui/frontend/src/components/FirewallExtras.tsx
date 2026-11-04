@@ -176,6 +176,10 @@ function honestyOperatorBriefStorageKey(firewallId: string) {
   return `fwbweb.honestyOperatorBrief.${firewallId}`;
 }
 
+function hardGapRosterStorageKey(firewallId: string) {
+  return `fwbweb.hardGapRoster.${firewallId}`;
+}
+
 function buildHonestyBundle(payload: Record<string, unknown>) {
   const surfaceKeys = Array.isArray(payload.soft_fertig_surface_keys)
     ? (payload.soft_fertig_surface_keys as string[])
@@ -1390,6 +1394,39 @@ export function FirewallExtras({
             }
           } catch {
             setHonestyOperatorBriefDetail(operatorBriefRaw);
+          }
+        }
+        const hardGapRosterRaw = sessionStorage.getItem(
+          hardGapRosterStorageKey(firewallId),
+        );
+        if (hardGapRosterRaw) {
+          try {
+            const parsed = JSON.parse(hardGapRosterRaw) as {
+              soft_fertig_hard_gap_roster?: unknown;
+            };
+            const roster = parsed.soft_fertig_hard_gap_roster;
+            if (roster && typeof roster === "object") {
+              const rec = roster as Record<string, unknown>;
+              const entries = Array.isArray(rec.entries)
+                ? (rec.entries as Array<Record<string, unknown>>)
+                : [];
+              setHardGapRosterDetail(
+                [
+                  `hard_gap_count: ${String(rec.hard_gap_count ?? "")}`,
+                  `entry_count: ${String(rec.entry_count ?? "")}`,
+                  `hard_gaps_remain: ${String(rec.hard_gaps_remain ?? "")}`,
+                  `note: ${String(rec.note ?? "")}`,
+                  ...entries.map(
+                    (e) =>
+                      `${String(e.id ?? "")}: ${String(e.label ?? "")} — ${String(e.closure_title ?? "")}`,
+                  ),
+                ].join("\n"),
+              );
+            } else {
+              setHardGapRosterDetail(hardGapRosterRaw);
+            }
+          } catch {
+            setHardGapRosterDetail(hardGapRosterRaw);
           }
         }
       } catch {
@@ -4234,6 +4271,14 @@ export function FirewallExtras({
                     honesty_milestone: hardGapsPayload.honesty_milestone,
                   };
                   const text = JSON.stringify(catalog, null, 2);
+                  try {
+                    sessionStorage.setItem(
+                      hardGapRosterStorageKey(firewallId),
+                      text,
+                    );
+                  } catch {
+                    /* ignore */
+                  }
                   const blob = new Blob([text + "\n"], {
                     type: "application/json;charset=utf-8",
                   });
@@ -4263,6 +4308,14 @@ export function FirewallExtras({
                       soft_complete_phase: hardGapsPayload.soft_complete_phase,
                       honesty_milestone: hardGapsPayload.honesty_milestone,
                     };
+                    try {
+                      sessionStorage.setItem(
+                        hardGapRosterStorageKey(firewallId),
+                        JSON.stringify(catalog, null, 2),
+                      );
+                    } catch {
+                      /* ignore */
+                    }
                     const text = JSON.stringify(catalog, null, 2) + "\n";
                     try {
                       await navigator.clipboard.writeText(text);
@@ -4534,7 +4587,7 @@ export function FirewallExtras({
               type="button"
               className="ghost"
               disabled={busy || (!hardGapsPayload && !hardGapsSummaryText)}
-              title="Clear sessionStorage hard-gaps snapshot, summary, surface, refusals, honesty paths, track note, readiness, soft-complete note, surface changelog, operator brief"
+              title="Clear sessionStorage hard-gaps snapshot, summary, surface, refusals, honesty paths, track note, readiness, soft-complete note, surface changelog, operator brief, hard-gap roster"
               onClick={() => {
                 try {
                   sessionStorage.removeItem(hardGapsSnapshotKey(firewallId));
@@ -4548,6 +4601,7 @@ export function FirewallExtras({
                   sessionStorage.removeItem(softCompleteNoteStorageKey(firewallId));
                   sessionStorage.removeItem(honestySurfaceChangelogStorageKey(firewallId));
                   sessionStorage.removeItem(honestyOperatorBriefStorageKey(firewallId));
+                  sessionStorage.removeItem(hardGapRosterStorageKey(firewallId));
                 } catch {
                   /* ignore */
                 }
