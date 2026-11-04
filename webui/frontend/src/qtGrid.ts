@@ -136,6 +136,16 @@ export function qtSpacerStyle(spacer: QtGridSpacer): CSSProperties | undefined {
     }
   } else if (sizeType === "fixed" && !hint) {
     style.flexGrow = 0;
+  } else if (sizeType === "maximum") {
+    style.flexGrow = 1;
+    style.maxWidth = "100%";
+    style.maxHeight = "100%";
+  } else if (sizeType === "minimum") {
+    style.flexGrow = 0;
+    if (!style.minWidth) style.minWidth = "0.25rem";
+    if (!style.minHeight) style.minHeight = "0.25rem";
+  } else if (sizeType === "preferred") {
+    style.flexGrow = 0.5;
   }
   return style;
 }

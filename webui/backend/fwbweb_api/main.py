@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "768"
+WEBUI_SOFT_COMPLETE_PHASE = "776"
 # Honesty/preview track milestone (last thematic checkpoint; soft marker may be higher).
 # 600: refusals/closure; 650: health/summary/paths + fidelity sample;
 # 700: expect step_notes + SSH alternative/refusal notes;
@@ -63,8 +63,9 @@ HARD_GAP_NOTES = {
         "use_ULOG/device-type stack hints + option_enable follow); "
         "fidelity counts with_visible + sections flat/checkable + signal_keys + "
         "layout_tree_max_depth + spacers_with_orientation/size_type + "
-        "with_size_policy_expanding/fixed; UI applies data-size-type Expanding/Fixed via "
-        "qtSpacerStyle and field size-h/v Expanding/Minimum/Preferred/Fixed classes "
+        "with_size_policy_expanding/fixed; UI applies data-size-type "
+        "Expanding/Fixed/Maximum/Minimum/Preferred via qtSpacerStyle/CSS and field "
+        "size-h/v Expanding/Minimum/Preferred/Fixed classes "
         "(still not desktop-equivalent geometry); visible=false keeps field-ui-hidden "
         "grid holes; exact pixel geometry still open."
     ),

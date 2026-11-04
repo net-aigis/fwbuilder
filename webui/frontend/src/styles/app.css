@@ -713,6 +713,22 @@ button.linkish:disabled {
   flex-grow: 0;
 }
 
+.options-grid.qt-grid .qt-spacer[data-size-type="Maximum"] {
+  flex-grow: 1;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.options-grid.qt-grid .qt-spacer[data-size-type="Minimum"] {
+  flex-grow: 0;
+  min-width: 0.25rem;
+  min-height: 0.25rem;
+}
+
+.options-grid.qt-grid .qt-spacer[data-size-type="Preferred"] {
+  flex-grow: 0.5;
+}
+
 pre.configlet-preview {
   max-height: 14rem;
   overflow: auto;
