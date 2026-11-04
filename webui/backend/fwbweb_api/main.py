@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "936"
+WEBUI_SOFT_COMPLETE_PHASE = "944"
 # Honesty/preview track milestone (last thematic checkpoint; soft marker may be higher).
 # 600: refusals/closure; 650: health/summary/paths + fidelity sample;
 # 700: expect step_notes + SSH alternative/refusal notes;
@@ -78,7 +78,7 @@ HARD_GAP_NOTES = {
         "pages_with_column_stretch/spacing/layout_tree + chrome geometry/size_grip + "
         "with_grid/label/tooltip field samples + pages/sections/stack_names counts + "
         "chrome window_title/tab_position samples; UI truncates long sample "
-        "fidelity lines (title keeps full text); "
+        "fidelity lines (title keeps full text); with_size_policy total sample; "
         "UI applies data-size-type Expanding/Fixed/Maximum/Minimum/Preferred via "
         "qtSpacerStyle/CSS and field size-h/v Expanding/Minimum/Preferred/Fixed classes "
         "(still not desktop-equivalent geometry); visible=false keeps field-ui-hidden "
@@ -207,6 +207,11 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
         ),
         "layout_fidelity_sample_spacers_with_size_type": (
             (sample_fid.get("pages") or {}).get("spacers_with_size_type")
+            if sample_fid.get("ok")
+            else None
+        ),
+        "layout_fidelity_sample_with_size_policy": (
+            (sample_fid.get("fields") or {}).get("with_size_policy")
             if sample_fid.get("ok")
             else None
         ),
@@ -421,6 +426,11 @@ def hard_gaps_summary(_: str = Depends(require_token)) -> dict[str, object]:
         ),
         "layout_fidelity_sample_spacers_with_size_type": (
             (sample_fid.get("pages") or {}).get("spacers_with_size_type")
+            if sample_fid.get("ok")
+            else None
+        ),
+        "layout_fidelity_sample_with_size_policy": (
+            (sample_fid.get("fields") or {}).get("with_size_policy")
             if sample_fid.get("ok")
             else None
         ),
