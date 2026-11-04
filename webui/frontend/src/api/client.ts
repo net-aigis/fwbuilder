@@ -817,10 +817,55 @@ export function fetchLayoutFidelity(platform: string, hostOs = "") {
     score_percent?: number;
     note?: string;
     fields?: Record<string, number>;
-    pages?: Record<string, number>;
+    pages?: Record<string, unknown>;
     chrome?: Record<string, boolean>;
+    stack_switch?: Array<{
+      stack: string;
+      option: string;
+      when_true: number;
+      when_false: number;
+      preview_only?: boolean;
+      note?: string;
+    }>;
+    iface_stack_switch?: {
+      stack: string;
+      by_type: Record<string, number>;
+      default?: number;
+      preview_only?: boolean;
+      note?: string;
+    } | null;
     error?: string;
   }>(`/api/v1/layout-fidelity?${qs.toString()}`);
+}
+
+export function fetchStackSwitch(platform = "", hostOs = "") {
+  const qs = new URLSearchParams();
+  if (platform) qs.set("platform", platform);
+  if (hostOs) qs.set("host_os", hostOs);
+  return api<{
+    ok: boolean;
+    platform?: string | null;
+    host_os?: string | null;
+    dialog_stem?: string | null;
+    interface_dialog_stem?: string | null;
+    option_stack_switch: Array<{
+      stack: string;
+      option: string;
+      when_true: number;
+      when_false: number;
+      preview_only?: boolean;
+      note?: string;
+    }>;
+    iface_stack_switch?: {
+      stack: string;
+      by_type: Record<string, number>;
+      default?: number;
+      preview_only?: boolean;
+      note?: string;
+    } | null;
+    pixel_parity: boolean;
+    note?: string;
+  }>(`/api/v1/stack-switch?${qs.toString()}`);
 }
 
 export function fetchHardGaps() {
@@ -833,6 +878,7 @@ export function fetchHardGaps() {
     hard_gap_closure?: Record<string, string>;
     closure_path?: string;
     layout_fidelity_path?: string;
+    stack_switch_path?: string;
     note?: string;
   }>("/api/v1/hard-gaps");
 }

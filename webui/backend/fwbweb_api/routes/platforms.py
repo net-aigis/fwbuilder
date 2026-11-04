@@ -26,6 +26,7 @@ from ..platforms import (
     list_platforms,
     option_schema,
     rule_option_schema,
+    stack_switch_for,
 )
 
 router = APIRouter(prefix="/api/v1", tags=["platforms"])
@@ -181,6 +182,16 @@ def get_layout_fidelity(
 ) -> dict[str, Any]:
     """Heuristic .ui layout-signal coverage (explicitly not pixel parity)."""
     return layout_fidelity_for(platform, host_os)
+
+
+@router.get("/stack-switch")
+def get_stack_switch(
+    platform: str = Query(""),
+    host_os: str = Query(""),
+    _: str = Depends(require_token),
+) -> dict[str, Any]:
+    """Desktop QStackedWidget switch maps (preview/follow; not pixel parity)."""
+    return stack_switch_for(platform, host_os)
 
 
 @router.get("/ssh-auth")

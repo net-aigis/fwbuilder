@@ -362,6 +362,12 @@ def _layout_fidelity_from_dialog(stem: str, info: dict[str, Any]) -> dict[str, A
         "with_external_label": sum(1 for v in fields.values() if v.get("external_label")),
         "with_enabled": sum(1 for v in fields.values() if "enabled" in v),
     }
+    stacked_secs = [
+        s
+        for p in pages
+        for s in (p.get("sections") or [])
+        if s.get("stacked")
+    ]
     page_stats = {
         "pages": len(pages),
         "spacers": sum(len(p.get("spacers") or []) for p in pages),
@@ -374,6 +380,9 @@ def _layout_fidelity_from_dialog(stem: str, info: dict[str, Any]) -> dict[str, A
         "pages_with_row_stretch": sum(1 for p in pages if p.get("row_stretch")),
         "pages_with_spacing": sum(1 for p in pages if p.get("spacing")),
         "pages_with_layout_tree": sum(1 for p in pages if p.get("layout_tree")),
+        "stacked_sections": len(stacked_secs),
+        "empty_stacked_sections": sum(1 for s in stacked_secs if s.get("empty")),
+        "stack_names": sorted({s.get("stack") for s in stacked_secs if s.get("stack")}),
     }
     chrome = {
         "window_title": bool(info.get("window_title")),
@@ -389,6 +398,8 @@ def _layout_fidelity_from_dialog(stem: str, info: dict[str, Any]) -> dict[str, A
         1.0 if chrome["geometry"] else 0.0,
         1.0 if page_stats["pages_with_spacing"] else 0.0,
         1.0 if page_stats["pages_with_layout_tree"] else 0.0,
+        # Presence of QStackedWidget extraction (not desktop pixel switch behavior).
+        1.0 if page_stats["stacked_sections"] else 0.0,
     ]
     score = round(100.0 * (sum(score_parts) / len(score_parts)), 1)
     return {
@@ -426,7 +437,52 @@ def layout_fidelity_for(platform: str, host_os: str = "") -> dict[str, Any]:
     out = _layout_fidelity_from_dialog(stem, dialogs[stem])
     out["platform"] = platform
     out["host_os"] = host_os or None
+    opt_hints = _option_stack_switch(stem)
+    if opt_hints:
+        out["stack_switch"] = opt_hints
+    iface_hint: dict[str, Any] | None = None
+    if host_os:
+        try:
+            os_info = get_os(host_os)
+            iface_stem = _iface_dialog_stem(os_info.get("interface_dialog") or "")
+            iface_hint = _iface_stack_switch(iface_stem)
+        except KeyError:
+            iface_hint = None
+    if iface_hint:
+        out["iface_stack_switch"] = iface_hint
     return out
+
+
+def stack_switch_for(platform: str = "", host_os: str = "") -> dict[str, Any]:
+    """Desktop QStackedWidget switch maps for WebUI preview/follow (not pixel)."""
+    plat_stem: str | None = None
+    if platform:
+        try:
+            plat = get_platform(platform)
+            plat_stem = _dialog_stem(plat.get("dialog") or platform)
+        except KeyError:
+            plat_stem = _dialog_stem(platform)
+    iface_stem: str | None = None
+    if host_os:
+        try:
+            os_info = get_os(host_os)
+            iface_stem = _iface_dialog_stem(os_info.get("interface_dialog") or "")
+        except KeyError:
+            iface_stem = None
+    return {
+        "ok": True,
+        "platform": platform or None,
+        "host_os": host_os or None,
+        "dialog_stem": plat_stem,
+        "interface_dialog_stem": iface_stem,
+        "option_stack_switch": _option_stack_switch(plat_stem),
+        "iface_stack_switch": _iface_stack_switch(iface_stem),
+        "pixel_parity": False,
+        "note": (
+            "Maps how desktop switches QStackedWidget pages; WebUI uses them for "
+            "preview/follow only — not full pixel layout or Interface type writes."
+        ),
+    }
 
 
 def dialog_pages_for(platform: str, host_os: str = "") -> list[dict[str, Any]]:
