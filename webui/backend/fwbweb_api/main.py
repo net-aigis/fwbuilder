@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "496"
+WEBUI_SOFT_COMPLETE_PHASE = "504"
 
 HARD_GAPS_OPEN = (
     "full_qt_pixel_layout",
@@ -49,6 +49,7 @@ HARD_GAP_NOTES = {
         "layout_tree/tab_position/sizeGrip/QStackedWidget pages extracted "
         "(Firewall + Interface section chrome + empty pages + stack switcher + "
         "use_ULOG/device-type stack hints + option_enable follow); "
+        "fidelity counts with_visible + sections flat/checkable + signal_keys; "
         "exact pixel geometry still open."
     ),
     "expect_sshsession_runtime": (
@@ -112,8 +113,10 @@ def res_status(_: str = Depends(require_token)) -> dict[str, object]:
 @app.get("/api/v1/hard-gaps")
 def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
     """Explicit list of remaining hard-gap items (honesty track)."""
+    from .deploy import ssh_auth_capabilities
     from .expect_installer import EXPECT_PLAN_STEP_IDS
 
+    ssh = ssh_auth_capabilities()
     return {
         "soft_complete_phase": WEBUI_SOFT_COMPLETE_PHASE,
         "soft_fertig_honesty_track": True,
@@ -128,16 +131,21 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
         "expect_run_path": "/api/v1/expect-install-plan/run",
         "expect_steps_path": "/api/v1/expect-install-plan/steps",
         "expect_plan_step_ids": list(EXPECT_PLAN_STEP_IDS),
+        "ssh_auth_path": "/api/v1/ssh-auth",
         "password_ssh_path": "/api/v1/ssh-auth/password",
+        "ssh_batch_mode_only": bool(ssh.get("batch_mode_only")),
+        "ssh_alternatives": list(ssh.get("alternatives") or []),
+        "ssh_refusal_paths": dict(ssh.get("refusal_paths") or {}),
         "note": (
             "Honesty/preview track is soft-complete (soft_fertig); these items remain "
             "unimplemented (full Qt pixel layout, expect/SSHSession runtime, password SSH). "
             "GET /layout-fidelity reports extracted-signal coverage only "
-            "(includes stacked_sections counts). "
+            "(includes stacked_sections / with_visible / signal_keys). "
             "GET /stack-switch and /option-enable expose desktop maps for preview/follow. "
             "POST expect-install-plan/run and ssh-auth/password stay 501. "
             "expect_plan_step_ids / GET expect-install-plan/steps list canonical plan "
             "step ids (all refused; unknown step → expect_installer_unknown_step). "
+            "ssh_refusal_paths documents BatchMode-only refuse status codes. "
             "hard_gap_closure documents what would close each gap."
         ),
     }

@@ -917,7 +917,11 @@ export function fetchHardGaps() {
     expect_run_path?: string;
     expect_steps_path?: string;
     expect_plan_step_ids?: string[];
+    ssh_auth_path?: string;
     password_ssh_path?: string;
+    ssh_batch_mode_only?: boolean;
+    ssh_alternatives?: string[];
+    ssh_refusal_paths?: Record<string, number>;
     note?: string;
   }>("/api/v1/hard-gaps");
 }
@@ -1107,6 +1111,11 @@ export async function refusePasswordSsh(): Promise<{
   refused: boolean;
   status: number;
   detail: string;
+  error?: string;
+  batch_mode_only?: boolean;
+  alternatives?: string[];
+  refusal_paths?: Record<string, number>;
+  note?: string;
 }> {
   const headers = new Headers();
   headers.set("Authorization", `Bearer ${getToken()}`);
@@ -1115,7 +1124,46 @@ export async function refusePasswordSsh(): Promise<{
     headers,
   });
   const text = await res.text();
-  return { refused: res.status === 501, status: res.status, detail: text };
+  let error: string | undefined;
+  let batch_mode_only: boolean | undefined;
+  let alternatives: string[] | undefined;
+  let refusal_paths: Record<string, number> | undefined;
+  let note: string | undefined;
+  try {
+    const parsed = JSON.parse(text) as {
+      detail?: Record<string, unknown> | string;
+    } & Record<string, unknown>;
+    const d =
+      parsed && typeof parsed.detail === "object" && parsed.detail
+        ? (parsed.detail as Record<string, unknown>)
+        : parsed;
+    if (d && typeof d === "object") {
+      if (typeof d.error === "string") error = d.error;
+      if (typeof d.batch_mode_only === "boolean") batch_mode_only = d.batch_mode_only;
+      if (Array.isArray(d.alternatives)) {
+        alternatives = d.alternatives.filter((x): x is string => typeof x === "string");
+      }
+      if (d.refusal_paths && typeof d.refusal_paths === "object") {
+        refusal_paths = {};
+        for (const [k, v] of Object.entries(d.refusal_paths as Record<string, unknown>)) {
+          if (typeof v === "number") refusal_paths[k] = v;
+        }
+      }
+      if (typeof d.note === "string") note = d.note;
+    }
+  } catch {
+    /* plain text */
+  }
+  return {
+    refused: res.status === 501,
+    status: res.status,
+    detail: text,
+    error,
+    batch_mode_only,
+    alternatives,
+    refusal_paths,
+    note,
+  };
 }
 
 export function fetchInstallerConfiglets(hostOs: string) {

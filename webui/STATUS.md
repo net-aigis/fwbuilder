@@ -637,15 +637,23 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Soft marker 496 | done | E2E phase494 |
 | STATUS/typecheck/e2e-all 489–496 | done | E2E phase495 |
 | Soft-complete STATUS through 496 | done | E2E phase496 |
+| hard-gaps ssh_auth_path + refusal_paths | done | E2E phase497 |
+| refusePasswordSsh parses honesty fields | done | E2E phase498 |
+| SSH refusal summary UI | done | E2E phase499 |
+| Walkthrough download canonical_step_ids | done | E2E phase500 |
+| Pixel hard-gap note visible/signal_keys | done | E2E phase501 |
+| Soft marker 504 | done | E2E phase502 |
+| STATUS/typecheck/e2e-all 497–504 | done | E2E phase503 |
+| Soft-complete STATUS through 504 | done | E2E phase504 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Soft-complete (feature/webui polish track)
 
 WebUI on `feature/webui` remains soft-complete for the polish track.
 
-### Hard-gap honesty/preview track — soft-fertig (phase256); preview slices through 496
+### Hard-gap honesty/preview track — soft-fertig (phase256); preview slices through 504
 
-`WEBUI_SOFT_COMPLETE_PHASE=496`; `/hard-gaps` (+ `/hard-gaps/closure`) sets `soft_fertig_honesty_track: true` + `hard_gap_notes` + `hard_gap_closure` + `layout_fidelity_path` + `stack_switch_path` + `option_enable_path` + `expect_run_path` + `expect_steps_path` + `expect_plan_step_ids` + `password_ssh_path`; `GET /layout-fidelity` / option-schema + rule/iface schemas report heuristic `score_percent` (**not** pixel parity; includes `stacked_sections` / `with_whats_this` / `with_visible` / `with_read_only` / `pages_with_tooltip` / `sections_with_flat|checkable` / `signal_keys`); `GET /stack-switch` + `GET /option-enable` expose desktop maps; `option_enable` follows bonding→xmit and LOG/ULOG (ipt/ipcop/secuwall); iface Device type writes `options.type` and drives stack (no duplicate type field); Firewall UI shows fidelity + refuse paths + soft-complete phase + enable-rules summary + canonical expect step ids/catalog + probe-step select (incl. unknown); `GET /expect-install-plan/steps` lists refused ids; capabilities carry `canonical_step_ids`; unknown `step=` → `expect_installer_unknown_step`; SSH `batch_mode_only` + `alternatives` + `refusal_paths` (deploy 400 / password 501); read_only fields use `field-ui-readonly`.
+`WEBUI_SOFT_COMPLETE_PHASE=504`; `/hard-gaps` (+ `/hard-gaps/closure`) sets `soft_fertig_honesty_track: true` + `hard_gap_notes` + `hard_gap_closure` + `layout_fidelity_path` + `stack_switch_path` + `option_enable_path` + `expect_run_path` + `expect_steps_path` + `expect_plan_step_ids` + `ssh_auth_path` + `password_ssh_path` + `ssh_batch_mode_only` / `ssh_alternatives` / `ssh_refusal_paths`; `GET /layout-fidelity` / option-schema + rule/iface schemas report heuristic `score_percent` (**not** pixel parity; includes `stacked_sections` / `with_whats_this` / `with_visible` / `with_read_only` / `pages_with_tooltip` / `sections_with_flat|checkable` / `signal_keys`); `GET /stack-switch` + `GET /option-enable` expose desktop maps; `option_enable` follows bonding→xmit and LOG/ULOG (ipt/ipcop/secuwall); iface Device type writes `options.type` and drives stack (no duplicate type field); Firewall UI shows fidelity + refuse paths + soft-complete phase + enable-rules summary + canonical expect step ids/catalog + probe-step select (incl. unknown) + SSH refusal map; `GET /expect-install-plan/steps` lists refused ids; capabilities carry `canonical_step_ids`; unknown `step=` → `expect_installer_unknown_step`; SSH `batch_mode_only` + `alternatives` + `refusal_paths` (deploy 400 / password 501); read_only fields use `field-ui-readonly`.
 
 - Deploy: manifest `# files:`, OS configlets, external PolicyInstallScript, copyFWB, use_scp, gzip transfer on compress (plan shows −%), capabilities API (+ expect_install_plan / walkthrough pointers), live gate + force_limited, expect stub + raw/expanded configlet preview + ordered expect plan (reg_user + safety_net_acl + download + sessionStorage) + dry walkthrough (preview_only + simulated_at timeline, sessionStorage + download); `POST …/run` (+ optional `step=`) → 501 / step_refused (still **no** expect/SSHSession runtime)
 - Options: .ui labels, free QLabel annotations (+ alignment), buddy_labels (external_label controls), enabled/visible/readOnly respect (+ option_enable follow for bonding→xmit_hash and LOG/ULOG on ipt/ipcop/secuwall), QRadio bool, QGroupBox sections (flat/checkable) + QStackedWidget pages (FirewallExtras + InterfaceOptions section chrome + empty pages + stack switcher + stack_switch hints: device-type → `options.type` + stack / use_ULOG follow + `/stack-switch` API with option_enable maps), tooltips + whatsThis + tab page toolTips, page-local QGridLayout + spacers (sizeHint) + column/row stretch + spacing/margins (CSS + page hint) + sizePolicy + min/max size + layout hints + layout_tree + dialog windowTitle/geometry/tab_position/sizeGrip (header WxH + tabs + CSS max-height) + shared `qtGridStyle` + layout-fidelity score on Firewall/Rule/Interface (still **not** full pixel Qt layout)
@@ -1163,6 +1171,14 @@ Still open (hard backlog — **not** soft-fertig):
 | Local E2E phase494 (soft marker 496) | done | `e2e-phase494.sh` **OK** |
 | Local E2E phase495 (STATUS/typecheck/e2e-all) | done | `e2e-phase495.sh` **OK** |
 | Local E2E phase496 (STATUS soft-complete) | done | `e2e-phase496.sh` **OK** |
+| Local E2E phase497 (hard-gaps ssh refusal map) | done | `e2e-phase497.sh` **OK** |
+| Local E2E phase498 (refusePasswordSsh parse) | done | `e2e-phase498.sh` **OK** |
+| Local E2E phase499 (SSH refusal UI) | done | `e2e-phase499.sh` **OK** |
+| Local E2E phase500 (walkthrough canonical ids) | done | `e2e-phase500.sh` **OK** |
+| Local E2E phase501 (pixel note signal_keys) | done | `e2e-phase501.sh` **OK** |
+| Local E2E phase502 (soft marker 504) | done | `e2e-phase502.sh` **OK** |
+| Local E2E phase503 (STATUS/typecheck/e2e-all) | done | `e2e-phase503.sh` **OK** |
+| Local E2E phase504 (STATUS soft-complete) | done | `e2e-phase504.sh` **OK** |
 
 ## Local commands
 
@@ -1668,6 +1684,14 @@ bash webui/scripts/e2e-phase493.sh
 bash webui/scripts/e2e-phase494.sh
 bash webui/scripts/e2e-phase495.sh
 bash webui/scripts/e2e-phase496.sh
+bash webui/scripts/e2e-phase497.sh
+bash webui/scripts/e2e-phase498.sh
+bash webui/scripts/e2e-phase499.sh
+bash webui/scripts/e2e-phase500.sh
+bash webui/scripts/e2e-phase501.sh
+bash webui/scripts/e2e-phase502.sh
+bash webui/scripts/e2e-phase503.sh
+bash webui/scripts/e2e-phase504.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

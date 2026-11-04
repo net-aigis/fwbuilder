@@ -196,6 +196,8 @@ export function FirewallExtras({
   const [expectPlanStepIds, setExpectPlanStepIds] = useState<string[]>([]);
   const [expectProbeStep, setExpectProbeStep] = useState<string>("ssh_open");
   const [passwordSshPath, setPasswordSshPath] = useState<string | null>(null);
+  const [sshAuthPath, setSshAuthPath] = useState<string | null>(null);
+  const [sshRefusalSummary, setSshRefusalSummary] = useState<string | null>(null);
   const [softCompletePhase, setSoftCompletePhase] = useState<string | null>(null);
   const [stackSwitchSummary, setStackSwitchSummary] = useState<string | null>(null);
   const [layoutFidelity, setLayoutFidelity] = useState<string | null>(null);
@@ -252,6 +254,18 @@ export function FirewallExtras({
         setExpectProbeStep((cur) => (stepIds.includes(cur) ? cur : stepIds[0] || "ssh_open"));
       }
       setPasswordSshPath(gaps?.password_ssh_path || "/api/v1/ssh-auth/password");
+      setSshAuthPath(gaps?.ssh_auth_path || "/api/v1/ssh-auth");
+      if (gaps?.ssh_refusal_paths && Object.keys(gaps.ssh_refusal_paths).length) {
+        const parts = Object.entries(gaps.ssh_refusal_paths).map(([k, v]) => `${k}→${v}`);
+        const alts = gaps.ssh_alternatives?.length
+          ? `; alternatives: ${gaps.ssh_alternatives.join(", ")}`
+          : "";
+        setSshRefusalSummary(
+          `SSH refusals${gaps.ssh_batch_mode_only ? " (BatchMode only)" : ""}: ${parts.join(", ")}${alts}`,
+        );
+      } else {
+        setSshRefusalSummary(null);
+      }
       setSoftCompletePhase(gaps?.soft_complete_phase || resSt?.soft_complete_phase || null);
       try {
         const fid = await fetchLayoutFidelity(plat, hostOs || "");
@@ -1221,9 +1235,13 @@ export function FirewallExtras({
                         const wt = await fetchExpectInstallWalkthrough(hostOs, {
                           fwdir: remoteDir || "/etc",
                         });
+                        const canon = wt.canonical_step_ids?.length
+                          ? `canonical_step_ids=${wt.canonical_step_ids.join(",")}`
+                          : "";
                         const lines = [
                           `# expect walkthrough for ${wt.host_os} (all_preview_only=${wt.all_preview_only})`,
                           wt.note || "",
+                          ...(canon ? [canon] : []),
                           "",
                           ...wt.steps.map((s, i) => {
                             const mark = s.runnable ? "RUN" : "preview_only";
@@ -1289,7 +1307,12 @@ export function FirewallExtras({
                       try {
                         const r = await refusePasswordSsh();
                         if (r.refused) {
-                          onStatus?.("Password SSH refused (501) — BatchMode only");
+                          const alts = r.alternatives?.length
+                            ? `; use ${r.alternatives.join("/")}`
+                            : "";
+                          onStatus?.(
+                            `Password SSH refused (501${r.batch_mode_only ? ", BatchMode only" : ""})${alts}`,
+                          );
                         } else {
                           onError?.(`Unexpected SSH auth response: ${r.status}`);
                         }
@@ -1702,6 +1725,17 @@ export function FirewallExtras({
           {expectPlanStepIds.length ? (
             <p className="muted" title="Canonical expect plan step ids (all refused by POST /run)">
               Expect steps (all 501): <code>{expectPlanStepIds.join(", ")}</code>
+            </p>
+          ) : null}
+          {sshAuthPath || sshRefusalSummary ? (
+            <p className="muted" title="SSH BatchMode-only refusal map from /hard-gaps">
+              {sshAuthPath ? (
+                <>
+                  SSH auth: <code>{sshAuthPath}</code>
+                </>
+              ) : null}
+              {sshAuthPath && sshRefusalSummary ? " · " : null}
+              {sshRefusalSummary}
             </p>
           ) : null}
         </div>
