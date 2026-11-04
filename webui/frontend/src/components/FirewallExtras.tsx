@@ -196,6 +196,14 @@ function buildHonestyBundle(payload: Record<string, unknown>) {
       soft_fertig_session_storage_notes_count:
         payload.soft_fertig_session_storage_notes_count,
     },
+    session_storage_clear: {
+      soft_fertig_session_storage_clear_keys:
+        payload.soft_fertig_session_storage_clear_keys,
+      soft_fertig_session_storage_clear_key_count:
+        payload.soft_fertig_session_storage_clear_key_count,
+      soft_fertig_session_storage_clear_note:
+        payload.soft_fertig_session_storage_clear_note,
+    },
     honesty_exports: {
       soft_fertig_honesty_export_keys: payload.soft_fertig_honesty_export_keys,
       soft_fertig_honesty_export_key_count:
