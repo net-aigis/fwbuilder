@@ -191,6 +191,7 @@ export function FirewallExtras({
   const [layoutFidelityPath, setLayoutFidelityPath] = useState<string | null>(null);
   const [hardGapsPayload, setHardGapsPayload] = useState<Record<string, unknown> | null>(null);
   const [signalCatalogSummary, setSignalCatalogSummary] = useState<string | null>(null);
+  const [signalCatalogDetail, setSignalCatalogDetail] = useState<string | null>(null);
   const [stackSwitchPath, setStackSwitchPath] = useState<string | null>(null);
   const [optionEnablePath, setOptionEnablePath] = useState<string | null>(null);
   const [expectRunPath, setExpectRunPath] = useState<string | null>(null);
@@ -244,8 +245,15 @@ export function FirewallExtras({
         const n =
           (cat.fields?.length || 0) + (cat.pages?.length || 0) + (cat.chrome?.length || 0);
         setSignalCatalogSummary(n ? `Fidelity signal catalog: ${n} keys` : null);
+        const lines = [
+          cat.fields?.length ? `fields: ${cat.fields.join(", ")}` : "",
+          cat.pages?.length ? `pages: ${cat.pages.join(", ")}` : "",
+          cat.chrome?.length ? `chrome: ${cat.chrome.join(", ")}` : "",
+        ].filter(Boolean);
+        setSignalCatalogDetail(lines.length ? lines.join("\n") : null);
       } else {
         setSignalCatalogSummary(null);
+        setSignalCatalogDetail(null);
       }
       setStackSwitchPath(gaps?.stack_switch_path || "/api/v1/stack-switch");
       setOptionEnablePath(gaps?.option_enable_path || "/api/v1/option-enable");
@@ -1752,7 +1760,16 @@ export function FirewallExtras({
               {sshRefusalSummary}
             </p>
           ) : null}
-          {signalCatalogSummary ? <p className="muted">{signalCatalogSummary}</p> : null}
+          {signalCatalogSummary ? (
+            <details className="muted">
+              <summary>{signalCatalogSummary}</summary>
+              {signalCatalogDetail ? (
+                <pre className="deploy-log configlet-preview" tabIndex={0}>
+                  {signalCatalogDetail}
+                </pre>
+              ) : null}
+            </details>
+          ) : null}
           {hardGapsPayload ? (
             <button
               type="button"

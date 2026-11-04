@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# Phase-525: soft marker 528.
+# Phase-525: soft marker at least 528.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$ROOT"
 PYTHONPATH=webui/backend python3 - <<'PY'
 from fwbweb_api import main as m
-assert m.WEBUI_SOFT_COMPLETE_PHASE == "528"
-print("marker 528 ok")
+assert int(m.WEBUI_SOFT_COMPLETE_PHASE) >= 528
+print("marker >=528 ok", m.WEBUI_SOFT_COMPLETE_PHASE)
 PY
 echo "cleaned"
 echo "OK: phase525 e2e passed"

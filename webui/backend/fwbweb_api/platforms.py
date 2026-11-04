@@ -518,8 +518,11 @@ def _layout_fidelity_from_dialog(stem: str, info: dict[str, Any]) -> dict[str, A
         field_stats["with_label"] / n,
         field_stats["with_size_policy"] / n,
         field_stats["with_visible"] / n,
+        field_stats["with_whats_this"] / n,
+        field_stats["with_tooltip"] / n,
         min(page_stats["spacers_with_size_hint"], n) / n if page_stats["spacers"] else 0.0,
         1.0 if chrome["geometry"] else 0.0,
+        1.0 if chrome["tab_position"] else 0.0,
         1.0 if page_stats["pages_with_spacing"] else 0.0,
         1.0 if page_stats["pages_with_layout_tree"] else 0.0,
         min(page_stats["layout_tree_max_depth"], 4) / 4.0,
@@ -527,6 +530,7 @@ def _layout_fidelity_from_dialog(stem: str, info: dict[str, Any]) -> dict[str, A
         1.0 if page_stats["stacked_sections"] else 0.0,
         1.0 if page_stats["buddy_labels"] else 0.0,
         1.0 if page_stats["pages_with_buddy_labels"] else 0.0,
+        1.0 if page_stats["pages_with_tooltip"] else 0.0,
         1.0 if page_stats["sections_with_flat"] or page_stats["sections_with_checkable"] else 0.0,
     ]
     score = round(100.0 * (sum(score_parts) / len(score_parts)), 1)
