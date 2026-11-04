@@ -247,6 +247,7 @@ export function FirewallExtras({
   const [hardGapsClosureTitles, setHardGapsClosureTitles] = useState<Record<string, string> | null>(null);
   const [expectPlanStepTitles, setExpectPlanStepTitles] = useState<Record<string, string> | null>(null);
   const [sshAlternativeTitles, setSshAlternativeTitles] = useState<Record<string, string> | null>(null);
+  const [honestyPathTitles, setHonestyPathTitles] = useState<Record<string, string> | null>(null);
   const [honestyMilestoneNote, setHonestyMilestoneNote] = useState<string | null>(null);
   const [softFertigHonestyTrack, setSoftFertigHonestyTrack] = useState<boolean | null>(null);
   const [honestyPathsSummary, setHonestyPathsSummary] = useState<string | null>(null);
@@ -385,6 +386,11 @@ export function FirewallExtras({
       setSshAlternativeTitles(
         gaps?.ssh_alternative_titles && typeof gaps.ssh_alternative_titles === "object"
           ? (gaps.ssh_alternative_titles as Record<string, string>)
+          : null,
+      );
+      setHonestyPathTitles(
+        gaps?.honesty_path_titles && typeof gaps.honesty_path_titles === "object"
+          ? (gaps.honesty_path_titles as Record<string, string>)
           : null,
       );
       setHonestyMilestoneNote(gaps?.honesty_milestone_note || null);
@@ -2109,6 +2115,12 @@ export function FirewallExtras({
               <span className="muted" title={Object.entries(sshAlternativeTitles).map(([k,v]) => `${k}: ${v}`).join(" · ")}>
                 · ssh alt titles{" "}
                 <code>{Object.keys(sshAlternativeTitles).length}</code>
+              </span>
+            ) : null}
+            {honestyPathTitles && Object.keys(honestyPathTitles).length > 0 ? (
+              <span className="muted" title={Object.entries(honestyPathTitles).map(([k,v]) => `${k}: ${v}`).join(" · ")}>
+                · honesty path titles{" "}
+                <code>{Object.keys(honestyPathTitles).length}</code>
               </span>
             ) : null}
             {honestyMilestone != null ? (
