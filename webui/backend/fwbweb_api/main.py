@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "1304"
+WEBUI_SOFT_COMPLETE_PHASE = "1320"
 # Honesty/preview track milestone (last thematic checkpoint; soft marker may be higher).
 # 600: refusals/closure; 650: health/summary/paths + fidelity sample;
 # 700: expect step_notes + SSH alternative/refusal notes;
@@ -68,11 +68,13 @@ WEBUI_SOFT_COMPLETE_PHASE = "1304"
 # 2000: soft_fertig_surface_keys (+ titles/count) documentation catalog;
 # 2050: hard_gap_related_refusals (+ titles) mapped per open hard gap;
 # 2100: UI expandable soft_fertig_surface_keys catalog detail;
-# 2150: UI expandable hard_gap_related_refusals detail.
-WEBUI_HONESTY_MILESTONE = 2150
+# 2150: UI expandable hard_gap_related_refusals detail;
+# 2200: soft_fertig_surface_notes (+ count) for surface key catalog.
+WEBUI_HONESTY_MILESTONE = 2200
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 2150: UI expands hard_gap_related_refusals "
-    "with hard_gap_related_refusal_titles — hard gaps remain open."
+    "Honesty surface checkpoint 2200: /hard-gaps (+ summary) expose "
+    "soft_fertig_surface_notes and soft_fertig_surface_notes_count — "
+    "hard gaps remain open."
 )
 
 HARD_GAPS_OPEN = (
@@ -195,6 +197,32 @@ SOFT_FERTIG_SURFACE_KEY_TITLES = {
     "ssh_alternative_titles": "Titles for BatchMode SSH alternatives",
     "ssh_refusal_path_titles": "Titles for SSH refusal paths",
     "layout_fidelity_sample_catalog_complete": "Sample fidelity catalog complete flag",
+}
+
+SOFT_FERTIG_SURFACE_NOTES = {
+    "soft_complete_phase": "Highest soft-fertig E2E phase number completed.",
+    "soft_fertig_honesty_track": "True while honesty/preview track is soft-complete.",
+    "honesty_milestone": "Checkpoint number for honesty surface growth.",
+    "honesty_milestone_note": "Human checkpoint text for the current milestone.",
+    "hard_gap_open": "Ids of the three remaining hard gaps.",
+    "hard_gap_open_labels": "Short human labels for open hard gaps.",
+    "hard_gap_closure_titles": "One-line closure criteria titles.",
+    "hard_gap_related_refusals": "Mapped refuse status / pixel_parity per hard gap.",
+    "hard_gap_related_refusal_titles": "One-line titles for related refusals.",
+    "hard_gap_count": "Always 3 until a hard gap is closed.",
+    "hard_gap_notes": "Long honesty notes (current preview state).",
+    "hard_gap_closure": "Full closure criteria text per hard gap.",
+    "honesty_paths": "Map of honesty/preview endpoint paths.",
+    "honesty_paths_count": "Number of honesty/preview paths.",
+    "honesty_path_titles": "Short titles for honesty paths.",
+    "honesty_path_notes": "Short notes for honesty paths.",
+    "honesty_path_notes_count": "Number of honesty path notes.",
+    "summary_path": "URL path of the compact hard-gaps summary.",
+    "layout_fidelity_path": "URL path of layout-fidelity score.",
+    "expect_plan_step_titles": "Titles for refused expect install steps.",
+    "ssh_alternative_titles": "Titles for BatchMode SSH alternatives.",
+    "ssh_refusal_path_titles": "Titles for SSH refusal paths.",
+    "layout_fidelity_sample_catalog_complete": "True when sample fidelity catalog is complete.",
 }
 
 HARD_GAP_NOTES = {
@@ -685,6 +713,14 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
             for k in SOFT_FERTIG_SURFACE_KEYS
             if k in SOFT_FERTIG_SURFACE_KEY_TITLES
         },
+        "soft_fertig_surface_notes": {
+            k: SOFT_FERTIG_SURFACE_NOTES[k]
+            for k in SOFT_FERTIG_SURFACE_KEYS
+            if k in SOFT_FERTIG_SURFACE_NOTES
+        },
+        "soft_fertig_surface_notes_count": sum(
+            1 for k in SOFT_FERTIG_SURFACE_KEYS if k in SOFT_FERTIG_SURFACE_NOTES
+        ),
         "honesty_paths_count": len(honesty_paths),
         "summary_path": "/api/v1/hard-gaps/summary",
         "note": (
@@ -744,6 +780,9 @@ def hard_gaps_summary(_: str = Depends(require_token)) -> dict[str, object]:
         "honesty_path_notes_count": int(full.get("honesty_path_notes_count") or 0),
         "soft_fertig_surface_key_count": int(
             full.get("soft_fertig_surface_key_count") or 0
+        ),
+        "soft_fertig_surface_notes_count": int(
+            full.get("soft_fertig_surface_notes_count") or 0
         ),
         "expect_plan_step_count": int(full.get("expect_plan_step_notes_count") or 0),
         "expect_plan_step_titles": dict(full.get("expect_plan_step_titles") or {}),

@@ -256,6 +256,7 @@ export function FirewallExtras({
   const [softFertigSurfaceKeyTitles, setSoftFertigSurfaceKeyTitles] = useState<Record<string, string> | null>(null);
   const [softFertigSurfaceKeys, setSoftFertigSurfaceKeys] = useState<string[] | null>(null);
   const [softFertigSurfaceDetail, setSoftFertigSurfaceDetail] = useState<string | null>(null);
+  const [softFertigSurfaceNotesCount, setSoftFertigSurfaceNotesCount] = useState<number | null>(null);
   const [honestyMilestoneNote, setHonestyMilestoneNote] = useState<string | null>(null);
   const [softFertigHonestyTrack, setSoftFertigHonestyTrack] = useState<boolean | null>(null);
   const [honestyPathsSummary, setHonestyPathsSummary] = useState<string | null>(null);
@@ -469,11 +470,29 @@ export function FirewallExtras({
           typeof gaps.soft_fertig_surface_key_titles === "object"
             ? (gaps.soft_fertig_surface_key_titles as Record<string, string>)
             : {};
+        const notes =
+          gaps?.soft_fertig_surface_notes &&
+          typeof gaps.soft_fertig_surface_notes === "object"
+            ? (gaps.soft_fertig_surface_notes as Record<string, string>)
+            : {};
         setSoftFertigSurfaceKeys(keys);
+        setSoftFertigSurfaceNotesCount(
+          typeof gaps?.soft_fertig_surface_notes_count === "number"
+            ? gaps.soft_fertig_surface_notes_count
+            : keys
+              ? keys.filter((k) => notes[k]).length
+              : null,
+        );
         setSoftFertigSurfaceDetail(
           keys && keys.length
             ? keys
-                .map((k) => (titles[k] ? `${k}: ${titles[k]}` : k))
+                .map((k) => {
+                  const title = titles[k];
+                  const note = notes[k];
+                  let line = title ? `${k}: ${title}` : k;
+                  if (note) line += ` — ${note}`;
+                  return line;
+                })
                 .join("\n")
             : null,
         );
@@ -2258,6 +2277,11 @@ export function FirewallExtras({
               >
                 · soft-fertig surface keys{" "}
                 <code>{softFertigSurfaceKeyCount}</code>
+              </span>
+            ) : null}
+            {softFertigSurfaceNotesCount != null && softFertigSurfaceNotesCount > 0 ? (
+              <span className="muted">
+                · surface notes <code>{softFertigSurfaceNotesCount}</code>
               </span>
             ) : null}
             {honestyMilestone != null ? (

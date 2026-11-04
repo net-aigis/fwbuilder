@@ -957,6 +957,8 @@ export function fetchHardGaps() {
     soft_fertig_surface_keys?: string[];
     soft_fertig_surface_key_count?: number;
     soft_fertig_surface_key_titles?: Record<string, string>;
+    soft_fertig_surface_notes?: Record<string, string>;
+    soft_fertig_surface_notes_count?: number;
     expect_plan_step_notes?: Record<string, string>;
     expect_plan_step_notes_count?: number;
     ssh_auth_path?: string;
