@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "2888"
+WEBUI_SOFT_COMPLETE_PHASE = "2904"
 SOFT_FERTIG_HONESTY_TRACK_NOTE = (
     "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
     "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
@@ -171,11 +171,13 @@ SOFT_FERTIG_HONESTY_TRACK_NOTE = (
 # 6950: changelog_roster added to sessionStorage + clear catalogs;
 # 7000: Soft 2840+ honesty surface checkpoint (changelog_roster cycle complete);
 # 7050: soft_fertig_expect_step_roster compact refused expect install step titles/notes;
-# 7100: expect_step_roster listed in honesty export + bundle sections.
-WEBUI_HONESTY_MILESTONE = 7100
+# 7100: expect_step_roster listed in honesty export + bundle sections;
+# 7150: soft_fertig_honesty_surface_version bumped to 2.6 (expect_step_roster).
+WEBUI_HONESTY_MILESTONE = 7150
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 7100: soft_fertig_expect_step_roster is "
-    "listed in honesty export and bundle catalogs — hard gaps remain open."
+    "Honesty surface checkpoint 7150: soft_fertig_honesty_surface_version "
+    "2.6 documents soft_fertig_expect_step_roster on honesty endpoints "
+    "and in export/bundle — hard gaps remain open."
 )
 SOFT_FERTIG_SOFT_COMPLETE_NOTE = (
     "WEBUI_SOFT_COMPLETE_PHASE marks soft-fertig honesty/preview catalog "
@@ -602,9 +604,9 @@ SOFT_FERTIG_SESSION_STORAGE_CLEAR_NOTE = (
 )
 
 # Soft-fertig honesty/preview catalog schema version (documentation; not a lock).
-SOFT_FERTIG_HONESTY_SURFACE_VERSION = "2.5"
+SOFT_FERTIG_HONESTY_SURFACE_VERSION = "2.6"
 SOFT_FERTIG_HONESTY_SURFACE_VERSION_NOTE = (
-    "Schema 2.5: schema 2.4 plus soft_fertig_changelog_roster on "
+    "Schema 2.6: schema 2.5 plus soft_fertig_expect_step_roster on "
     "/health and honesty endpoints (+ export/bundle); hard gaps remain open."
 )
 
@@ -910,6 +912,10 @@ SOFT_FERTIG_HONESTY_SURFACE_CHANGELOG = {
     ),
     "2.5": (
         "soft_fertig_changelog_roster on /health and honesty "
+        "endpoints (+ export/bundle)."
+    ),
+    "2.6": (
+        "soft_fertig_expect_step_roster on /health and honesty "
         "endpoints (+ export/bundle)."
     ),
 }
