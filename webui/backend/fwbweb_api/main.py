@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "1232"
+WEBUI_SOFT_COMPLETE_PHASE = "1240"
 # Honesty/preview track milestone (last thematic checkpoint; soft marker may be higher).
 # 600: refusals/closure; 650: health/summary/paths + fidelity sample;
 # 700: expect step_notes + SSH alternative/refusal notes;
@@ -116,6 +116,55 @@ HONESTY_PATH_NOTES = {
     "expect_steps_refusals": "Per-step 501 refusal payload previews.",
     "ssh_auth": "BatchMode-only SSH capability summary.",
     "password_ssh": "POST /ssh-auth/password stays 501.",
+}
+
+# Top-level honesty/preview keys callers can rely on from GET /hard-gaps
+# (documentation catalog; not a schema lock — soft-fertig surface only).
+SOFT_FERTIG_SURFACE_KEYS = (
+    "soft_complete_phase",
+    "soft_fertig_honesty_track",
+    "honesty_milestone",
+    "honesty_milestone_note",
+    "hard_gap_open",
+    "hard_gap_open_labels",
+    "hard_gap_closure_titles",
+    "hard_gap_count",
+    "hard_gap_notes",
+    "hard_gap_closure",
+    "honesty_paths",
+    "honesty_paths_count",
+    "honesty_path_titles",
+    "honesty_path_notes",
+    "honesty_path_notes_count",
+    "summary_path",
+    "layout_fidelity_path",
+    "expect_plan_step_titles",
+    "ssh_alternative_titles",
+    "ssh_refusal_path_titles",
+    "layout_fidelity_sample_catalog_complete",
+)
+SOFT_FERTIG_SURFACE_KEY_TITLES = {
+    "soft_complete_phase": "Soft-complete phase marker",
+    "soft_fertig_honesty_track": "Soft-fertig honesty track flag",
+    "honesty_milestone": "Honesty surface milestone number",
+    "honesty_milestone_note": "Honesty milestone checkpoint note",
+    "hard_gap_open": "Open hard gap ids",
+    "hard_gap_open_labels": "Human labels for open hard gaps",
+    "hard_gap_closure_titles": "Short closure criteria titles",
+    "hard_gap_count": "Count of open hard gaps",
+    "hard_gap_notes": "Long honesty notes per open hard gap",
+    "hard_gap_closure": "Closure criteria text per open hard gap",
+    "honesty_paths": "Catalog of honesty/preview API paths",
+    "honesty_paths_count": "Count of honesty/preview paths",
+    "honesty_path_titles": "Short titles for honesty paths",
+    "honesty_path_notes": "Short notes for honesty paths",
+    "honesty_path_notes_count": "Count of honesty path notes",
+    "summary_path": "Path to hard-gaps summary",
+    "layout_fidelity_path": "Path to layout-fidelity score",
+    "expect_plan_step_titles": "Titles for refused expect steps",
+    "ssh_alternative_titles": "Titles for BatchMode SSH alternatives",
+    "ssh_refusal_path_titles": "Titles for SSH refusal paths",
+    "layout_fidelity_sample_catalog_complete": "Sample fidelity catalog complete flag",
 }
 
 HARD_GAP_NOTES = {
@@ -589,6 +638,13 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
         "honesty_path_notes_count": sum(
             1 for k in honesty_paths if k in HONESTY_PATH_NOTES
         ),
+        "soft_fertig_surface_keys": list(SOFT_FERTIG_SURFACE_KEYS),
+        "soft_fertig_surface_key_count": len(SOFT_FERTIG_SURFACE_KEYS),
+        "soft_fertig_surface_key_titles": {
+            k: SOFT_FERTIG_SURFACE_KEY_TITLES[k]
+            for k in SOFT_FERTIG_SURFACE_KEYS
+            if k in SOFT_FERTIG_SURFACE_KEY_TITLES
+        },
         "honesty_paths_count": len(honesty_paths),
         "summary_path": "/api/v1/hard-gaps/summary",
         "note": (
@@ -643,6 +699,9 @@ def hard_gaps_summary(_: str = Depends(require_token)) -> dict[str, object]:
         "honesty_paths_count": int(full.get("honesty_paths_count") or 0),
         "honesty_path_titles": dict(full.get("honesty_path_titles") or {}),
         "honesty_path_notes_count": int(full.get("honesty_path_notes_count") or 0),
+        "soft_fertig_surface_key_count": int(
+            full.get("soft_fertig_surface_key_count") or 0
+        ),
         "expect_plan_step_count": int(full.get("expect_plan_step_notes_count") or 0),
         "expect_plan_step_titles": dict(full.get("expect_plan_step_titles") or {}),
         "ssh_alternative_titles": dict(full.get("ssh_alternative_titles") or {}),

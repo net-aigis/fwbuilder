@@ -250,6 +250,8 @@ export function FirewallExtras({
   const [honestyPathTitles, setHonestyPathTitles] = useState<Record<string, string> | null>(null);
   const [honestyPathNotes, setHonestyPathNotes] = useState<Record<string, string> | null>(null);
   const [honestyPathNotesCount, setHonestyPathNotesCount] = useState<number | null>(null);
+  const [softFertigSurfaceKeyCount, setSoftFertigSurfaceKeyCount] = useState<number | null>(null);
+  const [softFertigSurfaceKeyTitles, setSoftFertigSurfaceKeyTitles] = useState<Record<string, string> | null>(null);
   const [honestyMilestoneNote, setHonestyMilestoneNote] = useState<string | null>(null);
   const [softFertigHonestyTrack, setSoftFertigHonestyTrack] = useState<boolean | null>(null);
   const [honestyPathsSummary, setHonestyPathsSummary] = useState<string | null>(null);
@@ -403,6 +405,17 @@ export function FirewallExtras({
       setHonestyPathNotesCount(
         typeof gaps?.honesty_path_notes_count === "number"
           ? gaps.honesty_path_notes_count
+          : null,
+      );
+      setSoftFertigSurfaceKeyCount(
+        typeof gaps?.soft_fertig_surface_key_count === "number"
+          ? gaps.soft_fertig_surface_key_count
+          : null,
+      );
+      setSoftFertigSurfaceKeyTitles(
+        gaps?.soft_fertig_surface_key_titles &&
+          typeof gaps.soft_fertig_surface_key_titles === "object"
+          ? (gaps.soft_fertig_surface_key_titles as Record<string, string>)
           : null,
       );
       setHonestyMilestoneNote(gaps?.honesty_milestone_note || null);
@@ -2164,6 +2177,21 @@ export function FirewallExtras({
               >
                 · honesty path notes{" "}
                 <code>{honestyPathNotesCount}</code>
+              </span>
+            ) : null}
+            {softFertigSurfaceKeyCount != null && softFertigSurfaceKeyCount > 0 ? (
+              <span
+                className="muted"
+                title={
+                  softFertigSurfaceKeyTitles
+                    ? Object.entries(softFertigSurfaceKeyTitles)
+                        .map(([k, v]) => `${k}: ${v}`)
+                        .join(" · ")
+                    : undefined
+                }
+              >
+                · soft-fertig surface keys{" "}
+                <code>{softFertigSurfaceKeyCount}</code>
               </span>
             ) : null}
             {honestyMilestone != null ? (
