@@ -80,10 +80,23 @@ export function RuleOptions({
           : [];
       setGroups(nextGroups);
       if (nextGroups[0]?.id) setActiveGroup(nextGroups[0].id);
-      const score = schema?.layout_fidelity?.score_percent;
-      setLayoutFidelity(
-        score != null ? `${score}% .ui signals (not pixel parity)` : null,
-      );
+      const lf = schema?.layout_fidelity;
+      const score = lf?.score_percent;
+      if (score != null) {
+        const bits = [
+          lf?.stacked_sections ? `stacked×${lf.stacked_sections}` : "",
+          lf?.with_visible ? `visible×${lf.with_visible}` : "",
+          lf?.layout_tree_max_depth ? `layout_tree≤${lf.layout_tree_max_depth}` : "",
+          lf?.signal_key_count ? `keys×${lf.signal_key_count}` : "",
+        ].filter(Boolean);
+        setLayoutFidelity(
+          `${score}% .ui signals` +
+            (bits.length ? ` (${bits.join("; ")})` : "") +
+            " (not pixel parity)",
+        );
+      } else {
+        setLayoutFidelity(null);
+      }
       onStatus?.(
         `Rule options: ${Object.keys(stored).length}` +
           (schema ? ` · dialog fields ${schema.dialog_field_count ?? 0}` : ""),

@@ -513,6 +513,11 @@ export function fetchOptionSchema(platform: string, hostOs = "") {
       score_percent?: number;
       pixel_parity?: boolean;
       path?: string;
+      stacked_sections?: number;
+      with_visible?: number;
+      layout_tree_max_depth?: number;
+      buddy_labels?: number;
+      signal_key_count?: number;
     };
     supported_os?: string[];
     capabilities?: Record<string, string>;
@@ -674,6 +679,11 @@ export function fetchInterfaceOptionSchema(hostOs: string) {
       score_percent?: number;
       pixel_parity?: boolean;
       path?: string;
+      stacked_sections?: number;
+      with_visible?: number;
+      layout_tree_max_depth?: number;
+      buddy_labels?: number;
+      signal_key_count?: number;
     } | null;
     stack_switch?: {
       stack: string;
@@ -706,6 +716,11 @@ export function fetchRuleOptionSchema(ruleKind: string = "policy") {
       score_percent?: number;
       pixel_parity?: boolean;
       path?: string;
+      stacked_sections?: number;
+      with_visible?: number;
+      layout_tree_max_depth?: number;
+      buddy_labels?: number;
+      signal_key_count?: number;
     } | null;
   }>(`/api/v1/rule-option-schema?${qs.toString()}`);
 }

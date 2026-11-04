@@ -429,6 +429,32 @@ def _layout_tree_max_depth(nodes: Any, depth: int = 1) -> int:
     return deepest
 
 
+def _layout_fidelity_schema_summary(fidelity: dict[str, Any] | None) -> dict[str, Any] | None:
+    """Compact layout-fidelity payload for option/rule/iface schemas (not pixel)."""
+    if not fidelity:
+        return None
+    if fidelity.get("ok") is False and fidelity.get("score_percent") is None:
+        return None
+    fields = fidelity.get("fields") or {}
+    pages = fidelity.get("pages") or {}
+    signal_keys = fidelity.get("signal_keys") or {}
+    sig_n = (
+        len(signal_keys.get("fields") or [])
+        + len(signal_keys.get("pages") or [])
+        + len(signal_keys.get("chrome") or [])
+    )
+    return {
+        "score_percent": fidelity.get("score_percent"),
+        "pixel_parity": False,
+        "path": "/api/v1/layout-fidelity",
+        "stacked_sections": pages.get("stacked_sections"),
+        "with_visible": fields.get("with_visible"),
+        "layout_tree_max_depth": pages.get("layout_tree_max_depth"),
+        "buddy_labels": pages.get("buddy_labels"),
+        "signal_key_count": sig_n or None,
+    }
+
+
 def _layout_fidelity_from_dialog(stem: str, info: dict[str, Any]) -> dict[str, Any]:
     """Coverage stats for one extracted dialog (not pixel parity)."""
     fields = info.get("fields") or {}
@@ -464,6 +490,7 @@ def _layout_fidelity_from_dialog(stem: str, info: dict[str, Any]) -> dict[str, A
         ),
         "annotations": sum(len(p.get("annotations") or []) for p in pages),
         "buddy_labels": sum(len(p.get("buddy_labels") or []) for p in pages),
+        "pages_with_buddy_labels": sum(1 for p in pages if p.get("buddy_labels")),
         "pages_with_tooltip": sum(1 for p in pages if p.get("tooltip")),
         "pages_with_column_stretch": sum(1 for p in pages if p.get("column_stretch")),
         "pages_with_row_stretch": sum(1 for p in pages if p.get("row_stretch")),
@@ -804,11 +831,7 @@ def option_schema(platform: str, host_os: str = "") -> dict[str, Any]:
         "fields": fields,
         "dialog_field_count": len(field_meta),
         "dialog_pages": pages,
-        "layout_fidelity": {
-            "score_percent": fidelity.get("score_percent"),
-            "pixel_parity": False,
-            "path": "/api/v1/layout-fidelity",
-        },
+        "layout_fidelity": _layout_fidelity_schema_summary(fidelity),
     }
     if stack_switch:
         out["stack_switch"] = stack_switch
@@ -889,13 +912,9 @@ def rule_option_schema(rule_kind: str = "policy") -> dict[str, Any]:
         fields[key] = _infer_type(key, "", field_meta.get(key))
     fidelity: dict[str, Any] | None = None
     if stem and stem in dialogs:
-        fidelity = {
-            "score_percent": _layout_fidelity_from_dialog(stem, dialogs[stem]).get(
-                "score_percent"
-            ),
-            "pixel_parity": False,
-            "path": "/api/v1/layout-fidelity",
-        }
+        fidelity = _layout_fidelity_schema_summary(
+            _layout_fidelity_from_dialog(stem, dialogs[stem])
+        )
     return {
         "rule_kind": kind,
         "dialog_stem": stem,
@@ -959,13 +978,9 @@ def interface_option_schema(host_os: str) -> dict[str, Any]:
     caps = os_info.get("capabilities") or {}
     fidelity: dict[str, Any] | None = None
     if stem and stem in dialogs:
-        fidelity = {
-            "score_percent": _layout_fidelity_from_dialog(stem, dialogs[stem]).get(
-                "score_percent"
-            ),
-            "pixel_parity": False,
-            "path": "/api/v1/layout-fidelity",
-        }
+        fidelity = _layout_fidelity_schema_summary(
+            _layout_fidelity_from_dialog(stem, dialogs[stem])
+        )
     out: dict[str, Any] = {
         "host_os": os_info["name"],
         "interface_dialog": iface_dialog or None,
