@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "1864"
+WEBUI_SOFT_COMPLETE_PHASE = "1880"
 SOFT_FERTIG_HONESTY_TRACK_NOTE = (
     "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
     "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
@@ -107,12 +107,13 @@ SOFT_FERTIG_HONESTY_TRACK_NOTE = (
 # 3750: soft_fertig_honesty_surface_version bumped to 1.1 (catalog_summary);
 # 3800: soft_fertig_honesty_track_note clarifies soft track vs open hard gaps;
 # 3850: track_note included in catalog_summary + honesty export catalogs;
-# 3900: track_note added to sessionStorage + clear catalogs.
-WEBUI_HONESTY_MILESTONE = 3900
+# 3900: track_note added to sessionStorage + clear catalogs;
+# 3950: soft_fertig_honesty_surface_version bumped to 1.2 (track_note).
+WEBUI_HONESTY_MILESTONE = 3950
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 3900: soft_fertig_honesty_track_note is "
-    "persisted via sessionStorage (fwbweb.honestyTrackNote.*) and clear "
-    "catalogs — hard gaps remain open."
+    "Honesty surface checkpoint 3950: soft_fertig_honesty_surface_version "
+    "1.2 documents track_note in catalog_summary, exports, and "
+    "sessionStorage — hard gaps remain open."
 )
 
 HARD_GAPS_OPEN = (
@@ -367,10 +368,11 @@ SOFT_FERTIG_SESSION_STORAGE_CLEAR_NOTE = (
 )
 
 # Soft-fertig honesty/preview catalog schema version (documentation; not a lock).
-SOFT_FERTIG_HONESTY_SURFACE_VERSION = "1.1"
+SOFT_FERTIG_HONESTY_SURFACE_VERSION = "1.2"
 SOFT_FERTIG_HONESTY_SURFACE_VERSION_NOTE = (
-    "Schema 1.1: schema 1.0 plus soft_fertig_catalog_summary on /health "
-    "and honesty endpoints (+ export/bundle); hard gaps remain open."
+    "Schema 1.2: schema 1.1 plus soft_fertig_honesty_track_note in "
+    "catalog_summary, honesty export/bundle, and sessionStorage "
+    "(fwbweb.honestyTrackNote.*); hard gaps remain open."
 )
 
 # Downloadable honesty/preview JSON catalogs the UI can export (documentation).

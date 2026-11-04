@@ -12,9 +12,9 @@ h = m.hard_gaps()
 s = m.hard_gaps_summary()
 c = m.hard_gap_closure()
 assert str(h.get("soft_fertig_honesty_surface_version") or "").startswith("1.")
-assert "Schema 1.0" in (h.get("soft_fertig_honesty_surface_version_note") or "")
-assert s.get("soft_fertig_honesty_surface_version") == "1.0"
-assert c.get("soft_fertig_honesty_surface_version") == "1.0"
+assert "Schema 1." in (h.get("soft_fertig_honesty_surface_version_note") or "")
+assert str(s.get("soft_fertig_honesty_surface_version") or "").startswith("1.")
+assert str(c.get("soft_fertig_honesty_surface_version") or "").startswith("1.")
 assert "soft_fertig_honesty_surface_version" in (h.get("soft_fertig_surface_keys") or [])
 assert int(m.WEBUI_SOFT_COMPLETE_PHASE) >= 1728
 print("surface version", h.get("soft_fertig_honesty_surface_version"))
