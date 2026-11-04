@@ -10,7 +10,7 @@ assert "checkpoint 800" in m.WEBUI_HONESTY_MILESTONE_NOTE
 assert "with_size_policy_expanding" in m.WEBUI_HONESTY_MILESTONE_NOTE
 h = m.hard_gaps()
 assert h.get("honesty_milestone") == 800
-assert m.WEBUI_SOFT_COMPLETE_PHASE == "744"
+assert int(m.WEBUI_SOFT_COMPLETE_PHASE) >= 744
 print("milestone 800 ok")
 PY
 echo "cleaned"

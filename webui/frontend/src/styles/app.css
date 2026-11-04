@@ -814,9 +814,31 @@ ul.hard-gap-notes {
   max-width: 14rem;
 }
 
+.field.size-h-Minimum {
+  min-width: 6rem;
+}
+
+.field.size-h-Preferred {
+  min-width: 8rem;
+  max-width: 28rem;
+}
+
+.field.size-v-Fixed textarea {
+  max-height: 12rem;
+}
+
 .field.size-v-Expanding textarea,
 .field.size-v-MinimumExpanding textarea {
   min-height: 7rem;
+}
+
+.field.size-v-Minimum textarea {
+  min-height: 3rem;
+}
+
+.field.size-v-Preferred textarea {
+  min-height: 4.5rem;
+  max-height: 16rem;
 }
 
 .dialog-pages {
