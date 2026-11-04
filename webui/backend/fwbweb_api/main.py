@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "2808"
+WEBUI_SOFT_COMPLETE_PHASE = "2824"
 SOFT_FERTIG_HONESTY_TRACK_NOTE = (
     "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
     "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
@@ -166,11 +166,13 @@ SOFT_FERTIG_HONESTY_TRACK_NOTE = (
 # 6700: surface_roster added to sessionStorage + clear catalogs;
 # 6750: Soft 2760+ honesty surface checkpoint (surface_roster cycle complete);
 # 6800: soft_fertig_changelog_roster compact honesty surface changelog versions;
-# 6850: changelog_roster listed in honesty export + bundle sections.
-WEBUI_HONESTY_MILESTONE = 6850
+# 6850: changelog_roster listed in honesty export + bundle sections;
+# 6900: soft_fertig_honesty_surface_version bumped to 2.5 (changelog_roster).
+WEBUI_HONESTY_MILESTONE = 6900
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 6850: soft_fertig_changelog_roster is "
-    "listed in honesty export and bundle catalogs — hard gaps remain open."
+    "Honesty surface checkpoint 6900: soft_fertig_honesty_surface_version "
+    "2.5 documents soft_fertig_changelog_roster on honesty endpoints "
+    "and in export/bundle — hard gaps remain open."
 )
 SOFT_FERTIG_SOFT_COMPLETE_NOTE = (
     "WEBUI_SOFT_COMPLETE_PHASE marks soft-fertig honesty/preview catalog "
@@ -584,9 +586,9 @@ SOFT_FERTIG_SESSION_STORAGE_CLEAR_NOTE = (
 )
 
 # Soft-fertig honesty/preview catalog schema version (documentation; not a lock).
-SOFT_FERTIG_HONESTY_SURFACE_VERSION = "2.4"
+SOFT_FERTIG_HONESTY_SURFACE_VERSION = "2.5"
 SOFT_FERTIG_HONESTY_SURFACE_VERSION_NOTE = (
-    "Schema 2.4: schema 2.3 plus soft_fertig_surface_roster on "
+    "Schema 2.5: schema 2.4 plus soft_fertig_changelog_roster on "
     "/health and honesty endpoints (+ export/bundle); hard gaps remain open."
 )
 
@@ -876,6 +878,10 @@ SOFT_FERTIG_HONESTY_SURFACE_CHANGELOG = {
     ),
     "2.4": (
         "soft_fertig_surface_roster on /health and honesty "
+        "endpoints (+ export/bundle)."
+    ),
+    "2.5": (
+        "soft_fertig_changelog_roster on /health and honesty "
         "endpoints (+ export/bundle)."
     ),
 }
