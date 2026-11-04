@@ -2672,6 +2672,70 @@ export function FirewallExtras({
                 Copy related refusals
               </button>
             ) : null}
+            {hardGapsPayload ? (
+              <button
+                type="button"
+                className="ghost"
+                disabled={busy}
+                title="Download honesty_paths (+ titles/notes) from /hard-gaps"
+                onClick={() => {
+                  const catalog: Record<string, unknown> = {
+                    honesty_paths: hardGapsPayload.honesty_paths,
+                    honesty_paths_count: hardGapsPayload.honesty_paths_count,
+                    honesty_path_titles: hardGapsPayload.honesty_path_titles,
+                    honesty_path_notes: hardGapsPayload.honesty_path_notes,
+                    honesty_path_notes_count:
+                      hardGapsPayload.honesty_path_notes_count,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  const text = JSON.stringify(catalog, null, 2);
+                  const blob = new Blob([text + "\n"], {
+                    type: "application/json;charset=utf-8",
+                  });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `fwbweb-honesty-paths-${firewallId || "fw"}.json`;
+                  a.click();
+                  URL.revokeObjectURL(url);
+                  onStatus?.("Downloaded honesty paths");
+                }}
+              >
+                Download honesty paths
+              </button>
+            ) : null}
+            {hardGapsPayload ? (
+              <button
+                type="button"
+                className="ghost"
+                disabled={busy}
+                title="Copy honesty_paths (+ titles/notes) to clipboard"
+                onClick={() => {
+                  void (async () => {
+                    const catalog: Record<string, unknown> = {
+                      honesty_paths: hardGapsPayload.honesty_paths,
+                      honesty_paths_count: hardGapsPayload.honesty_paths_count,
+                      honesty_path_titles: hardGapsPayload.honesty_path_titles,
+                      honesty_path_notes: hardGapsPayload.honesty_path_notes,
+                      honesty_path_notes_count:
+                        hardGapsPayload.honesty_path_notes_count,
+                      soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                      honesty_milestone: hardGapsPayload.honesty_milestone,
+                    };
+                    const text = JSON.stringify(catalog, null, 2) + "\n";
+                    try {
+                      await navigator.clipboard.writeText(text);
+                      onStatus?.("Copied honesty paths");
+                    } catch (e) {
+                      onError?.(e instanceof Error ? e.message : String(e));
+                    }
+                  })();
+                }}
+              >
+                Copy honesty paths
+              </button>
+            ) : null}
             <button
               type="button"
               className="ghost"
