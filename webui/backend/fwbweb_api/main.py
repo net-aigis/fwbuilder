@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "616"
+WEBUI_SOFT_COMPLETE_PHASE = "624"
 # Honesty/preview track milestone (last thematic checkpoint; soft marker may be higher).
 WEBUI_HONESTY_MILESTONE = 600
 
@@ -86,8 +86,14 @@ HARD_GAP_CLOSURE = {
 
 
 @app.get("/api/v1/health")
-def health() -> dict[str, str]:
-    return {"status": "ok", "soft_complete_phase": WEBUI_SOFT_COMPLETE_PHASE}
+def health() -> dict[str, object]:
+    return {
+        "status": "ok",
+        "soft_complete_phase": WEBUI_SOFT_COMPLETE_PHASE,
+        "soft_fertig_honesty_track": True,
+        "honesty_milestone": WEBUI_HONESTY_MILESTONE,
+        "hard_gap_count": len(HARD_GAPS_OPEN),
+    }
 
 
 @app.get("/api/v1/res-status")
@@ -110,7 +116,10 @@ def res_status(_: str = Depends(require_token)) -> dict[str, object]:
         "configlet_os_count": len(dirs),
         "configlet_os": dirs,
         "soft_complete_phase": WEBUI_SOFT_COMPLETE_PHASE,
+        "soft_fertig_honesty_track": True,
+        "honesty_milestone": WEBUI_HONESTY_MILESTONE,
         "hard_gap_open": list(HARD_GAPS_OPEN),
+        "hard_gap_count": len(HARD_GAPS_OPEN),
     }
 
 
@@ -159,6 +168,7 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
         "ssh_refusal_paths": dict(ssh.get("refusal_paths") or {}),
         "honesty_milestone": WEBUI_HONESTY_MILESTONE,
         "honesty_paths": honesty_paths,
+        "honesty_paths_count": len(honesty_paths),
         "note": (
             "Honesty/preview track is soft-complete (soft_fertig); these items remain "
             "unimplemented (full Qt pixel layout, expect/SSHSession runtime, password SSH). "

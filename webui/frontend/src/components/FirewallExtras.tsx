@@ -338,7 +338,11 @@ export function FirewallExtras({
       );
       if (gaps?.honesty_paths && Object.keys(gaps.honesty_paths).length) {
         const entries = Object.entries(gaps.honesty_paths);
-        setHonestyPathsSummary(`Honesty paths: ${entries.length}`);
+        const n =
+          typeof gaps.honesty_paths_count === "number"
+            ? gaps.honesty_paths_count
+            : entries.length;
+        setHonestyPathsSummary(`Honesty paths: ${n}`);
         setHonestyPathsDetail(entries.map(([k, v]) => `${k}: ${v}`).join("\n"));
       } else {
         setHonestyPathsSummary(null);
@@ -1989,6 +1993,27 @@ export function FirewallExtras({
                 }}
               >
                 Download hard-gaps JSON
+              </button>
+            ) : null}
+            {hardGapsPayload ? (
+              <button
+                type="button"
+                className="ghost"
+                disabled={busy}
+                title="Copy /hard-gaps JSON to clipboard"
+                onClick={() => {
+                  void (async () => {
+                    const text = JSON.stringify(hardGapsPayload, null, 2) + "\n";
+                    try {
+                      await navigator.clipboard.writeText(text);
+                      onStatus?.("Copied hard-gaps JSON");
+                    } catch (e) {
+                      onError?.(e instanceof Error ? e.message : String(e));
+                    }
+                  })();
+                }}
+              >
+                Copy hard-gaps JSON
               </button>
             ) : null}
             <button

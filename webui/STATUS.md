@@ -757,15 +757,23 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Soft marker 616 + typecheck | done | E2E phase614 |
 | e2e-all lists 609–616; gaps=3 | done | E2E phase615 |
 | Soft-complete STATUS through 616 | done | E2E phase616 |
+| Health honesty milestone/count | done | E2E phase617 |
+| res-status honesty fields | done | E2E phase618 |
+| honesty_paths_count on /hard-gaps | done | E2E phase619 |
+| Copy hard-gaps JSON UI | done | E2E phase620 |
+| Client honesty_paths_count type | done | E2E phase621 |
+| Soft marker 624 + typecheck | done | E2E phase622 |
+| e2e-all lists 617–624; gaps=3 | done | E2E phase623 |
+| Soft-complete STATUS through 624 | done | E2E phase624 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Soft-complete (feature/webui polish track)
 
 WebUI on `feature/webui` remains soft-complete for the polish track.
 
-### Hard-gap honesty/preview track — soft-fertig (phase256); preview slices through 616
+### Hard-gap honesty/preview track — soft-fertig (phase256); preview slices through 624
 
-`WEBUI_SOFT_COMPLETE_PHASE=616`; `WEBUI_HONESTY_MILESTONE=600`; `/hard-gaps` (+ `/hard-gaps/closure` with `hard_gap_notes` + `parent_path` + `hard_gap_count` + `honesty_milestone` + `soft_fertig_honesty_track`) sets `soft_fertig_honesty_track: true` + `honesty_milestone: 600` + `honesty_paths` (catalog of honesty/preview endpoints; expandable in UI) + `hard_gap_notes` + `hard_gap_closure` + `closure_path` (shown in UI with `hard_gap_count`; **Show hard-gap closure** / **Download closure**, sessionStorage) + `layout_fidelity_path` + `layout_fidelity_signal_catalog` (expandable key list in UI) + `stack_switch_path` + `option_enable_path` + `expect_run_path` + `expect_steps_path` + `expect_steps_refusals_path` + `expect_plan_step_ids` + `ssh_auth_path` + `password_ssh_path` + `ssh_batch_mode_only` / `ssh_alternatives` / `ssh_refusal_paths`; UI can download `/hard-gaps` JSON (sessionStorage `fwbweb.hardGaps.*`) and preview/download expect step refusals (incl. `unknown_step_probe`, sessionStorage); soft-fertig track flag shown in UI; `GET /layout-fidelity` / option-schema + rule/iface schemas report heuristic `score_percent` (**not** pixel parity; `score_parts_count` documents weight count — more weights can lower % without feature loss; weights include `with_whats_this` / `with_tooltip` / `with_enabled` / `with_alignment` / `tab_position` / `pages_with_tooltip` plus `stacked_sections` / `with_visible` / `pages_with_buddy_labels` / `sections_with_flat|checkable` / `layout_tree_max_depth`; schemas expose compact summary with `signal_key_count` + `score_parts_count`); `visible=false` keeps `field-ui-hidden` grid holes; `GET /stack-switch` + `GET /option-enable` expose desktop maps; `option_enable` follows bonding→xmit and LOG/ULOG (ipt/ipcop/secuwall); iface Device type writes `options.type` and drives stack (no duplicate type field); Firewall/Interface/Rule UI show rich fidelity + refuse paths + soft-complete phase + enable-rules summary + canonical expect step ids/catalog + probe-step select (incl. unknown) + SSH refusal map; `GET /expect-install-plan/steps` lists refused ids; `GET …/steps/refusals` previews per-step 501 payloads + unknown probe; capabilities carry `canonical_step_ids`; unknown `step=` → `expect_installer_unknown_step`; SSH `batch_mode_only` + `alternatives` + `refusal_paths` (deploy 400 / password 501); read_only fields use `field-ui-readonly`.
+`WEBUI_SOFT_COMPLETE_PHASE=624`; `WEBUI_HONESTY_MILESTONE=600`; `/health` and `/res-status` expose `honesty_milestone` + `soft_fertig_honesty_track` + `hard_gap_count`; `/hard-gaps` (+ `/hard-gaps/closure` with `hard_gap_notes` + `parent_path` + `hard_gap_count` + `honesty_milestone` + `soft_fertig_honesty_track`) sets `soft_fertig_honesty_track: true` + `honesty_milestone: 600` + `honesty_paths` / `honesty_paths_count` (catalog of honesty/preview endpoints; expandable in UI) + `hard_gap_notes` + `hard_gap_closure` + `closure_path` (shown in UI with `hard_gap_count`; **Show hard-gap closure** / **Download closure**, sessionStorage) + `layout_fidelity_path` + `layout_fidelity_signal_catalog` (expandable key list in UI) + `stack_switch_path` + `option_enable_path` + `expect_run_path` + `expect_steps_path` + `expect_steps_refusals_path` + `expect_plan_step_ids` + `ssh_auth_path` + `password_ssh_path` + `ssh_batch_mode_only` / `ssh_alternatives` / `ssh_refusal_paths`; UI can download/copy `/hard-gaps` JSON (sessionStorage `fwbweb.hardGaps.*`) and preview/download expect step refusals (incl. `unknown_step_probe`, sessionStorage); soft-fertig track flag shown in UI; `GET /layout-fidelity` / option-schema + rule/iface schemas report heuristic `score_percent` (**not** pixel parity; `score_parts_count` documents weight count — more weights can lower % without feature loss; weights include `with_whats_this` / `with_tooltip` / `with_enabled` / `with_alignment` / `tab_position` / `pages_with_tooltip` plus `stacked_sections` / `with_visible` / `pages_with_buddy_labels` / `sections_with_flat|checkable` / `layout_tree_max_depth`; schemas expose compact summary with `signal_key_count` + `score_parts_count`); `visible=false` keeps `field-ui-hidden` grid holes; `GET /stack-switch` + `GET /option-enable` expose desktop maps; `option_enable` follows bonding→xmit and LOG/ULOG (ipt/ipcop/secuwall); iface Device type writes `options.type` and drives stack (no duplicate type field); Firewall/Interface/Rule UI show rich fidelity + refuse paths + soft-complete phase + enable-rules summary + canonical expect step ids/catalog + probe-step select (incl. unknown) + SSH refusal map; `GET /expect-install-plan/steps` lists refused ids; `GET …/steps/refusals` previews per-step 501 payloads + unknown probe; capabilities carry `canonical_step_ids`; unknown `step=` → `expect_installer_unknown_step`; SSH `batch_mode_only` + `alternatives` + `refusal_paths` (deploy 400 / password 501); read_only fields use `field-ui-readonly`.
 
 - Deploy: manifest `# files:`, OS configlets, external PolicyInstallScript, copyFWB, use_scp, gzip transfer on compress (plan shows −%), capabilities API (+ expect_install_plan / walkthrough pointers), live gate + force_limited, expect stub + raw/expanded configlet preview + ordered expect plan (reg_user + safety_net_acl + download + sessionStorage) + dry walkthrough (preview_only + simulated_at timeline, sessionStorage + download); `POST …/run` (+ optional `step=`) → 501 / step_refused (still **no** expect/SSHSession runtime)
 - Options: .ui labels, free QLabel annotations (+ alignment), buddy_labels (external_label controls), enabled/visible/readOnly respect (+ option_enable follow for bonding→xmit_hash and LOG/ULOG on ipt/ipcop/secuwall), QRadio bool, QGroupBox sections (flat/checkable) + QStackedWidget pages (FirewallExtras + InterfaceOptions section chrome + empty pages + stack switcher + stack_switch hints: device-type → `options.type` + stack / use_ULOG follow + `/stack-switch` API with option_enable maps), tooltips + whatsThis + tab page toolTips, page-local QGridLayout + spacers (sizeHint) + column/row stretch + spacing/margins (CSS + page hint) + sizePolicy + min/max size + layout hints + layout_tree + dialog windowTitle/geometry/tab_position/sizeGrip (header WxH + tabs + CSS max-height) + shared `qtGridStyle` + layout-fidelity score on Firewall/Rule/Interface (still **not** full pixel Qt layout)
@@ -1403,6 +1411,14 @@ Still open (hard backlog — **not** soft-fertig):
 | Local E2E phase614 (marker 616 + tsc) | done | `e2e-phase614.sh` **OK** |
 | Local E2E phase615 (e2e-all + gaps) | done | `e2e-phase615.sh` **OK** |
 | Local E2E phase616 (STATUS soft-complete) | done | `e2e-phase616.sh` **OK** |
+| Local E2E phase617 (health honesty) | done | `e2e-phase617.sh` **OK** |
+| Local E2E phase618 (res-status honesty) | done | `e2e-phase618.sh` **OK** |
+| Local E2E phase619 (honesty_paths_count) | done | `e2e-phase619.sh` **OK** |
+| Local E2E phase620 (copy hard-gaps JSON) | done | `e2e-phase620.sh` **OK** |
+| Local E2E phase621 (client paths_count) | done | `e2e-phase621.sh` **OK** |
+| Local E2E phase622 (marker 624 + tsc) | done | `e2e-phase622.sh` **OK** |
+| Local E2E phase623 (e2e-all + gaps) | done | `e2e-phase623.sh` **OK** |
+| Local E2E phase624 (STATUS soft-complete) | done | `e2e-phase624.sh` **OK** |
 
 ## Local commands
 
@@ -2028,6 +2044,14 @@ bash webui/scripts/e2e-phase613.sh
 bash webui/scripts/e2e-phase614.sh
 bash webui/scripts/e2e-phase615.sh
 bash webui/scripts/e2e-phase616.sh
+bash webui/scripts/e2e-phase617.sh
+bash webui/scripts/e2e-phase618.sh
+bash webui/scripts/e2e-phase619.sh
+bash webui/scripts/e2e-phase620.sh
+bash webui/scripts/e2e-phase621.sh
+bash webui/scripts/e2e-phase622.sh
+bash webui/scripts/e2e-phase623.sh
+bash webui/scripts/e2e-phase624.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

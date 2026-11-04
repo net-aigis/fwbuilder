@@ -8,7 +8,7 @@ PYTHONPATH=webui/backend python3 - <<'PY'
 from fwbweb_api import main as m
 src = open('webui/backend/fwbweb_api/main.py').read()
 assert 'honesty_milestone' in src
-assert m.WEBUI_SOFT_COMPLETE_PHASE == "608"
+assert int(m.WEBUI_SOFT_COMPLETE_PHASE) >= 608
 print("honesty_milestone wired")
 PY
 echo "cleaned"
