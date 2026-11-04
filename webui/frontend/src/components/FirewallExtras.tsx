@@ -3511,10 +3511,10 @@ export function FirewallExtras({
                 setHardGapsSummaryText(null);
                 setHardGapsSummaryFidelity(null);
                 setHardGapsSummaryFidelityTitle(null);
-                onStatus?.("Cleared hard-gaps snapshot");
+                onStatus?.("Cleared honesty catalogs");
               }}
             >
-              Clear hard-gaps snapshot
+              Clear honesty catalogs
             </button>
             <button
               type="button"

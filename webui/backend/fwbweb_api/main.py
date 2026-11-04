@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "1656"
+WEBUI_SOFT_COMPLETE_PHASE = "1672"
 # Honesty/preview track milestone (last thematic checkpoint; soft marker may be higher).
 # 600: refusals/closure; 650: health/summary/paths + fidelity sample;
 # 700: expect step_notes + SSH alternative/refusal notes;
@@ -90,11 +90,12 @@ WEBUI_SOFT_COMPLETE_PHASE = "1656"
 # 3100: honesty export keys included in soft_fertig_surface_keys catalog;
 # 3150: soft_fertig_honesty_bundle sections + UI combined download/copy;
 # 3200: honesty bundle sections included in soft_fertig_surface_keys catalog;
-# 3250: honesty_bundle added to sessionStorage + honesty export catalogs.
-WEBUI_HONESTY_MILESTONE = 3250
+# 3250: honesty_bundle added to sessionStorage + honesty export catalogs;
+# 3300: soft_fertig_session_storage_clear_* documents UI clear of honesty catalogs.
+WEBUI_HONESTY_MILESTONE = 3300
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 3250: honesty_bundle is listed in "
-    "sessionStorage and honesty export catalogs — hard gaps remain open."
+    "Honesty surface checkpoint 3300: soft_fertig_session_storage_clear_keys "
+    "document the UI Clear honesty catalogs action — hard gaps remain open."
 )
 
 HARD_GAPS_OPEN = (
@@ -316,6 +317,13 @@ SOFT_FERTIG_SESSION_STORAGE_NOTES = {
     "honesty_paths": "Persists honesty paths catalog JSON per firewall.",
     "honesty_bundle": "Persists last downloaded/copied honesty bundle per firewall.",
 }
+
+# Keys removed by the UI "Clear honesty catalogs" action (same set as sessionStorage catalog).
+SOFT_FERTIG_SESSION_STORAGE_CLEAR_KEYS = tuple(SOFT_FERTIG_SESSION_STORAGE_KEYS.keys())
+SOFT_FERTIG_SESSION_STORAGE_CLEAR_NOTE = (
+    "UI Clear honesty catalogs removes each soft_fertig_session_storage_keys "
+    "prefix + firewallId from sessionStorage (does not close hard gaps)."
+)
 
 # Downloadable honesty/preview JSON catalogs the UI can export (documentation).
 SOFT_FERTIG_HONESTY_EXPORT_KEYS = (
@@ -875,6 +883,13 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
         ),
         "soft_fertig_session_storage_notes": dict(SOFT_FERTIG_SESSION_STORAGE_NOTES),
         "soft_fertig_session_storage_notes_count": len(SOFT_FERTIG_SESSION_STORAGE_NOTES),
+        "soft_fertig_session_storage_clear_keys": list(
+            SOFT_FERTIG_SESSION_STORAGE_CLEAR_KEYS
+        ),
+        "soft_fertig_session_storage_clear_key_count": len(
+            SOFT_FERTIG_SESSION_STORAGE_CLEAR_KEYS
+        ),
+        "soft_fertig_session_storage_clear_note": SOFT_FERTIG_SESSION_STORAGE_CLEAR_NOTE,
         "soft_fertig_honesty_export_keys": list(SOFT_FERTIG_HONESTY_EXPORT_KEYS),
         "soft_fertig_honesty_export_key_count": len(SOFT_FERTIG_HONESTY_EXPORT_KEYS),
         "soft_fertig_honesty_export_key_titles": {
@@ -1002,6 +1017,15 @@ def hard_gaps_summary(_: str = Depends(require_token)) -> dict[str, object]:
         ),
         "soft_fertig_session_storage_notes_count": int(
             full.get("soft_fertig_session_storage_notes_count") or 0
+        ),
+        "soft_fertig_session_storage_clear_keys": list(
+            full.get("soft_fertig_session_storage_clear_keys") or []
+        ),
+        "soft_fertig_session_storage_clear_key_count": int(
+            full.get("soft_fertig_session_storage_clear_key_count") or 0
+        ),
+        "soft_fertig_session_storage_clear_note": str(
+            full.get("soft_fertig_session_storage_clear_note") or ""
         ),
         "soft_fertig_honesty_export_keys": list(
             full.get("soft_fertig_honesty_export_keys") or []
@@ -1348,6 +1372,13 @@ def hard_gap_closure(_: str = Depends(require_token)) -> dict[str, object]:
         ),
         "soft_fertig_session_storage_notes": dict(SOFT_FERTIG_SESSION_STORAGE_NOTES),
         "soft_fertig_session_storage_notes_count": len(SOFT_FERTIG_SESSION_STORAGE_NOTES),
+        "soft_fertig_session_storage_clear_keys": list(
+            SOFT_FERTIG_SESSION_STORAGE_CLEAR_KEYS
+        ),
+        "soft_fertig_session_storage_clear_key_count": len(
+            SOFT_FERTIG_SESSION_STORAGE_CLEAR_KEYS
+        ),
+        "soft_fertig_session_storage_clear_note": SOFT_FERTIG_SESSION_STORAGE_CLEAR_NOTE,
         "soft_fertig_honesty_export_keys": list(SOFT_FERTIG_HONESTY_EXPORT_KEYS),
         "soft_fertig_honesty_export_key_count": len(SOFT_FERTIG_HONESTY_EXPORT_KEYS),
         "soft_fertig_honesty_export_key_titles": {
