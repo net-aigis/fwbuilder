@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "1168"
+WEBUI_SOFT_COMPLETE_PHASE = "1176"
 # Honesty/preview track milestone (last thematic checkpoint; soft marker may be higher).
 # 600: refusals/closure; 650: health/summary/paths + fidelity sample;
 # 700: expect step_notes + SSH alternative/refusal notes;
@@ -230,7 +230,11 @@ def res_status(_: str = Depends(require_token)) -> dict[str, object]:
 def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
     """Explicit list of remaining hard-gap items (honesty track)."""
     from .deploy import ssh_auth_capabilities
-    from .expect_installer import EXPECT_PLAN_STEP_IDS, EXPECT_PLAN_STEP_NOTES
+    from .expect_installer import (
+        EXPECT_PLAN_STEP_IDS,
+        EXPECT_PLAN_STEP_NOTES,
+        EXPECT_PLAN_STEP_TITLES,
+    )
     from .platforms import layout_fidelity_for
 
     ssh = ssh_auth_capabilities()
@@ -526,6 +530,7 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
         "expect_steps_refusals_path": honesty_paths["expect_steps_refusals"],
         "expect_plan_step_ids": list(EXPECT_PLAN_STEP_IDS),
         "expect_plan_step_notes": dict(EXPECT_PLAN_STEP_NOTES),
+        "expect_plan_step_titles": dict(EXPECT_PLAN_STEP_TITLES),
         "expect_plan_step_notes_count": len(EXPECT_PLAN_STEP_NOTES),
         "ssh_auth_path": honesty_paths["ssh_auth"],
         "password_ssh_path": honesty_paths["password_ssh"],
@@ -590,6 +595,7 @@ def hard_gaps_summary(_: str = Depends(require_token)) -> dict[str, object]:
         "hard_gap_count": len(HARD_GAPS_OPEN),
         "honesty_paths_count": int(full.get("honesty_paths_count") or 0),
         "expect_plan_step_count": int(full.get("expect_plan_step_notes_count") or 0),
+        "expect_plan_step_titles": dict(full.get("expect_plan_step_titles") or {}),
         "layout_fidelity_sample_platform": "iptables",
         "layout_fidelity_sample_host_os": "linux24",
         "layout_fidelity_sample_score_percent": sample_score,

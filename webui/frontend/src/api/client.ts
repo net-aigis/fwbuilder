@@ -946,6 +946,7 @@ export function fetchHardGaps() {
     expect_steps_path?: string;
     expect_steps_refusals_path?: string;
     expect_plan_step_ids?: string[];
+    expect_plan_step_titles?: Record<string, string>;
     expect_plan_step_notes?: Record<string, string>;
     expect_plan_step_notes_count?: number;
     ssh_auth_path?: string;

@@ -35,6 +35,17 @@ EXPECT_PLAN_STEP_NOTES: dict[str, str] = {
     "write_mem": "Optional write mem / commit — refused in WebUI.",
 }
 
+EXPECT_PLAN_STEP_TITLES: dict[str, str] = {
+    "ssh_open": "Open SSH session",
+    "pre_config": "Pre-config installer commands",
+    "reg_user": "Register user commands",
+    "enable_mode": "Enable / configure mode",
+    "safety_net_acl": "Safety-net ACL",
+    "push_config": "Push / paste config",
+    "post_config": "Post-config / activation",
+    "write_mem": "Write mem / commit",
+}
+
 # High-level steps the desktop expect path performs (no reproduction of expect scripts).
 _BASE_STEPS = (
     "open SSH session (password/keyboard-interactive or key)",
