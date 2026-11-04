@@ -129,45 +129,49 @@ _IFACE_OPTION_ENABLE: dict[str, list[dict[str, Any]]] = {
     ],
 }
 
+_LOG_ULOG_OPTION_ENABLE: list[dict[str, Any]] = [
+    {
+        "target": "ulog_cprange",
+        "when_option": "use_ULOG",
+        "when_in": ["True", "true", "1", "yes"],
+        "note": "ULOG stack fields follow use_ULOG (with stack switch).",
+    },
+    {
+        "target": "ulog_qthreshold",
+        "when_option": "use_ULOG",
+        "when_in": ["True", "true", "1", "yes"],
+        "note": "ULOG stack fields follow use_ULOG (with stack switch).",
+    },
+    {
+        "target": "ulog_nlgroup",
+        "when_option": "use_ULOG",
+        "when_in": ["True", "true", "1", "yes"],
+        "note": "ULOG stack fields follow use_ULOG (with stack switch).",
+    },
+    {
+        "target": "log_tcp_seq",
+        "when_option": "use_ULOG",
+        "when_in": ["False", "false", "0", "no", ""],
+        "note": "LOG stack fields when use_ULOG is off.",
+    },
+    {
+        "target": "log_tcp_opt",
+        "when_option": "use_ULOG",
+        "when_in": ["False", "false", "0", "no", ""],
+        "note": "LOG stack fields when use_ULOG is off.",
+    },
+    {
+        "target": "log_ip_opt",
+        "when_option": "use_ULOG",
+        "when_in": ["False", "false", "0", "no", ""],
+        "note": "LOG stack fields when use_ULOG is off.",
+    },
+]
+
 _OPTION_OPTION_ENABLE: dict[str, list[dict[str, Any]]] = {
-    "iptAdvancedDialog": [
-        {
-            "target": "ulog_cprange",
-            "when_option": "use_ULOG",
-            "when_in": ["True", "true", "1", "yes"],
-            "note": "ULOG stack fields follow use_ULOG (with stack switch).",
-        },
-        {
-            "target": "ulog_qthreshold",
-            "when_option": "use_ULOG",
-            "when_in": ["True", "true", "1", "yes"],
-            "note": "ULOG stack fields follow use_ULOG (with stack switch).",
-        },
-        {
-            "target": "ulog_nlgroup",
-            "when_option": "use_ULOG",
-            "when_in": ["True", "true", "1", "yes"],
-            "note": "ULOG stack fields follow use_ULOG (with stack switch).",
-        },
-        {
-            "target": "log_tcp_seq",
-            "when_option": "use_ULOG",
-            "when_in": ["False", "false", "0", "no", ""],
-            "note": "LOG stack fields when use_ULOG is off.",
-        },
-        {
-            "target": "log_tcp_opt",
-            "when_option": "use_ULOG",
-            "when_in": ["False", "false", "0", "no", ""],
-            "note": "LOG stack fields when use_ULOG is off.",
-        },
-        {
-            "target": "log_ip_opt",
-            "when_option": "use_ULOG",
-            "when_in": ["False", "false", "0", "no", ""],
-            "note": "LOG stack fields when use_ULOG is off.",
-        },
-    ],
+    "iptAdvancedDialog": list(_LOG_ULOG_OPTION_ENABLE),
+    "ipcopAdvancedDialog": list(_LOG_ULOG_OPTION_ENABLE),
+    "secuwallAdvancedDialog": list(_LOG_ULOG_OPTION_ENABLE),
 }
 
 
@@ -546,10 +550,13 @@ def stack_switch_for(platform: str = "", host_os: str = "") -> dict[str, Any]:
         "interface_dialog_stem": iface_stem,
         "option_stack_switch": _option_stack_switch(plat_stem),
         "iface_stack_switch": _iface_stack_switch(iface_stem),
+        "option_enable": _option_option_enable(plat_stem),
+        "iface_option_enable": _iface_option_enable(iface_stem),
         "pixel_parity": False,
         "note": (
-            "Maps how desktop switches QStackedWidget pages; WebUI uses them for "
-            "preview/follow only — not full pixel layout or Interface type writes."
+            "Maps how desktop switches QStackedWidget pages and related option_enable "
+            "rules; WebUI uses them for preview/follow only — not full pixel layout "
+            "or Interface type writes."
         ),
     }
 

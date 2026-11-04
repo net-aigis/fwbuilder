@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "424"
+WEBUI_SOFT_COMPLETE_PHASE = "432"
 
 HARD_GAPS_OPEN = (
     "full_qt_pixel_layout",

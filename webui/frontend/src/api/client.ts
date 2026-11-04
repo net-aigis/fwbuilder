@@ -879,6 +879,18 @@ export function fetchStackSwitch(platform = "", hostOs = "") {
       preview_only?: boolean;
       note?: string;
     } | null;
+    option_enable?: Array<{
+      target: string;
+      when_option: string;
+      when_in: string[];
+      note?: string;
+    }>;
+    iface_option_enable?: Array<{
+      target: string;
+      when_option: string;
+      when_in: string[];
+      note?: string;
+    }>;
     pixel_parity: boolean;
     note?: string;
   }>(`/api/v1/stack-switch?${qs.toString()}`);
