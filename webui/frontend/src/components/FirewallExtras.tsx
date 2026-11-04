@@ -2826,6 +2826,78 @@ export function FirewallExtras({
                 Copy honesty paths
               </button>
             ) : null}
+            {hardGapsPayload ? (
+              <button
+                type="button"
+                className="ghost"
+                disabled={busy}
+                title="Download soft_fertig_session_storage_keys (+ titles) from /hard-gaps"
+                onClick={() => {
+                  const catalog: Record<string, unknown> = {
+                    soft_fertig_session_storage_keys:
+                      hardGapsPayload.soft_fertig_session_storage_keys,
+                    soft_fertig_session_storage_key_count:
+                      hardGapsPayload.soft_fertig_session_storage_key_count,
+                    soft_fertig_session_storage_key_titles:
+                      hardGapsPayload.soft_fertig_session_storage_key_titles,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  const text = JSON.stringify(catalog, null, 2);
+                  try {
+                    sessionStorage.setItem(
+                      softFertigSurfaceStorageKey(firewallId) + ".sessionKeys",
+                      text,
+                    );
+                  } catch {
+                    /* ignore */
+                  }
+                  const blob = new Blob([text + "\n"], {
+                    type: "application/json;charset=utf-8",
+                  });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `fwbweb-session-storage-keys-${firewallId || "fw"}.json`;
+                  a.click();
+                  URL.revokeObjectURL(url);
+                  onStatus?.("Downloaded sessionStorage keys catalog");
+                }}
+              >
+                Download sessionStorage keys
+              </button>
+            ) : null}
+            {hardGapsPayload ? (
+              <button
+                type="button"
+                className="ghost"
+                disabled={busy}
+                title="Copy soft_fertig_session_storage_keys (+ titles) to clipboard"
+                onClick={() => {
+                  void (async () => {
+                    const catalog: Record<string, unknown> = {
+                      soft_fertig_session_storage_keys:
+                        hardGapsPayload.soft_fertig_session_storage_keys,
+                      soft_fertig_session_storage_key_count:
+                        hardGapsPayload.soft_fertig_session_storage_key_count,
+                      soft_fertig_session_storage_key_titles:
+                        hardGapsPayload.soft_fertig_session_storage_key_titles,
+                      soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                      honesty_milestone: hardGapsPayload.honesty_milestone,
+                    };
+                    const text = JSON.stringify(catalog, null, 2) + "\n";
+                    try {
+                      await navigator.clipboard.writeText(text);
+                      onStatus?.("Copied sessionStorage keys catalog");
+                    } catch (e) {
+                      onError?.(e instanceof Error ? e.message : String(e));
+                    }
+                  })();
+                }}
+              >
+                Copy sessionStorage keys
+              </button>
+            ) : null}
             <button
               type="button"
               className="ghost"
