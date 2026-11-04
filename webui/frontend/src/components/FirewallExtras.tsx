@@ -232,6 +232,7 @@ export function FirewallExtras({
   const [honestyPathsDetail, setHonestyPathsDetail] = useState<string | null>(null);
   const [hardGapsSummaryPath, setHardGapsSummaryPath] = useState<string | null>(null);
   const [hardGapsSummaryText, setHardGapsSummaryText] = useState<string | null>(null);
+  const [hardGapsSummaryFidelity, setHardGapsSummaryFidelity] = useState<string | null>(null);
   const [stackSwitchSummary, setStackSwitchSummary] = useState<string | null>(null);
   const [layoutFidelity, setLayoutFidelity] = useState<string | null>(null);
   const [resHint, setResHint] = useState<string | null>(null);
@@ -2045,13 +2046,32 @@ export function FirewallExtras({
                     const s = await fetchHardGapsSummary();
                     const text = JSON.stringify(s, null, 2);
                     setHardGapsSummaryText(text);
+                    if (
+                      typeof s.layout_fidelity_sample_score_percent === "number" &&
+                      !s.layout_fidelity_pixel_parity
+                    ) {
+                      const parts =
+                        typeof s.layout_fidelity_sample_score_parts_count === "number"
+                          ? `, parts=${s.layout_fidelity_sample_score_parts_count}`
+                          : "";
+                      const plat = s.layout_fidelity_sample_platform || "iptables";
+                      const hos = s.layout_fidelity_sample_host_os || "linux24";
+                      setHardGapsSummaryFidelity(
+                        `Sample fidelity ${plat}/${hos}: ${s.layout_fidelity_sample_score_percent}%${parts} (not pixel)`,
+                      );
+                    } else {
+                      setHardGapsSummaryFidelity(null);
+                    }
                     try {
                       sessionStorage.setItem(hardGapsSummaryKey(firewallId), text);
                     } catch {
                       /* ignore */
                     }
                     onStatus?.(
-                      `Hard-gaps summary: ${s.hard_gap_count ?? (s.hard_gap_open || []).length} open`,
+                      `Hard-gaps summary: ${s.hard_gap_count ?? (s.hard_gap_open || []).length} open` +
+                        (typeof s.layout_fidelity_sample_score_percent === "number"
+                          ? `; sample fidelity ${s.layout_fidelity_sample_score_percent}% (not pixel)`
+                          : ""),
                     );
                   } catch (e) {
                     onError?.(e instanceof Error ? e.message : String(e));
@@ -2097,6 +2117,7 @@ export function FirewallExtras({
                   /* ignore */
                 }
                 setHardGapsSummaryText(null);
+                setHardGapsSummaryFidelity(null);
                 onStatus?.("Cleared hard-gaps snapshot");
               }}
             >
@@ -2177,6 +2198,11 @@ export function FirewallExtras({
               Download closure
             </button>
           </div>
+          {hardGapsSummaryFidelity ? (
+            <p className="muted" title="layout_fidelity_sample_* from /hard-gaps/summary">
+              {hardGapsSummaryFidelity}
+            </p>
+          ) : null}
           {hardGapsSummaryText ? (
             <pre className="deploy-log configlet-preview" tabIndex={0}>
               {hardGapsSummaryText}

@@ -963,8 +963,14 @@ export function fetchHardGapsSummary() {
     hard_gap_open: string[];
     hard_gap_count?: number;
     honesty_paths_count?: number;
+    layout_fidelity_sample_platform?: string;
+    layout_fidelity_sample_host_os?: string;
+    layout_fidelity_sample_score_percent?: number | null;
+    layout_fidelity_sample_score_parts_count?: number | null;
+    layout_fidelity_pixel_parity?: boolean;
     parent_path?: string;
     closure_path?: string;
+    layout_fidelity_path?: string;
     note?: string;
   }>("/api/v1/hard-gaps/summary");
 }

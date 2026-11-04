@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "632"
+WEBUI_SOFT_COMPLETE_PHASE = "640"
 # Honesty/preview track milestone (last thematic checkpoint; soft marker may be higher).
 WEBUI_HONESTY_MILESTONE = 600
 
@@ -191,7 +191,12 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
 @app.get("/api/v1/hard-gaps/summary")
 def hard_gaps_summary(_: str = Depends(require_token)) -> dict[str, object]:
     """Compact honesty-track snapshot (counts + open ids; no full notes/paths)."""
+    from .platforms import layout_fidelity_for
+
     full = hard_gaps()
+    sample_fid = layout_fidelity_for("iptables", "linux24")
+    sample_score = sample_fid.get("score_percent") if sample_fid.get("ok") else None
+    sample_parts = sample_fid.get("score_parts_count") if sample_fid.get("ok") else None
     return {
         "soft_complete_phase": WEBUI_SOFT_COMPLETE_PHASE,
         "soft_fertig_honesty_track": True,
@@ -199,11 +204,19 @@ def hard_gaps_summary(_: str = Depends(require_token)) -> dict[str, object]:
         "hard_gap_open": list(HARD_GAPS_OPEN),
         "hard_gap_count": len(HARD_GAPS_OPEN),
         "honesty_paths_count": int(full.get("honesty_paths_count") or 0),
+        "layout_fidelity_sample_platform": "iptables",
+        "layout_fidelity_sample_host_os": "linux24",
+        "layout_fidelity_sample_score_percent": sample_score,
+        "layout_fidelity_sample_score_parts_count": sample_parts,
+        "layout_fidelity_pixel_parity": False,
         "parent_path": "/api/v1/hard-gaps",
         "closure_path": "/api/v1/hard-gaps/closure",
+        "layout_fidelity_path": "/api/v1/layout-fidelity",
         "note": (
             "Compact honesty snapshot. Prefer GET /hard-gaps for full paths/notes "
-            "and GET /hard-gaps/closure for closure criteria."
+            "and GET /hard-gaps/closure for closure criteria. "
+            "layout_fidelity_sample_* is heuristic signal coverage for iptables/linux24 "
+            "— not pixel parity (layout_fidelity_pixel_parity stays false)."
         ),
     }
 

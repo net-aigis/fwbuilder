@@ -12,7 +12,7 @@ assert s.get("hard_gap_count") == 3
 assert s.get("parent_path") == "/api/v1/hard-gaps"
 assert s.get("closure_path") == "/api/v1/hard-gaps/closure"
 assert int(s.get("honesty_paths_count") or 0) >= 10
-assert m.WEBUI_SOFT_COMPLETE_PHASE == "632"
+assert int(m.WEBUI_SOFT_COMPLETE_PHASE) >= 632
 print("summary ok", s["honesty_paths_count"])
 PY
 echo "cleaned"
