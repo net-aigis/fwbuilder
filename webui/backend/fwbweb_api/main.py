@@ -35,7 +35,9 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "608"
+WEBUI_SOFT_COMPLETE_PHASE = "616"
+# Honesty/preview track milestone (last thematic checkpoint; soft marker may be higher).
+WEBUI_HONESTY_MILESTONE = 600
 
 HARD_GAPS_OPEN = (
     "full_qt_pixel_layout",
@@ -122,6 +124,18 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
     ssh = ssh_auth_capabilities()
     sample_fid = layout_fidelity_for("iptables", "linux24")
     signal_catalog = sample_fid.get("signal_keys") if sample_fid.get("ok") else None
+    honesty_paths = {
+        "hard_gaps": "/api/v1/hard-gaps",
+        "closure": "/api/v1/hard-gaps/closure",
+        "layout_fidelity": "/api/v1/layout-fidelity",
+        "stack_switch": "/api/v1/stack-switch",
+        "option_enable": "/api/v1/option-enable",
+        "expect_run": "/api/v1/expect-install-plan/run",
+        "expect_steps": "/api/v1/expect-install-plan/steps",
+        "expect_steps_refusals": "/api/v1/expect-install-plan/steps/refusals",
+        "ssh_auth": "/api/v1/ssh-auth",
+        "password_ssh": "/api/v1/ssh-auth/password",
+    }
     return {
         "soft_complete_phase": WEBUI_SOFT_COMPLETE_PHASE,
         "soft_fertig_honesty_track": True,
@@ -129,21 +143,22 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
         "hard_gap_count": len(HARD_GAPS_OPEN),
         "hard_gap_notes": dict(HARD_GAP_NOTES),
         "hard_gap_closure": dict(HARD_GAP_CLOSURE),
-        "closure_path": "/api/v1/hard-gaps/closure",
-        "layout_fidelity_path": "/api/v1/layout-fidelity",
+        "closure_path": honesty_paths["closure"],
+        "layout_fidelity_path": honesty_paths["layout_fidelity"],
         "layout_fidelity_signal_catalog": signal_catalog,
-        "stack_switch_path": "/api/v1/stack-switch",
-        "option_enable_path": "/api/v1/option-enable",
-        "expect_run_path": "/api/v1/expect-install-plan/run",
-        "expect_steps_path": "/api/v1/expect-install-plan/steps",
-        "expect_steps_refusals_path": "/api/v1/expect-install-plan/steps/refusals",
+        "stack_switch_path": honesty_paths["stack_switch"],
+        "option_enable_path": honesty_paths["option_enable"],
+        "expect_run_path": honesty_paths["expect_run"],
+        "expect_steps_path": honesty_paths["expect_steps"],
+        "expect_steps_refusals_path": honesty_paths["expect_steps_refusals"],
         "expect_plan_step_ids": list(EXPECT_PLAN_STEP_IDS),
-        "ssh_auth_path": "/api/v1/ssh-auth",
-        "password_ssh_path": "/api/v1/ssh-auth/password",
+        "ssh_auth_path": honesty_paths["ssh_auth"],
+        "password_ssh_path": honesty_paths["password_ssh"],
         "ssh_batch_mode_only": bool(ssh.get("batch_mode_only")),
         "ssh_alternatives": list(ssh.get("alternatives") or []),
         "ssh_refusal_paths": dict(ssh.get("refusal_paths") or {}),
-        "honesty_milestone": 600,
+        "honesty_milestone": WEBUI_HONESTY_MILESTONE,
+        "honesty_paths": honesty_paths,
         "note": (
             "Honesty/preview track is soft-complete (soft_fertig); these items remain "
             "unimplemented (full Qt pixel layout, expect/SSHSession runtime, password SSH). "
@@ -154,7 +169,8 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
             "expect_plan_step_ids / GET expect-install-plan/steps list canonical plan "
             "step ids (all refused; unknown step → expect_installer_unknown_step). "
             "ssh_refusal_paths documents BatchMode-only refuse status codes. "
-            "hard_gap_closure documents what would close each gap."
+            "hard_gap_closure documents what would close each gap. "
+            "honesty_paths catalogs honesty/preview endpoints."
         ),
     }
 
@@ -164,6 +180,8 @@ def hard_gap_closure(_: str = Depends(require_token)) -> dict[str, object]:
     """Closure criteria for each open hard gap (honesty track)."""
     return {
         "soft_complete_phase": WEBUI_SOFT_COMPLETE_PHASE,
+        "soft_fertig_honesty_track": True,
+        "honesty_milestone": WEBUI_HONESTY_MILESTONE,
         "hard_gap_open": list(HARD_GAPS_OPEN),
         "hard_gap_count": len(HARD_GAPS_OPEN),
         "hard_gap_closure": dict(HARD_GAP_CLOSURE),

@@ -118,6 +118,10 @@ function expectRefusalsKey(firewallId: string) {
   return `fwbweb.expectRefusals.${firewallId}`;
 }
 
+function hardGapsSnapshotKey(firewallId: string) {
+  return `fwbweb.hardGaps.${firewallId}`;
+}
+
 export function FirewallExtras({
   sessionId,
   firewallId,
@@ -218,6 +222,9 @@ export function FirewallExtras({
   const [sshRefusalSummary, setSshRefusalSummary] = useState<string | null>(null);
   const [softCompletePhase, setSoftCompletePhase] = useState<string | null>(null);
   const [honestyMilestone, setHonestyMilestone] = useState<number | null>(null);
+  const [softFertigHonestyTrack, setSoftFertigHonestyTrack] = useState<boolean | null>(null);
+  const [honestyPathsSummary, setHonestyPathsSummary] = useState<string | null>(null);
+  const [honestyPathsDetail, setHonestyPathsDetail] = useState<string | null>(null);
   const [stackSwitchSummary, setStackSwitchSummary] = useState<string | null>(null);
   const [layoutFidelity, setLayoutFidelity] = useState<string | null>(null);
   const [resHint, setResHint] = useState<string | null>(null);
@@ -261,7 +268,17 @@ export function FirewallExtras({
           : gaps?.hard_gap_open?.length ?? null,
       );
       setLayoutFidelityPath(gaps?.layout_fidelity_path || "/api/v1/layout-fidelity");
-      if (gaps) setHardGapsPayload(gaps as unknown as Record<string, unknown>);
+      if (gaps) {
+        setHardGapsPayload(gaps as unknown as Record<string, unknown>);
+        try {
+          sessionStorage.setItem(
+            hardGapsSnapshotKey(firewallId),
+            JSON.stringify(gaps, null, 2),
+          );
+        } catch {
+          /* ignore */
+        }
+      }
       const cat = gaps?.layout_fidelity_signal_catalog;
       if (cat) {
         const n =
@@ -314,6 +331,19 @@ export function FirewallExtras({
       setHonestyMilestone(
         typeof gaps?.honesty_milestone === "number" ? gaps.honesty_milestone : null,
       );
+      setSoftFertigHonestyTrack(
+        typeof gaps?.soft_fertig_honesty_track === "boolean"
+          ? gaps.soft_fertig_honesty_track
+          : null,
+      );
+      if (gaps?.honesty_paths && Object.keys(gaps.honesty_paths).length) {
+        const entries = Object.entries(gaps.honesty_paths);
+        setHonestyPathsSummary(`Honesty paths: ${entries.length}`);
+        setHonestyPathsDetail(entries.map(([k, v]) => `${k}: ${v}`).join("\n"));
+      } else {
+        setHonestyPathsSummary(null);
+        setHonestyPathsDetail(null);
+      }
       try {
         const fid = await fetchLayoutFidelity(plat, hostOs || "");
         if (fid.ok && fid.score_percent != null) {
@@ -428,6 +458,14 @@ export function FirewallExtras({
         if (closureRaw) setHardGapsClosureText(closureRaw);
         const refusalsRaw = sessionStorage.getItem(expectRefusalsKey(firewallId));
         if (refusalsRaw) setExpectRefusalsText(refusalsRaw);
+        const gapsSnap = sessionStorage.getItem(hardGapsSnapshotKey(firewallId));
+        if (gapsSnap && !gaps) {
+          try {
+            setHardGapsPayload(JSON.parse(gapsSnap) as Record<string, unknown>);
+          } catch {
+            /* ignore */
+          }
+        }
       } catch {
         /* ignore */
       }
@@ -1807,6 +1845,12 @@ export function FirewallExtras({
                 · honesty milestone <code>{honestyMilestone}</code>
               </>
             ) : null}
+            {softFertigHonestyTrack != null ? (
+              <>
+                {" "}
+                · soft-fertig track <code>{softFertigHonestyTrack ? "yes" : "no"}</code>
+              </>
+            ) : null}
             {hardGapsClosurePath ? (
               <>
                 {" "}
@@ -1910,6 +1954,16 @@ export function FirewallExtras({
               ) : null}
             </details>
           ) : null}
+          {honestyPathsSummary ? (
+            <details className="muted">
+              <summary>{honestyPathsSummary}</summary>
+              {honestyPathsDetail ? (
+                <pre className="deploy-log configlet-preview" tabIndex={0}>
+                  {honestyPathsDetail}
+                </pre>
+              ) : null}
+            </details>
+          ) : null}
           <div className="btn-row pad-tight">
             {hardGapsPayload ? (
               <button
@@ -1919,6 +1973,11 @@ export function FirewallExtras({
                 title="Download /hard-gaps JSON (honesty track snapshot)"
                 onClick={() => {
                   const text = JSON.stringify(hardGapsPayload, null, 2);
+                  try {
+                    sessionStorage.setItem(hardGapsSnapshotKey(firewallId), text);
+                  } catch {
+                    /* ignore */
+                  }
                   const blob = new Blob([text + "\n"], { type: "application/json;charset=utf-8" });
                   const url = URL.createObjectURL(blob);
                   const a = document.createElement("a");
@@ -1946,6 +2005,12 @@ export function FirewallExtras({
                     const lines = [
                       `# hard-gap closure (phase ${c.soft_complete_phase}` +
                         (c.hard_gap_count != null ? `, count=${c.hard_gap_count}` : "") +
+                        (c.honesty_milestone != null
+                          ? `, honesty_milestone=${c.honesty_milestone}`
+                          : "") +
+                        (c.soft_fertig_honesty_track != null
+                          ? `, soft_fertig=${c.soft_fertig_honesty_track ? "yes" : "no"}`
+                          : "") +
                         ")",
                       c.parent_path ? `parent=${c.parent_path}` : "",
                       c.note || "",

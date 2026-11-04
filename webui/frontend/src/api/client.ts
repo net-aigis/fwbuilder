@@ -948,6 +948,7 @@ export function fetchHardGaps() {
     ssh_alternatives?: string[];
     ssh_refusal_paths?: Record<string, number>;
     honesty_milestone?: number;
+    honesty_paths?: Record<string, string>;
     note?: string;
   }>("/api/v1/hard-gaps");
 }
@@ -1026,6 +1027,8 @@ export function fetchOptionEnable(platform = "", hostOs = "") {
 export function fetchHardGapClosure() {
   return api<{
     soft_complete_phase: string;
+    soft_fertig_honesty_track?: boolean;
+    honesty_milestone?: number;
     hard_gap_open: string[];
     hard_gap_count?: number;
     hard_gap_closure: Record<string, string>;
