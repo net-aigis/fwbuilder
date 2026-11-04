@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "1832"
+WEBUI_SOFT_COMPLETE_PHASE = "1848"
 SOFT_FERTIG_HONESTY_TRACK_NOTE = (
     "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
     "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
@@ -105,11 +105,12 @@ SOFT_FERTIG_HONESTY_TRACK_NOTE = (
 # 3650: UI expandable catalog summary detail + download/copy;
 # 3700: catalog_summary listed in honesty export + bundle sections;
 # 3750: soft_fertig_honesty_surface_version bumped to 1.1 (catalog_summary);
-# 3800: soft_fertig_honesty_track_note clarifies soft track vs open hard gaps.
-WEBUI_HONESTY_MILESTONE = 3800
+# 3800: soft_fertig_honesty_track_note clarifies soft track vs open hard gaps;
+# 3850: track_note included in catalog_summary + honesty export catalogs.
+WEBUI_HONESTY_MILESTONE = 3850
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 3800: soft_fertig_honesty_track_note "
-    "clarifies soft-fertig vs open hard gaps — hard gaps remain open."
+    "Honesty surface checkpoint 3850: soft_fertig_honesty_track_note is "
+    "included in catalog_summary and honesty exports — hard gaps remain open."
 )
 
 HARD_GAPS_OPEN = (
@@ -378,6 +379,7 @@ SOFT_FERTIG_HONESTY_EXPORT_KEYS = (
     "session_storage_clear",
     "surface_version",
     "catalog_summary",
+    "track_note",
 )
 SOFT_FERTIG_HONESTY_EXPORT_KEY_TITLES = {
     "hard_gaps": "Full /hard-gaps honesty snapshot JSON",
@@ -389,6 +391,7 @@ SOFT_FERTIG_HONESTY_EXPORT_KEY_TITLES = {
     "session_storage_clear": "sessionStorage clear keys/note JSON",
     "surface_version": "Honesty surface schema version (+ note)",
     "catalog_summary": "Compact soft-fertig catalog counts",
+    "track_note": "Soft-fertig honesty track clarification note",
 }
 SOFT_FERTIG_HONESTY_EXPORT_NOTES = {
     "hard_gaps": "Download hard-gaps JSON button; sessionStorage fwbweb.hardGaps.*.",
@@ -400,6 +403,7 @@ SOFT_FERTIG_HONESTY_EXPORT_NOTES = {
     "session_storage_clear": "Download/Copy clear catalogs; Clear honesty catalogs action.",
     "surface_version": "soft_fertig_honesty_surface_version (+ note) from /hard-gaps.",
     "catalog_summary": "Download/Copy soft_fertig_catalog_summary; also on /health.",
+    "track_note": "soft_fertig_honesty_track_note from /hard-gaps and /health.",
 }
 
 # Top-level sections of the combined UI honesty bundle download.
@@ -413,6 +417,7 @@ SOFT_FERTIG_HONESTY_BUNDLE_SECTIONS = (
     "session_storage_clear",
     "surface_version",
     "catalog_summary",
+    "track_note",
     "honesty_exports",
 )
 SOFT_FERTIG_HONESTY_BUNDLE_SECTION_TITLES = {
@@ -425,6 +430,7 @@ SOFT_FERTIG_HONESTY_BUNDLE_SECTION_TITLES = {
     "session_storage_clear": "sessionStorage clear keys/note",
     "surface_version": "Honesty surface schema version (+ note)",
     "catalog_summary": "Compact soft-fertig catalog counts",
+    "track_note": "Soft-fertig honesty track clarification note",
     "honesty_exports": "Export catalog meta (keys/titles/notes)",
 }
 SOFT_FERTIG_HONESTY_BUNDLE_NOTES = {
@@ -437,6 +443,7 @@ SOFT_FERTIG_HONESTY_BUNDLE_NOTES = {
     "session_storage_clear": "Same subset as Download clear catalogs.",
     "surface_version": "Dedicated surface_version section (also in meta).",
     "catalog_summary": "Same subset as Download catalog summary.",
+    "track_note": "soft_fertig_honesty_track_note clarification text.",
     "honesty_exports": "Same subset as Download honesty exports.",
 }
 
@@ -445,6 +452,7 @@ def soft_fertig_catalog_summary() -> dict[str, object]:
     """Compact soft-fertig catalog counts for /health and honesty endpoints."""
     return {
         "soft_fertig_honesty_surface_version": SOFT_FERTIG_HONESTY_SURFACE_VERSION,
+        "soft_fertig_honesty_track_note": SOFT_FERTIG_HONESTY_TRACK_NOTE,
         "soft_fertig_surface_key_count": len(SOFT_FERTIG_SURFACE_KEYS),
         "soft_fertig_session_storage_key_count": len(SOFT_FERTIG_SESSION_STORAGE_KEYS),
         "soft_fertig_honesty_export_key_count": len(SOFT_FERTIG_HONESTY_EXPORT_KEYS),
