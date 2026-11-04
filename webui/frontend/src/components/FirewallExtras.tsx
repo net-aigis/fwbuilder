@@ -160,6 +160,10 @@ function honestyTrackNoteStorageKey(firewallId: string) {
   return `fwbweb.honestyTrackNote.${firewallId}`;
 }
 
+function honestyReadinessStorageKey(firewallId: string) {
+  return `fwbweb.honestyReadiness.${firewallId}`;
+}
+
 function buildHonestyBundle(payload: Record<string, unknown>) {
   const surfaceKeys = Array.isArray(payload.soft_fertig_surface_keys)
     ? (payload.soft_fertig_surface_keys as string[])
@@ -1181,6 +1185,30 @@ export function FirewallExtras({
             }
           } catch {
             setTrackNoteDetail(trackNoteRaw);
+          }
+        }
+        const readinessRaw = sessionStorage.getItem(
+          honestyReadinessStorageKey(firewallId),
+        );
+        if (readinessRaw) {
+          try {
+            const parsed = JSON.parse(readinessRaw) as {
+              soft_fertig_honesty_readiness?: unknown;
+            };
+            const readiness = parsed.soft_fertig_honesty_readiness;
+            if (readiness && typeof readiness === "object") {
+              setHonestyReadinessDetail(
+                Object.entries(readiness as Record<string, unknown>)
+                  .map(([k, v]) =>
+                    `${k}: ${Array.isArray(v) ? v.join(", ") : String(v)}`,
+                  )
+                  .join("\n"),
+              );
+            } else {
+              setHonestyReadinessDetail(readinessRaw);
+            }
+          } catch {
+            setHonestyReadinessDetail(readinessRaw);
           }
         }
       } catch {
@@ -3699,6 +3727,14 @@ export function FirewallExtras({
                     honesty_milestone: hardGapsPayload.honesty_milestone,
                   };
                   const text = JSON.stringify(catalog, null, 2);
+                  try {
+                    sessionStorage.setItem(
+                      honestyReadinessStorageKey(firewallId),
+                      text,
+                    );
+                  } catch {
+                    /* ignore */
+                  }
                   const blob = new Blob([text + "\n"], {
                     type: "application/json;charset=utf-8",
                   });
@@ -3729,6 +3765,14 @@ export function FirewallExtras({
                       honesty_milestone: hardGapsPayload.honesty_milestone,
                     };
                     const text = JSON.stringify(catalog, null, 2) + "\n";
+                    try {
+                      sessionStorage.setItem(
+                        honestyReadinessStorageKey(firewallId),
+                        text.trimEnd(),
+                      );
+                    } catch {
+                      /* ignore */
+                    }
                     try {
                       await navigator.clipboard.writeText(text);
                       onStatus?.("Copied honesty readiness");
@@ -3999,7 +4043,7 @@ export function FirewallExtras({
               type="button"
               className="ghost"
               disabled={busy || (!hardGapsPayload && !hardGapsSummaryText)}
-              title="Clear sessionStorage hard-gaps snapshot, summary, surface, refusals, honesty paths, track note"
+              title="Clear sessionStorage hard-gaps snapshot, summary, surface, refusals, honesty paths, track note, readiness"
               onClick={() => {
                 try {
                   sessionStorage.removeItem(hardGapsSnapshotKey(firewallId));
@@ -4009,6 +4053,7 @@ export function FirewallExtras({
                   sessionStorage.removeItem(honestyPathsCatalogKey(firewallId));
                   sessionStorage.removeItem(honestyBundleStorageKey(firewallId));
                   sessionStorage.removeItem(honestyTrackNoteStorageKey(firewallId));
+                  sessionStorage.removeItem(honestyReadinessStorageKey(firewallId));
                 } catch {
                   /* ignore */
                 }
@@ -4016,6 +4061,7 @@ export function FirewallExtras({
                 setHardGapsSummaryFidelity(null);
                 setHardGapsSummaryFidelityTitle(null);
                 setTrackNoteDetail(null);
+                setHonestyReadinessDetail(null);
                 onStatus?.("Cleared honesty catalogs");
               }}
             >
