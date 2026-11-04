@@ -7,6 +7,7 @@ import {
   fetchExpectInstallWalkthrough,
   fetchExpectPlanSteps,
   fetchExpectPlanStepRefusals,
+  fetchHardGapClosure,
   fetchHardGaps,
   fetchLayoutFidelity,
   fetchStackSwitch,
@@ -191,6 +192,7 @@ export function FirewallExtras({
   const [hardGapClosure, setHardGapClosure] = useState<Record<string, string>>({});
   const [hardGapsClosurePath, setHardGapsClosurePath] = useState<string | null>(null);
   const [hardGapCount, setHardGapCount] = useState<number | null>(null);
+  const [hardGapsClosureText, setHardGapsClosureText] = useState<string | null>(null);
   const [layoutFidelityPath, setLayoutFidelityPath] = useState<string | null>(null);
   const [hardGapsPayload, setHardGapsPayload] = useState<Record<string, unknown> | null>(null);
   const [signalCatalogSummary, setSignalCatalogSummary] = useState<string | null>(null);
@@ -1847,26 +1849,68 @@ export function FirewallExtras({
               ) : null}
             </details>
           ) : null}
-          {hardGapsPayload ? (
+          <div className="btn-row pad-tight">
+            {hardGapsPayload ? (
+              <button
+                type="button"
+                className="ghost"
+                disabled={busy}
+                title="Download /hard-gaps JSON (honesty track snapshot)"
+                onClick={() => {
+                  const text = JSON.stringify(hardGapsPayload, null, 2);
+                  const blob = new Blob([text + "\n"], { type: "application/json;charset=utf-8" });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `fwbweb-hard-gaps-${firewallId || "fw"}.json`;
+                  a.click();
+                  URL.revokeObjectURL(url);
+                  onStatus?.("Downloaded hard-gaps JSON");
+                }}
+              >
+                Download hard-gaps JSON
+              </button>
+            ) : null}
             <button
               type="button"
               className="ghost"
               disabled={busy}
-              title="Download /hard-gaps JSON (honesty track snapshot)"
+              title="GET /hard-gaps/closure — show closure criteria"
               onClick={() => {
-                const text = JSON.stringify(hardGapsPayload, null, 2);
-                const blob = new Blob([text + "\n"], { type: "application/json;charset=utf-8" });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement("a");
-                a.href = url;
-                a.download = `fwbweb-hard-gaps-${firewallId || "fw"}.json`;
-                a.click();
-                URL.revokeObjectURL(url);
-                onStatus?.("Downloaded hard-gaps JSON");
+                void (async () => {
+                  onBusy?.(true);
+                  onError?.(null);
+                  try {
+                    const c = await fetchHardGapClosure();
+                    const lines = [
+                      `# hard-gap closure (phase ${c.soft_complete_phase})`,
+                      c.note || "",
+                      "",
+                      ...((c.hard_gap_open || []).map((g) => {
+                        const crit = c.hard_gap_closure?.[g] || "";
+                        return `- ${g}\n  close when: ${crit}`;
+                      })),
+                    ];
+                    const text = lines.join("\n");
+                    setHardGapsClosureText(text);
+                    onStatus?.(
+                      `Hard-gap closure: ${(c.hard_gap_open || []).length} open`,
+                    );
+                  } catch (e) {
+                    onError?.(e instanceof Error ? e.message : String(e));
+                  } finally {
+                    onBusy?.(false);
+                  }
+                })();
               }}
             >
-              Download hard-gaps JSON
+              Show hard-gap closure
             </button>
+          </div>
+          {hardGapsClosureText ? (
+            <pre className="deploy-log configlet-preview" tabIndex={0}>
+              {hardGapsClosureText}
+            </pre>
           ) : null}
         </div>
       ) : null}
