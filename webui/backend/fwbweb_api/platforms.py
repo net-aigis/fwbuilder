@@ -565,6 +565,8 @@ def _layout_fidelity_from_dialog(stem: str, info: dict[str, Any]) -> dict[str, A
         field_stats["with_size_policy_fixed"] / n,
         field_stats["with_size_policy_minimum"] / n,
         field_stats["with_size_policy_preferred"] / n,
+        field_stats["with_minimum_size"] / n,
+        field_stats["with_maximum_size"] / n,
         field_stats["with_visible"] / n,
         field_stats["with_whats_this"] / n,
         field_stats["with_tooltip"] / n,

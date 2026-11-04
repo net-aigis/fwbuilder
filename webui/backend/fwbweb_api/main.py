@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "840"
+WEBUI_SOFT_COMPLETE_PHASE = "848"
 # Honesty/preview track milestone (last thematic checkpoint; soft marker may be higher).
 # 600: refusals/closure; 650: health/summary/paths + fidelity sample;
 # 700: expect step_notes + SSH alternative/refusal notes;
@@ -65,7 +65,8 @@ HARD_GAP_NOTES = {
         "use_ULOG/device-type stack hints + option_enable follow); "
         "fidelity counts with_visible + sections flat/checkable + signal_keys + "
         "layout_tree_max_depth + spacers_with_orientation/size_type + "
-        "with_size_policy_expanding/fixed/minimum/preferred + with_minimum_size/maximum_size + "
+        "with_size_policy_expanding/fixed/minimum/preferred + with_minimum_size/maximum_size "
+        "(also score weights) + "
         "layout_tree_max_depth/buddy_labels + stacked_sections + "
         "sections_with_flat/checkable + annotations samples; "
         "UI applies data-size-type Expanding/Fixed/Maximum/Minimum/Preferred via "
