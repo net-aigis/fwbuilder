@@ -311,6 +311,9 @@ function buildHonestyBundle(payload: Record<string, unknown>) {
     changelog_roster: {
       soft_fertig_changelog_roster: payload.soft_fertig_changelog_roster,
     },
+    expect_step_roster: {
+      soft_fertig_expect_step_roster: payload.soft_fertig_expect_step_roster,
+    },
     honesty_exports: {
       soft_fertig_honesty_export_keys: payload.soft_fertig_honesty_export_keys,
       soft_fertig_honesty_export_key_count:

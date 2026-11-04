@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "2872"
+WEBUI_SOFT_COMPLETE_PHASE = "2888"
 SOFT_FERTIG_HONESTY_TRACK_NOTE = (
     "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
     "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
@@ -170,12 +170,12 @@ SOFT_FERTIG_HONESTY_TRACK_NOTE = (
 # 6900: soft_fertig_honesty_surface_version bumped to 2.5 (changelog_roster);
 # 6950: changelog_roster added to sessionStorage + clear catalogs;
 # 7000: Soft 2840+ honesty surface checkpoint (changelog_roster cycle complete);
-# 7050: soft_fertig_expect_step_roster compact refused expect install step titles/notes.
-WEBUI_HONESTY_MILESTONE = 7050
+# 7050: soft_fertig_expect_step_roster compact refused expect install step titles/notes;
+# 7100: expect_step_roster listed in honesty export + bundle sections.
+WEBUI_HONESTY_MILESTONE = 7100
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 7050: soft_fertig_expect_step_roster lists "
-    "refused expect-install-plan step ids with titles and notes for operators — "
-    "hard gaps remain open."
+    "Honesty surface checkpoint 7100: soft_fertig_expect_step_roster is "
+    "listed in honesty export and bundle catalogs — hard gaps remain open."
 )
 SOFT_FERTIG_SOFT_COMPLETE_NOTE = (
     "WEBUI_SOFT_COMPLETE_PHASE marks soft-fertig honesty/preview catalog "
@@ -632,6 +632,7 @@ SOFT_FERTIG_HONESTY_EXPORT_KEYS = (
     "honesty_bundle_roster",
     "surface_roster",
     "changelog_roster",
+    "expect_step_roster",
 )
 SOFT_FERTIG_HONESTY_EXPORT_KEY_TITLES = {
     "hard_gaps": "Full /hard-gaps honesty snapshot JSON",
@@ -656,6 +657,7 @@ SOFT_FERTIG_HONESTY_EXPORT_KEY_TITLES = {
     "honesty_bundle_roster": "Honesty bundle section ids with titles and notes",
     "surface_roster": "Soft-fertig surface key ids with titles and notes",
     "changelog_roster": "Honesty surface changelog version ids with notes",
+    "expect_step_roster": "Refused expect-install-plan step ids with titles and notes",
 }
 SOFT_FERTIG_HONESTY_EXPORT_NOTES = {
     "hard_gaps": "Download hard-gaps JSON button; sessionStorage fwbweb.hardGaps.*.",
@@ -719,6 +721,9 @@ SOFT_FERTIG_HONESTY_EXPORT_NOTES = {
         "Download/Copy soft_fertig_changelog_roster; also on /health; "
         "sessionStorage fwbweb.changelogRoster.*."
     ),
+    "expect_step_roster": (
+        "Download/Copy soft_fertig_expect_step_roster; also on /health."
+    ),
 }
 
 # Top-level sections of the combined UI honesty bundle download.
@@ -745,6 +750,7 @@ SOFT_FERTIG_HONESTY_BUNDLE_SECTIONS = (
     "honesty_bundle_roster",
     "surface_roster",
     "changelog_roster",
+    "expect_step_roster",
     "honesty_exports",
 )
 SOFT_FERTIG_HONESTY_BUNDLE_SECTION_TITLES = {
@@ -770,6 +776,7 @@ SOFT_FERTIG_HONESTY_BUNDLE_SECTION_TITLES = {
     "honesty_bundle_roster": "Honesty bundle section ids with titles and notes",
     "surface_roster": "Soft-fertig surface key ids with titles and notes",
     "changelog_roster": "Honesty surface changelog version ids with notes",
+    "expect_step_roster": "Refused expect-install-plan step ids with titles and notes",
     "honesty_exports": "Export catalog meta (keys/titles/notes)",
 }
 SOFT_FERTIG_HONESTY_BUNDLE_NOTES = {
@@ -834,6 +841,7 @@ SOFT_FERTIG_HONESTY_BUNDLE_NOTES = {
         "Same subset as Download changelog roster; "
         "also sessionStorage fwbweb.changelogRoster.*."
     ),
+    "expect_step_roster": "Same subset as Download expect step roster.",
     "honesty_exports": "Same subset as Download honesty exports.",
 }
 
