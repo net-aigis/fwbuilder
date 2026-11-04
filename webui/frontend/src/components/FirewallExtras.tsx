@@ -344,6 +344,8 @@ export function FirewallExtras({
   const [honestyExportDetail, setHonestyExportDetail] = useState<string | null>(null);
   const [honestyBundleSectionCount, setHonestyBundleSectionCount] = useState<number | null>(null);
   const [honestyBundleDetail, setHonestyBundleDetail] = useState<string | null>(null);
+  const [sessionStorageClearKeyCount, setSessionStorageClearKeyCount] = useState<number | null>(null);
+  const [sessionStorageClearDetail, setSessionStorageClearDetail] = useState<string | null>(null);
   const [honestyMilestoneNote, setHonestyMilestoneNote] = useState<string | null>(null);
   const [softFertigHonestyTrack, setSoftFertigHonestyTrack] = useState<boolean | null>(null);
   const [honestyPathsSummary, setHonestyPathsSummary] = useState<string | null>(null);
@@ -686,6 +688,40 @@ export function FirewallExtras({
                   if (note) line += ` — ${note}`;
                   return line;
                 })
+                .join("\n")
+            : null,
+        );
+      }
+      setSessionStorageClearKeyCount(
+        typeof gaps?.soft_fertig_session_storage_clear_key_count === "number"
+          ? gaps.soft_fertig_session_storage_clear_key_count
+          : null,
+      );
+      {
+        const keys = Array.isArray(gaps?.soft_fertig_session_storage_clear_keys)
+          ? (gaps.soft_fertig_session_storage_clear_keys as string[])
+          : null;
+        const note =
+          typeof gaps?.soft_fertig_session_storage_clear_note === "string"
+            ? gaps.soft_fertig_session_storage_clear_note
+            : "";
+        const prefixes =
+          gaps?.soft_fertig_session_storage_keys &&
+          typeof gaps.soft_fertig_session_storage_keys === "object"
+            ? (gaps.soft_fertig_session_storage_keys as Record<string, string>)
+            : {};
+        setSessionStorageClearDetail(
+          keys && keys.length
+            ? [
+                note ? `note: ${note}` : null,
+                ...keys.map((k) => {
+                  const prefix = prefixes[k];
+                  return prefix
+                    ? `${k}: ${prefix}<firewallId>`
+                    : k;
+                }),
+              ]
+                .filter(Boolean)
                 .join("\n")
             : null,
         );
@@ -2529,6 +2565,11 @@ export function FirewallExtras({
                 · honesty bundle <code>{honestyBundleSectionCount}</code>
               </span>
             ) : null}
+            {sessionStorageClearKeyCount != null && sessionStorageClearKeyCount > 0 ? (
+              <span className="muted">
+                · clearable catalogs <code>{sessionStorageClearKeyCount}</code>
+              </span>
+            ) : null}
             {honestyMilestone != null ? (
               <>
                 {" "}
@@ -2763,6 +2804,19 @@ export function FirewallExtras({
               </summary>
               <pre className="deploy-log configlet-preview" tabIndex={0}>
                 {honestyBundleDetail}
+              </pre>
+            </details>
+          ) : null}
+          {sessionStorageClearDetail ? (
+            <details className="muted">
+              <summary>
+                Soft-fertig clear honesty catalogs
+                {sessionStorageClearKeyCount != null
+                  ? ` (${sessionStorageClearKeyCount})`
+                  : ""}
+              </summary>
+              <pre className="deploy-log configlet-preview" tabIndex={0}>
+                {sessionStorageClearDetail}
               </pre>
             </details>
           ) : null}
@@ -3236,6 +3290,70 @@ export function FirewallExtras({
                 }}
               >
                 Copy honesty bundle
+              </button>
+            ) : null}
+            {hardGapsPayload ? (
+              <button
+                type="button"
+                className="ghost"
+                disabled={busy}
+                title="Download soft_fertig_session_storage_clear_* from /hard-gaps"
+                onClick={() => {
+                  const catalog: Record<string, unknown> = {
+                    soft_fertig_session_storage_clear_keys:
+                      hardGapsPayload.soft_fertig_session_storage_clear_keys,
+                    soft_fertig_session_storage_clear_key_count:
+                      hardGapsPayload.soft_fertig_session_storage_clear_key_count,
+                    soft_fertig_session_storage_clear_note:
+                      hardGapsPayload.soft_fertig_session_storage_clear_note,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  const text = JSON.stringify(catalog, null, 2);
+                  const blob = new Blob([text + "\n"], {
+                    type: "application/json;charset=utf-8",
+                  });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `fwbweb-session-storage-clear-${firewallId || "fw"}.json`;
+                  a.click();
+                  URL.revokeObjectURL(url);
+                  onStatus?.("Downloaded sessionStorage clear catalog");
+                }}
+              >
+                Download clear catalogs
+              </button>
+            ) : null}
+            {hardGapsPayload ? (
+              <button
+                type="button"
+                className="ghost"
+                disabled={busy}
+                title="Copy soft_fertig_session_storage_clear_* to clipboard"
+                onClick={() => {
+                  void (async () => {
+                    const catalog: Record<string, unknown> = {
+                      soft_fertig_session_storage_clear_keys:
+                        hardGapsPayload.soft_fertig_session_storage_clear_keys,
+                      soft_fertig_session_storage_clear_key_count:
+                        hardGapsPayload.soft_fertig_session_storage_clear_key_count,
+                      soft_fertig_session_storage_clear_note:
+                        hardGapsPayload.soft_fertig_session_storage_clear_note,
+                      soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                      honesty_milestone: hardGapsPayload.honesty_milestone,
+                    };
+                    const text = JSON.stringify(catalog, null, 2) + "\n";
+                    try {
+                      await navigator.clipboard.writeText(text);
+                      onStatus?.("Copied sessionStorage clear catalog");
+                    } catch (e) {
+                      onError?.(e instanceof Error ? e.message : String(e));
+                    }
+                  })();
+                }}
+              >
+                Copy clear catalogs
               </button>
             ) : null}
             <button
