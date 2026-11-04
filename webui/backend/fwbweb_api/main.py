@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "1352"
+WEBUI_SOFT_COMPLETE_PHASE = "1368"
 # Honesty/preview track milestone (last thematic checkpoint; soft marker may be higher).
 # 600: refusals/closure; 650: health/summary/paths + fidelity sample;
 # 700: expect step_notes + SSH alternative/refusal notes;
@@ -71,10 +71,11 @@ WEBUI_SOFT_COMPLETE_PHASE = "1352"
 # 2150: UI expandable hard_gap_related_refusals detail;
 # 2200: soft_fertig_surface_notes (+ count) for surface key catalog;
 # 2250: hard_gap_related_refusals also on closure + full map on summary;
-# 2300: soft_fertig_surface keys/titles/notes on hard-gaps summary.
-WEBUI_HONESTY_MILESTONE = 2300
+# 2300: soft_fertig_surface keys/titles/notes on hard-gaps summary;
+# 2350: soft_fertig_surface catalog also on hard-gaps/closure.
+WEBUI_HONESTY_MILESTONE = 2350
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 2300: /hard-gaps/summary mirrors "
+    "Honesty surface checkpoint 2350: /hard-gaps/closure exposes "
     "soft_fertig_surface_keys / titles / notes (+ counts) — hard gaps remain open."
 )
 
@@ -1094,6 +1095,21 @@ def hard_gap_closure(_: str = Depends(require_token)) -> dict[str, object]:
         "hard_gap_count": len(HARD_GAPS_OPEN),
         "hard_gap_closure": dict(HARD_GAP_CLOSURE),
         "hard_gap_notes": dict(HARD_GAP_NOTES),
+        "soft_fertig_surface_keys": list(SOFT_FERTIG_SURFACE_KEYS),
+        "soft_fertig_surface_key_count": len(SOFT_FERTIG_SURFACE_KEYS),
+        "soft_fertig_surface_key_titles": {
+            k: SOFT_FERTIG_SURFACE_KEY_TITLES[k]
+            for k in SOFT_FERTIG_SURFACE_KEYS
+            if k in SOFT_FERTIG_SURFACE_KEY_TITLES
+        },
+        "soft_fertig_surface_notes": {
+            k: SOFT_FERTIG_SURFACE_NOTES[k]
+            for k in SOFT_FERTIG_SURFACE_KEYS
+            if k in SOFT_FERTIG_SURFACE_NOTES
+        },
+        "soft_fertig_surface_notes_count": sum(
+            1 for k in SOFT_FERTIG_SURFACE_KEYS if k in SOFT_FERTIG_SURFACE_NOTES
+        ),
         "parent_path": "/api/v1/hard-gaps",
         "summary_path": "/api/v1/hard-gaps/summary",
         "note": (
