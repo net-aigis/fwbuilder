@@ -1432,8 +1432,11 @@ export function FirewallExtras({
                       onError?.(null);
                       try {
                         const r = await fetchExpectPlanStepRefusals(hostOs);
+                        const probe = r.unknown_step_probe;
                         const lines = [
                           `# expect step refusals for ${r.host_os} (all_refused=${r.all_refused})`,
+                          r.run_path ? `run_path=${r.run_path}` : "",
+                          r.steps_path ? `steps_path=${r.steps_path}` : "",
                           r.note || "",
                           "",
                           ...r.steps.map((s, i) => {
@@ -1442,7 +1445,16 @@ export function FirewallExtras({
                               s.unknown_step ? " (unknown)" : ""
                             }${s.note ? `\n   ${s.note}` : ""}`;
                           }),
-                        ];
+                          ...(probe
+                            ? [
+                                "",
+                                `# unknown_step_probe [${probe.step || "?"}] ${
+                                  probe.error || "refused"
+                                }${probe.unknown_step ? " (unknown)" : ""}`,
+                                probe.note ? `   ${probe.note}` : "",
+                              ]
+                            : []),
+                        ].filter((line) => line !== undefined);
                         const text = lines.join("\n");
                         setExpectRefusalsText(text);
                         onStatus?.(

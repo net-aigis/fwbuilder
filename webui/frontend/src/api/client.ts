@@ -974,7 +974,16 @@ export function fetchExpectPlanStepRefusals(hostOs: string) {
     step_count: number;
     all_refused: boolean;
     run_status?: number;
+    run_path?: string;
+    steps_path?: string;
     canonical_step_ids?: string[];
+    unknown_step_probe?: {
+      ok?: boolean;
+      error?: string;
+      step?: string;
+      unknown_step?: boolean;
+      note?: string;
+    };
     steps: Array<{
       ok?: boolean;
       error?: string;

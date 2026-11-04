@@ -325,10 +325,14 @@ def expect_plan_step_refusals(host_os: str) -> dict[str, Any]:
         "step_count": len(steps),
         "all_refused": True,
         "run_status": 501,
+        "run_path": "/api/v1/expect-install-plan/run",
+        "steps_path": "/api/v1/expect-install-plan/steps",
         "steps": steps,
         "canonical_step_ids": list(EXPECT_PLAN_STEP_IDS),
+        "unknown_step_probe": refuse_expect_install(host_os, step="__unknown_probe__"),
         "note": (
-            "Preview of POST /run refusals for every canonical step id. "
+            "Preview of POST /run refusals for every canonical step id "
+            "(plus unknown_step_probe). "
             "No SSHSession is opened and no step is executed."
         ),
     }
