@@ -5,6 +5,7 @@ import {
   fetchInstallerConfiglet,
   fetchExpectInstallPlan,
   fetchExpectInstallWalkthrough,
+  fetchExpectPlanSteps,
   fetchHardGaps,
   fetchLayoutFidelity,
   fetchStackSwitch,
@@ -193,6 +194,7 @@ export function FirewallExtras({
   const [expectRunPath, setExpectRunPath] = useState<string | null>(null);
   const [expectStepsPath, setExpectStepsPath] = useState<string | null>(null);
   const [expectPlanStepIds, setExpectPlanStepIds] = useState<string[]>([]);
+  const [expectProbeStep, setExpectProbeStep] = useState<string>("ssh_open");
   const [passwordSshPath, setPasswordSshPath] = useState<string | null>(null);
   const [softCompletePhase, setSoftCompletePhase] = useState<string | null>(null);
   const [stackSwitchSummary, setStackSwitchSummary] = useState<string | null>(null);
@@ -230,7 +232,19 @@ export function FirewallExtras({
       setOptionEnablePath(gaps?.option_enable_path || "/api/v1/option-enable");
       setExpectRunPath(gaps?.expect_run_path || "/api/v1/expect-install-plan/run");
       setExpectStepsPath(gaps?.expect_steps_path || "/api/v1/expect-install-plan/steps");
-      setExpectPlanStepIds(gaps?.expect_plan_step_ids || []);
+      let stepIds = gaps?.expect_plan_step_ids || [];
+      if (!stepIds.length) {
+        try {
+          const cat = await fetchExpectPlanSteps();
+          stepIds = cat.canonical_step_ids || [];
+        } catch {
+          /* catalog optional */
+        }
+      }
+      setExpectPlanStepIds(stepIds);
+      if (stepIds.length) {
+        setExpectProbeStep((cur) => (stepIds.includes(cur) ? cur : stepIds[0] || "ssh_open"));
+      }
       setPasswordSshPath(gaps?.password_ssh_path || "/api/v1/ssh-auth/password");
       setSoftCompletePhase(gaps?.soft_complete_phase || resSt?.soft_complete_phase || null);
       try {
@@ -1263,20 +1277,41 @@ export function FirewallExtras({
                 >
                   Probe password SSH
                 </button>
+                <label className="muted pad-tight" title="Canonical step id to POST /run (always 501)">
+                  Probe step{" "}
+                  <select
+                    value={expectProbeStep}
+                    disabled={busy || !expectPlanStepIds.length}
+                    onChange={(e) => setExpectProbeStep(e.target.value)}
+                  >
+                    {(expectPlanStepIds.length ? expectPlanStepIds : ["ssh_open"]).map((id) => (
+                      <option key={id} value={id}>
+                        {id}
+                      </option>
+                    ))}
+                    <option value="__unknown_probe__">__unknown_probe__</option>
+                  </select>
+                </label>
                 <button
                   type="button"
                   className="ghost"
                   disabled={busy || !hostOs}
-                  title="POST expect run for step ssh_open — always 501"
+                  title="POST expect run for selected step — always 501"
                   onClick={() => {
                     if (!hostOs) return;
+                    const step = expectProbeStep || "ssh_open";
                     void (async () => {
                       onBusy?.(true);
                       onError?.(null);
                       try {
-                        const r = await refuseExpectInstallStep(hostOs, "ssh_open");
+                        const r = await refuseExpectInstallStep(hostOs, step);
                         if (r.refused) {
-                          onStatus?.("Expect step ssh_open refused (501)");
+                          const kind = r.unknown_step
+                            ? "unknown_step"
+                            : r.error || "expect_installer_not_implemented";
+                          onStatus?.(
+                            `Expect step ${r.step || step} refused (501, ${kind})`,
+                          );
                         } else {
                           onError?.(`Unexpected expect run response: ${r.status}`);
                         }

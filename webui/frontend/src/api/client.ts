@@ -968,7 +968,16 @@ export function fetchHardGapClosure() {
 export async function refuseExpectInstallStep(
   hostOs: string,
   stepId: string,
-): Promise<{ refused: boolean; status: number; detail: string }> {
+): Promise<{
+  refused: boolean;
+  status: number;
+  detail: string;
+  step?: string;
+  unknown_step?: boolean;
+  known_step_ids?: string[];
+  error?: string;
+  note?: string;
+}> {
   const q = new URLSearchParams({ host_os: hostOs, step: stepId });
   const headers = new Headers();
   headers.set("Authorization", `Bearer ${getToken()}`);
@@ -977,7 +986,41 @@ export async function refuseExpectInstallStep(
     headers,
   });
   const text = await res.text();
-  return { refused: res.status === 501, status: res.status, detail: text };
+  let step: string | undefined;
+  let unknown_step: boolean | undefined;
+  let known_step_ids: string[] | undefined;
+  let error: string | undefined;
+  let note: string | undefined;
+  try {
+    const parsed = JSON.parse(text) as {
+      detail?: Record<string, unknown> | string;
+    } & Record<string, unknown>;
+    const d =
+      parsed && typeof parsed.detail === "object" && parsed.detail
+        ? (parsed.detail as Record<string, unknown>)
+        : parsed;
+    if (d && typeof d === "object") {
+      if (typeof d.step === "string") step = d.step;
+      if (typeof d.unknown_step === "boolean") unknown_step = d.unknown_step;
+      if (Array.isArray(d.known_step_ids)) {
+        known_step_ids = d.known_step_ids.filter((x): x is string => typeof x === "string");
+      }
+      if (typeof d.error === "string") error = d.error;
+      if (typeof d.note === "string") note = d.note;
+    }
+  } catch {
+    /* plain text body */
+  }
+  return {
+    refused: res.status === 501,
+    status: res.status,
+    detail: text,
+    step,
+    unknown_step,
+    known_step_ids,
+    error,
+    note,
+  };
 }
 
 export function fetchSshAuth() {
@@ -1006,6 +1049,7 @@ export function fetchExpectInstallPlan(
     error?: string;
     host_os: string;
     step_count: number;
+    canonical_step_ids?: string[];
     steps: Array<{
       id: string;
       title: string;
@@ -1032,6 +1076,7 @@ export function fetchExpectInstallWalkthrough(
     all_preview_only: boolean;
     host_os: string;
     step_count: number;
+    canonical_step_ids?: string[];
     timeline_start?: string;
     steps: Array<{
       id: string;

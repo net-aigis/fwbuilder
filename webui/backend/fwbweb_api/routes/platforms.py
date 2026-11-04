@@ -13,6 +13,7 @@ from ..configlets import (
 )
 from ..deploy import ssh_auth_capabilities
 from ..expect_installer import (
+    EXPECT_PLAN_STEP_IDS,
     expect_install_plan,
     expect_install_walkthrough,
     expect_installer_status,
@@ -116,10 +117,12 @@ def get_installer_capabilities(
             "steps_path": "/api/v1/expect-install-plan/steps",
             "run_path": "/api/v1/expect-install-plan/run",
             "run_status": 501,
+            "canonical_step_ids": list(EXPECT_PLAN_STEP_IDS),
             "note": (
                 "GET returns ordered preview; GET walkthrough marks every step "
                 "preview_only; GET /steps lists canonical ids; "
-                "POST /run always refuses with 501."
+                "POST /run always refuses with 501 "
+                "(unknown step → expect_installer_unknown_step)."
             ),
         },
         "ssh_auth": {

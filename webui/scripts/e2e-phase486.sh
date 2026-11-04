@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# Phase-486: soft marker 488.
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+cd "$ROOT"
+PYTHONPATH=webui/backend python3 - <<'PY'
+from fwbweb_api import main as m
+assert m.WEBUI_SOFT_COMPLETE_PHASE == "488"
+print("marker 488 ok")
+PY
+echo "cleaned"
+echo "OK: phase486 e2e passed"
