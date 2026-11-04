@@ -231,6 +231,9 @@ function buildHonestyBundle(payload: Record<string, unknown>) {
     readiness: {
       soft_fertig_honesty_readiness: payload.soft_fertig_honesty_readiness,
     },
+    soft_complete_note: {
+      soft_fertig_soft_complete_note: payload.soft_fertig_soft_complete_note,
+    },
     honesty_exports: {
       soft_fertig_honesty_export_keys: payload.soft_fertig_honesty_export_keys,
       soft_fertig_honesty_export_key_count:
@@ -3795,6 +3798,62 @@ export function FirewallExtras({
                 }}
               >
                 Copy readiness
+              </button>
+            ) : null}
+            {hardGapsPayload ? (
+              <button
+                type="button"
+                className="ghost"
+                disabled={busy}
+                title="Download soft_fertig_soft_complete_note from /hard-gaps"
+                onClick={() => {
+                  const catalog: Record<string, unknown> = {
+                    soft_fertig_soft_complete_note:
+                      hardGapsPayload.soft_fertig_soft_complete_note,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  const text = JSON.stringify(catalog, null, 2);
+                  const blob = new Blob([text + "\n"], {
+                    type: "application/json;charset=utf-8",
+                  });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `fwbweb-soft-complete-note-${firewallId || "fw"}.json`;
+                  a.click();
+                  URL.revokeObjectURL(url);
+                  onStatus?.("Downloaded soft-complete note");
+                }}
+              >
+                Download soft-complete note
+              </button>
+            ) : null}
+            {hardGapsPayload ? (
+              <button
+                type="button"
+                className="ghost"
+                disabled={busy}
+                title="Copy soft_fertig_soft_complete_note to clipboard"
+                onClick={() => {
+                  void (async () => {
+                    const catalog: Record<string, unknown> = {
+                      soft_fertig_soft_complete_note:
+                        hardGapsPayload.soft_fertig_soft_complete_note,
+                      soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                      honesty_milestone: hardGapsPayload.honesty_milestone,
+                    };
+                    const text = JSON.stringify(catalog, null, 2) + "\n";
+                    try {
+                      await navigator.clipboard.writeText(text);
+                      onStatus?.("Copied soft-complete note");
+                    } catch (e) {
+                      onError?.(e instanceof Error ? e.message : String(e));
+                    }
+                  })();
+                }}
+              >
+                Copy soft-complete note
               </button>
             ) : null}
             <button
