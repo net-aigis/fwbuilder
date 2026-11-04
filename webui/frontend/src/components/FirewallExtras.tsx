@@ -168,6 +168,10 @@ function softCompleteNoteStorageKey(firewallId: string) {
   return `fwbweb.softCompleteNote.${firewallId}`;
 }
 
+function honestySurfaceChangelogStorageKey(firewallId: string) {
+  return `fwbweb.honestySurfaceChangelog.${firewallId}`;
+}
+
 function buildHonestyBundle(payload: Record<string, unknown>) {
   const surfaceKeys = Array.isArray(payload.soft_fertig_surface_keys)
     ? (payload.soft_fertig_surface_keys as string[])
@@ -1277,6 +1281,36 @@ export function FirewallExtras({
           } catch {
             setSoftCompleteNote(softCompleteRaw);
             setSoftCompleteNoteDetail(softCompleteRaw);
+          }
+        }
+        const surfaceChangelogRaw = sessionStorage.getItem(
+          honestySurfaceChangelogStorageKey(firewallId),
+        );
+        if (surfaceChangelogRaw) {
+          try {
+            const parsed = JSON.parse(surfaceChangelogRaw) as {
+              soft_fertig_honesty_surface_changelog?: unknown;
+            };
+            const changelog = parsed.soft_fertig_honesty_surface_changelog;
+            if (changelog && typeof changelog === "object") {
+              const rec = changelog as Record<string, unknown>;
+              const versions =
+                rec.versions && typeof rec.versions === "object"
+                  ? (rec.versions as Record<string, unknown>)
+                  : {};
+              setHonestySurfaceChangelogDetail(
+                [
+                  `current_version: ${String(rec.current_version ?? "")}`,
+                  `version_count: ${String(rec.version_count ?? "")}`,
+                  `hard_gaps_remain: ${String(rec.hard_gaps_remain ?? "")}`,
+                  ...Object.entries(versions).map(([k, v]) => `${k}: ${String(v)}`),
+                ].join("\n"),
+              );
+            } else {
+              setHonestySurfaceChangelogDetail(surfaceChangelogRaw);
+            }
+          } catch {
+            setHonestySurfaceChangelogDetail(surfaceChangelogRaw);
           }
         }
       } catch {
@@ -3961,6 +3995,14 @@ export function FirewallExtras({
                     honesty_milestone: hardGapsPayload.honesty_milestone,
                   };
                   const text = JSON.stringify(catalog, null, 2);
+                  try {
+                    sessionStorage.setItem(
+                      honestySurfaceChangelogStorageKey(firewallId),
+                      text,
+                    );
+                  } catch {
+                    /* ignore */
+                  }
                   const blob = new Blob([text + "\n"], {
                     type: "application/json;charset=utf-8",
                   });
@@ -3990,6 +4032,14 @@ export function FirewallExtras({
                       soft_complete_phase: hardGapsPayload.soft_complete_phase,
                       honesty_milestone: hardGapsPayload.honesty_milestone,
                     };
+                    try {
+                      sessionStorage.setItem(
+                        honestySurfaceChangelogStorageKey(firewallId),
+                        JSON.stringify(catalog, null, 2),
+                      );
+                    } catch {
+                      /* ignore */
+                    }
                     const text = JSON.stringify(catalog, null, 2) + "\n";
                     try {
                       await navigator.clipboard.writeText(text);
@@ -4261,7 +4311,7 @@ export function FirewallExtras({
               type="button"
               className="ghost"
               disabled={busy || (!hardGapsPayload && !hardGapsSummaryText)}
-              title="Clear sessionStorage hard-gaps snapshot, summary, surface, refusals, honesty paths, track note, readiness, soft-complete note"
+              title="Clear sessionStorage hard-gaps snapshot, summary, surface, refusals, honesty paths, track note, readiness, soft-complete note, surface changelog"
               onClick={() => {
                 try {
                   sessionStorage.removeItem(hardGapsSnapshotKey(firewallId));
@@ -4273,6 +4323,7 @@ export function FirewallExtras({
                   sessionStorage.removeItem(honestyTrackNoteStorageKey(firewallId));
                   sessionStorage.removeItem(honestyReadinessStorageKey(firewallId));
                   sessionStorage.removeItem(softCompleteNoteStorageKey(firewallId));
+                  sessionStorage.removeItem(honestySurfaceChangelogStorageKey(firewallId));
                 } catch {
                   /* ignore */
                 }
