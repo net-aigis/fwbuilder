@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "2376"
+WEBUI_SOFT_COMPLETE_PHASE = "2392"
 SOFT_FERTIG_HONESTY_TRACK_NOTE = (
     "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
     "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
@@ -139,11 +139,12 @@ SOFT_FERTIG_HONESTY_TRACK_NOTE = (
 # 5350: hard_gap_refusal_roster listed in honesty export + bundle sections;
 # 5400: soft_fertig_honesty_surface_version bumped to 1.9 (hard_gap_refusal_roster);
 # 5450: hard_gap_refusal_roster added to sessionStorage + clear catalogs;
-# 5500: Soft 2360+ honesty surface checkpoint (hard_gap_refusal_roster cycle complete).
-WEBUI_HONESTY_MILESTONE = 5500
+# 5500: Soft 2360+ honesty surface checkpoint (hard_gap_refusal_roster cycle complete);
+# 5550: soft_fertig_honesty_path_roster compact honesty path ids/titles/notes.
+WEBUI_HONESTY_MILESTONE = 5550
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 5500: soft-fertig honesty/preview catalogs "
-    "through Soft 2360+ (schema 1.9, hard_gap_refusal_roster sessionStorage) — "
+    "Honesty surface checkpoint 5550: soft_fertig_honesty_path_roster lists "
+    "honesty/preview path ids with titles and notes for operators — "
     "hard gaps remain open."
 )
 SOFT_FERTIG_SOFT_COMPLETE_NOTE = (
@@ -191,6 +192,20 @@ HARD_GAP_RELATED_REFUSAL_TITLES = {
     "full_qt_pixel_layout": "Pixel parity stays false (no HTTP refuse)",
     "expect_sshsession_runtime": "Expect run/step → 501",
     "password_keyboard_interactive_ssh": "Password SSH → 400/501",
+}
+
+HONESTY_PATHS = {
+    "hard_gaps": "/api/v1/hard-gaps",
+    "summary": "/api/v1/hard-gaps/summary",
+    "closure": "/api/v1/hard-gaps/closure",
+    "layout_fidelity": "/api/v1/layout-fidelity",
+    "stack_switch": "/api/v1/stack-switch",
+    "option_enable": "/api/v1/option-enable",
+    "expect_run": "/api/v1/expect-install-plan/run",
+    "expect_steps": "/api/v1/expect-install-plan/steps",
+    "expect_steps_refusals": "/api/v1/expect-install-plan/steps/refusals",
+    "ssh_auth": "/api/v1/ssh-auth",
+    "password_ssh": "/api/v1/ssh-auth/password",
 }
 
 HONESTY_PATH_TITLES = {
@@ -275,6 +290,7 @@ SOFT_FERTIG_SURFACE_KEYS = (
     "soft_fertig_honesty_operator_brief",
     "soft_fertig_hard_gap_roster",
     "soft_fertig_hard_gap_refusal_roster",
+    "soft_fertig_honesty_path_roster",
 )
 SOFT_FERTIG_SURFACE_KEY_TITLES = {
     "soft_complete_phase": "Soft-complete phase marker",
@@ -329,6 +345,9 @@ SOFT_FERTIG_SURFACE_KEY_TITLES = {
     "soft_fertig_hard_gap_roster": "Open hard-gap ids with labels and closure titles",
     "soft_fertig_hard_gap_refusal_roster": (
         "Open hard-gap related refusal keys and titles"
+    ),
+    "soft_fertig_honesty_path_roster": (
+        "Honesty/preview path ids with titles and notes"
     ),
 }
 
@@ -391,6 +410,9 @@ SOFT_FERTIG_SURFACE_NOTES = {
     ),
     "soft_fertig_hard_gap_refusal_roster": (
         "Per open hard gap: related refusal keys, titles, and note."
+    ),
+    "soft_fertig_honesty_path_roster": (
+        "Per honesty path: id, API path, short title, and note."
     ),
 }
 
@@ -761,6 +783,28 @@ def soft_fertig_hard_gap_refusal_roster() -> dict[str, object]:
     }
 
 
+def soft_fertig_honesty_path_roster() -> dict[str, object]:
+    """Honesty/preview path roster with titles and notes (documentation)."""
+    entries = [
+        {
+            "id": path_id,
+            "path": HONESTY_PATHS[path_id],
+            "title": HONESTY_PATH_TITLES.get(path_id, ""),
+            "note": HONESTY_PATH_NOTES.get(path_id, ""),
+        }
+        for path_id in HONESTY_PATHS
+    ]
+    return {
+        "hard_gaps_remain": True,
+        "entries": entries,
+        "entry_count": len(entries),
+        "note": (
+            "Catalog of honesty/preview paths only; soft-fertig catalogs "
+            "do not close hard gaps."
+        ),
+    }
+
+
 def soft_fertig_catalog_summary() -> dict[str, object]:
     """Compact soft-fertig catalog counts for /health and honesty endpoints."""
     return {
@@ -791,6 +835,9 @@ def soft_fertig_catalog_summary() -> dict[str, object]:
         "soft_fertig_hard_gap_refusal_roster_entry_count": (
             soft_fertig_hard_gap_refusal_roster()["entry_count"]
         ),
+        "soft_fertig_honesty_path_roster_entry_count": soft_fertig_honesty_path_roster()[
+            "entry_count"
+        ],
         "honesty_milestone": WEBUI_HONESTY_MILESTONE,
         "soft_complete_phase": WEBUI_SOFT_COMPLETE_PHASE,
     }
@@ -913,6 +960,7 @@ def health() -> dict[str, object]:
         "soft_fertig_honesty_operator_brief": soft_fertig_honesty_operator_brief(),
         "soft_fertig_hard_gap_roster": soft_fertig_hard_gap_roster(),
         "soft_fertig_hard_gap_refusal_roster": soft_fertig_hard_gap_refusal_roster(),
+        "soft_fertig_honesty_path_roster": soft_fertig_honesty_path_roster(),
         "soft_fertig_honesty_surface_version": SOFT_FERTIG_HONESTY_SURFACE_VERSION,
     }
 
@@ -950,6 +998,7 @@ def res_status(_: str = Depends(require_token)) -> dict[str, object]:
         "soft_fertig_honesty_operator_brief": soft_fertig_honesty_operator_brief(),
         "soft_fertig_hard_gap_roster": soft_fertig_hard_gap_roster(),
         "soft_fertig_hard_gap_refusal_roster": soft_fertig_hard_gap_refusal_roster(),
+        "soft_fertig_honesty_path_roster": soft_fertig_honesty_path_roster(),
         "soft_fertig_honesty_surface_version": SOFT_FERTIG_HONESTY_SURFACE_VERSION,
     }
 
@@ -970,19 +1019,7 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
     alt_fid = layout_fidelity_for("iosacl", "ios")
     alt2_fid = layout_fidelity_for("junosacl", "junos")
     signal_catalog = sample_fid.get("signal_keys") if sample_fid.get("ok") else None
-    honesty_paths = {
-        "hard_gaps": "/api/v1/hard-gaps",
-        "summary": "/api/v1/hard-gaps/summary",
-        "closure": "/api/v1/hard-gaps/closure",
-        "layout_fidelity": "/api/v1/layout-fidelity",
-        "stack_switch": "/api/v1/stack-switch",
-        "option_enable": "/api/v1/option-enable",
-        "expect_run": "/api/v1/expect-install-plan/run",
-        "expect_steps": "/api/v1/expect-install-plan/steps",
-        "expect_steps_refusals": "/api/v1/expect-install-plan/steps/refusals",
-        "ssh_auth": "/api/v1/ssh-auth",
-        "password_ssh": "/api/v1/ssh-auth/password",
-    }
+    honesty_paths = dict(HONESTY_PATHS)
     out: dict[str, object] = {
         "soft_complete_phase": WEBUI_SOFT_COMPLETE_PHASE,
         "soft_fertig_honesty_track": True,
@@ -1336,6 +1373,7 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
         "soft_fertig_honesty_operator_brief": soft_fertig_honesty_operator_brief(),
         "soft_fertig_hard_gap_roster": soft_fertig_hard_gap_roster(),
         "soft_fertig_hard_gap_refusal_roster": soft_fertig_hard_gap_refusal_roster(),
+        "soft_fertig_honesty_path_roster": soft_fertig_honesty_path_roster(),
         "soft_fertig_honesty_export_keys": list(SOFT_FERTIG_HONESTY_EXPORT_KEYS),
         "soft_fertig_honesty_export_key_count": len(SOFT_FERTIG_HONESTY_EXPORT_KEYS),
         "soft_fertig_honesty_export_key_titles": {
@@ -1500,6 +1538,9 @@ def hard_gaps_summary(_: str = Depends(require_token)) -> dict[str, object]:
         ),
         "soft_fertig_hard_gap_refusal_roster": dict(
             full.get("soft_fertig_hard_gap_refusal_roster") or {}
+        ),
+        "soft_fertig_honesty_path_roster": dict(
+            full.get("soft_fertig_honesty_path_roster") or {}
         ),
         "soft_fertig_honesty_export_keys": list(
             full.get("soft_fertig_honesty_export_keys") or []
@@ -1865,6 +1906,7 @@ def hard_gap_closure(_: str = Depends(require_token)) -> dict[str, object]:
         "soft_fertig_honesty_operator_brief": soft_fertig_honesty_operator_brief(),
         "soft_fertig_hard_gap_roster": soft_fertig_hard_gap_roster(),
         "soft_fertig_hard_gap_refusal_roster": soft_fertig_hard_gap_refusal_roster(),
+        "soft_fertig_honesty_path_roster": soft_fertig_honesty_path_roster(),
         "soft_fertig_honesty_export_keys": list(SOFT_FERTIG_HONESTY_EXPORT_KEYS),
         "soft_fertig_honesty_export_key_count": len(SOFT_FERTIG_HONESTY_EXPORT_KEYS),
         "soft_fertig_honesty_export_key_titles": {
