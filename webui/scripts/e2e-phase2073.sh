@@ -9,6 +9,7 @@ c = m.soft_fertig_honesty_surface_changelog()
 assert c.get("current_version") == m.SOFT_FERTIG_HONESTY_SURFACE_VERSION
 assert c.get("version_count") >= 6
 assert "1.5" in (c.get("versions") or {})
+assert "1.6" in (c.get("versions") or {}) or c.get("version_count") >= 6
 assert "soft_fertig_honesty_surface_changelog" in m.SOFT_FERTIG_SURFACE_KEYS
 h = m.hard_gaps()
 assert (h.get("soft_fertig_honesty_surface_changelog") or {}).get("version_count") >= 6

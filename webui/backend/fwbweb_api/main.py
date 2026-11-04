@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "2104"
+WEBUI_SOFT_COMPLETE_PHASE = "2120"
 SOFT_FERTIG_HONESTY_TRACK_NOTE = (
     "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
     "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
@@ -121,12 +121,14 @@ SOFT_FERTIG_HONESTY_TRACK_NOTE = (
 # 4450: soft_fertig_honesty_surface_version bumped to 1.5 (soft_complete_note);
 # 4500: soft_complete_note added to sessionStorage + clear catalogs;
 # 4550: UI expandable soft-complete-note detail + sessionStorage restore on load;
-# 4600: soft_fertig_honesty_surface_changelog documents schema 1.0–1.5 history;
-# 4650: surface_changelog listed in honesty export + bundle sections.
-WEBUI_HONESTY_MILESTONE = 4650
+# 4600: soft_fertig_honesty_surface_changelog documents schema history;
+# 4650: surface_changelog listed in honesty export + bundle sections;
+# 4700: soft_fertig_honesty_surface_version bumped to 1.6 (surface_changelog).
+WEBUI_HONESTY_MILESTONE = 4700
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 4650: soft_fertig_honesty_surface_changelog "
-    "is listed in honesty export and bundle catalogs — hard gaps remain open."
+    "Honesty surface checkpoint 4700: soft_fertig_honesty_surface_version "
+    "1.6 documents soft_fertig_honesty_surface_changelog on honesty "
+    "endpoints and in export/bundle — hard gaps remain open."
 )
 SOFT_FERTIG_SOFT_COMPLETE_NOTE = (
     "WEBUI_SOFT_COMPLETE_PHASE marks soft-fertig honesty/preview catalog "
@@ -412,9 +414,9 @@ SOFT_FERTIG_SESSION_STORAGE_CLEAR_NOTE = (
 )
 
 # Soft-fertig honesty/preview catalog schema version (documentation; not a lock).
-SOFT_FERTIG_HONESTY_SURFACE_VERSION = "1.5"
+SOFT_FERTIG_HONESTY_SURFACE_VERSION = "1.6"
 SOFT_FERTIG_HONESTY_SURFACE_VERSION_NOTE = (
-    "Schema 1.5: schema 1.4 plus soft_fertig_soft_complete_note on "
+    "Schema 1.6: schema 1.5 plus soft_fertig_honesty_surface_changelog on "
     "/health and honesty endpoints (+ export/bundle); hard gaps remain open."
 )
 
@@ -561,6 +563,10 @@ SOFT_FERTIG_HONESTY_SURFACE_CHANGELOG = {
     "1.5": (
         "soft_fertig_soft_complete_note on /health and honesty endpoints "
         "(+ export/bundle)."
+    ),
+    "1.6": (
+        "soft_fertig_honesty_surface_changelog on /health and honesty "
+        "endpoints (+ export/bundle)."
     ),
 }
 
