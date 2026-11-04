@@ -1976,7 +1976,11 @@ export function FirewallExtras({
           {expectPlanStepIds.length ? (
             <details className="muted" title="Canonical expect plan step ids (all refused by POST /run)">
               <summary>
-                Expect steps (all 501): <code>{expectPlanStepIds.join(", ")}</code>
+                Expect steps (all 501
+                {Object.keys(expectPlanStepNotes).length
+                  ? `, notes=${Object.keys(expectPlanStepNotes).length}`
+                  : ""}
+                ): <code>{expectPlanStepIds.join(", ")}</code>
               </summary>
               {Object.keys(expectPlanStepNotes).length ? (
                 <ul className="muted hard-gap-notes">

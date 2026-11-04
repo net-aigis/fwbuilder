@@ -943,6 +943,7 @@ export function fetchHardGaps() {
     expect_steps_refusals_path?: string;
     expect_plan_step_ids?: string[];
     expect_plan_step_notes?: Record<string, string>;
+    expect_plan_step_notes_count?: number;
     ssh_auth_path?: string;
     password_ssh_path?: string;
     ssh_batch_mode_only?: boolean;
@@ -971,6 +972,7 @@ export function fetchHardGapsSummary() {
     hard_gap_open: string[];
     hard_gap_count?: number;
     honesty_paths_count?: number;
+    expect_plan_step_count?: number;
     layout_fidelity_sample_platform?: string;
     layout_fidelity_sample_host_os?: string;
     layout_fidelity_sample_score_percent?: number | null;
@@ -979,6 +981,7 @@ export function fetchHardGapsSummary() {
     parent_path?: string;
     closure_path?: string;
     layout_fidelity_path?: string;
+    expect_steps_path?: string;
     note?: string;
   }>("/api/v1/hard-gaps/summary");
 }

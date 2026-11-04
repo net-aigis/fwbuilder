@@ -11,7 +11,7 @@ cat = expect_plan_step_catalog()
 assert cat.get("step_notes") == EXPECT_PLAN_STEP_NOTES
 h = m.hard_gaps()
 assert h.get("expect_plan_step_notes") == EXPECT_PLAN_STEP_NOTES
-assert m.WEBUI_SOFT_COMPLETE_PHASE == "664"
+assert int(m.WEBUI_SOFT_COMPLETE_PHASE) >= 664
 print("step notes", len(EXPECT_PLAN_STEP_NOTES))
 PY
 echo "cleaned"

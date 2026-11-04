@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "664"
+WEBUI_SOFT_COMPLETE_PHASE = "672"
 # Honesty/preview track milestone (last thematic checkpoint; soft marker may be higher).
 # 600: refusals/closure surface; 650: health/summary/paths + fidelity sample surface.
 WEBUI_HONESTY_MILESTONE = 650
@@ -64,7 +64,8 @@ HARD_GAP_NOTES = {
     "expect_sshsession_runtime": (
         "Plan + walkthrough + configlet previews available; POST /run → 501; "
         "no SSHSession/expect execution. Canonical refused step ids listed as "
-        "expect_plan_step_ids on /hard-gaps; GET …/steps/refusals previews "
+        "expect_plan_step_ids on /hard-gaps with expect_plan_step_notes; "
+        "GET …/steps carries step_notes; GET …/steps/refusals previews "
         "per-step 501 payloads."
     ),
     "password_keyboard_interactive_ssh": (
@@ -180,6 +181,7 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
         "expect_steps_refusals_path": honesty_paths["expect_steps_refusals"],
         "expect_plan_step_ids": list(EXPECT_PLAN_STEP_IDS),
         "expect_plan_step_notes": dict(EXPECT_PLAN_STEP_NOTES),
+        "expect_plan_step_notes_count": len(EXPECT_PLAN_STEP_NOTES),
         "ssh_auth_path": honesty_paths["ssh_auth"],
         "password_ssh_path": honesty_paths["password_ssh"],
         "ssh_batch_mode_only": bool(ssh.get("batch_mode_only")),
@@ -225,6 +227,7 @@ def hard_gaps_summary(_: str = Depends(require_token)) -> dict[str, object]:
         "hard_gap_open": list(HARD_GAPS_OPEN),
         "hard_gap_count": len(HARD_GAPS_OPEN),
         "honesty_paths_count": int(full.get("honesty_paths_count") or 0),
+        "expect_plan_step_count": int(full.get("expect_plan_step_notes_count") or 0),
         "layout_fidelity_sample_platform": "iptables",
         "layout_fidelity_sample_host_os": "linux24",
         "layout_fidelity_sample_score_percent": sample_score,
@@ -233,11 +236,13 @@ def hard_gaps_summary(_: str = Depends(require_token)) -> dict[str, object]:
         "parent_path": "/api/v1/hard-gaps",
         "closure_path": "/api/v1/hard-gaps/closure",
         "layout_fidelity_path": "/api/v1/layout-fidelity",
+        "expect_steps_path": "/api/v1/expect-install-plan/steps",
         "note": (
             "Compact honesty snapshot. Prefer GET /hard-gaps for full paths/notes "
             "and GET /hard-gaps/closure for closure criteria. "
             "layout_fidelity_sample_* is heuristic signal coverage for iptables/linux24 "
-            "— not pixel parity (layout_fidelity_pixel_parity stays false)."
+            "— not pixel parity (layout_fidelity_pixel_parity stays false). "
+            "expect_plan_step_count is the refused step-notes catalog size."
         ),
     }
 
