@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "2360"
+WEBUI_SOFT_COMPLETE_PHASE = "2376"
 SOFT_FERTIG_HONESTY_TRACK_NOTE = (
     "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
     "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
@@ -138,12 +138,13 @@ SOFT_FERTIG_HONESTY_TRACK_NOTE = (
 # 5300: soft_fertig_hard_gap_refusal_roster compact open-gap related refusals;
 # 5350: hard_gap_refusal_roster listed in honesty export + bundle sections;
 # 5400: soft_fertig_honesty_surface_version bumped to 1.9 (hard_gap_refusal_roster);
-# 5450: hard_gap_refusal_roster added to sessionStorage + clear catalogs.
-WEBUI_HONESTY_MILESTONE = 5450
+# 5450: hard_gap_refusal_roster added to sessionStorage + clear catalogs;
+# 5500: Soft 2360+ honesty surface checkpoint (hard_gap_refusal_roster cycle complete).
+WEBUI_HONESTY_MILESTONE = 5500
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 5450: soft_fertig_hard_gap_refusal_roster is "
-    "persisted via sessionStorage (fwbweb.hardGapRefusalRoster.*) and clear "
-    "catalogs — hard gaps remain open."
+    "Honesty surface checkpoint 5500: soft-fertig honesty/preview catalogs "
+    "through Soft 2360+ (schema 1.9, hard_gap_refusal_roster sessionStorage) — "
+    "hard gaps remain open."
 )
 SOFT_FERTIG_SOFT_COMPLETE_NOTE = (
     "WEBUI_SOFT_COMPLETE_PHASE marks soft-fertig honesty/preview catalog "
