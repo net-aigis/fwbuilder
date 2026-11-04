@@ -272,6 +272,10 @@ export function FirewallExtras({
   const [sessionStorageKeyCount, setSessionStorageKeyCount] = useState<number | null>(null);
   const [sessionStorageKeyTitles, setSessionStorageKeyTitles] = useState<Record<string, string> | null>(null);
   const [sessionStorageKeysDetail, setSessionStorageKeysDetail] = useState<string | null>(null);
+  const [sessionStorageNotesCount, setSessionStorageNotesCount] = useState<number | null>(null);
+  const [honestyExportKeyCount, setHonestyExportKeyCount] = useState<number | null>(null);
+  const [honestyExportKeyTitles, setHonestyExportKeyTitles] = useState<Record<string, string> | null>(null);
+  const [honestyExportDetail, setHonestyExportDetail] = useState<string | null>(null);
   const [honestyMilestoneNote, setHonestyMilestoneNote] = useState<string | null>(null);
   const [softFertigHonestyTrack, setSoftFertigHonestyTrack] = useState<boolean | null>(null);
   const [honestyPathsSummary, setHonestyPathsSummary] = useState<string | null>(null);
@@ -534,6 +538,50 @@ export function FirewallExtras({
                   let line = title
                     ? `${k} (${title}): ${prefix}<firewallId>`
                     : `${k}: ${prefix}<firewallId>`;
+                  if (note) line += ` — ${note}`;
+                  return line;
+                })
+                .join("\n")
+            : null,
+        );
+      }
+      setSessionStorageNotesCount(
+        typeof gaps?.soft_fertig_session_storage_notes_count === "number"
+          ? gaps.soft_fertig_session_storage_notes_count
+          : null,
+      );
+      setHonestyExportKeyCount(
+        typeof gaps?.soft_fertig_honesty_export_key_count === "number"
+          ? gaps.soft_fertig_honesty_export_key_count
+          : null,
+      );
+      setHonestyExportKeyTitles(
+        gaps?.soft_fertig_honesty_export_key_titles &&
+          typeof gaps.soft_fertig_honesty_export_key_titles === "object"
+          ? (gaps.soft_fertig_honesty_export_key_titles as Record<string, string>)
+          : null,
+      );
+      {
+        const keys = Array.isArray(gaps?.soft_fertig_honesty_export_keys)
+          ? (gaps.soft_fertig_honesty_export_keys as string[])
+          : null;
+        const titles =
+          gaps?.soft_fertig_honesty_export_key_titles &&
+          typeof gaps.soft_fertig_honesty_export_key_titles === "object"
+            ? (gaps.soft_fertig_honesty_export_key_titles as Record<string, string>)
+            : {};
+        const notes =
+          gaps?.soft_fertig_honesty_export_notes &&
+          typeof gaps.soft_fertig_honesty_export_notes === "object"
+            ? (gaps.soft_fertig_honesty_export_notes as Record<string, string>)
+            : {};
+        setHonestyExportDetail(
+          keys && keys.length
+            ? keys
+                .map((k) => {
+                  const title = titles[k];
+                  const note = notes[k];
+                  let line = title ? `${k}: ${title}` : k;
                   if (note) line += ` — ${note}`;
                   return line;
                 })
@@ -2356,6 +2404,25 @@ export function FirewallExtras({
                 · sessionStorage keys <code>{sessionStorageKeyCount}</code>
               </span>
             ) : null}
+            {sessionStorageNotesCount != null && sessionStorageNotesCount > 0 ? (
+              <span className="muted">
+                · sessionStorage notes <code>{sessionStorageNotesCount}</code>
+              </span>
+            ) : null}
+            {honestyExportKeyCount != null && honestyExportKeyCount > 0 ? (
+              <span
+                className="muted"
+                title={
+                  honestyExportKeyTitles
+                    ? Object.entries(honestyExportKeyTitles)
+                        .map(([k, v]) => `${k}: ${v}`)
+                        .join(" · ")
+                    : undefined
+                }
+              >
+                · honesty exports <code>{honestyExportKeyCount}</code>
+              </span>
+            ) : null}
             {honestyMilestone != null ? (
               <>
                 {" "}
@@ -2566,6 +2633,17 @@ export function FirewallExtras({
               </summary>
               <pre className="deploy-log configlet-preview" tabIndex={0}>
                 {sessionStorageKeysDetail}
+              </pre>
+            </details>
+          ) : null}
+          {honestyExportDetail ? (
+            <details className="muted">
+              <summary>
+                Soft-fertig honesty exports
+                {honestyExportKeyCount != null ? ` (${honestyExportKeyCount})` : ""}
+              </summary>
+              <pre className="deploy-log configlet-preview" tabIndex={0}>
+                {honestyExportDetail}
               </pre>
             </details>
           ) : null}
@@ -2912,6 +2990,78 @@ export function FirewallExtras({
                 }}
               >
                 Copy sessionStorage keys
+              </button>
+            ) : null}
+            {hardGapsPayload ? (
+              <button
+                type="button"
+                className="ghost"
+                disabled={busy}
+                title="Download soft_fertig_honesty_export_keys (+ titles/notes) from /hard-gaps"
+                onClick={() => {
+                  const catalog: Record<string, unknown> = {
+                    soft_fertig_honesty_export_keys:
+                      hardGapsPayload.soft_fertig_honesty_export_keys,
+                    soft_fertig_honesty_export_key_count:
+                      hardGapsPayload.soft_fertig_honesty_export_key_count,
+                    soft_fertig_honesty_export_key_titles:
+                      hardGapsPayload.soft_fertig_honesty_export_key_titles,
+                    soft_fertig_honesty_export_notes:
+                      hardGapsPayload.soft_fertig_honesty_export_notes,
+                    soft_fertig_honesty_export_notes_count:
+                      hardGapsPayload.soft_fertig_honesty_export_notes_count,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  const text = JSON.stringify(catalog, null, 2);
+                  const blob = new Blob([text + "\n"], {
+                    type: "application/json;charset=utf-8",
+                  });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `fwbweb-honesty-exports-${firewallId || "fw"}.json`;
+                  a.click();
+                  URL.revokeObjectURL(url);
+                  onStatus?.("Downloaded honesty export catalog");
+                }}
+              >
+                Download honesty exports
+              </button>
+            ) : null}
+            {hardGapsPayload ? (
+              <button
+                type="button"
+                className="ghost"
+                disabled={busy}
+                title="Copy soft_fertig_honesty_export_keys (+ titles/notes) to clipboard"
+                onClick={() => {
+                  void (async () => {
+                    const catalog: Record<string, unknown> = {
+                      soft_fertig_honesty_export_keys:
+                        hardGapsPayload.soft_fertig_honesty_export_keys,
+                      soft_fertig_honesty_export_key_count:
+                        hardGapsPayload.soft_fertig_honesty_export_key_count,
+                      soft_fertig_honesty_export_key_titles:
+                        hardGapsPayload.soft_fertig_honesty_export_key_titles,
+                      soft_fertig_honesty_export_notes:
+                        hardGapsPayload.soft_fertig_honesty_export_notes,
+                      soft_fertig_honesty_export_notes_count:
+                        hardGapsPayload.soft_fertig_honesty_export_notes_count,
+                      soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                      honesty_milestone: hardGapsPayload.honesty_milestone,
+                    };
+                    const text = JSON.stringify(catalog, null, 2) + "\n";
+                    try {
+                      await navigator.clipboard.writeText(text);
+                      onStatus?.("Copied honesty export catalog");
+                    } catch (e) {
+                      onError?.(e instanceof Error ? e.message : String(e));
+                    }
+                  })();
+                }}
+              >
+                Copy honesty exports
               </button>
             ) : null}
             <button
