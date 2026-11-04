@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "1336"
+WEBUI_SOFT_COMPLETE_PHASE = "1352"
 # Honesty/preview track milestone (last thematic checkpoint; soft marker may be higher).
 # 600: refusals/closure; 650: health/summary/paths + fidelity sample;
 # 700: expect step_notes + SSH alternative/refusal notes;
@@ -70,11 +70,12 @@ WEBUI_SOFT_COMPLETE_PHASE = "1336"
 # 2100: UI expandable soft_fertig_surface_keys catalog detail;
 # 2150: UI expandable hard_gap_related_refusals detail;
 # 2200: soft_fertig_surface_notes (+ count) for surface key catalog;
-# 2250: hard_gap_related_refusals also on closure + full map on summary.
-WEBUI_HONESTY_MILESTONE = 2250
+# 2250: hard_gap_related_refusals also on closure + full map on summary;
+# 2300: soft_fertig_surface keys/titles/notes on hard-gaps summary.
+WEBUI_HONESTY_MILESTONE = 2300
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 2250: /hard-gaps/closure and summary expose "
-    "hard_gap_related_refusals (+ titles) — hard gaps remain open."
+    "Honesty surface checkpoint 2300: /hard-gaps/summary mirrors "
+    "soft_fertig_surface_keys / titles / notes (+ counts) — hard gaps remain open."
 )
 
 HARD_GAPS_OPEN = (
@@ -781,8 +782,15 @@ def hard_gaps_summary(_: str = Depends(require_token)) -> dict[str, object]:
         "honesty_paths_count": int(full.get("honesty_paths_count") or 0),
         "honesty_path_titles": dict(full.get("honesty_path_titles") or {}),
         "honesty_path_notes_count": int(full.get("honesty_path_notes_count") or 0),
+        "soft_fertig_surface_keys": list(full.get("soft_fertig_surface_keys") or []),
         "soft_fertig_surface_key_count": int(
             full.get("soft_fertig_surface_key_count") or 0
+        ),
+        "soft_fertig_surface_key_titles": dict(
+            full.get("soft_fertig_surface_key_titles") or {}
+        ),
+        "soft_fertig_surface_notes": dict(
+            full.get("soft_fertig_surface_notes") or {}
         ),
         "soft_fertig_surface_notes_count": int(
             full.get("soft_fertig_surface_notes_count") or 0
