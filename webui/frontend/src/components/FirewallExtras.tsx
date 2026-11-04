@@ -152,6 +152,72 @@ function honestyPathsCatalogKey(firewallId: string) {
   return `fwbweb.honestyPaths.${firewallId}`;
 }
 
+function honestyBundleStorageKey(firewallId: string) {
+  return `fwbweb.honestyBundle.${firewallId}`;
+}
+
+function buildHonestyBundle(payload: Record<string, unknown>) {
+  const surfaceKeys = Array.isArray(payload.soft_fertig_surface_keys)
+    ? (payload.soft_fertig_surface_keys as string[])
+    : [];
+  return {
+    meta: {
+      soft_complete_phase: payload.soft_complete_phase,
+      honesty_milestone: payload.honesty_milestone,
+      honesty_milestone_note: payload.honesty_milestone_note,
+      soft_fertig_honesty_track: payload.soft_fertig_honesty_track,
+    },
+    hard_gaps: payload,
+    soft_fertig_surface: {
+      soft_fertig_surface_keys: surfaceKeys,
+      soft_fertig_surface_key_count: payload.soft_fertig_surface_key_count,
+      soft_fertig_surface_key_titles: payload.soft_fertig_surface_key_titles,
+      soft_fertig_surface_notes: payload.soft_fertig_surface_notes,
+      soft_fertig_surface_notes_count: payload.soft_fertig_surface_notes_count,
+    },
+    related_refusals: {
+      hard_gap_related_refusals: payload.hard_gap_related_refusals,
+      hard_gap_related_refusal_titles: payload.hard_gap_related_refusal_titles,
+    },
+    honesty_paths: {
+      honesty_paths: payload.honesty_paths,
+      honesty_paths_count: payload.honesty_paths_count,
+      honesty_path_titles: payload.honesty_path_titles,
+      honesty_path_notes: payload.honesty_path_notes,
+      honesty_path_notes_count: payload.honesty_path_notes_count,
+    },
+    session_storage_keys: {
+      soft_fertig_session_storage_keys: payload.soft_fertig_session_storage_keys,
+      soft_fertig_session_storage_key_count:
+        payload.soft_fertig_session_storage_key_count,
+      soft_fertig_session_storage_key_titles:
+        payload.soft_fertig_session_storage_key_titles,
+      soft_fertig_session_storage_notes: payload.soft_fertig_session_storage_notes,
+      soft_fertig_session_storage_notes_count:
+        payload.soft_fertig_session_storage_notes_count,
+    },
+    honesty_exports: {
+      soft_fertig_honesty_export_keys: payload.soft_fertig_honesty_export_keys,
+      soft_fertig_honesty_export_key_count:
+        payload.soft_fertig_honesty_export_key_count,
+      soft_fertig_honesty_export_key_titles:
+        payload.soft_fertig_honesty_export_key_titles,
+      soft_fertig_honesty_export_notes: payload.soft_fertig_honesty_export_notes,
+      soft_fertig_honesty_export_notes_count:
+        payload.soft_fertig_honesty_export_notes_count,
+      soft_fertig_honesty_bundle_sections:
+        payload.soft_fertig_honesty_bundle_sections,
+      soft_fertig_honesty_bundle_section_count:
+        payload.soft_fertig_honesty_bundle_section_count,
+      soft_fertig_honesty_bundle_section_titles:
+        payload.soft_fertig_honesty_bundle_section_titles,
+      soft_fertig_honesty_bundle_notes: payload.soft_fertig_honesty_bundle_notes,
+      soft_fertig_honesty_bundle_notes_count:
+        payload.soft_fertig_honesty_bundle_notes_count,
+    },
+  };
+}
+
 export function FirewallExtras({
   sessionId,
   firewallId,
@@ -276,6 +342,8 @@ export function FirewallExtras({
   const [honestyExportKeyCount, setHonestyExportKeyCount] = useState<number | null>(null);
   const [honestyExportKeyTitles, setHonestyExportKeyTitles] = useState<Record<string, string> | null>(null);
   const [honestyExportDetail, setHonestyExportDetail] = useState<string | null>(null);
+  const [honestyBundleSectionCount, setHonestyBundleSectionCount] = useState<number | null>(null);
+  const [honestyBundleDetail, setHonestyBundleDetail] = useState<string | null>(null);
   const [honestyMilestoneNote, setHonestyMilestoneNote] = useState<string | null>(null);
   const [softFertigHonestyTrack, setSoftFertigHonestyTrack] = useState<boolean | null>(null);
   const [honestyPathsSummary, setHonestyPathsSummary] = useState<string | null>(null);
@@ -578,6 +646,39 @@ export function FirewallExtras({
         setHonestyExportDetail(
           keys && keys.length
             ? keys
+                .map((k) => {
+                  const title = titles[k];
+                  const note = notes[k];
+                  let line = title ? `${k}: ${title}` : k;
+                  if (note) line += ` — ${note}`;
+                  return line;
+                })
+                .join("\n")
+            : null,
+        );
+      }
+      setHonestyBundleSectionCount(
+        typeof gaps?.soft_fertig_honesty_bundle_section_count === "number"
+          ? gaps.soft_fertig_honesty_bundle_section_count
+          : null,
+      );
+      {
+        const sections = Array.isArray(gaps?.soft_fertig_honesty_bundle_sections)
+          ? (gaps.soft_fertig_honesty_bundle_sections as string[])
+          : null;
+        const titles =
+          gaps?.soft_fertig_honesty_bundle_section_titles &&
+          typeof gaps.soft_fertig_honesty_bundle_section_titles === "object"
+            ? (gaps.soft_fertig_honesty_bundle_section_titles as Record<string, string>)
+            : {};
+        const notes =
+          gaps?.soft_fertig_honesty_bundle_notes &&
+          typeof gaps.soft_fertig_honesty_bundle_notes === "object"
+            ? (gaps.soft_fertig_honesty_bundle_notes as Record<string, string>)
+            : {};
+        setHonestyBundleDetail(
+          sections && sections.length
+            ? sections
                 .map((k) => {
                   const title = titles[k];
                   const note = notes[k];
@@ -2423,6 +2524,11 @@ export function FirewallExtras({
                 · honesty exports <code>{honestyExportKeyCount}</code>
               </span>
             ) : null}
+            {honestyBundleSectionCount != null && honestyBundleSectionCount > 0 ? (
+              <span className="muted">
+                · honesty bundle <code>{honestyBundleSectionCount}</code>
+              </span>
+            ) : null}
             {honestyMilestone != null ? (
               <>
                 {" "}
@@ -2644,6 +2750,19 @@ export function FirewallExtras({
               </summary>
               <pre className="deploy-log configlet-preview" tabIndex={0}>
                 {honestyExportDetail}
+              </pre>
+            </details>
+          ) : null}
+          {honestyBundleDetail ? (
+            <details className="muted">
+              <summary>
+                Soft-fertig honesty bundle
+                {honestyBundleSectionCount != null
+                  ? ` (${honestyBundleSectionCount})`
+                  : ""}
+              </summary>
+              <pre className="deploy-log configlet-preview" tabIndex={0}>
+                {honestyBundleDetail}
               </pre>
             </details>
           ) : null}
@@ -3062,6 +3181,61 @@ export function FirewallExtras({
                 }}
               >
                 Copy honesty exports
+              </button>
+            ) : null}
+            {hardGapsPayload ? (
+              <button
+                type="button"
+                className="ghost"
+                disabled={busy}
+                title="Download combined soft_fertig honesty bundle (all export sections)"
+                onClick={() => {
+                  const bundle = buildHonestyBundle(
+                    hardGapsPayload as Record<string, unknown>,
+                  );
+                  const text = JSON.stringify(bundle, null, 2);
+                  try {
+                    sessionStorage.setItem(honestyBundleStorageKey(firewallId), text);
+                  } catch {
+                    /* ignore */
+                  }
+                  const blob = new Blob([text + "\n"], {
+                    type: "application/json;charset=utf-8",
+                  });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `fwbweb-honesty-bundle-${firewallId || "fw"}.json`;
+                  a.click();
+                  URL.revokeObjectURL(url);
+                  onStatus?.("Downloaded honesty bundle");
+                }}
+              >
+                Download honesty bundle
+              </button>
+            ) : null}
+            {hardGapsPayload ? (
+              <button
+                type="button"
+                className="ghost"
+                disabled={busy}
+                title="Copy combined soft_fertig honesty bundle to clipboard"
+                onClick={() => {
+                  void (async () => {
+                    const bundle = buildHonestyBundle(
+                      hardGapsPayload as Record<string, unknown>,
+                    );
+                    const text = JSON.stringify(bundle, null, 2) + "\n";
+                    try {
+                      await navigator.clipboard.writeText(text);
+                      onStatus?.("Copied honesty bundle");
+                    } catch (e) {
+                      onError?.(e instanceof Error ? e.message : String(e));
+                    }
+                  })();
+                }}
+              >
+                Copy honesty bundle
               </button>
             ) : null}
             <button

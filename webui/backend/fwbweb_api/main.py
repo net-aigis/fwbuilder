@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "1608"
+WEBUI_SOFT_COMPLETE_PHASE = "1624"
 # Honesty/preview track milestone (last thematic checkpoint; soft marker may be higher).
 # 600: refusals/closure; 650: health/summary/paths + fidelity sample;
 # 700: expect step_notes + SSH alternative/refusal notes;
@@ -87,11 +87,12 @@ WEBUI_SOFT_COMPLETE_PHASE = "1608"
 # 2950: soft_fertig_session_storage_notes (+ count) on honesty endpoints;
 # 3000: session storage notes included in soft_fertig_surface_keys catalog;
 # 3050: soft_fertig_honesty_export_keys catalog of downloadable honesty JSONs;
-# 3100: honesty export keys included in soft_fertig_surface_keys catalog.
-WEBUI_HONESTY_MILESTONE = 3100
+# 3100: honesty export keys included in soft_fertig_surface_keys catalog;
+# 3150: soft_fertig_honesty_bundle sections + UI combined download/copy.
+WEBUI_HONESTY_MILESTONE = 3150
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 3100: soft_fertig_surface_keys includes "
-    "soft_fertig_honesty_export_keys (+ count/titles/notes) — hard gaps remain open."
+    "Honesty surface checkpoint 3150: soft_fertig_honesty_bundle_sections "
+    "document the combined honesty JSON download — hard gaps remain open."
 )
 
 HARD_GAPS_OPEN = (
@@ -317,6 +318,35 @@ SOFT_FERTIG_HONESTY_EXPORT_NOTES = {
     "related_refusals": "Download related refusals catalog from /hard-gaps fields.",
     "honesty_paths": "Download honesty_paths (+ titles/notes) catalog.",
     "session_storage_keys": "Download sessionStorage keys (+ titles/notes) catalog.",
+}
+
+# Top-level sections of the combined UI honesty bundle download.
+SOFT_FERTIG_HONESTY_BUNDLE_SECTIONS = (
+    "meta",
+    "hard_gaps",
+    "soft_fertig_surface",
+    "related_refusals",
+    "honesty_paths",
+    "session_storage_keys",
+    "honesty_exports",
+)
+SOFT_FERTIG_HONESTY_BUNDLE_SECTION_TITLES = {
+    "meta": "soft_complete_phase + honesty_milestone",
+    "hard_gaps": "Full /hard-gaps payload",
+    "soft_fertig_surface": "Surface keys/titles/notes subset",
+    "related_refusals": "Related refusals + titles",
+    "honesty_paths": "Honesty paths + titles/notes",
+    "session_storage_keys": "sessionStorage keys/titles/notes",
+    "honesty_exports": "Export catalog meta (keys/titles/notes)",
+}
+SOFT_FERTIG_HONESTY_BUNDLE_NOTES = {
+    "meta": "Always included for provenance of soft-fertig track.",
+    "hard_gaps": "Same JSON as Download hard-gaps JSON.",
+    "soft_fertig_surface": "Same subset as Download soft-fertig surface.",
+    "related_refusals": "Same subset as Download related refusals.",
+    "honesty_paths": "Same subset as Download honesty paths.",
+    "session_storage_keys": "Same subset as Download sessionStorage keys.",
+    "honesty_exports": "Same subset as Download honesty exports.",
 }
 
 HARD_GAP_NOTES = {
@@ -839,6 +869,27 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
             for k in SOFT_FERTIG_HONESTY_EXPORT_KEYS
             if k in SOFT_FERTIG_HONESTY_EXPORT_NOTES
         ),
+        "soft_fertig_honesty_bundle_sections": list(
+            SOFT_FERTIG_HONESTY_BUNDLE_SECTIONS
+        ),
+        "soft_fertig_honesty_bundle_section_count": len(
+            SOFT_FERTIG_HONESTY_BUNDLE_SECTIONS
+        ),
+        "soft_fertig_honesty_bundle_section_titles": {
+            k: SOFT_FERTIG_HONESTY_BUNDLE_SECTION_TITLES[k]
+            for k in SOFT_FERTIG_HONESTY_BUNDLE_SECTIONS
+            if k in SOFT_FERTIG_HONESTY_BUNDLE_SECTION_TITLES
+        },
+        "soft_fertig_honesty_bundle_notes": {
+            k: SOFT_FERTIG_HONESTY_BUNDLE_NOTES[k]
+            for k in SOFT_FERTIG_HONESTY_BUNDLE_SECTIONS
+            if k in SOFT_FERTIG_HONESTY_BUNDLE_NOTES
+        },
+        "soft_fertig_honesty_bundle_notes_count": sum(
+            1
+            for k in SOFT_FERTIG_HONESTY_BUNDLE_SECTIONS
+            if k in SOFT_FERTIG_HONESTY_BUNDLE_NOTES
+        ),
         "honesty_paths_count": len(honesty_paths),
         "summary_path": "/api/v1/hard-gaps/summary",
         "note": (
@@ -940,6 +991,18 @@ def hard_gaps_summary(_: str = Depends(require_token)) -> dict[str, object]:
         ),
         "soft_fertig_honesty_export_notes_count": int(
             full.get("soft_fertig_honesty_export_notes_count") or 0
+        ),
+        "soft_fertig_honesty_bundle_sections": list(
+            full.get("soft_fertig_honesty_bundle_sections") or []
+        ),
+        "soft_fertig_honesty_bundle_section_count": int(
+            full.get("soft_fertig_honesty_bundle_section_count") or 0
+        ),
+        "soft_fertig_honesty_bundle_section_titles": dict(
+            full.get("soft_fertig_honesty_bundle_section_titles") or {}
+        ),
+        "soft_fertig_honesty_bundle_notes_count": int(
+            full.get("soft_fertig_honesty_bundle_notes_count") or 0
         ),
         "expect_plan_step_count": int(full.get("expect_plan_step_notes_count") or 0),
         "expect_plan_step_titles": dict(full.get("expect_plan_step_titles") or {}),
@@ -1278,6 +1341,27 @@ def hard_gap_closure(_: str = Depends(require_token)) -> dict[str, object]:
             1
             for k in SOFT_FERTIG_HONESTY_EXPORT_KEYS
             if k in SOFT_FERTIG_HONESTY_EXPORT_NOTES
+        ),
+        "soft_fertig_honesty_bundle_sections": list(
+            SOFT_FERTIG_HONESTY_BUNDLE_SECTIONS
+        ),
+        "soft_fertig_honesty_bundle_section_count": len(
+            SOFT_FERTIG_HONESTY_BUNDLE_SECTIONS
+        ),
+        "soft_fertig_honesty_bundle_section_titles": {
+            k: SOFT_FERTIG_HONESTY_BUNDLE_SECTION_TITLES[k]
+            for k in SOFT_FERTIG_HONESTY_BUNDLE_SECTIONS
+            if k in SOFT_FERTIG_HONESTY_BUNDLE_SECTION_TITLES
+        },
+        "soft_fertig_honesty_bundle_notes": {
+            k: SOFT_FERTIG_HONESTY_BUNDLE_NOTES[k]
+            for k in SOFT_FERTIG_HONESTY_BUNDLE_SECTIONS
+            if k in SOFT_FERTIG_HONESTY_BUNDLE_NOTES
+        },
+        "soft_fertig_honesty_bundle_notes_count": sum(
+            1
+            for k in SOFT_FERTIG_HONESTY_BUNDLE_SECTIONS
+            if k in SOFT_FERTIG_HONESTY_BUNDLE_NOTES
         ),
         "honesty_paths": {
             "hard_gaps": "/api/v1/hard-gaps",
