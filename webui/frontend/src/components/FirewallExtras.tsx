@@ -376,6 +376,7 @@ export function FirewallExtras({
   const [sessionStorageClearDetail, setSessionStorageClearDetail] = useState<string | null>(null);
   const [honestySurfaceVersion, setHonestySurfaceVersion] = useState<string | null>(null);
   const [catalogSummaryDetail, setCatalogSummaryDetail] = useState<string | null>(null);
+  const [honestyReadinessDetail, setHonestyReadinessDetail] = useState<string | null>(null);
   const [honestyMilestoneNote, setHonestyMilestoneNote] = useState<string | null>(null);
   const [softFertigHonestyTrack, setSoftFertigHonestyTrack] = useState<boolean | null>(null);
   const [softFertigHonestyTrackNote, setSoftFertigHonestyTrackNote] = useState<string | null>(null);
@@ -773,6 +774,22 @@ export function FirewallExtras({
           summary && Object.keys(summary).length
             ? Object.entries(summary)
                 .map(([k, v]) => `${k}: ${String(v)}`)
+                .join("\n")
+            : null,
+        );
+      }
+      {
+        const readiness =
+          gaps?.soft_fertig_honesty_readiness &&
+          typeof gaps.soft_fertig_honesty_readiness === "object"
+            ? (gaps.soft_fertig_honesty_readiness as Record<string, unknown>)
+            : null;
+        setHonestyReadinessDetail(
+          readiness && Object.keys(readiness).length
+            ? Object.entries(readiness)
+                .map(([k, v]) =>
+                  `${k}: ${Array.isArray(v) ? v.join(", ") : String(v)}`,
+                )
                 .join("\n")
             : null,
         );
@@ -2933,6 +2950,14 @@ export function FirewallExtras({
               </pre>
             </details>
           ) : null}
+          {honestyReadinessDetail ? (
+            <details className="muted">
+              <summary>Soft-fertig honesty readiness</summary>
+              <pre className="deploy-log configlet-preview" tabIndex={0}>
+                {honestyReadinessDetail}
+              </pre>
+            </details>
+          ) : null}
           <div className="btn-row pad-tight">
             {hardGapsPayload ? (
               <button
@@ -3655,6 +3680,62 @@ export function FirewallExtras({
                 }}
               >
                 Copy track note
+              </button>
+            ) : null}
+            {hardGapsPayload ? (
+              <button
+                type="button"
+                className="ghost"
+                disabled={busy}
+                title="Download soft_fertig_honesty_readiness from /hard-gaps"
+                onClick={() => {
+                  const catalog: Record<string, unknown> = {
+                    soft_fertig_honesty_readiness:
+                      hardGapsPayload.soft_fertig_honesty_readiness,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  const text = JSON.stringify(catalog, null, 2);
+                  const blob = new Blob([text + "\n"], {
+                    type: "application/json;charset=utf-8",
+                  });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `fwbweb-honesty-readiness-${firewallId || "fw"}.json`;
+                  a.click();
+                  URL.revokeObjectURL(url);
+                  onStatus?.("Downloaded honesty readiness");
+                }}
+              >
+                Download readiness
+              </button>
+            ) : null}
+            {hardGapsPayload ? (
+              <button
+                type="button"
+                className="ghost"
+                disabled={busy}
+                title="Copy soft_fertig_honesty_readiness to clipboard"
+                onClick={() => {
+                  void (async () => {
+                    const catalog: Record<string, unknown> = {
+                      soft_fertig_honesty_readiness:
+                        hardGapsPayload.soft_fertig_honesty_readiness,
+                      soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                      honesty_milestone: hardGapsPayload.honesty_milestone,
+                    };
+                    const text = JSON.stringify(catalog, null, 2) + "\n";
+                    try {
+                      await navigator.clipboard.writeText(text);
+                      onStatus?.("Copied honesty readiness");
+                    } catch (e) {
+                      onError?.(e instanceof Error ? e.message : String(e));
+                    }
+                  })();
+                }}
+              >
+                Copy readiness
               </button>
             ) : null}
             <button
