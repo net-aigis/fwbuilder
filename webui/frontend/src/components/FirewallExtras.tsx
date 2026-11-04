@@ -276,11 +276,13 @@ export function FirewallExtras({
                 with_visible?: number;
                 sections_with_flat?: number;
                 buddy_labels?: number;
+                layout_tree_max_depth?: number;
               }
             | undefined;
           const fields = fid.fields as { with_visible?: number } | undefined;
           const stacked = Number(pages?.stacked_sections || 0);
           const vis = Number(fields?.with_visible || 0);
+          const treeDepth = Number(pages?.layout_tree_max_depth || 0);
           const sigN =
             (fid.signal_keys?.fields?.length || 0) +
             (fid.signal_keys?.pages?.length || 0) +
@@ -289,6 +291,7 @@ export function FirewallExtras({
             `${fid.score_percent}% .ui signals (${fid.dialog || plat}` +
               (stacked ? `; stacked×${stacked}` : "") +
               (vis ? `; visible×${vis}` : "") +
+              (treeDepth ? `; layout_tree≤${treeDepth}` : "") +
               (sigN ? `; keys×${sigN}` : "") +
               "; not pixel parity)",
           );

@@ -415,6 +415,20 @@ def dialog_chrome_for(platform: str) -> dict[str, Any]:
     return out
 
 
+def _layout_tree_max_depth(nodes: Any, depth: int = 1) -> int:
+    """Max nesting depth of extracted layout_tree nodes (1 = top layouts)."""
+    if not isinstance(nodes, list) or not nodes:
+        return 0
+    deepest = depth
+    for node in nodes:
+        if not isinstance(node, dict):
+            continue
+        kids = node.get("children")
+        if kids:
+            deepest = max(deepest, _layout_tree_max_depth(kids, depth + 1))
+    return deepest
+
+
 def _layout_fidelity_from_dialog(stem: str, info: dict[str, Any]) -> dict[str, Any]:
     """Coverage stats for one extracted dialog (not pixel parity)."""
     fields = info.get("fields") or {}
@@ -455,6 +469,10 @@ def _layout_fidelity_from_dialog(stem: str, info: dict[str, Any]) -> dict[str, A
         "pages_with_row_stretch": sum(1 for p in pages if p.get("row_stretch")),
         "pages_with_spacing": sum(1 for p in pages if p.get("spacing")),
         "pages_with_layout_tree": sum(1 for p in pages if p.get("layout_tree")),
+        "layout_tree_max_depth": max(
+            (_layout_tree_max_depth(p.get("layout_tree")) for p in pages),
+            default=0,
+        ),
         "sections": len(all_secs),
         "sections_with_flat": sum(1 for s in all_secs if "flat" in s),
         "sections_with_checkable": sum(1 for s in all_secs if "checkable" in s),
@@ -477,6 +495,7 @@ def _layout_fidelity_from_dialog(stem: str, info: dict[str, Any]) -> dict[str, A
         1.0 if chrome["geometry"] else 0.0,
         1.0 if page_stats["pages_with_spacing"] else 0.0,
         1.0 if page_stats["pages_with_layout_tree"] else 0.0,
+        min(page_stats["layout_tree_max_depth"], 4) / 4.0,
         # Presence of QStackedWidget extraction (not desktop pixel switch behavior).
         1.0 if page_stats["stacked_sections"] else 0.0,
         1.0 if page_stats["buddy_labels"] else 0.0,

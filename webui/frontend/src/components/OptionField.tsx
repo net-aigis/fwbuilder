@@ -77,7 +77,16 @@ export function OptionField({ name, value, meta, disabled, onChange }: Props) {
   const style = fieldStyle(meta);
   const sizeClass = sizePolicyClass(meta);
   if (meta?.visible === false) {
-    return null;
+    // Keep the .ui grid cell as an invisible hole (layout honesty; not removed from flow).
+    return (
+      <div
+        className={["field", "block", "field-ui-hidden", sizeClass].filter(Boolean).join(" ")}
+        style={style}
+        aria-hidden="true"
+        data-option-key={name}
+        title={`hidden (.ui visible=false): ${name}`}
+      />
+    );
   }
   const fieldClass = [
     "field",
