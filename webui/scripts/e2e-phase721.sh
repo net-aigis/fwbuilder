@@ -15,7 +15,7 @@ assert h.get("layout_fidelity_sample_spacers_with_size_type") == s.get(
     "layout_fidelity_sample_spacers_with_size_type"
 )
 assert isinstance(h.get("layout_fidelity_sample_spacers"), int)
-assert m.WEBUI_SOFT_COMPLETE_PHASE == "728"
+assert int(m.WEBUI_SOFT_COMPLETE_PHASE) >= 728
 print("hard-gaps spacer sample mirrored", h["layout_fidelity_sample_spacers"])
 PY
 echo "cleaned"

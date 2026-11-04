@@ -468,6 +468,16 @@ def _layout_fidelity_from_dialog(stem: str, info: dict[str, Any]) -> dict[str, A
         "with_tooltip": sum(1 for v in fields.values() if v.get("tooltip")),
         "with_whats_this": sum(1 for v in fields.values() if v.get("whats_this")),
         "with_size_policy": sum(1 for v in fields.values() if v.get("size_policy")),
+        "with_size_policy_expanding": sum(
+            1
+            for v in fields.values()
+            for sp in [v.get("size_policy") or {}]
+            if isinstance(sp, dict)
+            and (
+                sp.get("horizontal") in {"Expanding", "MinimumExpanding"}
+                or sp.get("vertical") in {"Expanding", "MinimumExpanding"}
+            )
+        ),
         "with_minimum_size": sum(1 for v in fields.values() if v.get("minimum_size")),
         "with_maximum_size": sum(1 for v in fields.values() if v.get("maximum_size")),
         "with_alignment": sum(1 for v in fields.values() if v.get("alignment")),
@@ -524,6 +534,7 @@ def _layout_fidelity_from_dialog(stem: str, info: dict[str, Any]) -> dict[str, A
         field_stats["with_grid"] / n,
         field_stats["with_label"] / n,
         field_stats["with_size_policy"] / n,
+        field_stats["with_size_policy_expanding"] / n,
         field_stats["with_visible"] / n,
         field_stats["with_whats_this"] / n,
         field_stats["with_tooltip"] / n,
