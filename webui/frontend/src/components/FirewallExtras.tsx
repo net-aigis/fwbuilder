@@ -379,6 +379,7 @@ export function FirewallExtras({
   const [honestyMilestoneNote, setHonestyMilestoneNote] = useState<string | null>(null);
   const [softFertigHonestyTrack, setSoftFertigHonestyTrack] = useState<boolean | null>(null);
   const [softFertigHonestyTrackNote, setSoftFertigHonestyTrackNote] = useState<string | null>(null);
+  const [trackNoteDetail, setTrackNoteDetail] = useState<string | null>(null);
   const [honestyPathsSummary, setHonestyPathsSummary] = useState<string | null>(null);
   const [honestyPathsDetail, setHonestyPathsDetail] = useState<string | null>(null);
   const [hardGapsSummaryPath, setHardGapsSummaryPath] = useState<string | null>(null);
@@ -801,6 +802,11 @@ export function FirewallExtras({
           ? gaps.soft_fertig_honesty_track_note
           : null,
       );
+      setTrackNoteDetail(
+        typeof gaps?.soft_fertig_honesty_track_note === "string"
+          ? gaps.soft_fertig_honesty_track_note
+          : null,
+      );
       if (gaps?.honesty_paths && Object.keys(gaps.honesty_paths).length) {
         const entries = Object.entries(gaps.honesty_paths);
         const n =
@@ -1139,6 +1145,24 @@ export function FirewallExtras({
         }
         const summaryRaw = sessionStorage.getItem(hardGapsSummaryKey(firewallId));
         if (summaryRaw) setHardGapsSummaryText(summaryRaw);
+        const trackNoteRaw = sessionStorage.getItem(
+          honestyTrackNoteStorageKey(firewallId),
+        );
+        if (trackNoteRaw) {
+          try {
+            const parsed = JSON.parse(trackNoteRaw) as {
+              soft_fertig_honesty_track_note?: unknown;
+            };
+            if (typeof parsed.soft_fertig_honesty_track_note === "string") {
+              setSoftFertigHonestyTrackNote(parsed.soft_fertig_honesty_track_note);
+              setTrackNoteDetail(parsed.soft_fertig_honesty_track_note);
+            } else {
+              setTrackNoteDetail(trackNoteRaw);
+            }
+          } catch {
+            setTrackNoteDetail(trackNoteRaw);
+          }
+        }
       } catch {
         /* ignore */
       }
@@ -2901,6 +2925,14 @@ export function FirewallExtras({
               </pre>
             </details>
           ) : null}
+          {trackNoteDetail ? (
+            <details className="muted">
+              <summary>Soft-fertig track note</summary>
+              <pre className="deploy-log configlet-preview" tabIndex={0}>
+                {trackNoteDetail}
+              </pre>
+            </details>
+          ) : null}
           <div className="btn-row pad-tight">
             {hardGapsPayload ? (
               <button
@@ -3899,6 +3931,7 @@ export function FirewallExtras({
                 setHardGapsSummaryText(null);
                 setHardGapsSummaryFidelity(null);
                 setHardGapsSummaryFidelityTitle(null);
+                setTrackNoteDetail(null);
                 onStatus?.("Cleared honesty catalogs");
               }}
             >

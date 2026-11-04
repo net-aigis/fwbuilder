@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "1880"
+WEBUI_SOFT_COMPLETE_PHASE = "1896"
 SOFT_FERTIG_HONESTY_TRACK_NOTE = (
     "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
     "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
@@ -108,12 +108,13 @@ SOFT_FERTIG_HONESTY_TRACK_NOTE = (
 # 3800: soft_fertig_honesty_track_note clarifies soft track vs open hard gaps;
 # 3850: track_note included in catalog_summary + honesty export catalogs;
 # 3900: track_note added to sessionStorage + clear catalogs;
-# 3950: soft_fertig_honesty_surface_version bumped to 1.2 (track_note).
-WEBUI_HONESTY_MILESTONE = 3950
+# 3950: soft_fertig_honesty_surface_version bumped to 1.2 (track_note);
+# 4000: UI expandable track-note detail + sessionStorage restore on load.
+WEBUI_HONESTY_MILESTONE = 4000
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 3950: soft_fertig_honesty_surface_version "
-    "1.2 documents track_note in catalog_summary, exports, and "
-    "sessionStorage — hard gaps remain open."
+    "Honesty surface checkpoint 4000: soft_fertig_honesty_track_note has "
+    "expandable UI detail and restores from sessionStorage "
+    "(fwbweb.honestyTrackNote.*) on load — hard gaps remain open."
 )
 
 HARD_GAPS_OPEN = (
@@ -357,7 +358,10 @@ SOFT_FERTIG_SESSION_STORAGE_NOTES = {
     "related_refusals": "Persists related hard-gap refusals JSON per firewall.",
     "honesty_paths": "Persists honesty paths catalog JSON per firewall.",
     "honesty_bundle": "Persists last downloaded/copied honesty bundle per firewall.",
-    "track_note": "Persists last downloaded/copied soft_fertig_honesty_track_note per firewall.",
+    "track_note": (
+        "Persists last downloaded/copied soft_fertig_honesty_track_note per "
+        "firewall; UI restores expandable track-note detail on load."
+    ),
 }
 
 # Keys removed by the UI "Clear honesty catalogs" action (same set as sessionStorage catalog).
