@@ -269,6 +269,8 @@ export function FirewallExtras({
   const [softFertigSurfaceKeys, setSoftFertigSurfaceKeys] = useState<string[] | null>(null);
   const [softFertigSurfaceDetail, setSoftFertigSurfaceDetail] = useState<string | null>(null);
   const [softFertigSurfaceNotesCount, setSoftFertigSurfaceNotesCount] = useState<number | null>(null);
+  const [sessionStorageKeyCount, setSessionStorageKeyCount] = useState<number | null>(null);
+  const [sessionStorageKeyTitles, setSessionStorageKeyTitles] = useState<Record<string, string> | null>(null);
   const [honestyMilestoneNote, setHonestyMilestoneNote] = useState<string | null>(null);
   const [softFertigHonestyTrack, setSoftFertigHonestyTrack] = useState<boolean | null>(null);
   const [honestyPathsSummary, setHonestyPathsSummary] = useState<string | null>(null);
@@ -495,6 +497,17 @@ export function FirewallExtras({
               ? keys.filter((k) => notes[k]).length
               : null,
         );
+      setSessionStorageKeyCount(
+        typeof gaps?.soft_fertig_session_storage_key_count === "number"
+          ? gaps.soft_fertig_session_storage_key_count
+          : null,
+      );
+      setSessionStorageKeyTitles(
+        gaps?.soft_fertig_session_storage_key_titles &&
+          typeof gaps.soft_fertig_session_storage_key_titles === "object"
+          ? (gaps.soft_fertig_session_storage_key_titles as Record<string, string>)
+          : null,
+      );
         setSoftFertigSurfaceDetail(
           keys && keys.length
             ? keys
@@ -2294,6 +2307,20 @@ export function FirewallExtras({
             {softFertigSurfaceNotesCount != null && softFertigSurfaceNotesCount > 0 ? (
               <span className="muted">
                 · surface notes <code>{softFertigSurfaceNotesCount}</code>
+              </span>
+            ) : null}
+            {sessionStorageKeyCount != null && sessionStorageKeyCount > 0 ? (
+              <span
+                className="muted"
+                title={
+                  sessionStorageKeyTitles
+                    ? Object.entries(sessionStorageKeyTitles)
+                        .map(([k, v]) => `${k}: ${v}`)
+                        .join(" · ")
+                    : undefined
+                }
+              >
+                · sessionStorage keys <code>{sessionStorageKeyCount}</code>
               </span>
             ) : null}
             {honestyMilestone != null ? (
