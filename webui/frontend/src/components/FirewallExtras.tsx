@@ -253,6 +253,8 @@ export function FirewallExtras({
   const [honestyPathNotesCount, setHonestyPathNotesCount] = useState<number | null>(null);
   const [softFertigSurfaceKeyCount, setSoftFertigSurfaceKeyCount] = useState<number | null>(null);
   const [softFertigSurfaceKeyTitles, setSoftFertigSurfaceKeyTitles] = useState<Record<string, string> | null>(null);
+  const [softFertigSurfaceKeys, setSoftFertigSurfaceKeys] = useState<string[] | null>(null);
+  const [softFertigSurfaceDetail, setSoftFertigSurfaceDetail] = useState<string | null>(null);
   const [honestyMilestoneNote, setHonestyMilestoneNote] = useState<string | null>(null);
   const [softFertigHonestyTrack, setSoftFertigHonestyTrack] = useState<boolean | null>(null);
   const [honestyPathsSummary, setHonestyPathsSummary] = useState<string | null>(null);
@@ -425,6 +427,24 @@ export function FirewallExtras({
           ? (gaps.soft_fertig_surface_key_titles as Record<string, string>)
           : null,
       );
+      {
+        const keys = Array.isArray(gaps?.soft_fertig_surface_keys)
+          ? (gaps.soft_fertig_surface_keys as string[])
+          : null;
+        const titles =
+          gaps?.soft_fertig_surface_key_titles &&
+          typeof gaps.soft_fertig_surface_key_titles === "object"
+            ? (gaps.soft_fertig_surface_key_titles as Record<string, string>)
+            : {};
+        setSoftFertigSurfaceKeys(keys);
+        setSoftFertigSurfaceDetail(
+          keys && keys.length
+            ? keys
+                .map((k) => (titles[k] ? `${k}: ${titles[k]}` : k))
+                .join("\n")
+            : null,
+        );
+      }
       setHonestyMilestoneNote(gaps?.honesty_milestone_note || null);
       setSoftFertigHonestyTrack(
         typeof gaps?.soft_fertig_honesty_track === "boolean"
@@ -2379,6 +2399,21 @@ export function FirewallExtras({
                   {honestyPathsDetail}
                 </pre>
               ) : null}
+            </details>
+          ) : null}
+          {softFertigSurfaceDetail ? (
+            <details className="muted">
+              <summary>
+                Soft-fertig surface keys
+                {softFertigSurfaceKeyCount != null
+                  ? ` (${softFertigSurfaceKeyCount})`
+                  : softFertigSurfaceKeys
+                    ? ` (${softFertigSurfaceKeys.length})`
+                    : ""}
+              </summary>
+              <pre className="deploy-log configlet-preview" tabIndex={0}>
+                {softFertigSurfaceDetail}
+              </pre>
             </details>
           ) : null}
           <div className="btn-row pad-tight">
