@@ -3504,6 +3504,7 @@ export function FirewallExtras({
                   sessionStorage.removeItem(softFertigSurfaceStorageKey(firewallId));
                   sessionStorage.removeItem(relatedRefusalsStorageKey(firewallId));
                   sessionStorage.removeItem(honestyPathsCatalogKey(firewallId));
+                  sessionStorage.removeItem(honestyBundleStorageKey(firewallId));
                 } catch {
                   /* ignore */
                 }

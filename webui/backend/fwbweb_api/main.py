@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "1640"
+WEBUI_SOFT_COMPLETE_PHASE = "1656"
 # Honesty/preview track milestone (last thematic checkpoint; soft marker may be higher).
 # 600: refusals/closure; 650: health/summary/paths + fidelity sample;
 # 700: expect step_notes + SSH alternative/refusal notes;
@@ -89,11 +89,12 @@ WEBUI_SOFT_COMPLETE_PHASE = "1640"
 # 3050: soft_fertig_honesty_export_keys catalog of downloadable honesty JSONs;
 # 3100: honesty export keys included in soft_fertig_surface_keys catalog;
 # 3150: soft_fertig_honesty_bundle sections + UI combined download/copy;
-# 3200: honesty bundle sections included in soft_fertig_surface_keys catalog.
-WEBUI_HONESTY_MILESTONE = 3200
+# 3200: honesty bundle sections included in soft_fertig_surface_keys catalog;
+# 3250: honesty_bundle added to sessionStorage + honesty export catalogs.
+WEBUI_HONESTY_MILESTONE = 3250
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 3200: soft_fertig_surface_keys includes "
-    "soft_fertig_honesty_bundle_sections (+ count/titles/notes) — hard gaps remain open."
+    "Honesty surface checkpoint 3250: honesty_bundle is listed in "
+    "sessionStorage and honesty export catalogs — hard gaps remain open."
 )
 
 HARD_GAPS_OPEN = (
@@ -297,6 +298,7 @@ SOFT_FERTIG_SESSION_STORAGE_KEYS = {
     "soft_fertig_surface": "fwbweb.softFertigSurface.",
     "related_refusals": "fwbweb.relatedRefusals.",
     "honesty_paths": "fwbweb.honestyPaths.",
+    "honesty_bundle": "fwbweb.honestyBundle.",
 }
 SOFT_FERTIG_SESSION_STORAGE_KEY_TITLES = {
     "hard_gaps": "Full /hard-gaps JSON snapshot",
@@ -304,6 +306,7 @@ SOFT_FERTIG_SESSION_STORAGE_KEY_TITLES = {
     "soft_fertig_surface": "Soft-fertig surface catalog JSON",
     "related_refusals": "Related hard-gap refusals JSON",
     "honesty_paths": "Honesty paths catalog JSON",
+    "honesty_bundle": "Combined honesty bundle JSON",
 }
 SOFT_FERTIG_SESSION_STORAGE_NOTES = {
     "hard_gaps": "Persists last downloaded/copied /hard-gaps JSON per firewall.",
@@ -311,6 +314,7 @@ SOFT_FERTIG_SESSION_STORAGE_NOTES = {
     "soft_fertig_surface": "Persists soft-fertig surface (+ sessionKeys) catalogs.",
     "related_refusals": "Persists related hard-gap refusals JSON per firewall.",
     "honesty_paths": "Persists honesty paths catalog JSON per firewall.",
+    "honesty_bundle": "Persists last downloaded/copied honesty bundle per firewall.",
 }
 
 # Downloadable honesty/preview JSON catalogs the UI can export (documentation).
@@ -320,6 +324,7 @@ SOFT_FERTIG_HONESTY_EXPORT_KEYS = (
     "related_refusals",
     "honesty_paths",
     "session_storage_keys",
+    "honesty_bundle",
 )
 SOFT_FERTIG_HONESTY_EXPORT_KEY_TITLES = {
     "hard_gaps": "Full /hard-gaps honesty snapshot JSON",
@@ -327,6 +332,7 @@ SOFT_FERTIG_HONESTY_EXPORT_KEY_TITLES = {
     "related_refusals": "Related hard-gap refusals JSON",
     "honesty_paths": "Honesty paths catalog JSON",
     "session_storage_keys": "sessionStorage keys/titles/notes JSON",
+    "honesty_bundle": "Combined honesty bundle JSON",
 }
 SOFT_FERTIG_HONESTY_EXPORT_NOTES = {
     "hard_gaps": "Download hard-gaps JSON button; sessionStorage fwbweb.hardGaps.*.",
@@ -334,6 +340,7 @@ SOFT_FERTIG_HONESTY_EXPORT_NOTES = {
     "related_refusals": "Download related refusals catalog from /hard-gaps fields.",
     "honesty_paths": "Download honesty_paths (+ titles/notes) catalog.",
     "session_storage_keys": "Download sessionStorage keys (+ titles/notes) catalog.",
+    "honesty_bundle": "Download/Copy honesty bundle; sessionStorage fwbweb.honestyBundle.*.",
 }
 
 # Top-level sections of the combined UI honesty bundle download.
