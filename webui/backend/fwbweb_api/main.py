@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "1368"
+WEBUI_SOFT_COMPLETE_PHASE = "1384"
 # Honesty/preview track milestone (last thematic checkpoint; soft marker may be higher).
 # 600: refusals/closure; 650: health/summary/paths + fidelity sample;
 # 700: expect step_notes + SSH alternative/refusal notes;
@@ -72,11 +72,12 @@ WEBUI_SOFT_COMPLETE_PHASE = "1368"
 # 2200: soft_fertig_surface_notes (+ count) for surface key catalog;
 # 2250: hard_gap_related_refusals also on closure + full map on summary;
 # 2300: soft_fertig_surface keys/titles/notes on hard-gaps summary;
-# 2350: soft_fertig_surface catalog also on hard-gaps/closure.
-WEBUI_HONESTY_MILESTONE = 2350
+# 2350: soft_fertig_surface catalog also on hard-gaps/closure;
+# 2400: honesty_paths + honesty_path_notes mirrored on hard-gaps summary.
+WEBUI_HONESTY_MILESTONE = 2400
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 2350: /hard-gaps/closure exposes "
-    "soft_fertig_surface_keys / titles / notes (+ counts) — hard gaps remain open."
+    "Honesty surface checkpoint 2400: /hard-gaps/summary mirrors "
+    "honesty_paths and honesty_path_notes (+ titles/counts) — hard gaps remain open."
 )
 
 HARD_GAPS_OPEN = (
@@ -780,8 +781,10 @@ def hard_gaps_summary(_: str = Depends(require_token)) -> dict[str, object]:
             full.get("hard_gap_related_refusals") or {}
         ),
         "hard_gap_count": len(HARD_GAPS_OPEN),
+        "honesty_paths": dict(full.get("honesty_paths") or {}),
         "honesty_paths_count": int(full.get("honesty_paths_count") or 0),
         "honesty_path_titles": dict(full.get("honesty_path_titles") or {}),
+        "honesty_path_notes": dict(full.get("honesty_path_notes") or {}),
         "honesty_path_notes_count": int(full.get("honesty_path_notes_count") or 0),
         "soft_fertig_surface_keys": list(full.get("soft_fertig_surface_keys") or []),
         "soft_fertig_surface_key_count": int(
