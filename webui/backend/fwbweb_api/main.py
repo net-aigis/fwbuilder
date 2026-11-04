@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "1104"
+WEBUI_SOFT_COMPLETE_PHASE = "1112"
 # Honesty/preview track milestone (last thematic checkpoint; soft marker may be higher).
 # 600: refusals/closure; 650: health/summary/paths + fidelity sample;
 # 700: expect step_notes + SSH alternative/refusal notes;
@@ -87,7 +87,7 @@ HARD_GAP_NOTES = {
         "with_grid/label/tooltip field samples + pages/sections/stack_names counts + "
         "chrome window_title/tab_position samples; UI truncates long sample "
         "fidelity lines (title keeps full text); with_size_policy total sample + "
-        "layout_fidelity_sample_key_count + with_visible field sample + spacers_with_size_hint sample + signal_key_count sample + with_whats_this field sample + with_enabled sample + with_alignment sample + with_read_only sample + pages_with_row_stretch sample + pages_with_tooltip sample + with_external_label sample + pages_with_buddy_labels sample + catalog_complete flag + alt iosacl sample (buddy/external_label); "
+        "layout_fidelity_sample_key_count + with_visible field sample + spacers_with_size_hint sample + signal_key_count sample + with_whats_this field sample + with_enabled sample + with_alignment sample + with_read_only sample + pages_with_row_stretch sample + pages_with_tooltip sample + with_external_label sample + pages_with_buddy_labels sample + catalog_complete flag + alt iosacl sample (buddy/external_label) + alt2 junosacl sample (with_enabled); "
         "UI applies data-size-type Expanding/Fixed/Maximum/Minimum/Preferred via "
         "qtSpacerStyle/CSS and field size-h/v Expanding/Minimum/Preferred/Fixed classes "
         "(still not desktop-equivalent geometry); visible=false keeps field-ui-hidden "
@@ -221,6 +221,7 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
     ssh = ssh_auth_capabilities()
     sample_fid = layout_fidelity_for("iptables", "linux24")
     alt_fid = layout_fidelity_for("iosacl", "ios")
+    alt2_fid = layout_fidelity_for("junosacl", "junos")
     signal_catalog = sample_fid.get("signal_keys") if sample_fid.get("ok") else None
     honesty_paths = {
         "hard_gaps": "/api/v1/hard-gaps",
@@ -479,6 +480,16 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
             if alt_fid.get("ok")
             else None
         ),
+        "layout_fidelity_alt2_sample_platform": "junosacl",
+        "layout_fidelity_alt2_sample_host_os": "junos",
+        "layout_fidelity_alt2_sample_score_percent": (
+            alt2_fid.get("score_percent") if alt2_fid.get("ok") else None
+        ),
+        "layout_fidelity_alt2_sample_with_enabled": (
+            (alt2_fid.get("fields") or {}).get("with_enabled")
+            if alt2_fid.get("ok")
+            else None
+        ),
         "layout_fidelity_pixel_parity": False,
         "stack_switch_path": honesty_paths["stack_switch"],
         "option_enable_path": honesty_paths["option_enable"],
@@ -531,6 +542,7 @@ def hard_gaps_summary(_: str = Depends(require_token)) -> dict[str, object]:
     full = hard_gaps()
     sample_fid = layout_fidelity_for("iptables", "linux24")
     alt_fid = layout_fidelity_for("iosacl", "ios")
+    alt2_fid = layout_fidelity_for("junosacl", "junos")
     sample_score = sample_fid.get("score_percent") if sample_fid.get("ok") else None
     sample_parts = sample_fid.get("score_parts_count") if sample_fid.get("ok") else None
     out: dict[str, object] = {
@@ -770,6 +782,16 @@ def hard_gaps_summary(_: str = Depends(require_token)) -> dict[str, object]:
         "layout_fidelity_alt_sample_with_external_label": (
             (alt_fid.get("fields") or {}).get("with_external_label")
             if alt_fid.get("ok")
+            else None
+        ),
+        "layout_fidelity_alt2_sample_platform": "junosacl",
+        "layout_fidelity_alt2_sample_host_os": "junos",
+        "layout_fidelity_alt2_sample_score_percent": (
+            alt2_fid.get("score_percent") if alt2_fid.get("ok") else None
+        ),
+        "layout_fidelity_alt2_sample_with_enabled": (
+            (alt2_fid.get("fields") or {}).get("with_enabled")
+            if alt2_fid.get("ok")
             else None
         ),
         "layout_fidelity_pixel_parity": False,

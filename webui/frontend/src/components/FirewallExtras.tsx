@@ -543,6 +543,12 @@ export function FirewallExtras({
           typeof gaps.layout_fidelity_alt_sample_with_external_label === "number"
             ? `altExtLabel=${gaps.layout_fidelity_alt_sample_with_external_label}`
             : "",
+          typeof gaps.layout_fidelity_alt2_sample_score_percent === "number"
+            ? `alt2=${gaps.layout_fidelity_alt2_sample_platform || "?"}/${gaps.layout_fidelity_alt2_sample_host_os || "?"}:${gaps.layout_fidelity_alt2_sample_score_percent}%`
+            : "",
+          typeof gaps.layout_fidelity_alt2_sample_with_enabled === "number"
+            ? `alt2Enabled=${gaps.layout_fidelity_alt2_sample_with_enabled}`
+            : "",
         ]
           .filter(Boolean)
           .join(", ");
@@ -2462,6 +2468,12 @@ export function FirewallExtras({
                           : "",
                         typeof s.layout_fidelity_alt_sample_with_external_label === "number"
                           ? `altExtLabel=${s.layout_fidelity_alt_sample_with_external_label}`
+                          : "",
+                        typeof s.layout_fidelity_alt2_sample_score_percent === "number"
+                          ? `alt2=${s.layout_fidelity_alt2_sample_platform || "?"}/${s.layout_fidelity_alt2_sample_host_os || "?"}:${s.layout_fidelity_alt2_sample_score_percent}%`
+                          : "",
+                        typeof s.layout_fidelity_alt2_sample_with_enabled === "number"
+                          ? `alt2Enabled=${s.layout_fidelity_alt2_sample_with_enabled}`
                           : "",
                       ]
                         .filter(Boolean)
