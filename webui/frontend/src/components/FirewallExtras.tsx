@@ -243,6 +243,7 @@ export function FirewallExtras({
   const [sshRefusalPathNotes, setSshRefusalPathNotes] = useState<Record<string, string>>({});
   const [softCompletePhase, setSoftCompletePhase] = useState<string | null>(null);
   const [honestyMilestone, setHonestyMilestone] = useState<number | null>(null);
+  const [hardGapsOpenLabels, setHardGapsOpenLabels] = useState<Record<string, string> | null>(null);
   const [honestyMilestoneNote, setHonestyMilestoneNote] = useState<string | null>(null);
   const [softFertigHonestyTrack, setSoftFertigHonestyTrack] = useState<boolean | null>(null);
   const [honestyPathsSummary, setHonestyPathsSummary] = useState<string | null>(null);
@@ -362,6 +363,11 @@ export function FirewallExtras({
       setSoftCompletePhase(gaps?.soft_complete_phase || resSt?.soft_complete_phase || null);
       setHonestyMilestone(
         typeof gaps?.honesty_milestone === "number" ? gaps.honesty_milestone : null,
+      );
+      setHardGapsOpenLabels(
+        gaps?.hard_gap_open_labels && typeof gaps.hard_gap_open_labels === "object"
+          ? (gaps.hard_gap_open_labels as Record<string, string>)
+          : null,
       );
       setHonestyMilestoneNote(gaps?.honesty_milestone_note || null);
       setSoftFertigHonestyTrack(
@@ -2062,6 +2068,12 @@ export function FirewallExtras({
                 {" "}
                 · soft-complete phase <code>{softCompletePhase}</code>
               </>
+            ) : null}
+            {hardGapsOpenLabels && Object.keys(hardGapsOpenLabels).length > 0 ? (
+              <span className="muted" title={Object.entries(hardGapsOpenLabels).map(([k,v]) => `${k}: ${v}`).join(" · ")}>
+                · open labels{" "}
+                <code>{Object.keys(hardGapsOpenLabels).length}</code>
+              </span>
             ) : null}
             {honestyMilestone != null ? (
               <>

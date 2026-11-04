@@ -928,6 +928,7 @@ export function fetchHardGaps() {
     soft_complete_phase: string;
     soft_fertig_honesty_track?: boolean;
     hard_gap_open: string[];
+    hard_gap_open_labels?: Record<string, string>;
     hard_gap_count?: number;
     hard_gap_notes?: Record<string, string>;
     hard_gap_closure?: Record<string, string>;
@@ -1029,6 +1030,7 @@ export function fetchHardGapsSummary() {
     honesty_milestone?: number;
     honesty_milestone_note?: string;
     hard_gap_open: string[];
+    hard_gap_open_labels?: Record<string, string>;
     hard_gap_count?: number;
     honesty_paths_count?: number;
     expect_plan_step_count?: number;
@@ -1179,6 +1181,7 @@ export function fetchHardGapClosure() {
     honesty_milestone?: number;
     honesty_milestone_note?: string;
     hard_gap_open: string[];
+    hard_gap_open_labels?: Record<string, string>;
     hard_gap_count?: number;
     hard_gap_closure: Record<string, string>;
     hard_gap_notes?: Record<string, string>;

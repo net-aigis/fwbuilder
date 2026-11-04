@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "1136"
+WEBUI_SOFT_COMPLETE_PHASE = "1144"
 # Honesty/preview track milestone (last thematic checkpoint; soft marker may be higher).
 # 600: refusals/closure; 650: health/summary/paths + fidelity sample;
 # 700: expect step_notes + SSH alternative/refusal notes;
@@ -72,6 +72,12 @@ HARD_GAPS_OPEN = (
     "password_keyboard_interactive_ssh",
 )
 
+HARD_GAP_LABELS = {
+    "full_qt_pixel_layout": "Full Qt pixel-equivalent layout",
+    "expect_sshsession_runtime": "Expect/SSHSession install runtime",
+    "password_keyboard_interactive_ssh": "Password / keyboard-interactive SSH",
+}
+
 HARD_GAP_NOTES = {
     "full_qt_pixel_layout": (
         "Grid/spacers/stretch/buddy_labels/alignment/sizePolicy/sizeHint/"
@@ -88,7 +94,7 @@ HARD_GAP_NOTES = {
         "with_grid/label/tooltip field samples + pages/sections/stack_names counts + "
         "chrome window_title/tab_position samples; UI truncates long sample "
         "fidelity lines (title keeps full text); with_size_policy total sample + "
-        "layout_fidelity_sample_key_count + with_visible field sample + spacers_with_size_hint sample + signal_key_count sample + with_whats_this field sample + with_enabled sample + with_alignment sample + with_read_only sample + pages_with_row_stretch sample + pages_with_tooltip sample + with_external_label sample + pages_with_buddy_labels sample + catalog_complete flag + alt iosacl sample (buddy/external_label) + alt2 junosacl sample (with_enabled) + alt pages_with_buddy_labels; "
+        "layout_fidelity_sample_key_count + with_visible field sample + spacers_with_size_hint sample + signal_key_count sample + with_whats_this field sample + with_enabled sample + with_alignment sample + with_read_only sample + pages_with_row_stretch sample + pages_with_tooltip sample + with_external_label sample + pages_with_buddy_labels sample + catalog_complete flag + alt iosacl sample (buddy/external_label) + alt2 junosacl sample (with_enabled) + alt pages_with_buddy_labels; hard_gap_open_labels on honesty endpoints; "
         "UI applies data-size-type Expanding/Fixed/Maximum/Minimum/Preferred via "
         "qtSpacerStyle/CSS and field size-h/v Expanding/Minimum/Preferred/Fixed classes "
         "(still not desktop-equivalent geometry); visible=false keeps field-ui-hidden "
@@ -241,6 +247,9 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
         "soft_complete_phase": WEBUI_SOFT_COMPLETE_PHASE,
         "soft_fertig_honesty_track": True,
         "hard_gap_open": list(HARD_GAPS_OPEN),
+        "hard_gap_open_labels": {
+            k: HARD_GAP_LABELS[k] for k in HARD_GAPS_OPEN if k in HARD_GAP_LABELS
+        },
         "hard_gap_count": len(HARD_GAPS_OPEN),
         "hard_gap_notes": dict(HARD_GAP_NOTES),
         "hard_gap_closure": dict(HARD_GAP_CLOSURE),
@@ -557,6 +566,9 @@ def hard_gaps_summary(_: str = Depends(require_token)) -> dict[str, object]:
         "honesty_milestone": WEBUI_HONESTY_MILESTONE,
         "honesty_milestone_note": WEBUI_HONESTY_MILESTONE_NOTE,
         "hard_gap_open": list(HARD_GAPS_OPEN),
+        "hard_gap_open_labels": {
+            k: HARD_GAP_LABELS[k] for k in HARD_GAPS_OPEN if k in HARD_GAP_LABELS
+        },
         "hard_gap_count": len(HARD_GAPS_OPEN),
         "honesty_paths_count": int(full.get("honesty_paths_count") or 0),
         "expect_plan_step_count": int(full.get("expect_plan_step_notes_count") or 0),
@@ -834,6 +846,9 @@ def hard_gap_closure(_: str = Depends(require_token)) -> dict[str, object]:
         "honesty_milestone": WEBUI_HONESTY_MILESTONE,
         "honesty_milestone_note": WEBUI_HONESTY_MILESTONE_NOTE,
         "hard_gap_open": list(HARD_GAPS_OPEN),
+        "hard_gap_open_labels": {
+            k: HARD_GAP_LABELS[k] for k in HARD_GAPS_OPEN if k in HARD_GAP_LABELS
+        },
         "hard_gap_count": len(HARD_GAPS_OPEN),
         "hard_gap_closure": dict(HARD_GAP_CLOSURE),
         "hard_gap_notes": dict(HARD_GAP_NOTES),
