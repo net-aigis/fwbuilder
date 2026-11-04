@@ -140,6 +140,18 @@ function hardGapsSummaryKey(firewallId: string) {
   return `fwbweb.hardGapsSummary.${firewallId}`;
 }
 
+function softFertigSurfaceStorageKey(firewallId: string) {
+  return `fwbweb.softFertigSurface.${firewallId}`;
+}
+
+function relatedRefusalsStorageKey(firewallId: string) {
+  return `fwbweb.relatedRefusals.${firewallId}`;
+}
+
+function honestyPathsCatalogKey(firewallId: string) {
+  return `fwbweb.honestyPaths.${firewallId}`;
+}
+
 export function FirewallExtras({
   sessionId,
   firewallId,
@@ -2564,6 +2576,11 @@ export function FirewallExtras({
                   const url = URL.createObjectURL(blob);
                   const a = document.createElement("a");
                   a.href = url;
+                  try {
+                    sessionStorage.setItem(softFertigSurfaceStorageKey(firewallId), text);
+                  } catch {
+                    /* ignore */
+                  }
                   a.download = `fwbweb-soft-fertig-surface-${firewallId || "fw"}.json`;
                   a.click();
                   URL.revokeObjectURL(url);
@@ -2633,6 +2650,11 @@ export function FirewallExtras({
                   const url = URL.createObjectURL(blob);
                   const a = document.createElement("a");
                   a.href = url;
+                  try {
+                    sessionStorage.setItem(relatedRefusalsStorageKey(firewallId), text);
+                  } catch {
+                    /* ignore */
+                  }
                   a.download = `fwbweb-related-refusals-${firewallId || "fw"}.json`;
                   a.click();
                   URL.revokeObjectURL(url);
@@ -2696,6 +2718,11 @@ export function FirewallExtras({
                   const url = URL.createObjectURL(blob);
                   const a = document.createElement("a");
                   a.href = url;
+                  try {
+                    sessionStorage.setItem(honestyPathsCatalogKey(firewallId), text);
+                  } catch {
+                    /* ignore */
+                  }
                   a.download = `fwbweb-honesty-paths-${firewallId || "fw"}.json`;
                   a.click();
                   URL.revokeObjectURL(url);
@@ -2994,11 +3021,14 @@ export function FirewallExtras({
               type="button"
               className="ghost"
               disabled={busy || (!hardGapsPayload && !hardGapsSummaryText)}
-              title="Clear sessionStorage hard-gaps snapshot and summary"
+              title="Clear sessionStorage hard-gaps snapshot, summary, surface, refusals, honesty paths"
               onClick={() => {
                 try {
                   sessionStorage.removeItem(hardGapsSnapshotKey(firewallId));
                   sessionStorage.removeItem(hardGapsSummaryKey(firewallId));
+                  sessionStorage.removeItem(softFertigSurfaceStorageKey(firewallId));
+                  sessionStorage.removeItem(relatedRefusalsStorageKey(firewallId));
+                  sessionStorage.removeItem(honestyPathsCatalogKey(firewallId));
                 } catch {
                   /* ignore */
                 }
