@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "552"
+WEBUI_SOFT_COMPLETE_PHASE = "560"
 
 HARD_GAPS_OPEN = (
     "full_qt_pixel_layout",
@@ -56,7 +56,8 @@ HARD_GAP_NOTES = {
     "expect_sshsession_runtime": (
         "Plan + walkthrough + configlet previews available; POST /run → 501; "
         "no SSHSession/expect execution. Canonical refused step ids listed as "
-        "expect_plan_step_ids on /hard-gaps."
+        "expect_plan_step_ids on /hard-gaps; GET …/steps/refusals previews "
+        "per-step 501 payloads."
     ),
     "password_keyboard_interactive_ssh": (
         "BatchMode only (batch_mode_only); allow_password_auth → 400; "

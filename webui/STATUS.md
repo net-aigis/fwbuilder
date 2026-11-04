@@ -693,15 +693,23 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Typecheck after refusals API | done | E2E phase550 |
 | e2e-all + hard gaps @ 552 | done | E2E phase551 |
 | Soft-complete STATUS through 552 | done | E2E phase552 |
+| Expect hard-gap note steps/refusals | done | E2E phase553 |
+| UI closure path + hard_gap_count | done | E2E phase554 |
+| Soft marker 560 | done | E2E phase555 |
+| STATUS 553–560 | done | E2E phase556 |
+| Typecheck after closure UI | done | E2E phase557 |
+| e2e-all lists 553–560 | done | E2E phase558 |
+| Hard gaps still 3 @ 560 | done | E2E phase559 |
+| Soft-complete STATUS through 560 | done | E2E phase560 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Soft-complete (feature/webui polish track)
 
 WebUI on `feature/webui` remains soft-complete for the polish track.
 
-### Hard-gap honesty/preview track — soft-fertig (phase256); preview slices through 552
+### Hard-gap honesty/preview track — soft-fertig (phase256); preview slices through 560
 
-`WEBUI_SOFT_COMPLETE_PHASE=552`; `/hard-gaps` (+ `/hard-gaps/closure`) sets `soft_fertig_honesty_track: true` + `hard_gap_notes` + `hard_gap_closure` + `layout_fidelity_path` + `layout_fidelity_signal_catalog` (expandable key list in UI) + `stack_switch_path` + `option_enable_path` + `expect_run_path` + `expect_steps_path` + `expect_steps_refusals_path` + `expect_plan_step_ids` + `ssh_auth_path` + `password_ssh_path` + `ssh_batch_mode_only` / `ssh_alternatives` / `ssh_refusal_paths`; UI can download `/hard-gaps` JSON and preview all expect step refusals; `GET /layout-fidelity` / option-schema + rule/iface schemas report heuristic `score_percent` (**not** pixel parity; `score_parts_count` documents weight count — more weights can lower % without feature loss; weights include `with_whats_this` / `with_tooltip` / `with_enabled` / `with_alignment` / `tab_position` / `pages_with_tooltip` plus `stacked_sections` / `with_visible` / `pages_with_buddy_labels` / `sections_with_flat|checkable` / `layout_tree_max_depth`; schemas expose compact summary with `signal_key_count` + `score_parts_count`); `visible=false` keeps `field-ui-hidden` grid holes; `GET /stack-switch` + `GET /option-enable` expose desktop maps; `option_enable` follows bonding→xmit and LOG/ULOG (ipt/ipcop/secuwall); iface Device type writes `options.type` and drives stack (no duplicate type field); Firewall/Interface/Rule UI show rich fidelity + refuse paths + soft-complete phase + enable-rules summary + canonical expect step ids/catalog + probe-step select (incl. unknown) + SSH refusal map; `GET /expect-install-plan/steps` lists refused ids; `GET …/steps/refusals` previews per-step 501 payloads; capabilities carry `canonical_step_ids`; unknown `step=` → `expect_installer_unknown_step`; SSH `batch_mode_only` + `alternatives` + `refusal_paths` (deploy 400 / password 501); read_only fields use `field-ui-readonly`.
+`WEBUI_SOFT_COMPLETE_PHASE=560`; `/hard-gaps` (+ `/hard-gaps/closure`) sets `soft_fertig_honesty_track: true` + `hard_gap_notes` + `hard_gap_closure` + `closure_path` (shown in UI with `hard_gap_count`) + `layout_fidelity_path` + `layout_fidelity_signal_catalog` (expandable key list in UI) + `stack_switch_path` + `option_enable_path` + `expect_run_path` + `expect_steps_path` + `expect_steps_refusals_path` + `expect_plan_step_ids` + `ssh_auth_path` + `password_ssh_path` + `ssh_batch_mode_only` / `ssh_alternatives` / `ssh_refusal_paths`; UI can download `/hard-gaps` JSON and preview all expect step refusals; `GET /layout-fidelity` / option-schema + rule/iface schemas report heuristic `score_percent` (**not** pixel parity; `score_parts_count` documents weight count — more weights can lower % without feature loss; weights include `with_whats_this` / `with_tooltip` / `with_enabled` / `with_alignment` / `tab_position` / `pages_with_tooltip` plus `stacked_sections` / `with_visible` / `pages_with_buddy_labels` / `sections_with_flat|checkable` / `layout_tree_max_depth`; schemas expose compact summary with `signal_key_count` + `score_parts_count`); `visible=false` keeps `field-ui-hidden` grid holes; `GET /stack-switch` + `GET /option-enable` expose desktop maps; `option_enable` follows bonding→xmit and LOG/ULOG (ipt/ipcop/secuwall); iface Device type writes `options.type` and drives stack (no duplicate type field); Firewall/Interface/Rule UI show rich fidelity + refuse paths + soft-complete phase + enable-rules summary + canonical expect step ids/catalog + probe-step select (incl. unknown) + SSH refusal map; `GET /expect-install-plan/steps` lists refused ids; `GET …/steps/refusals` previews per-step 501 payloads; capabilities carry `canonical_step_ids`; unknown `step=` → `expect_installer_unknown_step`; SSH `batch_mode_only` + `alternatives` + `refusal_paths` (deploy 400 / password 501); read_only fields use `field-ui-readonly`.
 
 - Deploy: manifest `# files:`, OS configlets, external PolicyInstallScript, copyFWB, use_scp, gzip transfer on compress (plan shows −%), capabilities API (+ expect_install_plan / walkthrough pointers), live gate + force_limited, expect stub + raw/expanded configlet preview + ordered expect plan (reg_user + safety_net_acl + download + sessionStorage) + dry walkthrough (preview_only + simulated_at timeline, sessionStorage + download); `POST …/run` (+ optional `step=`) → 501 / step_refused (still **no** expect/SSHSession runtime)
 - Options: .ui labels, free QLabel annotations (+ alignment), buddy_labels (external_label controls), enabled/visible/readOnly respect (+ option_enable follow for bonding→xmit_hash and LOG/ULOG on ipt/ipcop/secuwall), QRadio bool, QGroupBox sections (flat/checkable) + QStackedWidget pages (FirewallExtras + InterfaceOptions section chrome + empty pages + stack switcher + stack_switch hints: device-type → `options.type` + stack / use_ULOG follow + `/stack-switch` API with option_enable maps), tooltips + whatsThis + tab page toolTips, page-local QGridLayout + spacers (sizeHint) + column/row stretch + spacing/margins (CSS + page hint) + sizePolicy + min/max size + layout hints + layout_tree + dialog windowTitle/geometry/tab_position/sizeGrip (header WxH + tabs + CSS max-height) + shared `qtGridStyle` + layout-fidelity score on Firewall/Rule/Interface (still **not** full pixel Qt layout)
@@ -1275,6 +1283,14 @@ Still open (hard backlog — **not** soft-fertig):
 | Local E2E phase550 (typecheck) | done | `e2e-phase550.sh` **OK** |
 | Local E2E phase551 (e2e-all + hard gaps) | done | `e2e-phase551.sh` **OK** |
 | Local E2E phase552 (STATUS soft-complete) | done | `e2e-phase552.sh` **OK** |
+| Local E2E phase553 (expect note refusals) | done | `e2e-phase553.sh` **OK** |
+| Local E2E phase554 (closure path UI) | done | `e2e-phase554.sh` **OK** |
+| Local E2E phase555 (soft marker 560) | done | `e2e-phase555.sh` **OK** |
+| Local E2E phase556 (STATUS mentions) | done | `e2e-phase556.sh` **OK** |
+| Local E2E phase557 (typecheck) | done | `e2e-phase557.sh` **OK** |
+| Local E2E phase558 (e2e-all list) | done | `e2e-phase558.sh` **OK** |
+| Local E2E phase559 (hard gaps @ 560) | done | `e2e-phase559.sh` **OK** |
+| Local E2E phase560 (STATUS soft-complete) | done | `e2e-phase560.sh` **OK** |
 
 ## Local commands
 
@@ -1836,6 +1852,14 @@ bash webui/scripts/e2e-phase549.sh
 bash webui/scripts/e2e-phase550.sh
 bash webui/scripts/e2e-phase551.sh
 bash webui/scripts/e2e-phase552.sh
+bash webui/scripts/e2e-phase553.sh
+bash webui/scripts/e2e-phase554.sh
+bash webui/scripts/e2e-phase555.sh
+bash webui/scripts/e2e-phase556.sh
+bash webui/scripts/e2e-phase557.sh
+bash webui/scripts/e2e-phase558.sh
+bash webui/scripts/e2e-phase559.sh
+bash webui/scripts/e2e-phase560.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

@@ -189,6 +189,8 @@ export function FirewallExtras({
   const [hardGapsNote, setHardGapsNote] = useState<string | null>(null);
   const [hardGapNotes, setHardGapNotes] = useState<Record<string, string>>({});
   const [hardGapClosure, setHardGapClosure] = useState<Record<string, string>>({});
+  const [hardGapsClosurePath, setHardGapsClosurePath] = useState<string | null>(null);
+  const [hardGapCount, setHardGapCount] = useState<number | null>(null);
   const [layoutFidelityPath, setLayoutFidelityPath] = useState<string | null>(null);
   const [hardGapsPayload, setHardGapsPayload] = useState<Record<string, unknown> | null>(null);
   const [signalCatalogSummary, setSignalCatalogSummary] = useState<string | null>(null);
@@ -241,6 +243,12 @@ export function FirewallExtras({
       setHardGapsNote(gaps?.note || null);
       setHardGapNotes(gaps?.hard_gap_notes || {});
       setHardGapClosure(gaps?.hard_gap_closure || {});
+      setHardGapsClosurePath(gaps?.closure_path || "/api/v1/hard-gaps/closure");
+      setHardGapCount(
+        typeof gaps?.hard_gap_count === "number"
+          ? gaps.hard_gap_count
+          : gaps?.hard_gap_open?.length ?? null,
+      );
       setLayoutFidelityPath(gaps?.layout_fidelity_path || "/api/v1/layout-fidelity");
       if (gaps) setHardGapsPayload(gaps as unknown as Record<string, unknown>);
       const cat = gaps?.layout_fidelity_signal_catalog;
@@ -1727,11 +1735,19 @@ export function FirewallExtras({
       {hardGaps.length ? (
         <div className="pad-tight">
           <p className="muted" title="hard_gap_open from /hard-gaps">
-            Hard gaps still open: <code>{hardGaps.join(", ")}</code>
+            Hard gaps still open
+            {hardGapCount != null ? ` (${hardGapCount})` : ""}:{" "}
+            <code>{hardGaps.join(", ")}</code>
             {softCompletePhase ? (
               <>
                 {" "}
-                · soft-complete phase<code>{softCompletePhase}</code>
+                · soft-complete phase <code>{softCompletePhase}</code>
+              </>
+            ) : null}
+            {hardGapsClosurePath ? (
+              <>
+                {" "}
+                · closure <code>{hardGapsClosurePath}</code>
               </>
             ) : null}
           </p>
