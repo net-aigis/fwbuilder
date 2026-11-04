@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "464"
+WEBUI_SOFT_COMPLETE_PHASE = "480"
 
 HARD_GAPS_OPEN = (
     "full_qt_pixel_layout",
@@ -53,7 +53,8 @@ HARD_GAP_NOTES = {
     ),
     "expect_sshsession_runtime": (
         "Plan + walkthrough + configlet previews available; POST /run → 501; "
-        "no SSHSession/expect execution."
+        "no SSHSession/expect execution. Canonical refused step ids listed as "
+        "expect_plan_step_ids on /hard-gaps."
     ),
     "password_keyboard_interactive_ssh": (
         "BatchMode only; allow_password_auth → 400; POST /ssh-auth/password → 501."
@@ -110,6 +111,8 @@ def res_status(_: str = Depends(require_token)) -> dict[str, object]:
 @app.get("/api/v1/hard-gaps")
 def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
     """Explicit list of remaining hard-gap items (honesty track)."""
+    from .expect_installer import EXPECT_PLAN_STEP_IDS
+
     return {
         "soft_complete_phase": WEBUI_SOFT_COMPLETE_PHASE,
         "soft_fertig_honesty_track": True,
@@ -122,6 +125,8 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
         "stack_switch_path": "/api/v1/stack-switch",
         "option_enable_path": "/api/v1/option-enable",
         "expect_run_path": "/api/v1/expect-install-plan/run",
+        "expect_steps_path": "/api/v1/expect-install-plan/steps",
+        "expect_plan_step_ids": list(EXPECT_PLAN_STEP_IDS),
         "password_ssh_path": "/api/v1/ssh-auth/password",
         "note": (
             "Honesty/preview track is soft-complete (soft_fertig); these items remain "
@@ -130,6 +135,8 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
             "(includes stacked_sections counts). "
             "GET /stack-switch and /option-enable expose desktop maps for preview/follow. "
             "POST expect-install-plan/run and ssh-auth/password stay 501. "
+            "expect_plan_step_ids / GET expect-install-plan/steps list canonical plan "
+            "step ids (all refused; unknown step → expect_installer_unknown_step). "
             "hard_gap_closure documents what would close each gap."
         ),
     }

@@ -11,6 +11,18 @@ from typing import Any
 
 from .configlets import list_installer_configlets, read_installer_configlet_file
 
+# Canonical expect-plan step ids (all refused by POST …/run; no SSHSession runtime).
+EXPECT_PLAN_STEP_IDS = (
+    "ssh_open",
+    "pre_config",
+    "reg_user",
+    "enable_mode",
+    "safety_net_acl",
+    "push_config",
+    "post_config",
+    "write_mem",
+)
+
 # High-level steps the desktop expect path performs (no reproduction of expect scripts).
 _BASE_STEPS = (
     "open SSH session (password/keyboard-interactive or key)",
@@ -77,17 +89,28 @@ def expect_installer_status(host_os: str) -> dict[str, Any]:
 def refuse_expect_install(host_os: str, step: str | None = None) -> dict[str, Any]:
     """Return a structured refusal payload for live expect installs."""
     status = expect_installer_status(host_os)
+    known = list(EXPECT_PLAN_STEP_IDS)
     out: dict[str, Any] = {
         "ok": False,
         "error": "expect_installer_not_implemented",
+        "known_step_ids": known,
         **status,
     }
     if step:
         out["step"] = step
         out["step_refused"] = True
-        out["note"] = (
-            f"Step '{step}' was not executed. WebUI has no expect/SSHSession runtime."
-        )
+        unknown = step not in known
+        out["unknown_step"] = unknown
+        if unknown:
+            out["error"] = "expect_installer_unknown_step"
+            out["note"] = (
+                f"Step '{step}' is not a canonical expect plan id and was not executed. "
+                f"Known ids: {', '.join(known)}. WebUI has no expect/SSHSession runtime."
+            )
+        else:
+            out["note"] = (
+                f"Step '{step}' was not executed. WebUI has no expect/SSHSession runtime."
+            )
     return out
 
 
@@ -210,10 +233,12 @@ def expect_install_plan(
         "host_os": host_os,
         "steps": steps,
         "step_count": len(steps),
+        "canonical_step_ids": list(EXPECT_PLAN_STEP_IDS),
         **{k: status[k] for k in status if k not in {"desktop_steps"}},
         "note": (
             "Expect install plan is a read-only preview of desktop steps. "
-            "WebUI does not open an SSHSession or run expect."
+            "WebUI does not open an SSHSession or run expect. "
+            "canonical_step_ids lists every id POST /run may refuse (all → 501)."
         ),
     }
 
@@ -256,6 +281,7 @@ def expect_install_walkthrough(
         "step_count": len(steps_out),
         "all_preview_only": True,
         "timeline_start": started,
+        "canonical_step_ids": list(EXPECT_PLAN_STEP_IDS),
         "note": (
             "Walkthrough lists desktop expect steps with preview_only status. "
             "No SSH session is opened and no step is run. "
@@ -265,4 +291,21 @@ def expect_install_walkthrough(
         "has_safety_net_acl": plan.get("has_safety_net_acl"),
         "needed": plan.get("needed"),
         "interactive_installer": plan.get("interactive_installer"),
+    }
+
+
+def expect_plan_step_catalog() -> dict[str, Any]:
+    """Canonical expect plan step ids (all refused; no SSHSession runtime)."""
+    return {
+        "ok": True,
+        "executable": False,
+        "error": "expect_installer_not_implemented",
+        "canonical_step_ids": list(EXPECT_PLAN_STEP_IDS),
+        "step_count": len(EXPECT_PLAN_STEP_IDS),
+        "run_path": "/api/v1/expect-install-plan/run",
+        "run_status": 501,
+        "note": (
+            "Catalog of canonical expect plan step ids. "
+            "POST /expect-install-plan/run refuses every id (and unknown ones) with 501."
+        ),
     }

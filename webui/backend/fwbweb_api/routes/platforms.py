@@ -16,6 +16,7 @@ from ..expect_installer import (
     expect_install_plan,
     expect_install_walkthrough,
     expect_installer_status,
+    expect_plan_step_catalog,
 )
 from ..platforms import (
     get_os,
@@ -112,11 +113,13 @@ def get_installer_capabilities(
             "executable": False,
             "path": "/api/v1/expect-install-plan",
             "walkthrough_path": "/api/v1/expect-install-plan/walkthrough",
+            "steps_path": "/api/v1/expect-install-plan/steps",
             "run_path": "/api/v1/expect-install-plan/run",
             "run_status": 501,
             "note": (
                 "GET returns ordered preview; GET walkthrough marks every step "
-                "preview_only; POST /run always refuses with 501."
+                "preview_only; GET /steps lists canonical ids; "
+                "POST /run always refuses with 501."
             ),
         },
         "ssh_auth": {
@@ -161,6 +164,14 @@ def get_expect_install_walkthrough(
 ) -> dict[str, Any]:
     """Dry walkthrough of expect steps (all preview_only; nothing executed)."""
     return expect_install_walkthrough(host_os, fwdir=fwdir, fwscript=fwscript)
+
+
+@router.get("/expect-install-plan/steps")
+def get_expect_install_plan_steps(
+    _: str = Depends(require_token),
+) -> dict[str, Any]:
+    """Canonical expect plan step ids (all refused by POST /run)."""
+    return expect_plan_step_catalog()
 
 
 @router.post("/expect-install-plan/run")

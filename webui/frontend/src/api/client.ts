@@ -910,9 +910,24 @@ export function fetchHardGaps() {
     stack_switch_path?: string;
     option_enable_path?: string;
     expect_run_path?: string;
+    expect_steps_path?: string;
+    expect_plan_step_ids?: string[];
     password_ssh_path?: string;
     note?: string;
   }>("/api/v1/hard-gaps");
+}
+
+export function fetchExpectPlanSteps() {
+  return api<{
+    ok: boolean;
+    executable: boolean;
+    error?: string;
+    canonical_step_ids: string[];
+    step_count: number;
+    run_path?: string;
+    run_status?: number;
+    note?: string;
+  }>("/api/v1/expect-install-plan/steps");
 }
 
 export function fetchOptionEnable(platform = "", hostOs = "") {

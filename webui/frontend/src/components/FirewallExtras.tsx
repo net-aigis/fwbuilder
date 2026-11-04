@@ -191,6 +191,8 @@ export function FirewallExtras({
   const [stackSwitchPath, setStackSwitchPath] = useState<string | null>(null);
   const [optionEnablePath, setOptionEnablePath] = useState<string | null>(null);
   const [expectRunPath, setExpectRunPath] = useState<string | null>(null);
+  const [expectStepsPath, setExpectStepsPath] = useState<string | null>(null);
+  const [expectPlanStepIds, setExpectPlanStepIds] = useState<string[]>([]);
   const [passwordSshPath, setPasswordSshPath] = useState<string | null>(null);
   const [softCompletePhase, setSoftCompletePhase] = useState<string | null>(null);
   const [stackSwitchSummary, setStackSwitchSummary] = useState<string | null>(null);
@@ -227,6 +229,8 @@ export function FirewallExtras({
       setStackSwitchPath(gaps?.stack_switch_path || "/api/v1/stack-switch");
       setOptionEnablePath(gaps?.option_enable_path || "/api/v1/option-enable");
       setExpectRunPath(gaps?.expect_run_path || "/api/v1/expect-install-plan/run");
+      setExpectStepsPath(gaps?.expect_steps_path || "/api/v1/expect-install-plan/steps");
+      setExpectPlanStepIds(gaps?.expect_plan_step_ids || []);
       setPasswordSshPath(gaps?.password_ssh_path || "/api/v1/ssh-auth/password");
       setSoftCompletePhase(gaps?.soft_complete_phase || resSt?.soft_complete_phase || null);
       try {
@@ -1629,6 +1633,16 @@ export function FirewallExtras({
             </p>
           ) : null}
           {stackSwitchSummary ? <p className="muted">{stackSwitchSummary}</p> : null}
+          {expectStepsPath ? (
+            <p className="muted" title="GET catalog of canonical expect plan step ids">
+              Expect steps catalog: <code>{expectStepsPath}</code>
+            </p>
+          ) : null}
+          {expectPlanStepIds.length ? (
+            <p className="muted" title="Canonical expect plan step ids (all refused by POST /run)">
+              Expect steps (all 501): <code>{expectPlanStepIds.join(", ")}</code>
+            </p>
+          ) : null}
         </div>
       ) : null}
       <p className="muted pad">
