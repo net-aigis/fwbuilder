@@ -927,6 +927,7 @@ export function fetchHardGaps() {
   return api<{
     soft_complete_phase: string;
     soft_fertig_honesty_track?: boolean;
+    soft_fertig_honesty_track_note?: string;
     hard_gap_open: string[];
     hard_gap_open_labels?: Record<string, string>;
     hard_gap_closure_titles?: Record<string, string>;

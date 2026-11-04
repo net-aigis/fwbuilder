@@ -35,7 +35,11 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "1816"
+WEBUI_SOFT_COMPLETE_PHASE = "1832"
+SOFT_FERTIG_HONESTY_TRACK_NOTE = (
+    "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
+    "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
+)
 # Honesty/preview track milestone (last thematic checkpoint; soft marker may be higher).
 # 600: refusals/closure; 650: health/summary/paths + fidelity sample;
 # 700: expect step_notes + SSH alternative/refusal notes;
@@ -100,11 +104,12 @@ WEBUI_SOFT_COMPLETE_PHASE = "1816"
 # 3600: soft_fertig_catalog_summary compact counts on health + honesty endpoints;
 # 3650: UI expandable catalog summary detail + download/copy;
 # 3700: catalog_summary listed in honesty export + bundle sections;
-# 3750: soft_fertig_honesty_surface_version bumped to 1.1 (catalog_summary).
-WEBUI_HONESTY_MILESTONE = 3750
+# 3750: soft_fertig_honesty_surface_version bumped to 1.1 (catalog_summary);
+# 3800: soft_fertig_honesty_track_note clarifies soft track vs open hard gaps.
+WEBUI_HONESTY_MILESTONE = 3800
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 3750: soft_fertig_honesty_surface_version "
-    "1.1 adds catalog_summary on /health and honesty catalogs — hard gaps remain open."
+    "Honesty surface checkpoint 3800: soft_fertig_honesty_track_note "
+    "clarifies soft-fertig vs open hard gaps — hard gaps remain open."
 )
 
 HARD_GAPS_OPEN = (
@@ -181,6 +186,7 @@ HONESTY_PATH_NOTES = {
 SOFT_FERTIG_SURFACE_KEYS = (
     "soft_complete_phase",
     "soft_fertig_honesty_track",
+    "soft_fertig_honesty_track_note",
     "honesty_milestone",
     "honesty_milestone_note",
     "hard_gap_open",
@@ -227,6 +233,7 @@ SOFT_FERTIG_SURFACE_KEYS = (
 SOFT_FERTIG_SURFACE_KEY_TITLES = {
     "soft_complete_phase": "Soft-complete phase marker",
     "soft_fertig_honesty_track": "Soft-fertig honesty track flag",
+    "soft_fertig_honesty_track_note": "Soft-fertig vs hard-gap clarification note",
     "honesty_milestone": "Honesty surface milestone number",
     "honesty_milestone_note": "Honesty milestone checkpoint note",
     "hard_gap_open": "Open hard gap ids",
@@ -274,6 +281,7 @@ SOFT_FERTIG_SURFACE_KEY_TITLES = {
 SOFT_FERTIG_SURFACE_NOTES = {
     "soft_complete_phase": "Highest soft-fertig E2E phase number completed.",
     "soft_fertig_honesty_track": "True while honesty/preview track is soft-complete.",
+    "soft_fertig_honesty_track_note": "States soft-fertig catalogs are done; hard gaps stay open.",
     "honesty_milestone": "Checkpoint number for honesty surface growth.",
     "honesty_milestone_note": "Human checkpoint text for the current milestone.",
     "hard_gap_open": "Ids of the three remaining hard gaps.",
@@ -558,6 +566,7 @@ def health() -> dict[str, object]:
         "status": "ok",
         "soft_complete_phase": WEBUI_SOFT_COMPLETE_PHASE,
         "soft_fertig_honesty_track": True,
+        "soft_fertig_honesty_track_note": SOFT_FERTIG_HONESTY_TRACK_NOTE,
         "honesty_milestone": WEBUI_HONESTY_MILESTONE,
         "honesty_milestone_note": WEBUI_HONESTY_MILESTONE_NOTE,
         "hard_gap_count": len(HARD_GAPS_OPEN),
@@ -587,6 +596,7 @@ def res_status(_: str = Depends(require_token)) -> dict[str, object]:
         "configlet_os": dirs,
         "soft_complete_phase": WEBUI_SOFT_COMPLETE_PHASE,
         "soft_fertig_honesty_track": True,
+        "soft_fertig_honesty_track_note": SOFT_FERTIG_HONESTY_TRACK_NOTE,
         "honesty_milestone": WEBUI_HONESTY_MILESTONE,
         "honesty_milestone_note": WEBUI_HONESTY_MILESTONE_NOTE,
         "hard_gap_open": list(HARD_GAPS_OPEN),
@@ -628,6 +638,7 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
     out: dict[str, object] = {
         "soft_complete_phase": WEBUI_SOFT_COMPLETE_PHASE,
         "soft_fertig_honesty_track": True,
+        "soft_fertig_honesty_track_note": SOFT_FERTIG_HONESTY_TRACK_NOTE,
         "hard_gap_open": list(HARD_GAPS_OPEN),
         "hard_gap_open_labels": {
             k: HARD_GAP_LABELS[k] for k in HARD_GAPS_OPEN if k in HARD_GAP_LABELS
@@ -1048,6 +1059,7 @@ def hard_gaps_summary(_: str = Depends(require_token)) -> dict[str, object]:
     out: dict[str, object] = {
         "soft_complete_phase": WEBUI_SOFT_COMPLETE_PHASE,
         "soft_fertig_honesty_track": True,
+        "soft_fertig_honesty_track_note": SOFT_FERTIG_HONESTY_TRACK_NOTE,
         "honesty_milestone": WEBUI_HONESTY_MILESTONE,
         "honesty_milestone_note": WEBUI_HONESTY_MILESTONE_NOTE,
         "hard_gap_open": list(HARD_GAPS_OPEN),
@@ -1416,6 +1428,7 @@ def hard_gap_closure(_: str = Depends(require_token)) -> dict[str, object]:
     return {
         "soft_complete_phase": WEBUI_SOFT_COMPLETE_PHASE,
         "soft_fertig_honesty_track": True,
+        "soft_fertig_honesty_track_note": SOFT_FERTIG_HONESTY_TRACK_NOTE,
         "honesty_milestone": WEBUI_HONESTY_MILESTONE,
         "honesty_milestone_note": WEBUI_HONESTY_MILESTONE_NOTE,
         "hard_gap_open": list(HARD_GAPS_OPEN),
