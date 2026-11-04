@@ -365,6 +365,7 @@ export function FirewallExtras({
   const [sessionStorageClearKeyCount, setSessionStorageClearKeyCount] = useState<number | null>(null);
   const [sessionStorageClearDetail, setSessionStorageClearDetail] = useState<string | null>(null);
   const [honestySurfaceVersion, setHonestySurfaceVersion] = useState<string | null>(null);
+  const [catalogSummaryDetail, setCatalogSummaryDetail] = useState<string | null>(null);
   const [honestyMilestoneNote, setHonestyMilestoneNote] = useState<string | null>(null);
   const [softFertigHonestyTrack, setSoftFertigHonestyTrack] = useState<boolean | null>(null);
   const [honestyPathsSummary, setHonestyPathsSummary] = useState<string | null>(null);
@@ -750,6 +751,20 @@ export function FirewallExtras({
           ? gaps.soft_fertig_honesty_surface_version
           : null,
       );
+      {
+        const summary =
+          gaps?.soft_fertig_catalog_summary &&
+          typeof gaps.soft_fertig_catalog_summary === "object"
+            ? (gaps.soft_fertig_catalog_summary as Record<string, unknown>)
+            : null;
+        setCatalogSummaryDetail(
+          summary && Object.keys(summary).length
+            ? Object.entries(summary)
+                .map(([k, v]) => `${k}: ${String(v)}`)
+                .join("\n")
+            : null,
+        );
+      }
         setSoftFertigSurfaceDetail(
           keys && keys.length
             ? keys
@@ -2607,6 +2622,11 @@ export function FirewallExtras({
                 · surface schema <code>{honestySurfaceVersion}</code>
               </span>
             ) : null}
+            {catalogSummaryDetail ? (
+              <span className="muted">
+                · catalog summary
+              </span>
+            ) : null}
             {honestyMilestone != null ? (
               <>
                 {" "}
@@ -2854,6 +2874,14 @@ export function FirewallExtras({
               </summary>
               <pre className="deploy-log configlet-preview" tabIndex={0}>
                 {sessionStorageClearDetail}
+              </pre>
+            </details>
+          ) : null}
+          {catalogSummaryDetail ? (
+            <details className="muted">
+              <summary>Soft-fertig catalog summary</summary>
+              <pre className="deploy-log configlet-preview" tabIndex={0}>
+                {catalogSummaryDetail}
               </pre>
             </details>
           ) : null}
@@ -3451,6 +3479,62 @@ export function FirewallExtras({
                 }}
               >
                 Copy surface version
+              </button>
+            ) : null}
+            {hardGapsPayload ? (
+              <button
+                type="button"
+                className="ghost"
+                disabled={busy}
+                title="Download soft_fertig_catalog_summary from /hard-gaps"
+                onClick={() => {
+                  const catalog: Record<string, unknown> = {
+                    soft_fertig_catalog_summary:
+                      hardGapsPayload.soft_fertig_catalog_summary,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  const text = JSON.stringify(catalog, null, 2);
+                  const blob = new Blob([text + "\n"], {
+                    type: "application/json;charset=utf-8",
+                  });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `fwbweb-catalog-summary-${firewallId || "fw"}.json`;
+                  a.click();
+                  URL.revokeObjectURL(url);
+                  onStatus?.("Downloaded catalog summary");
+                }}
+              >
+                Download catalog summary
+              </button>
+            ) : null}
+            {hardGapsPayload ? (
+              <button
+                type="button"
+                className="ghost"
+                disabled={busy}
+                title="Copy soft_fertig_catalog_summary to clipboard"
+                onClick={() => {
+                  void (async () => {
+                    const catalog: Record<string, unknown> = {
+                      soft_fertig_catalog_summary:
+                        hardGapsPayload.soft_fertig_catalog_summary,
+                      soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                      honesty_milestone: hardGapsPayload.honesty_milestone,
+                    };
+                    const text = JSON.stringify(catalog, null, 2) + "\n";
+                    try {
+                      await navigator.clipboard.writeText(text);
+                      onStatus?.("Copied catalog summary");
+                    } catch (e) {
+                      onError?.(e instanceof Error ? e.message : String(e));
+                    }
+                  })();
+                }}
+              >
+                Copy catalog summary
               </button>
             ) : null}
             <button
