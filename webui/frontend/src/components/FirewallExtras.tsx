@@ -46,6 +46,19 @@ type Props = {
   onError?: (msg: string | null) => void;
 };
 
+/** UI-facing sample fidelity line; full API payload stays on /hard-gaps. */
+const SAMPLE_FIDELITY_UI_MAX = 220;
+
+function formatSampleFidelityLine(full: string): { display: string; title: string } {
+  if (full.length <= SAMPLE_FIDELITY_UI_MAX) {
+    return { display: full, title: full };
+  }
+  return {
+    display: `${full.slice(0, SAMPLE_FIDELITY_UI_MAX - 1)}…`,
+    title: full,
+  };
+}
+
 const FALLBACK_FEATURED = [
   "admUser",
   "altAddress",
@@ -237,6 +250,9 @@ export function FirewallExtras({
   const [hardGapsSummaryPath, setHardGapsSummaryPath] = useState<string | null>(null);
   const [hardGapsSummaryText, setHardGapsSummaryText] = useState<string | null>(null);
   const [hardGapsSummaryFidelity, setHardGapsSummaryFidelity] = useState<string | null>(null);
+  const [hardGapsSummaryFidelityTitle, setHardGapsSummaryFidelityTitle] = useState<
+    string | null
+  >(null);
   const [stackSwitchSummary, setStackSwitchSummary] = useState<string | null>(null);
   const [layoutFidelity, setLayoutFidelity] = useState<string | null>(null);
   const [resHint, setResHint] = useState<string | null>(null);
@@ -477,11 +493,15 @@ export function FirewallExtras({
         ]
           .filter(Boolean)
           .join(", ");
-        setHardGapsSummaryFidelity(
-          `Sample fidelity ${plat}/${hos}: ${gaps.layout_fidelity_sample_score_percent}%${parts}` +
+        {
+          const full =
+            `Sample fidelity ${plat}/${hos}: ${gaps.layout_fidelity_sample_score_percent}%${parts}` +
             (spacerBits ? `; ${spacerBits}` : "") +
-            " (not pixel)",
-        );
+            " (not pixel)";
+          const fmt = formatSampleFidelityLine(full);
+          setHardGapsSummaryFidelity(fmt.display);
+          setHardGapsSummaryFidelityTitle(fmt.title);
+        }
       }
       try {
         const fid = await fetchLayoutFidelity(plat, hostOs || "");
@@ -2339,13 +2359,18 @@ export function FirewallExtras({
                       ]
                         .filter(Boolean)
                         .join(", ");
-                      setHardGapsSummaryFidelity(
-                        `Sample fidelity ${plat}/${hos}: ${s.layout_fidelity_sample_score_percent}%${parts}` +
+                      {
+                        const full =
+                          `Sample fidelity ${plat}/${hos}: ${s.layout_fidelity_sample_score_percent}%${parts}` +
                           (spacerBits ? `; ${spacerBits}` : "") +
-                          " (not pixel)",
-                      );
+                          " (not pixel)";
+                        const fmt = formatSampleFidelityLine(full);
+                        setHardGapsSummaryFidelity(fmt.display);
+                        setHardGapsSummaryFidelityTitle(fmt.title);
+                      }
                     } else {
                       setHardGapsSummaryFidelity(null);
+                      setHardGapsSummaryFidelityTitle(null);
                     }
                     try {
                       sessionStorage.setItem(hardGapsSummaryKey(firewallId), text);
@@ -2403,6 +2428,7 @@ export function FirewallExtras({
                 }
                 setHardGapsSummaryText(null);
                 setHardGapsSummaryFidelity(null);
+                setHardGapsSummaryFidelityTitle(null);
                 onStatus?.("Cleared hard-gaps snapshot");
               }}
             >
@@ -2484,7 +2510,13 @@ export function FirewallExtras({
             </button>
           </div>
           {hardGapsSummaryFidelity ? (
-            <p className="muted" title="layout_fidelity_sample_* from /hard-gaps/summary">
+            <p
+              className="muted"
+              title={
+                hardGapsSummaryFidelityTitle ||
+                "layout_fidelity_sample_* from /hard-gaps/summary"
+              }
+            >
               {hardGapsSummaryFidelity}
             </p>
           ) : null}

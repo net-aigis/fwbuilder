@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "920"
+WEBUI_SOFT_COMPLETE_PHASE = "928"
 # Honesty/preview track milestone (last thematic checkpoint; soft marker may be higher).
 # 600: refusals/closure; 650: health/summary/paths + fidelity sample;
 # 700: expect step_notes + SSH alternative/refusal notes;
@@ -75,7 +75,8 @@ HARD_GAP_NOTES = {
         "sections_with_flat/checkable + annotations + "
         "pages_with_column_stretch/spacing/layout_tree + chrome geometry/size_grip + "
         "with_grid/label/tooltip field samples + pages/sections/stack_names counts + "
-        "chrome window_title/tab_position samples; "
+        "chrome window_title/tab_position samples; UI truncates long sample "
+        "fidelity lines (title keeps full text); "
         "UI applies data-size-type Expanding/Fixed/Maximum/Minimum/Preferred via "
         "qtSpacerStyle/CSS and field size-h/v Expanding/Minimum/Preferred/Fixed classes "
         "(still not desktop-equivalent geometry); visible=false keeps field-ui-hidden "
