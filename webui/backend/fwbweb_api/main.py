@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "1184"
+WEBUI_SOFT_COMPLETE_PHASE = "1192"
 # Honesty/preview track milestone (last thematic checkpoint; soft marker may be higher).
 # 600: refusals/closure; 650: health/summary/paths + fidelity sample;
 # 700: expect step_notes + SSH alternative/refusal notes;
@@ -538,7 +538,9 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
         "ssh_batch_mode_only": bool(ssh.get("batch_mode_only")),
         "ssh_alternatives": list(ssh.get("alternatives") or []),
         "ssh_alternative_notes": dict(ssh.get("alternative_notes") or {}),
+        "ssh_alternative_titles": dict(ssh.get("alternative_titles") or {}),
         "ssh_refusal_paths": dict(ssh.get("refusal_paths") or {}),
+        "ssh_refusal_path_titles": dict(ssh.get("refusal_path_titles") or {}),
         "ssh_refusal_path_notes": dict(ssh.get("refusal_path_notes") or {}),
         "honesty_milestone": WEBUI_HONESTY_MILESTONE,
         "honesty_milestone_note": WEBUI_HONESTY_MILESTONE_NOTE,
@@ -597,6 +599,8 @@ def hard_gaps_summary(_: str = Depends(require_token)) -> dict[str, object]:
         "honesty_paths_count": int(full.get("honesty_paths_count") or 0),
         "expect_plan_step_count": int(full.get("expect_plan_step_notes_count") or 0),
         "expect_plan_step_titles": dict(full.get("expect_plan_step_titles") or {}),
+        "ssh_alternative_titles": dict(full.get("ssh_alternative_titles") or {}),
+        "ssh_refusal_path_titles": dict(full.get("ssh_refusal_path_titles") or {}),
         "layout_fidelity_sample_platform": "iptables",
         "layout_fidelity_sample_host_os": "linux24",
         "layout_fidelity_sample_score_percent": sample_score,

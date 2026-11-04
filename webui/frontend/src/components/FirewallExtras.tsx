@@ -246,6 +246,7 @@ export function FirewallExtras({
   const [hardGapsOpenLabels, setHardGapsOpenLabels] = useState<Record<string, string> | null>(null);
   const [hardGapsClosureTitles, setHardGapsClosureTitles] = useState<Record<string, string> | null>(null);
   const [expectPlanStepTitles, setExpectPlanStepTitles] = useState<Record<string, string> | null>(null);
+  const [sshAlternativeTitles, setSshAlternativeTitles] = useState<Record<string, string> | null>(null);
   const [honestyMilestoneNote, setHonestyMilestoneNote] = useState<string | null>(null);
   const [softFertigHonestyTrack, setSoftFertigHonestyTrack] = useState<boolean | null>(null);
   const [honestyPathsSummary, setHonestyPathsSummary] = useState<string | null>(null);
@@ -379,6 +380,11 @@ export function FirewallExtras({
       setExpectPlanStepTitles(
         gaps?.expect_plan_step_titles && typeof gaps.expect_plan_step_titles === "object"
           ? (gaps.expect_plan_step_titles as Record<string, string>)
+          : null,
+      );
+      setSshAlternativeTitles(
+        gaps?.ssh_alternative_titles && typeof gaps.ssh_alternative_titles === "object"
+          ? (gaps.ssh_alternative_titles as Record<string, string>)
           : null,
       );
       setHonestyMilestoneNote(gaps?.honesty_milestone_note || null);
@@ -2097,6 +2103,12 @@ export function FirewallExtras({
               <span className="muted" title={Object.entries(expectPlanStepTitles).map(([k,v]) => `${k}: ${v}`).join(" · ")}>
                 · expect step titles{" "}
                 <code>{Object.keys(expectPlanStepTitles).length}</code>
+              </span>
+            ) : null}
+            {sshAlternativeTitles && Object.keys(sshAlternativeTitles).length > 0 ? (
+              <span className="muted" title={Object.entries(sshAlternativeTitles).map(([k,v]) => `${k}: ${v}`).join(" · ")}>
+                · ssh alt titles{" "}
+                <code>{Object.keys(sshAlternativeTitles).length}</code>
               </span>
             ) : null}
             {honestyMilestone != null ? (

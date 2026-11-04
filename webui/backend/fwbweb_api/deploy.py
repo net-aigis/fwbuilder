@@ -185,6 +185,16 @@ SSH_REFUSAL_PATH_NOTES: dict[str, str] = {
     ),
 }
 
+SSH_ALTERNATIVE_TITLES: dict[str, str] = {
+    "identity_file": "SSH identity file (BatchMode)",
+    "ssh_agent": "SSH agent keys (BatchMode)",
+}
+
+SSH_REFUSAL_PATH_TITLES: dict[str, str] = {
+    "deploy_allow_password_auth": "Deploy allow_password_auth → 400",
+    "ssh_auth_password": "POST /ssh-auth/password → 501",
+}
+
 
 def ssh_auth_capabilities() -> dict[str, Any]:
     """Honest SSH auth capability summary for WebUI deploy."""
@@ -203,8 +213,10 @@ def ssh_auth_capabilities() -> dict[str, Any]:
         "not_implemented": ["password", "keyboard_interactive"],
         "alternatives": ["identity_file", "ssh_agent"],
         "alternative_notes": dict(SSH_ALTERNATIVE_NOTES),
+        "alternative_titles": dict(SSH_ALTERNATIVE_TITLES),
         "refusal_paths": refusal_paths,
         "refusal_path_notes": dict(SSH_REFUSAL_PATH_NOTES),
+        "refusal_path_titles": dict(SSH_REFUSAL_PATH_TITLES),
         "note": SSH_AUTH_NOTE,
     }
 
