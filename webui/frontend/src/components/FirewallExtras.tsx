@@ -214,6 +214,9 @@ function buildHonestyBundle(payload: Record<string, unknown>) {
       soft_fertig_honesty_surface_version_note:
         payload.soft_fertig_honesty_surface_version_note,
     },
+    catalog_summary: {
+      soft_fertig_catalog_summary: payload.soft_fertig_catalog_summary,
+    },
     honesty_exports: {
       soft_fertig_honesty_export_keys: payload.soft_fertig_honesty_export_keys,
       soft_fertig_honesty_export_key_count:

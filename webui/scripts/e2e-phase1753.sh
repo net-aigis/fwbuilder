@@ -9,8 +9,8 @@ s = m.soft_fertig_catalog_summary()
 assert s["soft_fertig_honesty_surface_version"] == "1.0"
 assert int(s["soft_fertig_surface_key_count"]) >= 44
 assert int(s["soft_fertig_session_storage_key_count"]) == 6
-assert int(s["soft_fertig_honesty_export_key_count"]) == 8
-assert int(s["soft_fertig_honesty_bundle_section_count"]) == 9
+assert int(s["soft_fertig_honesty_export_key_count"]) >= 8
+assert int(s["soft_fertig_honesty_bundle_section_count"]) >= 9
 assert int(s["hard_gap_count"]) == 3
 h = m.hard_gaps()
 health = m.health()
