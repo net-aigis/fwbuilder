@@ -23,6 +23,18 @@ EXPECT_PLAN_STEP_IDS = (
     "write_mem",
 )
 
+# Short honesty descriptions for each refused plan step (no runtime).
+EXPECT_PLAN_STEP_NOTES: dict[str, str] = {
+    "ssh_open": "Open SSHSession (password/keyboard-interactive or key) — refused in WebUI.",
+    "pre_config": "Run installer_commands_pre_config when present — refused in WebUI.",
+    "reg_user": "Run installer_commands_reg_user when present — refused in WebUI.",
+    "enable_mode": "Enter enable/configure mode as required by platform — refused in WebUI.",
+    "safety_net_acl": "Apply safety_net_acl when present — refused in WebUI.",
+    "push_config": "Push or paste generated config (scp or terminal) — refused in WebUI.",
+    "post_config": "Run installer_commands_post_config / activation — refused in WebUI.",
+    "write_mem": "Optional write mem / commit — refused in WebUI.",
+}
+
 # High-level steps the desktop expect path performs (no reproduction of expect scripts).
 _BASE_STEPS = (
     "open SSH session (password/keyboard-interactive or key)",
@@ -301,13 +313,15 @@ def expect_plan_step_catalog() -> dict[str, Any]:
         "executable": False,
         "error": "expect_installer_not_implemented",
         "canonical_step_ids": list(EXPECT_PLAN_STEP_IDS),
+        "step_notes": dict(EXPECT_PLAN_STEP_NOTES),
         "step_count": len(EXPECT_PLAN_STEP_IDS),
         "run_path": "/api/v1/expect-install-plan/run",
         "run_status": 501,
         "note": (
             "Catalog of canonical expect plan step ids. "
             "POST /expect-install-plan/run refuses every id (and unknown ones) with 501. "
-            "GET /expect-install-plan/steps/refusals previews per-step refusal payloads."
+            "GET /expect-install-plan/steps/refusals previews per-step refusal payloads. "
+            "step_notes describe each refused id (honesty only; no runtime)."
         ),
     }
 

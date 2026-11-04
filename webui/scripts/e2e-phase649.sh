@@ -10,7 +10,7 @@ assert "Honesty surface checkpoint 650" in m.WEBUI_HONESTY_MILESTONE_NOTE
 h = m.hard_gaps()
 assert h.get("honesty_milestone") == 650
 assert "checkpoint 650" in (h.get("honesty_milestone_note") or "")
-assert m.WEBUI_SOFT_COMPLETE_PHASE == "656"
+assert int(m.WEBUI_SOFT_COMPLETE_PHASE) >= 656
 print("milestone 650 ok")
 PY
 echo "cleaned"

@@ -942,6 +942,7 @@ export function fetchHardGaps() {
     expect_steps_path?: string;
     expect_steps_refusals_path?: string;
     expect_plan_step_ids?: string[];
+    expect_plan_step_notes?: Record<string, string>;
     ssh_auth_path?: string;
     password_ssh_path?: string;
     ssh_batch_mode_only?: boolean;
@@ -988,6 +989,7 @@ export function fetchExpectPlanSteps() {
     executable: boolean;
     error?: string;
     canonical_step_ids: string[];
+    step_notes?: Record<string, string>;
     step_count: number;
     run_path?: string;
     run_status?: number;

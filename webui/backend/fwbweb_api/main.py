@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "656"
+WEBUI_SOFT_COMPLETE_PHASE = "664"
 # Honesty/preview track milestone (last thematic checkpoint; soft marker may be higher).
 # 600: refusals/closure surface; 650: health/summary/paths + fidelity sample surface.
 WEBUI_HONESTY_MILESTONE = 650
@@ -135,7 +135,7 @@ def res_status(_: str = Depends(require_token)) -> dict[str, object]:
 def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
     """Explicit list of remaining hard-gap items (honesty track)."""
     from .deploy import ssh_auth_capabilities
-    from .expect_installer import EXPECT_PLAN_STEP_IDS
+    from .expect_installer import EXPECT_PLAN_STEP_IDS, EXPECT_PLAN_STEP_NOTES
     from .platforms import layout_fidelity_for
 
     ssh = ssh_auth_capabilities()
@@ -179,6 +179,7 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
         "expect_steps_path": honesty_paths["expect_steps"],
         "expect_steps_refusals_path": honesty_paths["expect_steps_refusals"],
         "expect_plan_step_ids": list(EXPECT_PLAN_STEP_IDS),
+        "expect_plan_step_notes": dict(EXPECT_PLAN_STEP_NOTES),
         "ssh_auth_path": honesty_paths["ssh_auth"],
         "password_ssh_path": honesty_paths["password_ssh"],
         "ssh_batch_mode_only": bool(ssh.get("batch_mode_only")),

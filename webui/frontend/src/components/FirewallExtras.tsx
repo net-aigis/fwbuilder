@@ -220,6 +220,7 @@ export function FirewallExtras({
   const [expectStepsPath, setExpectStepsPath] = useState<string | null>(null);
   const [expectStepsRefusalsPath, setExpectStepsRefusalsPath] = useState<string | null>(null);
   const [expectPlanStepIds, setExpectPlanStepIds] = useState<string[]>([]);
+  const [expectPlanStepNotes, setExpectPlanStepNotes] = useState<Record<string, string>>({});
   const [expectProbeStep, setExpectProbeStep] = useState<string>("ssh_open");
   const [expectRefusalsText, setExpectRefusalsText] = useState<string | null>(null);
   const [passwordSshPath, setPasswordSshPath] = useState<string | null>(null);
@@ -321,6 +322,7 @@ export function FirewallExtras({
         }
       }
       setExpectPlanStepIds(stepIds);
+      setExpectPlanStepNotes(gaps?.expect_plan_step_notes || {});
       if (stepIds.length) {
         setExpectProbeStep((cur) => (stepIds.includes(cur) ? cur : stepIds[0] || "ssh_open"));
       }
@@ -1972,9 +1974,22 @@ export function FirewallExtras({
             </p>
           ) : null}
           {expectPlanStepIds.length ? (
-            <p className="muted" title="Canonical expect plan step ids (all refused by POST /run)">
-              Expect steps (all 501): <code>{expectPlanStepIds.join(", ")}</code>
-            </p>
+            <details className="muted" title="Canonical expect plan step ids (all refused by POST /run)">
+              <summary>
+                Expect steps (all 501): <code>{expectPlanStepIds.join(", ")}</code>
+              </summary>
+              {Object.keys(expectPlanStepNotes).length ? (
+                <ul className="muted hard-gap-notes">
+                  {expectPlanStepIds.map((id) =>
+                    expectPlanStepNotes[id] ? (
+                      <li key={id}>
+                        <code>{id}</code>: {expectPlanStepNotes[id]}
+                      </li>
+                    ) : null,
+                  )}
+                </ul>
+              ) : null}
+            </details>
           ) : null}
           {sshAuthPath || sshRefusalSummary ? (
             <p className="muted" title="SSH BatchMode-only refusal map from /hard-gaps">
