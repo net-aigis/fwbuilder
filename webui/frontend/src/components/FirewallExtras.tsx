@@ -520,14 +520,22 @@ export function FirewallExtras({
           typeof gaps.soft_fertig_session_storage_key_titles === "object"
             ? (gaps.soft_fertig_session_storage_key_titles as Record<string, string>)
             : {};
+        const notes =
+          gaps?.soft_fertig_session_storage_notes &&
+          typeof gaps.soft_fertig_session_storage_notes === "object"
+            ? (gaps.soft_fertig_session_storage_notes as Record<string, string>)
+            : {};
         setSessionStorageKeysDetail(
           keys && Object.keys(keys).length
             ? Object.entries(keys)
                 .map(([k, prefix]) => {
                   const title = titles[k];
-                  return title
+                  const note = notes[k];
+                  let line = title
                     ? `${k} (${title}): ${prefix}<firewallId>`
                     : `${k}: ${prefix}<firewallId>`;
+                  if (note) line += ` — ${note}`;
+                  return line;
                 })
                 .join("\n")
             : null,
@@ -2831,7 +2839,7 @@ export function FirewallExtras({
                 type="button"
                 className="ghost"
                 disabled={busy}
-                title="Download soft_fertig_session_storage_keys (+ titles) from /hard-gaps"
+                title="Download soft_fertig_session_storage_keys (+ titles/notes) from /hard-gaps"
                 onClick={() => {
                   const catalog: Record<string, unknown> = {
                     soft_fertig_session_storage_keys:
@@ -2840,6 +2848,10 @@ export function FirewallExtras({
                       hardGapsPayload.soft_fertig_session_storage_key_count,
                     soft_fertig_session_storage_key_titles:
                       hardGapsPayload.soft_fertig_session_storage_key_titles,
+                    soft_fertig_session_storage_notes:
+                      hardGapsPayload.soft_fertig_session_storage_notes,
+                    soft_fertig_session_storage_notes_count:
+                      hardGapsPayload.soft_fertig_session_storage_notes_count,
                     soft_complete_phase: hardGapsPayload.soft_complete_phase,
                     honesty_milestone: hardGapsPayload.honesty_milestone,
                   };
@@ -2872,7 +2884,7 @@ export function FirewallExtras({
                 type="button"
                 className="ghost"
                 disabled={busy}
-                title="Copy soft_fertig_session_storage_keys (+ titles) to clipboard"
+                title="Copy soft_fertig_session_storage_keys (+ titles/notes) to clipboard"
                 onClick={() => {
                   void (async () => {
                     const catalog: Record<string, unknown> = {
@@ -2882,6 +2894,10 @@ export function FirewallExtras({
                         hardGapsPayload.soft_fertig_session_storage_key_count,
                       soft_fertig_session_storage_key_titles:
                         hardGapsPayload.soft_fertig_session_storage_key_titles,
+                      soft_fertig_session_storage_notes:
+                        hardGapsPayload.soft_fertig_session_storage_notes,
+                      soft_fertig_session_storage_notes_count:
+                        hardGapsPayload.soft_fertig_session_storage_notes_count,
                       soft_complete_phase: hardGapsPayload.soft_complete_phase,
                       honesty_milestone: hardGapsPayload.honesty_milestone,
                     };

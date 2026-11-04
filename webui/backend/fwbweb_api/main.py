@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "1544"
+WEBUI_SOFT_COMPLETE_PHASE = "1560"
 # Honesty/preview track milestone (last thematic checkpoint; soft marker may be higher).
 # 600: refusals/closure; 650: health/summary/paths + fidelity sample;
 # 700: expect step_notes + SSH alternative/refusal notes;
@@ -83,11 +83,12 @@ WEBUI_SOFT_COMPLETE_PHASE = "1544"
 # 2750: session storage keys also on summary + closure;
 # 2800: UI expandable soft_fertig_session_storage_keys detail;
 # 2850: UI download/copy soft_fertig_session_storage_keys catalog;
-# 2900: session storage keys included in soft_fertig_surface_keys catalog.
-WEBUI_HONESTY_MILESTONE = 2900
+# 2900: session storage keys included in soft_fertig_surface_keys catalog;
+# 2950: soft_fertig_session_storage_notes (+ count) on honesty endpoints.
+WEBUI_HONESTY_MILESTONE = 2950
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 2900: soft_fertig_surface_keys includes "
-    "soft_fertig_session_storage_keys (+ count/titles) — hard gaps remain open."
+    "Honesty surface checkpoint 2950: soft_fertig_session_storage_notes "
+    "(+ count) document each sessionStorage prefix — hard gaps remain open."
 )
 
 HARD_GAPS_OPEN = (
@@ -262,6 +263,13 @@ SOFT_FERTIG_SESSION_STORAGE_KEY_TITLES = {
     "soft_fertig_surface": "Soft-fertig surface catalog JSON",
     "related_refusals": "Related hard-gap refusals JSON",
     "honesty_paths": "Honesty paths catalog JSON",
+}
+SOFT_FERTIG_SESSION_STORAGE_NOTES = {
+    "hard_gaps": "Persists last downloaded/copied /hard-gaps JSON per firewall.",
+    "hard_gaps_summary": "Persists last hard-gaps summary text per firewall.",
+    "soft_fertig_surface": "Persists soft-fertig surface (+ sessionKeys) catalogs.",
+    "related_refusals": "Persists related hard-gap refusals JSON per firewall.",
+    "honesty_paths": "Persists honesty paths catalog JSON per firewall.",
 }
 
 HARD_GAP_NOTES = {
@@ -765,6 +773,8 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
         "soft_fertig_session_storage_key_titles": dict(
             SOFT_FERTIG_SESSION_STORAGE_KEY_TITLES
         ),
+        "soft_fertig_session_storage_notes": dict(SOFT_FERTIG_SESSION_STORAGE_NOTES),
+        "soft_fertig_session_storage_notes_count": len(SOFT_FERTIG_SESSION_STORAGE_NOTES),
         "honesty_paths_count": len(honesty_paths),
         "summary_path": "/api/v1/hard-gaps/summary",
         "note": (
@@ -848,6 +858,12 @@ def hard_gaps_summary(_: str = Depends(require_token)) -> dict[str, object]:
         ),
         "soft_fertig_session_storage_key_titles": dict(
             full.get("soft_fertig_session_storage_key_titles") or {}
+        ),
+        "soft_fertig_session_storage_notes": dict(
+            full.get("soft_fertig_session_storage_notes") or {}
+        ),
+        "soft_fertig_session_storage_notes_count": int(
+            full.get("soft_fertig_session_storage_notes_count") or 0
         ),
         "expect_plan_step_count": int(full.get("expect_plan_step_notes_count") or 0),
         "expect_plan_step_titles": dict(full.get("expect_plan_step_titles") or {}),
@@ -1168,6 +1184,8 @@ def hard_gap_closure(_: str = Depends(require_token)) -> dict[str, object]:
         "soft_fertig_session_storage_key_titles": dict(
             SOFT_FERTIG_SESSION_STORAGE_KEY_TITLES
         ),
+        "soft_fertig_session_storage_notes": dict(SOFT_FERTIG_SESSION_STORAGE_NOTES),
+        "soft_fertig_session_storage_notes_count": len(SOFT_FERTIG_SESSION_STORAGE_NOTES),
         "honesty_paths": {
             "hard_gaps": "/api/v1/hard-gaps",
             "summary": "/api/v1/hard-gaps/summary",
