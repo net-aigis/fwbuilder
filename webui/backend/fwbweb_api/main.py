@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "2184"
+WEBUI_SOFT_COMPLETE_PHASE = "2200"
 SOFT_FERTIG_HONESTY_TRACK_NOTE = (
     "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
     "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
@@ -127,12 +127,13 @@ SOFT_FERTIG_HONESTY_TRACK_NOTE = (
 # 4750: surface_changelog added to sessionStorage + clear catalogs;
 # 4800: soft_fertig_honesty_operator_brief compact soft-vs-hard operator briefing;
 # 4850: operator_brief listed in honesty export + bundle sections;
-# 4900: soft_fertig_honesty_surface_version bumped to 1.7 (operator_brief).
-WEBUI_HONESTY_MILESTONE = 4900
+# 4900: soft_fertig_honesty_surface_version bumped to 1.7 (operator_brief);
+# 4950: operator_brief added to sessionStorage + clear catalogs.
+WEBUI_HONESTY_MILESTONE = 4950
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 4900: soft_fertig_honesty_surface_version "
-    "1.7 documents soft_fertig_honesty_operator_brief on honesty endpoints "
-    "and in export/bundle — hard gaps remain open."
+    "Honesty surface checkpoint 4950: soft_fertig_honesty_operator_brief is "
+    "persisted via sessionStorage (fwbweb.honestyOperatorBrief.*) and clear "
+    "catalogs — hard gaps remain open."
 )
 SOFT_FERTIG_SOFT_COMPLETE_NOTE = (
     "WEBUI_SOFT_COMPLETE_PHASE marks soft-fertig honesty/preview catalog "
@@ -383,6 +384,7 @@ SOFT_FERTIG_SESSION_STORAGE_KEYS = {
     "readiness": "fwbweb.honestyReadiness.",
     "soft_complete_note": "fwbweb.softCompleteNote.",
     "surface_changelog": "fwbweb.honestySurfaceChangelog.",
+    "operator_brief": "fwbweb.honestyOperatorBrief.",
 }
 SOFT_FERTIG_SESSION_STORAGE_KEY_TITLES = {
     "hard_gaps": "Full /hard-gaps JSON snapshot",
@@ -395,6 +397,7 @@ SOFT_FERTIG_SESSION_STORAGE_KEY_TITLES = {
     "readiness": "Soft-fertig honesty readiness checklist JSON",
     "soft_complete_note": "Soft-complete phase marker clarification note JSON",
     "surface_changelog": "Honesty surface schema changelog JSON",
+    "operator_brief": "Soft-vs-hard operator briefing JSON",
 }
 SOFT_FERTIG_SESSION_STORAGE_NOTES = {
     "hard_gaps": "Persists last downloaded/copied /hard-gaps JSON per firewall.",
@@ -418,6 +421,10 @@ SOFT_FERTIG_SESSION_STORAGE_NOTES = {
     "surface_changelog": (
         "Persists last downloaded/copied soft_fertig_honesty_surface_changelog "
         "per firewall; UI restores expandable surface-changelog detail on load."
+    ),
+    "operator_brief": (
+        "Persists last downloaded/copied soft_fertig_honesty_operator_brief "
+        "per firewall; UI restores expandable operator-brief detail on load."
     ),
 }
 
@@ -495,7 +502,8 @@ SOFT_FERTIG_HONESTY_EXPORT_NOTES = {
         "sessionStorage fwbweb.honestySurfaceChangelog.*."
     ),
     "operator_brief": (
-        "Download/Copy soft_fertig_honesty_operator_brief; also on /health."
+        "Download/Copy soft_fertig_honesty_operator_brief; also on /health; "
+        "sessionStorage fwbweb.honestyOperatorBrief.*."
     ),
 }
 
@@ -560,7 +568,10 @@ SOFT_FERTIG_HONESTY_BUNDLE_NOTES = {
         "Same subset as Download surface changelog; "
         "also sessionStorage fwbweb.honestySurfaceChangelog.*."
     ),
-    "operator_brief": "Same subset as Download operator brief.",
+    "operator_brief": (
+        "Same subset as Download operator brief; "
+        "also sessionStorage fwbweb.honestyOperatorBrief.*."
+    ),
     "honesty_exports": "Same subset as Download honesty exports.",
 }
 

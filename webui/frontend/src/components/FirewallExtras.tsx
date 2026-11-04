@@ -172,6 +172,10 @@ function honestySurfaceChangelogStorageKey(firewallId: string) {
   return `fwbweb.honestySurfaceChangelog.${firewallId}`;
 }
 
+function honestyOperatorBriefStorageKey(firewallId: string) {
+  return `fwbweb.honestyOperatorBrief.${firewallId}`;
+}
+
 function buildHonestyBundle(payload: Record<string, unknown>) {
   const surfaceKeys = Array.isArray(payload.soft_fertig_surface_keys)
     ? (payload.soft_fertig_surface_keys as string[])
@@ -1334,6 +1338,30 @@ export function FirewallExtras({
             }
           } catch {
             setHonestySurfaceChangelogDetail(surfaceChangelogRaw);
+          }
+        }
+        const operatorBriefRaw = sessionStorage.getItem(
+          honestyOperatorBriefStorageKey(firewallId),
+        );
+        if (operatorBriefRaw) {
+          try {
+            const parsed = JSON.parse(operatorBriefRaw) as {
+              soft_fertig_honesty_operator_brief?: unknown;
+            };
+            const brief = parsed.soft_fertig_honesty_operator_brief;
+            if (brief && typeof brief === "object") {
+              setHonestyOperatorBriefDetail(
+                Object.entries(brief as Record<string, unknown>)
+                  .map(([k, v]) =>
+                    `${k}: ${Array.isArray(v) ? v.join(", ") : String(v)}`,
+                  )
+                  .join("\n"),
+              );
+            } else {
+              setHonestyOperatorBriefDetail(operatorBriefRaw);
+            }
+          } catch {
+            setHonestyOperatorBriefDetail(operatorBriefRaw);
           }
         }
       } catch {
@@ -4098,6 +4126,14 @@ export function FirewallExtras({
                     honesty_milestone: hardGapsPayload.honesty_milestone,
                   };
                   const text = JSON.stringify(catalog, null, 2);
+                  try {
+                    sessionStorage.setItem(
+                      honestyOperatorBriefStorageKey(firewallId),
+                      text,
+                    );
+                  } catch {
+                    /* ignore */
+                  }
                   const blob = new Blob([text + "\n"], {
                     type: "application/json;charset=utf-8",
                   });
@@ -4127,6 +4163,14 @@ export function FirewallExtras({
                       soft_complete_phase: hardGapsPayload.soft_complete_phase,
                       honesty_milestone: hardGapsPayload.honesty_milestone,
                     };
+                    try {
+                      sessionStorage.setItem(
+                        honestyOperatorBriefStorageKey(firewallId),
+                        JSON.stringify(catalog, null, 2),
+                      );
+                    } catch {
+                      /* ignore */
+                    }
                     const text = JSON.stringify(catalog, null, 2) + "\n";
                     try {
                       await navigator.clipboard.writeText(text);
@@ -4398,7 +4442,7 @@ export function FirewallExtras({
               type="button"
               className="ghost"
               disabled={busy || (!hardGapsPayload && !hardGapsSummaryText)}
-              title="Clear sessionStorage hard-gaps snapshot, summary, surface, refusals, honesty paths, track note, readiness, soft-complete note, surface changelog"
+              title="Clear sessionStorage hard-gaps snapshot, summary, surface, refusals, honesty paths, track note, readiness, soft-complete note, surface changelog, operator brief"
               onClick={() => {
                 try {
                   sessionStorage.removeItem(hardGapsSnapshotKey(firewallId));
@@ -4411,6 +4455,7 @@ export function FirewallExtras({
                   sessionStorage.removeItem(honestyReadinessStorageKey(firewallId));
                   sessionStorage.removeItem(softCompleteNoteStorageKey(firewallId));
                   sessionStorage.removeItem(honestySurfaceChangelogStorageKey(firewallId));
+                  sessionStorage.removeItem(honestyOperatorBriefStorageKey(firewallId));
                 } catch {
                   /* ignore */
                 }
