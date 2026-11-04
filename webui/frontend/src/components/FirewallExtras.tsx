@@ -166,6 +166,10 @@ function buildHonestyBundle(payload: Record<string, unknown>) {
       honesty_milestone: payload.honesty_milestone,
       honesty_milestone_note: payload.honesty_milestone_note,
       soft_fertig_honesty_track: payload.soft_fertig_honesty_track,
+      soft_fertig_honesty_surface_version:
+        payload.soft_fertig_honesty_surface_version,
+      soft_fertig_honesty_surface_version_note:
+        payload.soft_fertig_honesty_surface_version_note,
     },
     hard_gaps: payload,
     soft_fertig_surface: {
@@ -354,6 +358,7 @@ export function FirewallExtras({
   const [honestyBundleDetail, setHonestyBundleDetail] = useState<string | null>(null);
   const [sessionStorageClearKeyCount, setSessionStorageClearKeyCount] = useState<number | null>(null);
   const [sessionStorageClearDetail, setSessionStorageClearDetail] = useState<string | null>(null);
+  const [honestySurfaceVersion, setHonestySurfaceVersion] = useState<string | null>(null);
   const [honestyMilestoneNote, setHonestyMilestoneNote] = useState<string | null>(null);
   const [softFertigHonestyTrack, setSoftFertigHonestyTrack] = useState<boolean | null>(null);
   const [honestyPathsSummary, setHonestyPathsSummary] = useState<string | null>(null);
@@ -734,6 +739,11 @@ export function FirewallExtras({
             : null,
         );
       }
+      setHonestySurfaceVersion(
+        typeof gaps?.soft_fertig_honesty_surface_version === "string"
+          ? gaps.soft_fertig_honesty_surface_version
+          : null,
+      );
         setSoftFertigSurfaceDetail(
           keys && keys.length
             ? keys
@@ -2576,6 +2586,19 @@ export function FirewallExtras({
             {sessionStorageClearKeyCount != null && sessionStorageClearKeyCount > 0 ? (
               <span className="muted">
                 · clearable catalogs <code>{sessionStorageClearKeyCount}</code>
+              </span>
+            ) : null}
+            {honestySurfaceVersion ? (
+              <span
+                className="muted"
+                title={
+                  typeof hardGapsPayload?.soft_fertig_honesty_surface_version_note ===
+                  "string"
+                    ? hardGapsPayload.soft_fertig_honesty_surface_version_note
+                    : undefined
+                }
+              >
+                · surface schema <code>{honestySurfaceVersion}</code>
               </span>
             ) : null}
             {honestyMilestone != null ? (
