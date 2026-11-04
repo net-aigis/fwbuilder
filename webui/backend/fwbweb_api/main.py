@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "2040"
+WEBUI_SOFT_COMPLETE_PHASE = "2056"
 SOFT_FERTIG_HONESTY_TRACK_NOTE = (
     "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
     "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
@@ -118,12 +118,13 @@ SOFT_FERTIG_HONESTY_TRACK_NOTE = (
 # 4300: soft_fertig_honesty_surface_version bumped to 1.4 (catalog flags);
 # 4350: soft_fertig_soft_complete_note clarifies soft-complete phase marker vs hard gaps;
 # 4400: soft_complete_note listed in honesty export + bundle sections;
-# 4450: soft_fertig_honesty_surface_version bumped to 1.5 (soft_complete_note).
-WEBUI_HONESTY_MILESTONE = 4450
+# 4450: soft_fertig_honesty_surface_version bumped to 1.5 (soft_complete_note);
+# 4500: soft_complete_note added to sessionStorage + clear catalogs.
+WEBUI_HONESTY_MILESTONE = 4500
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 4450: soft_fertig_honesty_surface_version "
-    "1.5 documents soft_fertig_soft_complete_note on honesty endpoints and "
-    "in export/bundle — hard gaps remain open."
+    "Honesty surface checkpoint 4500: soft_fertig_soft_complete_note is "
+    "persisted via sessionStorage (fwbweb.softCompleteNote.*) and clear "
+    "catalogs — hard gaps remain open."
 )
 SOFT_FERTIG_SOFT_COMPLETE_NOTE = (
     "WEBUI_SOFT_COMPLETE_PHASE marks soft-fertig honesty/preview catalog "
@@ -362,6 +363,7 @@ SOFT_FERTIG_SESSION_STORAGE_KEYS = {
     "honesty_bundle": "fwbweb.honestyBundle.",
     "track_note": "fwbweb.honestyTrackNote.",
     "readiness": "fwbweb.honestyReadiness.",
+    "soft_complete_note": "fwbweb.softCompleteNote.",
 }
 SOFT_FERTIG_SESSION_STORAGE_KEY_TITLES = {
     "hard_gaps": "Full /hard-gaps JSON snapshot",
@@ -372,6 +374,7 @@ SOFT_FERTIG_SESSION_STORAGE_KEY_TITLES = {
     "honesty_bundle": "Combined honesty bundle JSON",
     "track_note": "Soft-fertig honesty track note JSON",
     "readiness": "Soft-fertig honesty readiness checklist JSON",
+    "soft_complete_note": "Soft-complete phase marker clarification note JSON",
 }
 SOFT_FERTIG_SESSION_STORAGE_NOTES = {
     "hard_gaps": "Persists last downloaded/copied /hard-gaps JSON per firewall.",
@@ -387,6 +390,10 @@ SOFT_FERTIG_SESSION_STORAGE_NOTES = {
     "readiness": (
         "Persists last downloaded/copied soft_fertig_honesty_readiness per "
         "firewall; UI restores expandable readiness detail on load."
+    ),
+    "soft_complete_note": (
+        "Persists last downloaded/copied soft_fertig_soft_complete_note per "
+        "firewall; UI restores soft-complete note text on load."
     ),
 }
 
@@ -453,7 +460,7 @@ SOFT_FERTIG_HONESTY_EXPORT_NOTES = {
     ),
     "soft_complete_note": (
         "soft_fertig_soft_complete_note from /hard-gaps and /health; "
-        "also in catalog_summary."
+        "also in catalog_summary; sessionStorage fwbweb.softCompleteNote.*."
     ),
 }
 
@@ -506,7 +513,10 @@ SOFT_FERTIG_HONESTY_BUNDLE_NOTES = {
         "Same subset as Download readiness; "
         "also sessionStorage fwbweb.honestyReadiness.*."
     ),
-    "soft_complete_note": "Same subset as Download soft-complete note.",
+    "soft_complete_note": (
+        "Same subset as Download soft-complete note; "
+        "also sessionStorage fwbweb.softCompleteNote.*."
+    ),
     "honesty_exports": "Same subset as Download honesty exports.",
 }
 

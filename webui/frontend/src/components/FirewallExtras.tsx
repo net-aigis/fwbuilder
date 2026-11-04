@@ -164,6 +164,10 @@ function honestyReadinessStorageKey(firewallId: string) {
   return `fwbweb.honestyReadiness.${firewallId}`;
 }
 
+function softCompleteNoteStorageKey(firewallId: string) {
+  return `fwbweb.softCompleteNote.${firewallId}`;
+}
+
 function buildHonestyBundle(payload: Record<string, unknown>) {
   const surfaceKeys = Array.isArray(payload.soft_fertig_surface_keys)
     ? (payload.soft_fertig_surface_keys as string[])
@@ -1218,6 +1222,23 @@ export function FirewallExtras({
             }
           } catch {
             setHonestyReadinessDetail(readinessRaw);
+          }
+        }
+        const softCompleteRaw = sessionStorage.getItem(
+          softCompleteNoteStorageKey(firewallId),
+        );
+        if (softCompleteRaw) {
+          try {
+            const parsed = JSON.parse(softCompleteRaw) as {
+              soft_fertig_soft_complete_note?: unknown;
+            };
+            if (typeof parsed.soft_fertig_soft_complete_note === "string") {
+              setSoftCompleteNote(parsed.soft_fertig_soft_complete_note);
+            } else {
+              setSoftCompleteNote(softCompleteRaw);
+            }
+          } catch {
+            setSoftCompleteNote(softCompleteRaw);
           }
         }
       } catch {
@@ -3814,6 +3835,14 @@ export function FirewallExtras({
                     honesty_milestone: hardGapsPayload.honesty_milestone,
                   };
                   const text = JSON.stringify(catalog, null, 2);
+                  try {
+                    sessionStorage.setItem(
+                      softCompleteNoteStorageKey(firewallId),
+                      text,
+                    );
+                  } catch {
+                    /* ignore */
+                  }
                   const blob = new Blob([text + "\n"], {
                     type: "application/json;charset=utf-8",
                   });
@@ -3843,6 +3872,14 @@ export function FirewallExtras({
                       soft_complete_phase: hardGapsPayload.soft_complete_phase,
                       honesty_milestone: hardGapsPayload.honesty_milestone,
                     };
+                    try {
+                      sessionStorage.setItem(
+                        softCompleteNoteStorageKey(firewallId),
+                        JSON.stringify(catalog, null, 2),
+                      );
+                    } catch {
+                      /* ignore */
+                    }
                     const text = JSON.stringify(catalog, null, 2) + "\n";
                     try {
                       await navigator.clipboard.writeText(text);
@@ -4114,7 +4151,7 @@ export function FirewallExtras({
               type="button"
               className="ghost"
               disabled={busy || (!hardGapsPayload && !hardGapsSummaryText)}
-              title="Clear sessionStorage hard-gaps snapshot, summary, surface, refusals, honesty paths, track note, readiness"
+              title="Clear sessionStorage hard-gaps snapshot, summary, surface, refusals, honesty paths, track note, readiness, soft-complete note"
               onClick={() => {
                 try {
                   sessionStorage.removeItem(hardGapsSnapshotKey(firewallId));
@@ -4125,6 +4162,7 @@ export function FirewallExtras({
                   sessionStorage.removeItem(honestyBundleStorageKey(firewallId));
                   sessionStorage.removeItem(honestyTrackNoteStorageKey(firewallId));
                   sessionStorage.removeItem(honestyReadinessStorageKey(firewallId));
+                  sessionStorage.removeItem(softCompleteNoteStorageKey(firewallId));
                 } catch {
                   /* ignore */
                 }
@@ -4133,6 +4171,7 @@ export function FirewallExtras({
                 setHardGapsSummaryFidelityTitle(null);
                 setTrackNoteDetail(null);
                 setHonestyReadinessDetail(null);
+                setSoftCompleteNote(null);
                 onStatus?.("Cleared honesty catalogs");
               }}
             >
