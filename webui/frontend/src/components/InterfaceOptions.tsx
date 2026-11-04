@@ -108,11 +108,15 @@ export function InterfaceOptions({
       setOptionEnable(schema?.option_enable ?? []);
       if (schema?.stack_switch?.by_type) {
         const types = Object.keys(schema.stack_switch.by_type);
+        const fromOpt = (merged.type || "").trim();
         const def =
+          (fromOpt && types.includes(fromOpt) ? fromOpt : null) ||
           types.find((t) => schema.stack_switch!.by_type[t] === (schema.stack_switch!.default ?? 0)) ||
           types[0] ||
           "ethernet";
         setPreviewDeviceType(def);
+        const idx = schema.stack_switch.by_type[def];
+        if (idx != null) setActiveStackIndex(idx);
       } else {
         setPreviewDeviceType("ethernet");
       }
@@ -205,6 +209,16 @@ export function InterfaceOptions({
 
   useEffect(() => {
     if (!stackedPages.length) return;
+    // Prefer options.type → stack map (desktop iface_type), then sessionStorage.
+    const fromType = (options.type || "").trim();
+    if (stackSwitch?.by_type && fromType && fromType in stackSwitch.by_type) {
+      const idx = stackSwitch.by_type[fromType];
+      if (stackedPages.some((s) => s.stack_index === idx)) {
+        setActiveStackIndex(idx);
+        setPreviewDeviceType(fromType);
+        return;
+      }
+    }
     let preferred = stackedPages[0]?.stack_index ?? 0;
     try {
       const stored = sessionStorage.getItem(
@@ -218,7 +232,7 @@ export function InterfaceOptions({
       /* ignore */
     }
     setActiveStackIndex(preferred);
-  }, [activeGroup, resolvedOs, stackedPages]);
+  }, [activeGroup, resolvedOs, stackedPages, options.type, stackSwitch]);
 
   const effectiveFields = useMemo(() => {
     if (!optionEnable.length) return fields;
@@ -310,8 +324,11 @@ export function InterfaceOptions({
       ) : null}
       {stackSwitch?.by_type && Object.keys(stackSwitch.by_type).length ? (
         <div className="pad option-stack-device-type">
-          <label className="muted" title={stackSwitch.note || "Desktop iface_type → stack (preview)"}>
-            Device type (stack preview)
+          <label
+            className="muted"
+            title={stackSwitch.note || "Desktop iface_type → options.type + stack"}
+          >
+            Device type
             <select
               value={previewDeviceType}
               disabled={busy}
@@ -321,6 +338,9 @@ export function InterfaceOptions({
                 setShowAllStacks(false);
                 const idx = stackSwitch.by_type[t];
                 if (idx != null) setActiveStackIndex(idx);
+                if (!stackSwitch.preview_only) {
+                  setOptions((prev) => ({ ...prev, type: t }));
+                }
               }}
             >
               {Object.keys(stackSwitch.by_type).map((t) => (
@@ -332,7 +352,9 @@ export function InterfaceOptions({
           </label>
           {stackSwitch.preview_only ? (
             <span className="muted"> · preview only (does not write Interface type)</span>
-          ) : null}
+          ) : (
+            <span className="muted"> · writes options.type (Save to persist)</span>
+          )}
         </div>
       ) : null}
       {stackedPages.length > 1 ? (

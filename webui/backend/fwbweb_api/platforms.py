@@ -917,6 +917,37 @@ def interface_option_schema(host_os: str) -> dict[str, Any]:
     stack_switch = _iface_stack_switch(stem)
     if stack_switch:
         out["stack_switch"] = stack_switch
+        # Desktop stores iface_type combo in options key "type" (not a registerOption field).
+        by_type = stack_switch.get("by_type") or {}
+        if by_type and "type" not in fields:
+            choices = list(by_type.keys())
+            fields["type"] = {
+                "type": "enum",
+                "choices": choices,
+                "label": "Device Type",
+                "widget": "iface_type",
+                "widget_class": "QComboBox",
+            }
+            defaults.setdefault("type", choices[0] if choices else "")
+            featured = ["type", *[k for k in featured if k != "type"]]
+            if groups:
+                g0 = groups[0]
+                if "type" not in g0["keys"]:
+                    g0["keys"] = ["type", *g0["keys"]]
+            else:
+                groups = [{"id": "interface", "title": "Interface", "keys": ["type"]}]
+            out["fields"] = fields
+            out["defaults"] = defaults
+            out["featured_keys"] = featured
+            out["groups"] = groups
+            stack_switch = dict(stack_switch)
+            stack_switch["writes_option"] = "type"
+            stack_switch["preview_only"] = False
+            stack_switch["note"] = (
+                "Desktop iface_type combo writes options.type; WebUI enum follows "
+                "the same key and drives the QStackedWidget page."
+            )
+            out["stack_switch"] = stack_switch
     option_enable = _iface_option_enable(stem)
     if option_enable:
         out["option_enable"] = option_enable

@@ -581,24 +581,32 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | e2e-all lists 433–440 | done | E2E phase438 |
 | Hard gaps still 3 @ 440 | done | E2E phase439 |
 | Soft-complete STATUS through 440 | done | E2E phase440 |
+| iface options.type enum from stack | done | E2E phase441 |
+| Device type writes options.type | done | E2E phase442 |
+| Soft marker 448 | done | E2E phase443 |
+| STATUS 441–448 | done | E2E phase444 |
+| Typecheck after type write | done | E2E phase445 |
+| e2e-all lists 441–448 | done | E2E phase446 |
+| Hard gaps still 3 @ 448 | done | E2E phase447 |
+| Soft-complete STATUS through 448 | done | E2E phase448 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Soft-complete (feature/webui polish track)
 
 WebUI on `feature/webui` remains soft-complete for the polish track.
 
-### Hard-gap honesty/preview track — soft-fertig (phase256); preview slices through 440
+### Hard-gap honesty/preview track — soft-fertig (phase256); preview slices through 448
 
-`WEBUI_SOFT_COMPLETE_PHASE=440`; `/hard-gaps` (+ `/hard-gaps/closure`) sets `soft_fertig_honesty_track: true` + `hard_gap_notes` + `hard_gap_closure` + `layout_fidelity_path` + `stack_switch_path` + `expect_run_path` + `password_ssh_path`; `GET /layout-fidelity` / option-schema + rule/iface schemas report heuristic `score_percent` (**not** pixel parity; includes `stacked_sections` / `with_whats_this` / `with_read_only` / `pages_with_tooltip`); `GET /stack-switch` exposes desktop stack maps + option_enable/iface_option_enable; `option_enable` follows bonding→xmit and LOG/ULOG (ipt/ipcop/secuwall); Firewall UI shows fidelity + refuse paths + soft-complete phase + enable-rules summary; read_only fields use `field-ui-readonly`.
+`WEBUI_SOFT_COMPLETE_PHASE=448`; `/hard-gaps` (+ `/hard-gaps/closure`) sets `soft_fertig_honesty_track: true` + `hard_gap_notes` + `hard_gap_closure` + `layout_fidelity_path` + `stack_switch_path` + `expect_run_path` + `password_ssh_path`; `GET /layout-fidelity` / option-schema + rule/iface schemas report heuristic `score_percent` (**not** pixel parity; includes `stacked_sections` / `with_whats_this` / `with_read_only` / `pages_with_tooltip`); `GET /stack-switch` exposes desktop stack maps + option_enable/iface_option_enable; `option_enable` follows bonding→xmit and LOG/ULOG (ipt/ipcop/secuwall); iface Device type writes `options.type` and drives stack; Firewall UI shows fidelity + refuse paths + soft-complete phase + enable-rules summary; read_only fields use `field-ui-readonly`.
 
 - Deploy: manifest `# files:`, OS configlets, external PolicyInstallScript, copyFWB, use_scp, gzip transfer on compress (plan shows −%), capabilities API (+ expect_install_plan / walkthrough pointers), live gate + force_limited, expect stub + raw/expanded configlet preview + ordered expect plan (reg_user + safety_net_acl + download + sessionStorage) + dry walkthrough (preview_only + simulated_at timeline, sessionStorage + download); `POST …/run` (+ optional `step=`) → 501 / step_refused (still **no** expect/SSHSession runtime)
-- Options: .ui labels, free QLabel annotations (+ alignment), buddy_labels (external_label controls), enabled/visible/readOnly respect (+ option_enable follow for bonding→xmit_hash and LOG/ULOG on ipt/ipcop/secuwall), QRadio bool, QGroupBox sections (flat/checkable) + QStackedWidget pages (FirewallExtras + InterfaceOptions section chrome + empty pages + stack switcher + stack_switch hints: device-type preview / use_ULOG follow + `/stack-switch` API with option_enable maps), tooltips + whatsThis + tab page toolTips, page-local QGridLayout + spacers (sizeHint) + column/row stretch + spacing/margins (CSS + page hint) + sizePolicy + min/max size + layout hints + layout_tree + dialog windowTitle/geometry/tab_position/sizeGrip (header WxH + tabs + CSS max-height) + shared `qtGridStyle` + layout-fidelity score on Firewall/Rule/Interface (still **not** full pixel Qt layout)
+- Options: .ui labels, free QLabel annotations (+ alignment), buddy_labels (external_label controls), enabled/visible/readOnly respect (+ option_enable follow for bonding→xmit_hash and LOG/ULOG on ipt/ipcop/secuwall), QRadio bool, QGroupBox sections (flat/checkable) + QStackedWidget pages (FirewallExtras + InterfaceOptions section chrome + empty pages + stack switcher + stack_switch hints: device-type → `options.type` + stack / use_ULOG follow + `/stack-switch` API with option_enable maps), tooltips + whatsThis + tab page toolTips, page-local QGridLayout + spacers (sizeHint) + column/row stretch + spacing/margins (CSS + page hint) + sizePolicy + min/max size + layout hints + layout_tree + dialog windowTitle/geometry/tab_position/sizeGrip (header WxH + tabs + CSS max-height) + shared `qtGridStyle` + layout-fidelity score on Firewall/Rule/Interface (still **not** full pixel Qt layout)
 - SSH: BatchMode only; `GET /ssh-auth`, capabilities.ssh_auth, deploy plan line, `allow_password_auth` → 400, `POST /ssh-auth/password` → 501
 - Honesty: UI lists `hard_gap_open` + notes + closure criteria via `fetchHardGaps`; `GET /hard-gaps` documents remaining gaps; layout-fidelity score is coverage of extracted signals only
 
 Still open (hard backlog — **not** soft-fertig):
 
-- Full Qt AdvancedDialog **pixel** layout parity (exact geometry; dialog size + grid spacing since phase226/241; row/col + spacers/sizeHint + stretch + annotations/buddy_labels/alignment + sizePolicy/min/max/enabled/visible/readOnly + option_enable follow + QGroupBox flat + QStackedWidget pages (Firewall+Interface chrome, empty pages, stack switcher, stack_switch hints, fidelity stacked_sections, `/stack-switch`) + whatsThis + tab page toolTips + layout_tree + tab_position/sizeGrip since phase165/177/181/189/205/209/213/257–291/345–440; fidelity score since 297; closure criteria since 329)
+- Full Qt AdvancedDialog **pixel** layout parity (exact geometry; dialog size + grid spacing since phase226/241; row/col + spacers/sizeHint + stretch + annotations/buddy_labels/alignment + sizePolicy/min/max/enabled/visible/readOnly + option_enable follow + QGroupBox flat + QStackedWidget pages (Firewall+Interface chrome, empty pages, stack switcher, stack_switch hints, fidelity stacked_sections, `/stack-switch`) + whatsThis + tab page toolTips + layout_tree + tab_position/sizeGrip since phase165/177/181/189/205/209/213/257–291/345–448; fidelity score since 297; closure criteria since 329)
 - Full desktop **FirewallInstaller** expect/SSHSession for Cisco/Juniper/Procurve (plan/preview/walkthrough+timeline/download; run/step endpoint refuses with 501)
 - Password/keyboard-interactive SSH (API refuses `allow_password_auth` and `POST /ssh-auth/password`; BatchMode only)
 
@@ -1051,6 +1059,14 @@ Still open (hard backlog — **not** soft-fertig):
 | Local E2E phase438 (e2e-all list) | done | `e2e-phase438.sh` **OK** |
 | Local E2E phase439 (hard gaps @ 440) | done | `e2e-phase439.sh` **OK** |
 | Local E2E phase440 (STATUS soft-complete) | done | `e2e-phase440.sh` **OK** |
+| Local E2E phase441 (options.type enum) | done | `e2e-phase441.sh` **OK** |
+| Local E2E phase442 (device type write) | done | `e2e-phase442.sh` **OK** |
+| Local E2E phase443 (soft marker 448) | done | `e2e-phase443.sh` **OK** |
+| Local E2E phase444 (STATUS mentions) | done | `e2e-phase444.sh` **OK** |
+| Local E2E phase445 (typecheck) | done | `e2e-phase445.sh` **OK** |
+| Local E2E phase446 (e2e-all list) | done | `e2e-phase446.sh` **OK** |
+| Local E2E phase447 (hard gaps @ 448) | done | `e2e-phase447.sh` **OK** |
+| Local E2E phase448 (STATUS soft-complete) | done | `e2e-phase448.sh` **OK** |
 
 ## Local commands
 
@@ -1500,6 +1516,14 @@ bash webui/scripts/e2e-phase437.sh
 bash webui/scripts/e2e-phase438.sh
 bash webui/scripts/e2e-phase439.sh
 bash webui/scripts/e2e-phase440.sh
+bash webui/scripts/e2e-phase441.sh
+bash webui/scripts/e2e-phase442.sh
+bash webui/scripts/e2e-phase443.sh
+bash webui/scripts/e2e-phase444.sh
+bash webui/scripts/e2e-phase445.sh
+bash webui/scripts/e2e-phase446.sh
+bash webui/scripts/e2e-phase447.sh
+bash webui/scripts/e2e-phase448.sh
 # or everything:
 bash webui/scripts/e2e-all.sh
 ```

@@ -681,6 +681,7 @@ export function fetchInterfaceOptionSchema(hostOs: string) {
       by_type: Record<string, number>;
       default?: number;
       preview_only?: boolean;
+      writes_option?: string;
       note?: string;
     } | null;
     option_enable?: Array<{
