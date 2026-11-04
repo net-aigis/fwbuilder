@@ -110,6 +110,10 @@ function expectWalkthroughKey(firewallId: string) {
   return `fwbweb.expectWalkthrough.${firewallId}`;
 }
 
+function hardGapClosureKey(firewallId: string) {
+  return `fwbweb.hardGapClosure.${firewallId}`;
+}
+
 export function FirewallExtras({
   sessionId,
   firewallId,
@@ -412,6 +416,8 @@ export function FirewallExtras({
         if (expectRaw) setExpectPlanText(expectRaw);
         const walkRaw = sessionStorage.getItem(expectWalkthroughKey(firewallId));
         if (walkRaw) setExpectWalkthroughText(walkRaw);
+        const closureRaw = sessionStorage.getItem(hardGapClosureKey(firewallId));
+        if (closureRaw) setHardGapsClosureText(closureRaw);
       } catch {
         /* ignore */
       }
@@ -1893,6 +1899,11 @@ export function FirewallExtras({
                     ];
                     const text = lines.join("\n");
                     setHardGapsClosureText(text);
+                    try {
+                      sessionStorage.setItem(hardGapClosureKey(firewallId), text);
+                    } catch {
+                      /* ignore */
+                    }
                     onStatus?.(
                       `Hard-gap closure: ${(c.hard_gap_open || []).length} open`,
                     );
@@ -1905,6 +1916,27 @@ export function FirewallExtras({
               }}
             >
               Show hard-gap closure
+            </button>
+            <button
+              type="button"
+              className="ghost"
+              disabled={busy || !hardGapsClosureText}
+              title="Download the last shown hard-gap closure text"
+              onClick={() => {
+                if (!hardGapsClosureText) return;
+                const blob = new Blob([hardGapsClosureText + "\n"], {
+                  type: "text/plain;charset=utf-8",
+                });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = `fwbweb-hard-gap-closure-${firewallId || "fw"}.txt`;
+                a.click();
+                URL.revokeObjectURL(url);
+                onStatus?.("Downloaded hard-gap closure");
+              }}
+            >
+              Download closure
             </button>
           </div>
           {hardGapsClosureText ? (
