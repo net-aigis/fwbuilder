@@ -480,7 +480,9 @@ export function InterfaceOptions({
                     {bl.text}
                   </p>
                 ))}
-                {sec.keys.map((key) => (
+                {sec.keys
+                  .filter((key) => !(stackSwitch && key === "type"))
+                  .map((key) => (
                   <OptionField
                     key={key}
                     name={key}
