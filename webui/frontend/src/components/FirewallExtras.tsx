@@ -534,6 +534,15 @@ export function FirewallExtras({
             : gaps.layout_fidelity_sample_catalog_complete === false
               ? "catalog=0"
               : "",
+          typeof gaps.layout_fidelity_alt_sample_score_percent === "number"
+            ? `alt=${gaps.layout_fidelity_alt_sample_platform || "?"}/${gaps.layout_fidelity_alt_sample_host_os || "?"}:${gaps.layout_fidelity_alt_sample_score_percent}%`
+            : "",
+          typeof gaps.layout_fidelity_alt_sample_buddy_labels === "number"
+            ? `altBuddies=${gaps.layout_fidelity_alt_sample_buddy_labels}`
+            : "",
+          typeof gaps.layout_fidelity_alt_sample_with_external_label === "number"
+            ? `altExtLabel=${gaps.layout_fidelity_alt_sample_with_external_label}`
+            : "",
         ]
           .filter(Boolean)
           .join(", ");
@@ -2445,6 +2454,15 @@ export function FirewallExtras({
                           : s.layout_fidelity_sample_catalog_complete === false
                             ? "catalog=0"
                             : "",
+                        typeof s.layout_fidelity_alt_sample_score_percent === "number"
+                          ? `alt=${s.layout_fidelity_alt_sample_platform || "?"}/${s.layout_fidelity_alt_sample_host_os || "?"}:${s.layout_fidelity_alt_sample_score_percent}%`
+                          : "",
+                        typeof s.layout_fidelity_alt_sample_buddy_labels === "number"
+                          ? `altBuddies=${s.layout_fidelity_alt_sample_buddy_labels}`
+                          : "",
+                        typeof s.layout_fidelity_alt_sample_with_external_label === "number"
+                          ? `altExtLabel=${s.layout_fidelity_alt_sample_with_external_label}`
+                          : "",
                       ]
                         .filter(Boolean)
                         .join(", ");

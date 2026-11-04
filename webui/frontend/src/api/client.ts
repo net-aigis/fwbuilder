@@ -1005,6 +1005,11 @@ export function fetchHardGaps() {
     layout_fidelity_sample_chrome_window_title?: boolean | null;
     layout_fidelity_sample_chrome_tab_position?: boolean | null;
     layout_fidelity_sample_signal_key_count?: number | null;
+    layout_fidelity_alt_sample_platform?: string | null;
+    layout_fidelity_alt_sample_host_os?: string | null;
+    layout_fidelity_alt_sample_score_percent?: number | null;
+    layout_fidelity_alt_sample_buddy_labels?: number | null;
+    layout_fidelity_alt_sample_with_external_label?: number | null;
     layout_fidelity_sample_key_count?: number | null;
     layout_fidelity_sample_catalog_complete?: boolean | null;
     layout_fidelity_pixel_parity?: boolean;
@@ -1069,6 +1074,11 @@ export function fetchHardGapsSummary() {
     layout_fidelity_sample_chrome_window_title?: boolean | null;
     layout_fidelity_sample_chrome_tab_position?: boolean | null;
     layout_fidelity_sample_signal_key_count?: number | null;
+    layout_fidelity_alt_sample_platform?: string | null;
+    layout_fidelity_alt_sample_host_os?: string | null;
+    layout_fidelity_alt_sample_score_percent?: number | null;
+    layout_fidelity_alt_sample_buddy_labels?: number | null;
+    layout_fidelity_alt_sample_with_external_label?: number | null;
     layout_fidelity_sample_key_count?: number | null;
     layout_fidelity_sample_catalog_complete?: boolean | null;
     layout_fidelity_pixel_parity?: boolean;
