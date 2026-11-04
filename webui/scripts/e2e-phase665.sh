@@ -12,7 +12,7 @@ s = m.hard_gaps_summary()
 assert s.get("expect_plan_step_count") == 8
 assert s.get("expect_steps_path") == "/api/v1/expect-install-plan/steps"
 assert "step_notes" in (m.HARD_GAP_NOTES.get("expect_sshsession_runtime") or "")
-assert m.WEBUI_SOFT_COMPLETE_PHASE == "672"
+assert int(m.WEBUI_SOFT_COMPLETE_PHASE) >= 672
 print("step notes count ok")
 PY
 echo "cleaned"

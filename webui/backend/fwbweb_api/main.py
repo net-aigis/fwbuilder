@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "672"
+WEBUI_SOFT_COMPLETE_PHASE = "680"
 # Honesty/preview track milestone (last thematic checkpoint; soft marker may be higher).
 # 600: refusals/closure surface; 650: health/summary/paths + fidelity sample surface.
 WEBUI_HONESTY_MILESTONE = 650
@@ -70,7 +70,8 @@ HARD_GAP_NOTES = {
     ),
     "password_keyboard_interactive_ssh": (
         "BatchMode only (batch_mode_only); allow_password_auth → 400; "
-        "POST /ssh-auth/password → 501 with alternatives/refusal_paths."
+        "POST /ssh-auth/password → 501 with alternatives/refusal_paths; "
+        "ssh_alternative_notes and ssh_refusal_path_notes document each path."
     ),
 }
 
@@ -186,7 +187,9 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
         "password_ssh_path": honesty_paths["password_ssh"],
         "ssh_batch_mode_only": bool(ssh.get("batch_mode_only")),
         "ssh_alternatives": list(ssh.get("alternatives") or []),
+        "ssh_alternative_notes": dict(ssh.get("alternative_notes") or {}),
         "ssh_refusal_paths": dict(ssh.get("refusal_paths") or {}),
+        "ssh_refusal_path_notes": dict(ssh.get("refusal_path_notes") or {}),
         "honesty_milestone": WEBUI_HONESTY_MILESTONE,
         "honesty_milestone_note": WEBUI_HONESTY_MILESTONE_NOTE,
         "honesty_paths": honesty_paths,

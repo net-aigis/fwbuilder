@@ -226,6 +226,8 @@ export function FirewallExtras({
   const [passwordSshPath, setPasswordSshPath] = useState<string | null>(null);
   const [sshAuthPath, setSshAuthPath] = useState<string | null>(null);
   const [sshRefusalSummary, setSshRefusalSummary] = useState<string | null>(null);
+  const [sshAlternativeNotes, setSshAlternativeNotes] = useState<Record<string, string>>({});
+  const [sshRefusalPathNotes, setSshRefusalPathNotes] = useState<Record<string, string>>({});
   const [softCompletePhase, setSoftCompletePhase] = useState<string | null>(null);
   const [honestyMilestone, setHonestyMilestone] = useState<number | null>(null);
   const [honestyMilestoneNote, setHonestyMilestoneNote] = useState<string | null>(null);
@@ -339,6 +341,8 @@ export function FirewallExtras({
       } else {
         setSshRefusalSummary(null);
       }
+      setSshAlternativeNotes(gaps?.ssh_alternative_notes || {});
+      setSshRefusalPathNotes(gaps?.ssh_refusal_path_notes || {});
       setSoftCompletePhase(gaps?.soft_complete_phase || resSt?.soft_complete_phase || null);
       setHonestyMilestone(
         typeof gaps?.honesty_milestone === "number" ? gaps.honesty_milestone : null,
@@ -1996,15 +2000,35 @@ export function FirewallExtras({
             </details>
           ) : null}
           {sshAuthPath || sshRefusalSummary ? (
-            <p className="muted" title="SSH BatchMode-only refusal map from /hard-gaps">
-              {sshAuthPath ? (
-                <>
-                  SSH auth: <code>{sshAuthPath}</code>
-                </>
+            <details className="muted" title="SSH BatchMode-only refusal map from /hard-gaps">
+              <summary>
+                {sshAuthPath ? (
+                  <>
+                    SSH auth: <code>{sshAuthPath}</code>
+                  </>
+                ) : null}
+                {sshAuthPath && sshRefusalSummary ? " · " : null}
+                {sshRefusalSummary}
+              </summary>
+              {Object.keys(sshAlternativeNotes).length ? (
+                <ul className="muted hard-gap-notes">
+                  {Object.entries(sshAlternativeNotes).map(([k, v]) => (
+                    <li key={`alt-${k}`}>
+                      <code>{k}</code>: {v}
+                    </li>
+                  ))}
+                </ul>
               ) : null}
-              {sshAuthPath && sshRefusalSummary ? " · " : null}
-              {sshRefusalSummary}
-            </p>
+              {Object.keys(sshRefusalPathNotes).length ? (
+                <ul className="muted hard-gap-notes">
+                  {Object.entries(sshRefusalPathNotes).map(([k, v]) => (
+                    <li key={`ref-${k}`}>
+                      <code>{k}</code>: {v}
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+            </details>
           ) : null}
           {signalCatalogSummary ? (
             <details className="muted">

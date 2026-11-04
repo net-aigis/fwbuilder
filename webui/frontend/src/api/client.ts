@@ -948,7 +948,9 @@ export function fetchHardGaps() {
     password_ssh_path?: string;
     ssh_batch_mode_only?: boolean;
     ssh_alternatives?: string[];
+    ssh_alternative_notes?: Record<string, string>;
     ssh_refusal_paths?: Record<string, number>;
+    ssh_refusal_path_notes?: Record<string, string>;
     honesty_milestone?: number;
     honesty_milestone_note?: string;
     honesty_paths?: Record<string, string>;
@@ -1143,7 +1145,9 @@ export function fetchSshAuth() {
     implemented?: string[];
     not_implemented?: string[];
     alternatives?: string[];
+    alternative_notes?: Record<string, string>;
     refusal_paths?: Record<string, number>;
+    refusal_path_notes?: Record<string, string>;
     note: string;
   }>("/api/v1/ssh-auth");
 }

@@ -171,8 +171,27 @@ SSH_AUTH_NOTE = (
 )
 
 
+SSH_ALTERNATIVE_NOTES: dict[str, str] = {
+    "identity_file": "Use -i / identity_file with BatchMode=yes (supported).",
+    "ssh_agent": "Use ssh-agent forwarded keys with BatchMode=yes (supported).",
+}
+
+SSH_REFUSAL_PATH_NOTES: dict[str, str] = {
+    "deploy_allow_password_auth": (
+        "Deploy with allow_password_auth → HTTP 400 (BatchMode only)."
+    ),
+    "ssh_auth_password": (
+        "POST /ssh-auth/password → HTTP 501 (password/keyboard-interactive not implemented)."
+    ),
+}
+
+
 def ssh_auth_capabilities() -> dict[str, Any]:
     """Honest SSH auth capability summary for WebUI deploy."""
+    refusal_paths = {
+        "deploy_allow_password_auth": 400,
+        "ssh_auth_password": 501,
+    }
     return {
         "batch_mode": True,
         "batch_mode_only": True,
@@ -183,10 +202,9 @@ def ssh_auth_capabilities() -> dict[str, Any]:
         "implemented": ["batch_mode", "identity_file", "ssh_agent"],
         "not_implemented": ["password", "keyboard_interactive"],
         "alternatives": ["identity_file", "ssh_agent"],
-        "refusal_paths": {
-            "deploy_allow_password_auth": 400,
-            "ssh_auth_password": 501,
-        },
+        "alternative_notes": dict(SSH_ALTERNATIVE_NOTES),
+        "refusal_paths": refusal_paths,
+        "refusal_path_notes": dict(SSH_REFUSAL_PATH_NOTES),
         "note": SSH_AUTH_NOTE,
     }
 
