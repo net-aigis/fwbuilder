@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "2072"
+WEBUI_SOFT_COMPLETE_PHASE = "2088"
 SOFT_FERTIG_HONESTY_TRACK_NOTE = (
     "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
     "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
@@ -120,12 +120,13 @@ SOFT_FERTIG_HONESTY_TRACK_NOTE = (
 # 4400: soft_complete_note listed in honesty export + bundle sections;
 # 4450: soft_fertig_honesty_surface_version bumped to 1.5 (soft_complete_note);
 # 4500: soft_complete_note added to sessionStorage + clear catalogs;
-# 4550: UI expandable soft-complete-note detail + sessionStorage restore on load.
-WEBUI_HONESTY_MILESTONE = 4550
+# 4550: UI expandable soft-complete-note detail + sessionStorage restore on load;
+# 4600: soft_fertig_honesty_surface_changelog documents schema 1.0–1.5 history.
+WEBUI_HONESTY_MILESTONE = 4600
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 4550: soft_fertig_soft_complete_note has "
-    "expandable UI detail and restores from sessionStorage "
-    "(fwbweb.softCompleteNote.*) on load — hard gaps remain open."
+    "Honesty surface checkpoint 4600: soft_fertig_honesty_surface_changelog "
+    "documents schema 1.0–1.5 history on /health and honesty endpoints — "
+    "hard gaps remain open."
 )
 SOFT_FERTIG_SOFT_COMPLETE_NOTE = (
     "WEBUI_SOFT_COMPLETE_PHASE marks soft-fertig honesty/preview catalog "
@@ -252,6 +253,7 @@ SOFT_FERTIG_SURFACE_KEYS = (
     "soft_fertig_catalog_summary",
     "soft_fertig_honesty_readiness",
     "soft_fertig_soft_complete_note",
+    "soft_fertig_honesty_surface_changelog",
 )
 SOFT_FERTIG_SURFACE_KEY_TITLES = {
     "soft_complete_phase": "Soft-complete phase marker",
@@ -301,6 +303,7 @@ SOFT_FERTIG_SURFACE_KEY_TITLES = {
     "soft_fertig_catalog_summary": "Compact soft-fertig catalog counts",
     "soft_fertig_honesty_readiness": "Soft-fertig vs hard-gap readiness checklist",
     "soft_fertig_soft_complete_note": "Soft-complete phase marker clarification note",
+    "soft_fertig_honesty_surface_changelog": "Honesty surface schema version history",
 }
 
 SOFT_FERTIG_SURFACE_NOTES = {
@@ -351,6 +354,9 @@ SOFT_FERTIG_SURFACE_NOTES = {
     "soft_fertig_catalog_summary": "Compact counts for surface/session/export/bundle/clear catalogs.",
     "soft_fertig_honesty_readiness": "Soft catalogs complete flag plus open hard-gap count/note.",
     "soft_fertig_soft_complete_note": "States soft-complete phase is catalog-only; hard gaps stay open.",
+    "soft_fertig_honesty_surface_changelog": (
+        "Maps schema versions 1.0+ to short change notes; not a lock."
+    ),
 }
 
 # Browser sessionStorage key prefixes used by the WebUI honesty track
@@ -537,6 +543,30 @@ def soft_fertig_honesty_readiness() -> dict[str, object]:
     }
 
 
+# Soft-fertig honesty surface schema history (documentation; not a lock).
+SOFT_FERTIG_HONESTY_SURFACE_CHANGELOG = {
+    "1.0": "Initial soft-fertig honesty surface schema version.",
+    "1.1": "catalog_summary counts on honesty surface.",
+    "1.2": "track_note in catalog_summary, exports, and sessionStorage.",
+    "1.3": "readiness on /health and honesty endpoints (+ export/bundle).",
+    "1.4": "soft_fertig_catalogs_complete and hard_gaps_remain on catalog_summary.",
+    "1.5": (
+        "soft_fertig_soft_complete_note on /health and honesty endpoints "
+        "(+ export/bundle)."
+    ),
+}
+
+
+def soft_fertig_honesty_surface_changelog() -> dict[str, object]:
+    """Honesty surface schema version history (documentation; not closure)."""
+    return {
+        "current_version": SOFT_FERTIG_HONESTY_SURFACE_VERSION,
+        "versions": dict(SOFT_FERTIG_HONESTY_SURFACE_CHANGELOG),
+        "version_count": len(SOFT_FERTIG_HONESTY_SURFACE_CHANGELOG),
+        "hard_gaps_remain": True,
+    }
+
+
 def soft_fertig_catalog_summary() -> dict[str, object]:
     """Compact soft-fertig catalog counts for /health and honesty endpoints."""
     return {
@@ -555,6 +585,9 @@ def soft_fertig_catalog_summary() -> dict[str, object]:
         "soft_fertig_catalogs_complete": True,
         "hard_gaps_remain": True,
         "soft_fertig_soft_complete_note": SOFT_FERTIG_SOFT_COMPLETE_NOTE,
+        "soft_fertig_honesty_surface_changelog_version_count": len(
+            SOFT_FERTIG_HONESTY_SURFACE_CHANGELOG
+        ),
         "honesty_milestone": WEBUI_HONESTY_MILESTONE,
         "soft_complete_phase": WEBUI_SOFT_COMPLETE_PHASE,
     }
@@ -673,6 +706,7 @@ def health() -> dict[str, object]:
         "soft_fertig_catalog_summary": soft_fertig_catalog_summary(),
         "soft_fertig_honesty_readiness": soft_fertig_honesty_readiness(),
         "soft_fertig_soft_complete_note": SOFT_FERTIG_SOFT_COMPLETE_NOTE,
+        "soft_fertig_honesty_surface_changelog": soft_fertig_honesty_surface_changelog(),
         "soft_fertig_honesty_surface_version": SOFT_FERTIG_HONESTY_SURFACE_VERSION,
     }
 
@@ -706,6 +740,7 @@ def res_status(_: str = Depends(require_token)) -> dict[str, object]:
         "soft_fertig_catalog_summary": soft_fertig_catalog_summary(),
         "soft_fertig_honesty_readiness": soft_fertig_honesty_readiness(),
         "soft_fertig_soft_complete_note": SOFT_FERTIG_SOFT_COMPLETE_NOTE,
+        "soft_fertig_honesty_surface_changelog": soft_fertig_honesty_surface_changelog(),
         "soft_fertig_honesty_surface_version": SOFT_FERTIG_HONESTY_SURFACE_VERSION,
     }
 
@@ -1088,6 +1123,7 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
         "soft_fertig_catalog_summary": soft_fertig_catalog_summary(),
         "soft_fertig_honesty_readiness": soft_fertig_honesty_readiness(),
         "soft_fertig_soft_complete_note": SOFT_FERTIG_SOFT_COMPLETE_NOTE,
+        "soft_fertig_honesty_surface_changelog": soft_fertig_honesty_surface_changelog(),
         "soft_fertig_honesty_export_keys": list(SOFT_FERTIG_HONESTY_EXPORT_KEYS),
         "soft_fertig_honesty_export_key_count": len(SOFT_FERTIG_HONESTY_EXPORT_KEYS),
         "soft_fertig_honesty_export_key_titles": {
@@ -1240,6 +1276,9 @@ def hard_gaps_summary(_: str = Depends(require_token)) -> dict[str, object]:
         ),
         "soft_fertig_soft_complete_note": str(
             full.get("soft_fertig_soft_complete_note") or ""
+        ),
+        "soft_fertig_honesty_surface_changelog": dict(
+            full.get("soft_fertig_honesty_surface_changelog") or {}
         ),
         "soft_fertig_honesty_export_keys": list(
             full.get("soft_fertig_honesty_export_keys") or []
@@ -1601,6 +1640,7 @@ def hard_gap_closure(_: str = Depends(require_token)) -> dict[str, object]:
         "soft_fertig_catalog_summary": soft_fertig_catalog_summary(),
         "soft_fertig_honesty_readiness": soft_fertig_honesty_readiness(),
         "soft_fertig_soft_complete_note": SOFT_FERTIG_SOFT_COMPLETE_NOTE,
+        "soft_fertig_honesty_surface_changelog": soft_fertig_honesty_surface_changelog(),
         "soft_fertig_honesty_export_keys": list(SOFT_FERTIG_HONESTY_EXPORT_KEYS),
         "soft_fertig_honesty_export_key_count": len(SOFT_FERTIG_HONESTY_EXPORT_KEYS),
         "soft_fertig_honesty_export_key_titles": {

@@ -397,6 +397,9 @@ export function FirewallExtras({
   const [trackNoteDetail, setTrackNoteDetail] = useState<string | null>(null);
   const [softCompleteNote, setSoftCompleteNote] = useState<string | null>(null);
   const [softCompleteNoteDetail, setSoftCompleteNoteDetail] = useState<string | null>(null);
+  const [honestySurfaceChangelogDetail, setHonestySurfaceChangelogDetail] = useState<
+    string | null
+  >(null);
   const [honestyPathsSummary, setHonestyPathsSummary] = useState<string | null>(null);
   const [honestyPathsDetail, setHonestyPathsDetail] = useState<string | null>(null);
   const [hardGapsSummaryPath, setHardGapsSummaryPath] = useState<string | null>(null);
@@ -850,6 +853,28 @@ export function FirewallExtras({
           ? gaps.soft_fertig_soft_complete_note
           : null,
       );
+      {
+        const changelog =
+          gaps?.soft_fertig_honesty_surface_changelog &&
+          typeof gaps.soft_fertig_honesty_surface_changelog === "object"
+            ? (gaps.soft_fertig_honesty_surface_changelog as Record<string, unknown>)
+            : null;
+        if (changelog && Object.keys(changelog).length) {
+          const versions =
+            changelog.versions && typeof changelog.versions === "object"
+              ? (changelog.versions as Record<string, unknown>)
+              : {};
+          const lines = [
+            `current_version: ${String(changelog.current_version ?? "")}`,
+            `version_count: ${String(changelog.version_count ?? "")}`,
+            `hard_gaps_remain: ${String(changelog.hard_gaps_remain ?? "")}`,
+            ...Object.entries(versions).map(([k, v]) => `${k}: ${String(v)}`),
+          ];
+          setHonestySurfaceChangelogDetail(lines.join("\n"));
+        } else {
+          setHonestySurfaceChangelogDetail(null);
+        }
+      }
       if (gaps?.honesty_paths && Object.keys(gaps.honesty_paths).length) {
         const entries = Object.entries(gaps.honesty_paths);
         const n =
@@ -3042,6 +3067,14 @@ export function FirewallExtras({
               </pre>
             </details>
           ) : null}
+          {honestySurfaceChangelogDetail ? (
+            <details className="muted">
+              <summary>Soft-fertig honesty surface changelog</summary>
+              <pre className="deploy-log configlet-preview" tabIndex={0}>
+                {honestySurfaceChangelogDetail}
+              </pre>
+            </details>
+          ) : null}
           <div className="btn-row pad-tight">
             {hardGapsPayload ? (
               <button
@@ -3910,6 +3943,62 @@ export function FirewallExtras({
                 Copy soft-complete note
               </button>
             ) : null}
+            {hardGapsPayload ? (
+              <button
+                type="button"
+                className="ghost"
+                disabled={busy}
+                title="Download soft_fertig_honesty_surface_changelog from /hard-gaps"
+                onClick={() => {
+                  const catalog: Record<string, unknown> = {
+                    soft_fertig_honesty_surface_changelog:
+                      hardGapsPayload.soft_fertig_honesty_surface_changelog,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  const text = JSON.stringify(catalog, null, 2);
+                  const blob = new Blob([text + "\n"], {
+                    type: "application/json;charset=utf-8",
+                  });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `fwbweb-honesty-surface-changelog-${firewallId || "fw"}.json`;
+                  a.click();
+                  URL.revokeObjectURL(url);
+                  onStatus?.("Downloaded honesty surface changelog");
+                }}
+              >
+                Download surface changelog
+              </button>
+            ) : null}
+            {hardGapsPayload ? (
+              <button
+                type="button"
+                className="ghost"
+                disabled={busy}
+                title="Copy soft_fertig_honesty_surface_changelog to clipboard"
+                onClick={() => {
+                  void (async () => {
+                    const catalog: Record<string, unknown> = {
+                      soft_fertig_honesty_surface_changelog:
+                        hardGapsPayload.soft_fertig_honesty_surface_changelog,
+                      soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                      honesty_milestone: hardGapsPayload.honesty_milestone,
+                    };
+                    const text = JSON.stringify(catalog, null, 2) + "\n";
+                    try {
+                      await navigator.clipboard.writeText(text);
+                      onStatus?.("Copied honesty surface changelog");
+                    } catch (e) {
+                      onError?.(e instanceof Error ? e.message : String(e));
+                    }
+                  })();
+                }}
+              >
+                Copy surface changelog
+              </button>
+            ) : null}
             <button
               type="button"
               className="ghost"
@@ -4190,6 +4279,7 @@ export function FirewallExtras({
                 setHonestyReadinessDetail(null);
                 setSoftCompleteNote(null);
                 setSoftCompleteNoteDetail(null);
+                setHonestySurfaceChangelogDetail(null);
                 onStatus?.("Cleared honesty catalogs");
               }}
             >
