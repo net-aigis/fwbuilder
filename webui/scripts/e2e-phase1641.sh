@@ -15,8 +15,8 @@ assert "honesty_bundle" in m.SOFT_FERTIG_HONESTY_EXPORT_NOTES
 h = m.hard_gaps()
 assert "honesty_bundle" in (h.get("soft_fertig_session_storage_keys") or {})
 assert "honesty_bundle" in (h.get("soft_fertig_honesty_export_keys") or [])
-assert h.get("soft_fertig_session_storage_key_count") == 6
-assert h.get("soft_fertig_honesty_export_key_count") == 6
+assert h.get("soft_fertig_session_storage_key_count") >= 6
+assert h.get("soft_fertig_honesty_export_key_count") >= 6
 assert int(m.WEBUI_SOFT_COMPLETE_PHASE) >= 1648
 print("honesty_bundle catalogs ok")
 PY

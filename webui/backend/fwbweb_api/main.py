@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "1848"
+WEBUI_SOFT_COMPLETE_PHASE = "1864"
 SOFT_FERTIG_HONESTY_TRACK_NOTE = (
     "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
     "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
@@ -106,11 +106,13 @@ SOFT_FERTIG_HONESTY_TRACK_NOTE = (
 # 3700: catalog_summary listed in honesty export + bundle sections;
 # 3750: soft_fertig_honesty_surface_version bumped to 1.1 (catalog_summary);
 # 3800: soft_fertig_honesty_track_note clarifies soft track vs open hard gaps;
-# 3850: track_note included in catalog_summary + honesty export catalogs.
-WEBUI_HONESTY_MILESTONE = 3850
+# 3850: track_note included in catalog_summary + honesty export catalogs;
+# 3900: track_note added to sessionStorage + clear catalogs.
+WEBUI_HONESTY_MILESTONE = 3900
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 3850: soft_fertig_honesty_track_note is "
-    "included in catalog_summary and honesty exports — hard gaps remain open."
+    "Honesty surface checkpoint 3900: soft_fertig_honesty_track_note is "
+    "persisted via sessionStorage (fwbweb.honestyTrackNote.*) and clear "
+    "catalogs — hard gaps remain open."
 )
 
 HARD_GAPS_OPEN = (
@@ -336,6 +338,7 @@ SOFT_FERTIG_SESSION_STORAGE_KEYS = {
     "related_refusals": "fwbweb.relatedRefusals.",
     "honesty_paths": "fwbweb.honestyPaths.",
     "honesty_bundle": "fwbweb.honestyBundle.",
+    "track_note": "fwbweb.honestyTrackNote.",
 }
 SOFT_FERTIG_SESSION_STORAGE_KEY_TITLES = {
     "hard_gaps": "Full /hard-gaps JSON snapshot",
@@ -344,6 +347,7 @@ SOFT_FERTIG_SESSION_STORAGE_KEY_TITLES = {
     "related_refusals": "Related hard-gap refusals JSON",
     "honesty_paths": "Honesty paths catalog JSON",
     "honesty_bundle": "Combined honesty bundle JSON",
+    "track_note": "Soft-fertig honesty track note JSON",
 }
 SOFT_FERTIG_SESSION_STORAGE_NOTES = {
     "hard_gaps": "Persists last downloaded/copied /hard-gaps JSON per firewall.",
@@ -352,6 +356,7 @@ SOFT_FERTIG_SESSION_STORAGE_NOTES = {
     "related_refusals": "Persists related hard-gap refusals JSON per firewall.",
     "honesty_paths": "Persists honesty paths catalog JSON per firewall.",
     "honesty_bundle": "Persists last downloaded/copied honesty bundle per firewall.",
+    "track_note": "Persists last downloaded/copied soft_fertig_honesty_track_note per firewall.",
 }
 
 # Keys removed by the UI "Clear honesty catalogs" action (same set as sessionStorage catalog).
@@ -403,7 +408,10 @@ SOFT_FERTIG_HONESTY_EXPORT_NOTES = {
     "session_storage_clear": "Download/Copy clear catalogs; Clear honesty catalogs action.",
     "surface_version": "soft_fertig_honesty_surface_version (+ note) from /hard-gaps.",
     "catalog_summary": "Download/Copy soft_fertig_catalog_summary; also on /health.",
-    "track_note": "soft_fertig_honesty_track_note from /hard-gaps and /health.",
+    "track_note": (
+        "soft_fertig_honesty_track_note from /hard-gaps and /health; "
+        "sessionStorage fwbweb.honestyTrackNote.*."
+    ),
 }
 
 # Top-level sections of the combined UI honesty bundle download.
@@ -443,7 +451,10 @@ SOFT_FERTIG_HONESTY_BUNDLE_NOTES = {
     "session_storage_clear": "Same subset as Download clear catalogs.",
     "surface_version": "Dedicated surface_version section (also in meta).",
     "catalog_summary": "Same subset as Download catalog summary.",
-    "track_note": "soft_fertig_honesty_track_note clarification text.",
+    "track_note": (
+        "soft_fertig_honesty_track_note clarification text; "
+        "also sessionStorage fwbweb.honestyTrackNote.*."
+    ),
     "honesty_exports": "Same subset as Download honesty exports.",
 }
 

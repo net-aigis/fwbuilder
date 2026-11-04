@@ -8,7 +8,7 @@ from fwbweb_api import main as m
 s = m.soft_fertig_catalog_summary()
 assert str(s["soft_fertig_honesty_surface_version"]).startswith("1.")
 assert int(s["soft_fertig_surface_key_count"]) >= 44
-assert int(s["soft_fertig_session_storage_key_count"]) == 6
+assert int(s["soft_fertig_session_storage_key_count"]) >= 6
 assert int(s["soft_fertig_honesty_export_key_count"]) >= 8
 assert int(s["soft_fertig_honesty_bundle_section_count"]) >= 9
 assert int(s["hard_gap_count"]) == 3

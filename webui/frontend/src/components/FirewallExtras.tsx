@@ -156,6 +156,10 @@ function honestyBundleStorageKey(firewallId: string) {
   return `fwbweb.honestyBundle.${firewallId}`;
 }
 
+function honestyTrackNoteStorageKey(firewallId: string) {
+  return `fwbweb.honestyTrackNote.${firewallId}`;
+}
+
 function buildHonestyBundle(payload: Record<string, unknown>) {
   const surfaceKeys = Array.isArray(payload.soft_fertig_surface_keys)
     ? (payload.soft_fertig_surface_keys as string[])
@@ -3563,6 +3567,14 @@ export function FirewallExtras({
                     honesty_milestone: hardGapsPayload.honesty_milestone,
                   };
                   const text = JSON.stringify(catalog, null, 2);
+                  try {
+                    sessionStorage.setItem(
+                      honestyTrackNoteStorageKey(firewallId),
+                      text,
+                    );
+                  } catch {
+                    /* ignore */
+                  }
                   const blob = new Blob([text + "\n"], {
                     type: "application/json;charset=utf-8",
                   });
@@ -3593,6 +3605,14 @@ export function FirewallExtras({
                       honesty_milestone: hardGapsPayload.honesty_milestone,
                     };
                     const text = JSON.stringify(catalog, null, 2) + "\n";
+                    try {
+                      sessionStorage.setItem(
+                        honestyTrackNoteStorageKey(firewallId),
+                        text.trimEnd(),
+                      );
+                    } catch {
+                      /* ignore */
+                    }
                     try {
                       await navigator.clipboard.writeText(text);
                       onStatus?.("Copied honesty track note");
@@ -3863,7 +3883,7 @@ export function FirewallExtras({
               type="button"
               className="ghost"
               disabled={busy || (!hardGapsPayload && !hardGapsSummaryText)}
-              title="Clear sessionStorage hard-gaps snapshot, summary, surface, refusals, honesty paths"
+              title="Clear sessionStorage hard-gaps snapshot, summary, surface, refusals, honesty paths, track note"
               onClick={() => {
                 try {
                   sessionStorage.removeItem(hardGapsSnapshotKey(firewallId));
@@ -3872,6 +3892,7 @@ export function FirewallExtras({
                   sessionStorage.removeItem(relatedRefusalsStorageKey(firewallId));
                   sessionStorage.removeItem(honestyPathsCatalogKey(firewallId));
                   sessionStorage.removeItem(honestyBundleStorageKey(firewallId));
+                  sessionStorage.removeItem(honestyTrackNoteStorageKey(firewallId));
                 } catch {
                   /* ignore */
                 }
