@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "928"
+WEBUI_SOFT_COMPLETE_PHASE = "936"
 # Honesty/preview track milestone (last thematic checkpoint; soft marker may be higher).
 # 600: refusals/closure; 650: health/summary/paths + fidelity sample;
 # 700: expect step_notes + SSH alternative/refusal notes;
@@ -48,11 +48,13 @@ WEBUI_SOFT_COMPLETE_PHASE = "928"
 # 1050: column_stretch/spacing/layout_tree + chrome geometry/size_grip samples;
 # 1100: with_grid/label/tooltip + fields count hard-gaps samples;
 # 1150: pages/sections counts + stack_names on hard-gaps sample;
-# 1200: chrome window_title/tab_position hard-gaps samples.
-WEBUI_HONESTY_MILESTONE = 1200
+# 1200: chrome window_title/tab_position hard-gaps samples;
+# 1250: UI truncates long sample fidelity lines (title keeps full).
+WEBUI_HONESTY_MILESTONE = 1250
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 1200: hard-gaps sample covers chrome "
-    "window_title and tab_position — still not pixel parity. Hard gaps remain open."
+    "Honesty surface checkpoint 1250: UI truncates long layout_fidelity_sample "
+    "summary lines (title keeps full text); API still returns full samples — "
+    "still not pixel parity. Hard gaps remain open."
 )
 
 HARD_GAPS_OPEN = (
