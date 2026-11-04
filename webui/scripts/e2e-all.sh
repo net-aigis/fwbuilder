@@ -1937,6 +1937,22 @@ scripts=(
   e2e-phase1926
   e2e-phase1927
   e2e-phase1928
+  e2e-phase1929
+  e2e-phase1930
+  e2e-phase1931
+  e2e-phase1932
+  e2e-phase1933
+  e2e-phase1934
+  e2e-phase1935
+  e2e-phase1936
+  e2e-phase1937
+  e2e-phase1938
+  e2e-phase1939
+  e2e-phase1940
+  e2e-phase1941
+  e2e-phase1942
+  e2e-phase1943
+  e2e-phase1944
 )
 for s in "${scripts[@]}"; do
   script="webui/scripts/${s}.sh"

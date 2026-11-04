@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "1928"
+WEBUI_SOFT_COMPLETE_PHASE = "1944"
 SOFT_FERTIG_HONESTY_TRACK_NOTE = (
     "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
     "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
@@ -111,11 +111,13 @@ SOFT_FERTIG_HONESTY_TRACK_NOTE = (
 # 3950: soft_fertig_honesty_surface_version bumped to 1.2 (track_note);
 # 4000: UI expandable track-note detail + sessionStorage restore on load;
 # 4050: soft_fertig_honesty_readiness compact soft-vs-hard checklist;
-# 4100: readiness listed in honesty export + bundle sections.
-WEBUI_HONESTY_MILESTONE = 4100
+# 4100: readiness listed in honesty export + bundle sections;
+# 4150: soft_fertig_honesty_surface_version bumped to 1.3 (readiness).
+WEBUI_HONESTY_MILESTONE = 4150
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 4100: soft_fertig_honesty_readiness is "
-    "listed in honesty export and bundle catalogs — hard gaps remain open."
+    "Honesty surface checkpoint 4150: soft_fertig_honesty_surface_version "
+    "1.3 documents soft_fertig_honesty_readiness on honesty endpoints and "
+    "in export/bundle — hard gaps remain open."
 )
 
 HARD_GAPS_OPEN = (
@@ -376,11 +378,10 @@ SOFT_FERTIG_SESSION_STORAGE_CLEAR_NOTE = (
 )
 
 # Soft-fertig honesty/preview catalog schema version (documentation; not a lock).
-SOFT_FERTIG_HONESTY_SURFACE_VERSION = "1.2"
+SOFT_FERTIG_HONESTY_SURFACE_VERSION = "1.3"
 SOFT_FERTIG_HONESTY_SURFACE_VERSION_NOTE = (
-    "Schema 1.2: schema 1.1 plus soft_fertig_honesty_track_note in "
-    "catalog_summary, honesty export/bundle, and sessionStorage "
-    "(fwbweb.honestyTrackNote.*); hard gaps remain open."
+    "Schema 1.3: schema 1.2 plus soft_fertig_honesty_readiness on "
+    "/health and honesty endpoints (+ export/bundle); hard gaps remain open."
 )
 
 # Downloadable honesty/preview JSON catalogs the UI can export (documentation).
