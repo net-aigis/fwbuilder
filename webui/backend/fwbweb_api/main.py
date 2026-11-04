@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "2856"
+WEBUI_SOFT_COMPLETE_PHASE = "2872"
 SOFT_FERTIG_HONESTY_TRACK_NOTE = (
     "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
     "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
@@ -169,11 +169,12 @@ SOFT_FERTIG_HONESTY_TRACK_NOTE = (
 # 6850: changelog_roster listed in honesty export + bundle sections;
 # 6900: soft_fertig_honesty_surface_version bumped to 2.5 (changelog_roster);
 # 6950: changelog_roster added to sessionStorage + clear catalogs;
-# 7000: Soft 2840+ honesty surface checkpoint (changelog_roster cycle complete).
-WEBUI_HONESTY_MILESTONE = 7000
+# 7000: Soft 2840+ honesty surface checkpoint (changelog_roster cycle complete);
+# 7050: soft_fertig_expect_step_roster compact refused expect install step titles/notes.
+WEBUI_HONESTY_MILESTONE = 7050
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 7000: soft-fertig honesty/preview catalogs "
-    "through Soft 2840+ (schema 2.5, changelog_roster sessionStorage) — "
+    "Honesty surface checkpoint 7050: soft_fertig_expect_step_roster lists "
+    "refused expect-install-plan step ids with titles and notes for operators — "
     "hard gaps remain open."
 )
 SOFT_FERTIG_SOFT_COMPLETE_NOTE = (
@@ -325,6 +326,7 @@ SOFT_FERTIG_SURFACE_KEYS = (
     "soft_fertig_honesty_bundle_roster",
     "soft_fertig_surface_roster",
     "soft_fertig_changelog_roster",
+    "soft_fertig_expect_step_roster",
 )
 SOFT_FERTIG_SURFACE_KEY_TITLES = {
     "soft_complete_phase": "Soft-complete phase marker",
@@ -397,6 +399,9 @@ SOFT_FERTIG_SURFACE_KEY_TITLES = {
     ),
     "soft_fertig_changelog_roster": (
         "Honesty surface changelog version ids with notes"
+    ),
+    "soft_fertig_expect_step_roster": (
+        "Refused expect-install-plan step ids with titles and notes"
     ),
 }
 
@@ -477,6 +482,9 @@ SOFT_FERTIG_SURFACE_NOTES = {
     ),
     "soft_fertig_changelog_roster": (
         "Per honesty surface changelog version: id and note."
+    ),
+    "soft_fertig_expect_step_roster": (
+        "Per refused expect-install-plan step: id, title, and note."
     ),
 }
 
@@ -1108,6 +1116,33 @@ def soft_fertig_changelog_roster() -> dict[str, object]:
     }
 
 
+def soft_fertig_expect_step_roster() -> dict[str, object]:
+    """Refused expect-install-plan step roster (documentation; not closure)."""
+    from .expect_installer import (
+        EXPECT_PLAN_STEP_IDS,
+        EXPECT_PLAN_STEP_NOTES,
+        EXPECT_PLAN_STEP_TITLES,
+    )
+
+    entries = [
+        {
+            "id": step_id,
+            "title": EXPECT_PLAN_STEP_TITLES.get(step_id, ""),
+            "note": EXPECT_PLAN_STEP_NOTES.get(step_id, ""),
+        }
+        for step_id in EXPECT_PLAN_STEP_IDS
+    ]
+    return {
+        "hard_gaps_remain": True,
+        "entries": entries,
+        "entry_count": len(entries),
+        "note": (
+            "Catalog of refused expect-install-plan steps only; "
+            "soft-fertig catalogs do not close hard gaps."
+        ),
+    }
+
+
 def soft_fertig_catalog_summary() -> dict[str, object]:
     """Compact soft-fertig catalog counts for /health and honesty endpoints."""
     return {
@@ -1155,6 +1190,9 @@ def soft_fertig_catalog_summary() -> dict[str, object]:
         ),
         "soft_fertig_changelog_roster_entry_count": (
             soft_fertig_changelog_roster()["entry_count"]
+        ),
+        "soft_fertig_expect_step_roster_entry_count": (
+            soft_fertig_expect_step_roster()["entry_count"]
         ),
         "honesty_milestone": WEBUI_HONESTY_MILESTONE,
         "soft_complete_phase": WEBUI_SOFT_COMPLETE_PHASE,
@@ -1284,6 +1322,7 @@ def health() -> dict[str, object]:
         "soft_fertig_honesty_bundle_roster": soft_fertig_honesty_bundle_roster(),
         "soft_fertig_surface_roster": soft_fertig_surface_roster(),
         "soft_fertig_changelog_roster": soft_fertig_changelog_roster(),
+        "soft_fertig_expect_step_roster": soft_fertig_expect_step_roster(),
         "soft_fertig_honesty_surface_version": SOFT_FERTIG_HONESTY_SURFACE_VERSION,
     }
 
@@ -1327,6 +1366,7 @@ def res_status(_: str = Depends(require_token)) -> dict[str, object]:
         "soft_fertig_honesty_bundle_roster": soft_fertig_honesty_bundle_roster(),
         "soft_fertig_surface_roster": soft_fertig_surface_roster(),
         "soft_fertig_changelog_roster": soft_fertig_changelog_roster(),
+        "soft_fertig_expect_step_roster": soft_fertig_expect_step_roster(),
         "soft_fertig_honesty_surface_version": SOFT_FERTIG_HONESTY_SURFACE_VERSION,
     }
 
@@ -1707,6 +1747,7 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
         "soft_fertig_honesty_bundle_roster": soft_fertig_honesty_bundle_roster(),
         "soft_fertig_surface_roster": soft_fertig_surface_roster(),
         "soft_fertig_changelog_roster": soft_fertig_changelog_roster(),
+        "soft_fertig_expect_step_roster": soft_fertig_expect_step_roster(),
         "soft_fertig_honesty_export_keys": list(SOFT_FERTIG_HONESTY_EXPORT_KEYS),
         "soft_fertig_honesty_export_key_count": len(SOFT_FERTIG_HONESTY_EXPORT_KEYS),
         "soft_fertig_honesty_export_key_titles": {
@@ -1889,6 +1930,9 @@ def hard_gaps_summary(_: str = Depends(require_token)) -> dict[str, object]:
         ),
         "soft_fertig_changelog_roster": dict(
             full.get("soft_fertig_changelog_roster") or {}
+        ),
+        "soft_fertig_expect_step_roster": dict(
+            full.get("soft_fertig_expect_step_roster") or {}
         ),
         "soft_fertig_honesty_export_keys": list(
             full.get("soft_fertig_honesty_export_keys") or []
@@ -2260,6 +2304,7 @@ def hard_gap_closure(_: str = Depends(require_token)) -> dict[str, object]:
         "soft_fertig_honesty_bundle_roster": soft_fertig_honesty_bundle_roster(),
         "soft_fertig_surface_roster": soft_fertig_surface_roster(),
         "soft_fertig_changelog_roster": soft_fertig_changelog_roster(),
+        "soft_fertig_expect_step_roster": soft_fertig_expect_step_roster(),
         "soft_fertig_honesty_export_keys": list(SOFT_FERTIG_HONESTY_EXPORT_KEYS),
         "soft_fertig_honesty_export_key_count": len(SOFT_FERTIG_HONESTY_EXPORT_KEYS),
         "soft_fertig_honesty_export_key_titles": {
