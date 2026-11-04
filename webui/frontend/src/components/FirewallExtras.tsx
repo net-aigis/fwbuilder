@@ -304,6 +304,9 @@ function buildHonestyBundle(payload: Record<string, unknown>) {
     surface_roster: {
       soft_fertig_surface_roster: payload.soft_fertig_surface_roster,
     },
+    changelog_roster: {
+      soft_fertig_changelog_roster: payload.soft_fertig_changelog_roster,
+    },
     honesty_exports: {
       soft_fertig_honesty_export_keys: payload.soft_fertig_honesty_export_keys,
       soft_fertig_honesty_export_key_count:

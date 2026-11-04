@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "2792"
+WEBUI_SOFT_COMPLETE_PHASE = "2808"
 SOFT_FERTIG_HONESTY_TRACK_NOTE = (
     "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
     "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
@@ -165,12 +165,12 @@ SOFT_FERTIG_HONESTY_TRACK_NOTE = (
 # 6650: soft_fertig_honesty_surface_version bumped to 2.4 (surface_roster);
 # 6700: surface_roster added to sessionStorage + clear catalogs;
 # 6750: Soft 2760+ honesty surface checkpoint (surface_roster cycle complete);
-# 6800: soft_fertig_changelog_roster compact honesty surface changelog versions.
-WEBUI_HONESTY_MILESTONE = 6800
+# 6800: soft_fertig_changelog_roster compact honesty surface changelog versions;
+# 6850: changelog_roster listed in honesty export + bundle sections.
+WEBUI_HONESTY_MILESTONE = 6850
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 6800: soft_fertig_changelog_roster lists "
-    "honesty surface changelog version ids with notes for operators — "
-    "hard gaps remain open."
+    "Honesty surface checkpoint 6850: soft_fertig_changelog_roster is "
+    "listed in honesty export and bundle catalogs — hard gaps remain open."
 )
 SOFT_FERTIG_SOFT_COMPLETE_NOTE = (
     "WEBUI_SOFT_COMPLETE_PHASE marks soft-fertig honesty/preview catalog "
@@ -613,6 +613,7 @@ SOFT_FERTIG_HONESTY_EXPORT_KEYS = (
     "honesty_export_roster",
     "honesty_bundle_roster",
     "surface_roster",
+    "changelog_roster",
 )
 SOFT_FERTIG_HONESTY_EXPORT_KEY_TITLES = {
     "hard_gaps": "Full /hard-gaps honesty snapshot JSON",
@@ -636,6 +637,7 @@ SOFT_FERTIG_HONESTY_EXPORT_KEY_TITLES = {
     "honesty_export_roster": "Honesty export catalog ids with titles and notes",
     "honesty_bundle_roster": "Honesty bundle section ids with titles and notes",
     "surface_roster": "Soft-fertig surface key ids with titles and notes",
+    "changelog_roster": "Honesty surface changelog version ids with notes",
 }
 SOFT_FERTIG_HONESTY_EXPORT_NOTES = {
     "hard_gaps": "Download hard-gaps JSON button; sessionStorage fwbweb.hardGaps.*.",
@@ -695,6 +697,9 @@ SOFT_FERTIG_HONESTY_EXPORT_NOTES = {
         "Download/Copy soft_fertig_surface_roster; also on /health; "
         "sessionStorage fwbweb.surfaceRoster.*."
     ),
+    "changelog_roster": (
+        "Download/Copy soft_fertig_changelog_roster; also on /health."
+    ),
 }
 
 # Top-level sections of the combined UI honesty bundle download.
@@ -720,6 +725,7 @@ SOFT_FERTIG_HONESTY_BUNDLE_SECTIONS = (
     "honesty_export_roster",
     "honesty_bundle_roster",
     "surface_roster",
+    "changelog_roster",
     "honesty_exports",
 )
 SOFT_FERTIG_HONESTY_BUNDLE_SECTION_TITLES = {
@@ -744,6 +750,7 @@ SOFT_FERTIG_HONESTY_BUNDLE_SECTION_TITLES = {
     "honesty_export_roster": "Honesty export catalog ids with titles and notes",
     "honesty_bundle_roster": "Honesty bundle section ids with titles and notes",
     "surface_roster": "Soft-fertig surface key ids with titles and notes",
+    "changelog_roster": "Honesty surface changelog version ids with notes",
     "honesty_exports": "Export catalog meta (keys/titles/notes)",
 }
 SOFT_FERTIG_HONESTY_BUNDLE_NOTES = {
@@ -804,6 +811,7 @@ SOFT_FERTIG_HONESTY_BUNDLE_NOTES = {
         "Same subset as Download surface roster; "
         "also sessionStorage fwbweb.surfaceRoster.*."
     ),
+    "changelog_roster": "Same subset as Download changelog roster.",
     "honesty_exports": "Same subset as Download honesty exports.",
 }
 
