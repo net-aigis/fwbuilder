@@ -526,6 +526,7 @@ def _layout_fidelity_from_dialog(stem: str, info: dict[str, Any]) -> dict[str, A
         # Presence of QStackedWidget extraction (not desktop pixel switch behavior).
         1.0 if page_stats["stacked_sections"] else 0.0,
         1.0 if page_stats["buddy_labels"] else 0.0,
+        1.0 if page_stats["pages_with_buddy_labels"] else 0.0,
         1.0 if page_stats["sections_with_flat"] or page_stats["sections_with_checkable"] else 0.0,
     ]
     score = round(100.0 * (sum(score_parts) / len(score_parts)), 1)

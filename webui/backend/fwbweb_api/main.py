@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "520"
+WEBUI_SOFT_COMPLETE_PHASE = "528"
 
 HARD_GAPS_OPEN = (
     "full_qt_pixel_layout",
@@ -116,8 +116,11 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
     """Explicit list of remaining hard-gap items (honesty track)."""
     from .deploy import ssh_auth_capabilities
     from .expect_installer import EXPECT_PLAN_STEP_IDS
+    from .platforms import layout_fidelity_for
 
     ssh = ssh_auth_capabilities()
+    sample_fid = layout_fidelity_for("iptables", "linux24")
+    signal_catalog = sample_fid.get("signal_keys") if sample_fid.get("ok") else None
     return {
         "soft_complete_phase": WEBUI_SOFT_COMPLETE_PHASE,
         "soft_fertig_honesty_track": True,
@@ -127,6 +130,7 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
         "hard_gap_closure": dict(HARD_GAP_CLOSURE),
         "closure_path": "/api/v1/hard-gaps/closure",
         "layout_fidelity_path": "/api/v1/layout-fidelity",
+        "layout_fidelity_signal_catalog": signal_catalog,
         "stack_switch_path": "/api/v1/stack-switch",
         "option_enable_path": "/api/v1/option-enable",
         "expect_run_path": "/api/v1/expect-install-plan/run",

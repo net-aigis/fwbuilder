@@ -189,6 +189,8 @@ export function FirewallExtras({
   const [hardGapNotes, setHardGapNotes] = useState<Record<string, string>>({});
   const [hardGapClosure, setHardGapClosure] = useState<Record<string, string>>({});
   const [layoutFidelityPath, setLayoutFidelityPath] = useState<string | null>(null);
+  const [hardGapsPayload, setHardGapsPayload] = useState<Record<string, unknown> | null>(null);
+  const [signalCatalogSummary, setSignalCatalogSummary] = useState<string | null>(null);
   const [stackSwitchPath, setStackSwitchPath] = useState<string | null>(null);
   const [optionEnablePath, setOptionEnablePath] = useState<string | null>(null);
   const [expectRunPath, setExpectRunPath] = useState<string | null>(null);
@@ -236,6 +238,15 @@ export function FirewallExtras({
       setHardGapNotes(gaps?.hard_gap_notes || {});
       setHardGapClosure(gaps?.hard_gap_closure || {});
       setLayoutFidelityPath(gaps?.layout_fidelity_path || "/api/v1/layout-fidelity");
+      if (gaps) setHardGapsPayload(gaps as unknown as Record<string, unknown>);
+      const cat = gaps?.layout_fidelity_signal_catalog;
+      if (cat) {
+        const n =
+          (cat.fields?.length || 0) + (cat.pages?.length || 0) + (cat.chrome?.length || 0);
+        setSignalCatalogSummary(n ? `Fidelity signal catalog: ${n} keys` : null);
+      } else {
+        setSignalCatalogSummary(null);
+      }
       setStackSwitchPath(gaps?.stack_switch_path || "/api/v1/stack-switch");
       setOptionEnablePath(gaps?.option_enable_path || "/api/v1/option-enable");
       setExpectRunPath(gaps?.expect_run_path || "/api/v1/expect-install-plan/run");
@@ -1740,6 +1751,28 @@ export function FirewallExtras({
               {sshAuthPath && sshRefusalSummary ? " · " : null}
               {sshRefusalSummary}
             </p>
+          ) : null}
+          {signalCatalogSummary ? <p className="muted">{signalCatalogSummary}</p> : null}
+          {hardGapsPayload ? (
+            <button
+              type="button"
+              className="ghost"
+              disabled={busy}
+              title="Download /hard-gaps JSON (honesty track snapshot)"
+              onClick={() => {
+                const text = JSON.stringify(hardGapsPayload, null, 2);
+                const blob = new Blob([text + "\n"], { type: "application/json;charset=utf-8" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = `fwbweb-hard-gaps-${firewallId || "fw"}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+                onStatus?.("Downloaded hard-gaps JSON");
+              }}
+            >
+              Download hard-gaps JSON
+            </button>
           ) : null}
         </div>
       ) : null}

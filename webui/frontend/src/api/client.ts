@@ -927,6 +927,11 @@ export function fetchHardGaps() {
     hard_gap_closure?: Record<string, string>;
     closure_path?: string;
     layout_fidelity_path?: string;
+    layout_fidelity_signal_catalog?: {
+      fields?: string[];
+      pages?: string[];
+      chrome?: string[];
+    } | null;
     stack_switch_path?: string;
     option_enable_path?: string;
     expect_run_path?: string;

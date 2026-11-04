@@ -87,6 +87,7 @@ export function RuleOptions({
           lf?.stacked_sections ? `stacked×${lf.stacked_sections}` : "",
           lf?.with_visible ? `visible×${lf.with_visible}` : "",
           lf?.layout_tree_max_depth ? `layout_tree≤${lf.layout_tree_max_depth}` : "",
+          lf?.buddy_labels ? `buddy×${lf.buddy_labels}` : "",
           lf?.signal_key_count ? `keys×${lf.signal_key_count}` : "",
         ].filter(Boolean);
         setLayoutFidelity(
