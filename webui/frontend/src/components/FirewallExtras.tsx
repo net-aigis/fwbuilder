@@ -1889,14 +1889,21 @@ export function FirewallExtras({
                   try {
                     const c = await fetchHardGapClosure();
                     const lines = [
-                      `# hard-gap closure (phase ${c.soft_complete_phase})`,
+                      `# hard-gap closure (phase ${c.soft_complete_phase}` +
+                        (c.hard_gap_count != null ? `, count=${c.hard_gap_count}` : "") +
+                        ")",
+                      c.parent_path ? `parent=${c.parent_path}` : "",
                       c.note || "",
                       "",
                       ...((c.hard_gap_open || []).map((g) => {
                         const crit = c.hard_gap_closure?.[g] || "";
-                        return `- ${g}\n  close when: ${crit}`;
+                        const note = c.hard_gap_notes?.[g] || "";
+                        return (
+                          `- ${g}\n  close when: ${crit}` +
+                          (note ? `\n  note: ${note}` : "")
+                        );
                       })),
-                    ];
+                    ].filter((line) => line !== undefined);
                     const text = lines.join("\n");
                     setHardGapsClosureText(text);
                     try {

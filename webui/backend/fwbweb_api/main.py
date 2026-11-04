@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "576"
+WEBUI_SOFT_COMPLETE_PHASE = "584"
 
 HARD_GAPS_OPEN = (
     "full_qt_pixel_layout",
@@ -164,10 +164,14 @@ def hard_gap_closure(_: str = Depends(require_token)) -> dict[str, object]:
     return {
         "soft_complete_phase": WEBUI_SOFT_COMPLETE_PHASE,
         "hard_gap_open": list(HARD_GAPS_OPEN),
+        "hard_gap_count": len(HARD_GAPS_OPEN),
         "hard_gap_closure": dict(HARD_GAP_CLOSURE),
+        "hard_gap_notes": dict(HARD_GAP_NOTES),
+        "parent_path": "/api/v1/hard-gaps",
         "note": (
             "Criteria for closing each hard gap. Meeting layout-fidelity score alone "
-            "does not close full_qt_pixel_layout."
+            "does not close full_qt_pixel_layout. hard_gap_notes summarize the "
+            "current honesty/preview state for each open gap."
         ),
     }
 

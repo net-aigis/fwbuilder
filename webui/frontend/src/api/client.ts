@@ -1017,7 +1017,10 @@ export function fetchHardGapClosure() {
   return api<{
     soft_complete_phase: string;
     hard_gap_open: string[];
+    hard_gap_count?: number;
     hard_gap_closure: Record<string, string>;
+    hard_gap_notes?: Record<string, string>;
+    parent_path?: string;
     note?: string;
   }>("/api/v1/hard-gaps/closure");
 }
