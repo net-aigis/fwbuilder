@@ -6,7 +6,7 @@ cd "$ROOT"
 PYTHONPATH=webui/backend python3 - <<'PY'
 from fwbweb_api import main as m
 assert int(m.WEBUI_SOFT_COMPLETE_PHASE) >= 656
-assert m.WEBUI_HONESTY_MILESTONE == 650
+assert m.WEBUI_HONESTY_MILESTONE >= 650
 print("soft-complete >=656", m.WEBUI_SOFT_COMPLETE_PHASE, "milestone", m.WEBUI_HONESTY_MILESTONE)
 PY
 grep -qE 'phase656|Soft-complete STATUS through 656|through 656' webui/STATUS.md

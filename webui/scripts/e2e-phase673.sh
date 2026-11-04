@@ -13,7 +13,7 @@ h = m.hard_gaps()
 assert h.get("ssh_alternative_notes") == SSH_ALTERNATIVE_NOTES
 assert h.get("ssh_refusal_path_notes") == SSH_REFUSAL_PATH_NOTES
 assert "ssh_alternative_notes" in (m.HARD_GAP_NOTES.get("password_keyboard_interactive_ssh") or "")
-assert m.WEBUI_SOFT_COMPLETE_PHASE == "680"
+assert int(m.WEBUI_SOFT_COMPLETE_PHASE) >= 680
 print("ssh notes ok", len(SSH_ALTERNATIVE_NOTES), len(SSH_REFUSAL_PATH_NOTES))
 PY
 echo "cleaned"
