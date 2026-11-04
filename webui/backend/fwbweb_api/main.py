@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "1624"
+WEBUI_SOFT_COMPLETE_PHASE = "1640"
 # Honesty/preview track milestone (last thematic checkpoint; soft marker may be higher).
 # 600: refusals/closure; 650: health/summary/paths + fidelity sample;
 # 700: expect step_notes + SSH alternative/refusal notes;
@@ -88,11 +88,12 @@ WEBUI_SOFT_COMPLETE_PHASE = "1624"
 # 3000: session storage notes included in soft_fertig_surface_keys catalog;
 # 3050: soft_fertig_honesty_export_keys catalog of downloadable honesty JSONs;
 # 3100: honesty export keys included in soft_fertig_surface_keys catalog;
-# 3150: soft_fertig_honesty_bundle sections + UI combined download/copy.
-WEBUI_HONESTY_MILESTONE = 3150
+# 3150: soft_fertig_honesty_bundle sections + UI combined download/copy;
+# 3200: honesty bundle sections included in soft_fertig_surface_keys catalog.
+WEBUI_HONESTY_MILESTONE = 3200
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 3150: soft_fertig_honesty_bundle_sections "
-    "document the combined honesty JSON download — hard gaps remain open."
+    "Honesty surface checkpoint 3200: soft_fertig_surface_keys includes "
+    "soft_fertig_honesty_bundle_sections (+ count/titles/notes) — hard gaps remain open."
 )
 
 HARD_GAPS_OPEN = (
@@ -200,6 +201,11 @@ SOFT_FERTIG_SURFACE_KEYS = (
     "soft_fertig_honesty_export_key_titles",
     "soft_fertig_honesty_export_notes",
     "soft_fertig_honesty_export_notes_count",
+    "soft_fertig_honesty_bundle_sections",
+    "soft_fertig_honesty_bundle_section_count",
+    "soft_fertig_honesty_bundle_section_titles",
+    "soft_fertig_honesty_bundle_notes",
+    "soft_fertig_honesty_bundle_notes_count",
 )
 SOFT_FERTIG_SURFACE_KEY_TITLES = {
     "soft_complete_phase": "Soft-complete phase marker",
@@ -235,6 +241,11 @@ SOFT_FERTIG_SURFACE_KEY_TITLES = {
     "soft_fertig_honesty_export_key_titles": "Titles for honesty export catalogs",
     "soft_fertig_honesty_export_notes": "Notes for honesty export catalogs",
     "soft_fertig_honesty_export_notes_count": "Count of honesty export notes",
+    "soft_fertig_honesty_bundle_sections": "Combined honesty bundle section ids",
+    "soft_fertig_honesty_bundle_section_count": "Count of honesty bundle sections",
+    "soft_fertig_honesty_bundle_section_titles": "Titles for honesty bundle sections",
+    "soft_fertig_honesty_bundle_notes": "Notes for honesty bundle sections",
+    "soft_fertig_honesty_bundle_notes_count": "Count of honesty bundle notes",
 }
 
 SOFT_FERTIG_SURFACE_NOTES = {
@@ -271,6 +282,11 @@ SOFT_FERTIG_SURFACE_NOTES = {
     "soft_fertig_honesty_export_key_titles": "Short titles for honesty export catalogs.",
     "soft_fertig_honesty_export_notes": "Short notes for honesty export catalogs.",
     "soft_fertig_honesty_export_notes_count": "Number of honesty export notes.",
+    "soft_fertig_honesty_bundle_sections": "Section ids of the combined honesty bundle download.",
+    "soft_fertig_honesty_bundle_section_count": "Number of honesty bundle sections.",
+    "soft_fertig_honesty_bundle_section_titles": "Short titles for honesty bundle sections.",
+    "soft_fertig_honesty_bundle_notes": "Short notes for honesty bundle sections.",
+    "soft_fertig_honesty_bundle_notes_count": "Number of honesty bundle notes.",
 }
 
 # Browser sessionStorage key prefixes used by the WebUI honesty track
