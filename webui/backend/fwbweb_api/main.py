@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "1152"
+WEBUI_SOFT_COMPLETE_PHASE = "1160"
 # Honesty/preview track milestone (last thematic checkpoint; soft marker may be higher).
 # 600: refusals/closure; 650: health/summary/paths + fidelity sample;
 # 700: expect step_notes + SSH alternative/refusal notes;
@@ -77,6 +77,12 @@ HARD_GAP_LABELS = {
     "full_qt_pixel_layout": "Full Qt pixel-equivalent layout",
     "expect_sshsession_runtime": "Expect/SSHSession install runtime",
     "password_keyboard_interactive_ssh": "Password / keyboard-interactive SSH",
+}
+
+HARD_GAP_CLOSURE_TITLES = {
+    "full_qt_pixel_layout": "Desktop-equivalent geometry within stated tolerance",
+    "expect_sshsession_runtime": "Live SSHSession/expect install path (not 501)",
+    "password_keyboard_interactive_ssh": "Working password/keyboard-interactive deploy auth",
 }
 
 HARD_GAP_NOTES = {
@@ -250,6 +256,11 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
         "hard_gap_open": list(HARD_GAPS_OPEN),
         "hard_gap_open_labels": {
             k: HARD_GAP_LABELS[k] for k in HARD_GAPS_OPEN if k in HARD_GAP_LABELS
+        },
+        "hard_gap_closure_titles": {
+            k: HARD_GAP_CLOSURE_TITLES[k]
+            for k in HARD_GAPS_OPEN
+            if k in HARD_GAP_CLOSURE_TITLES
         },
         "hard_gap_count": len(HARD_GAPS_OPEN),
         "hard_gap_notes": dict(HARD_GAP_NOTES),
@@ -570,6 +581,11 @@ def hard_gaps_summary(_: str = Depends(require_token)) -> dict[str, object]:
         "hard_gap_open_labels": {
             k: HARD_GAP_LABELS[k] for k in HARD_GAPS_OPEN if k in HARD_GAP_LABELS
         },
+        "hard_gap_closure_titles": {
+            k: HARD_GAP_CLOSURE_TITLES[k]
+            for k in HARD_GAPS_OPEN
+            if k in HARD_GAP_CLOSURE_TITLES
+        },
         "hard_gap_count": len(HARD_GAPS_OPEN),
         "honesty_paths_count": int(full.get("honesty_paths_count") or 0),
         "expect_plan_step_count": int(full.get("expect_plan_step_notes_count") or 0),
@@ -849,6 +865,11 @@ def hard_gap_closure(_: str = Depends(require_token)) -> dict[str, object]:
         "hard_gap_open": list(HARD_GAPS_OPEN),
         "hard_gap_open_labels": {
             k: HARD_GAP_LABELS[k] for k in HARD_GAPS_OPEN if k in HARD_GAP_LABELS
+        },
+        "hard_gap_closure_titles": {
+            k: HARD_GAP_CLOSURE_TITLES[k]
+            for k in HARD_GAPS_OPEN
+            if k in HARD_GAP_CLOSURE_TITLES
         },
         "hard_gap_count": len(HARD_GAPS_OPEN),
         "hard_gap_closure": dict(HARD_GAP_CLOSURE),

@@ -244,6 +244,7 @@ export function FirewallExtras({
   const [softCompletePhase, setSoftCompletePhase] = useState<string | null>(null);
   const [honestyMilestone, setHonestyMilestone] = useState<number | null>(null);
   const [hardGapsOpenLabels, setHardGapsOpenLabels] = useState<Record<string, string> | null>(null);
+  const [hardGapsClosureTitles, setHardGapsClosureTitles] = useState<Record<string, string> | null>(null);
   const [honestyMilestoneNote, setHonestyMilestoneNote] = useState<string | null>(null);
   const [softFertigHonestyTrack, setSoftFertigHonestyTrack] = useState<boolean | null>(null);
   const [honestyPathsSummary, setHonestyPathsSummary] = useState<string | null>(null);
@@ -367,6 +368,11 @@ export function FirewallExtras({
       setHardGapsOpenLabels(
         gaps?.hard_gap_open_labels && typeof gaps.hard_gap_open_labels === "object"
           ? (gaps.hard_gap_open_labels as Record<string, string>)
+          : null,
+      );
+      setHardGapsClosureTitles(
+        gaps?.hard_gap_closure_titles && typeof gaps.hard_gap_closure_titles === "object"
+          ? (gaps.hard_gap_closure_titles as Record<string, string>)
           : null,
       );
       setHonestyMilestoneNote(gaps?.honesty_milestone_note || null);
@@ -2073,6 +2079,12 @@ export function FirewallExtras({
               <span className="muted" title={Object.entries(hardGapsOpenLabels).map(([k,v]) => `${k}: ${v}`).join(" · ")}>
                 · open labels{" "}
                 <code>{Object.keys(hardGapsOpenLabels).length}</code>
+              </span>
+            ) : null}
+            {hardGapsClosureTitles && Object.keys(hardGapsClosureTitles).length > 0 ? (
+              <span className="muted" title={Object.entries(hardGapsClosureTitles).map(([k,v]) => `${k}: ${v}`).join(" · ")}>
+                · closure titles{" "}
+                <code>{Object.keys(hardGapsClosureTitles).length}</code>
               </span>
             ) : null}
             {honestyMilestone != null ? (
