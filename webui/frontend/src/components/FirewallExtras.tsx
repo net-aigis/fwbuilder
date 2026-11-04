@@ -6,6 +6,7 @@ import {
   fetchExpectInstallPlan,
   fetchExpectInstallWalkthrough,
   fetchExpectPlanSteps,
+  fetchExpectPlanStepRefusals,
   fetchHardGaps,
   fetchLayoutFidelity,
   fetchStackSwitch,
@@ -196,8 +197,10 @@ export function FirewallExtras({
   const [optionEnablePath, setOptionEnablePath] = useState<string | null>(null);
   const [expectRunPath, setExpectRunPath] = useState<string | null>(null);
   const [expectStepsPath, setExpectStepsPath] = useState<string | null>(null);
+  const [expectStepsRefusalsPath, setExpectStepsRefusalsPath] = useState<string | null>(null);
   const [expectPlanStepIds, setExpectPlanStepIds] = useState<string[]>([]);
   const [expectProbeStep, setExpectProbeStep] = useState<string>("ssh_open");
+  const [expectRefusalsText, setExpectRefusalsText] = useState<string | null>(null);
   const [passwordSshPath, setPasswordSshPath] = useState<string | null>(null);
   const [sshAuthPath, setSshAuthPath] = useState<string | null>(null);
   const [sshRefusalSummary, setSshRefusalSummary] = useState<string | null>(null);
@@ -259,6 +262,9 @@ export function FirewallExtras({
       setOptionEnablePath(gaps?.option_enable_path || "/api/v1/option-enable");
       setExpectRunPath(gaps?.expect_run_path || "/api/v1/expect-install-plan/run");
       setExpectStepsPath(gaps?.expect_steps_path || "/api/v1/expect-install-plan/steps");
+      setExpectStepsRefusalsPath(
+        gaps?.expect_steps_refusals_path || "/api/v1/expect-install-plan/steps/refusals",
+      );
       let stepIds = gaps?.expect_plan_step_ids || [];
       if (!stepIds.length) {
         try {
@@ -1398,7 +1404,50 @@ export function FirewallExtras({
                 >
                   Probe expect step
                 </button>
+                <button
+                  type="button"
+                  className="ghost"
+                  disabled={busy || !hostOs}
+                  title="GET per-step refusal preview for all canonical ids (nothing executed)"
+                  onClick={() => {
+                    if (!hostOs) return;
+                    void (async () => {
+                      onBusy?.(true);
+                      onError?.(null);
+                      try {
+                        const r = await fetchExpectPlanStepRefusals(hostOs);
+                        const lines = [
+                          `# expect step refusals for ${r.host_os} (all_refused=${r.all_refused})`,
+                          r.note || "",
+                          "",
+                          ...r.steps.map((s, i) => {
+                            const id = s.step || expectPlanStepIds[i] || `step${i + 1}`;
+                            return `${i + 1}. [${id}] ${s.error || "refused"}${
+                              s.unknown_step ? " (unknown)" : ""
+                            }${s.note ? `\n   ${s.note}` : ""}`;
+                          }),
+                        ];
+                        const text = lines.join("\n");
+                        setExpectRefusalsText(text);
+                        onStatus?.(
+                          `Expect refusals: ${r.step_count} steps (all 501 preview)`,
+                        );
+                      } catch (e) {
+                        onError?.(e instanceof Error ? e.message : String(e));
+                      } finally {
+                        onBusy?.(false);
+                      }
+                    })();
+                  }}
+                >
+                  Preview all step refusals
+                </button>
               </div>
+              {expectRefusalsText ? (
+                <pre className="deploy-log configlet-preview" tabIndex={0}>
+                  {expectRefusalsText}
+                </pre>
+              ) : null}
               {expectPlanText ? (
                 <pre className="deploy-log configlet-preview" tabIndex={0}>
                   {expectPlanText}
@@ -1741,9 +1790,19 @@ export function FirewallExtras({
             </p>
           ) : null}
           {stackSwitchSummary ? <p className="muted">{stackSwitchSummary}</p> : null}
-          {expectStepsPath ? (
-            <p className="muted" title="GET catalog of canonical expect plan step ids">
-              Expect steps catalog: <code>{expectStepsPath}</code>
+          {expectStepsPath || expectStepsRefusalsPath ? (
+            <p className="muted" title="GET catalog / per-step refusal previews">
+              {expectStepsPath ? (
+                <>
+                  Expect steps catalog: <code>{expectStepsPath}</code>
+                </>
+              ) : null}
+              {expectStepsPath && expectStepsRefusalsPath ? " · " : null}
+              {expectStepsRefusalsPath ? (
+                <>
+                  Refusals preview: <code>{expectStepsRefusalsPath}</code>
+                </>
+              ) : null}
             </p>
           ) : null}
           {expectPlanStepIds.length ? (

@@ -940,6 +940,7 @@ export function fetchHardGaps() {
     option_enable_path?: string;
     expect_run_path?: string;
     expect_steps_path?: string;
+    expect_steps_refusals_path?: string;
     expect_plan_step_ids?: string[];
     ssh_auth_path?: string;
     password_ssh_path?: string;
@@ -961,6 +962,29 @@ export function fetchExpectPlanSteps() {
     run_status?: number;
     note?: string;
   }>("/api/v1/expect-install-plan/steps");
+}
+
+export function fetchExpectPlanStepRefusals(hostOs: string) {
+  const q = new URLSearchParams({ host_os: hostOs });
+  return api<{
+    ok: boolean;
+    executable: boolean;
+    error?: string;
+    host_os: string;
+    step_count: number;
+    all_refused: boolean;
+    run_status?: number;
+    canonical_step_ids?: string[];
+    steps: Array<{
+      ok?: boolean;
+      error?: string;
+      step?: string;
+      step_refused?: boolean;
+      unknown_step?: boolean;
+      note?: string;
+    }>;
+    note?: string;
+  }>(`/api/v1/expect-install-plan/steps/refusals?${q.toString()}`);
 }
 
 export function fetchOptionEnable(platform = "", hostOs = "") {

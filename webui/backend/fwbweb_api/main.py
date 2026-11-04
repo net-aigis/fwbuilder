@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "544"
+WEBUI_SOFT_COMPLETE_PHASE = "552"
 
 HARD_GAPS_OPEN = (
     "full_qt_pixel_layout",
@@ -135,6 +135,7 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
         "option_enable_path": "/api/v1/option-enable",
         "expect_run_path": "/api/v1/expect-install-plan/run",
         "expect_steps_path": "/api/v1/expect-install-plan/steps",
+        "expect_steps_refusals_path": "/api/v1/expect-install-plan/steps/refusals",
         "expect_plan_step_ids": list(EXPECT_PLAN_STEP_IDS),
         "ssh_auth_path": "/api/v1/ssh-auth",
         "password_ssh_path": "/api/v1/ssh-auth/password",

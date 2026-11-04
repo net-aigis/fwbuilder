@@ -18,6 +18,7 @@ from ..expect_installer import (
     expect_install_walkthrough,
     expect_installer_status,
     expect_plan_step_catalog,
+    expect_plan_step_refusals,
 )
 from ..platforms import (
     get_os,
@@ -115,12 +116,14 @@ def get_installer_capabilities(
             "path": "/api/v1/expect-install-plan",
             "walkthrough_path": "/api/v1/expect-install-plan/walkthrough",
             "steps_path": "/api/v1/expect-install-plan/steps",
+            "steps_refusals_path": "/api/v1/expect-install-plan/steps/refusals",
             "run_path": "/api/v1/expect-install-plan/run",
             "run_status": 501,
             "canonical_step_ids": list(EXPECT_PLAN_STEP_IDS),
             "note": (
                 "GET returns ordered preview; GET walkthrough marks every step "
                 "preview_only; GET /steps lists canonical ids; "
+                "GET /steps/refusals previews per-step 501 payloads; "
                 "POST /run always refuses with 501 "
                 "(unknown step → expect_installer_unknown_step)."
             ),
@@ -175,6 +178,15 @@ def get_expect_install_plan_steps(
 ) -> dict[str, Any]:
     """Canonical expect plan step ids (all refused by POST /run)."""
     return expect_plan_step_catalog()
+
+
+@router.get("/expect-install-plan/steps/refusals")
+def get_expect_install_plan_step_refusals(
+    host_os: str = Query(..., min_length=1),
+    _: str = Depends(require_token),
+) -> dict[str, Any]:
+    """Per-step refusal preview for every canonical id (nothing executed)."""
+    return expect_plan_step_refusals(host_os)
 
 
 @router.post("/expect-install-plan/run")
