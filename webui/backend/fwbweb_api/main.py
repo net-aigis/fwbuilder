@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "952"
+WEBUI_SOFT_COMPLETE_PHASE = "960"
 # Honesty/preview track milestone (last thematic checkpoint; soft marker may be higher).
 # 600: refusals/closure; 650: health/summary/paths + fidelity sample;
 # 700: expect step_notes + SSH alternative/refusal notes;
@@ -79,7 +79,8 @@ HARD_GAP_NOTES = {
         "pages_with_column_stretch/spacing/layout_tree + chrome geometry/size_grip + "
         "with_grid/label/tooltip field samples + pages/sections/stack_names counts + "
         "chrome window_title/tab_position samples; UI truncates long sample "
-        "fidelity lines (title keeps full text); with_size_policy total sample; "
+        "fidelity lines (title keeps full text); with_size_policy total sample + "
+        "layout_fidelity_sample_key_count; "
         "UI applies data-size-type Expanding/Fixed/Maximum/Minimum/Preferred via "
         "qtSpacerStyle/CSS and field size-h/v Expanding/Minimum/Preferred/Fixed classes "
         "(still not desktop-equivalent geometry); visible=false keeps field-ui-hidden "
@@ -115,6 +116,16 @@ HARD_GAP_CLOSURE = {
         "(BatchMode-only is not enough); must not hang on prompts."
     ),
 }
+
+
+def _layout_fidelity_sample_key_count(payload: dict[str, object]) -> int:
+    """Count layout_fidelity_sample_* keys (excludes this meta count itself)."""
+    return sum(
+        1
+        for k in payload
+        if k.startswith("layout_fidelity_sample_")
+        and k != "layout_fidelity_sample_key_count"
+    )
 
 
 @app.get("/api/v1/health")
@@ -180,7 +191,7 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
         "ssh_auth": "/api/v1/ssh-auth",
         "password_ssh": "/api/v1/ssh-auth/password",
     }
-    return {
+    out: dict[str, object] = {
         "soft_complete_phase": WEBUI_SOFT_COMPLETE_PHASE,
         "soft_fertig_honesty_track": True,
         "hard_gap_open": list(HARD_GAPS_OPEN),
@@ -393,6 +404,8 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
             "layout_fidelity_sample_* mirrors summary (iptables/linux24 heuristic; not pixel)."
         ),
     }
+    out["layout_fidelity_sample_key_count"] = _layout_fidelity_sample_key_count(out)
+    return out
 
 
 @app.get("/api/v1/hard-gaps/summary")
@@ -404,7 +417,7 @@ def hard_gaps_summary(_: str = Depends(require_token)) -> dict[str, object]:
     sample_fid = layout_fidelity_for("iptables", "linux24")
     sample_score = sample_fid.get("score_percent") if sample_fid.get("ok") else None
     sample_parts = sample_fid.get("score_parts_count") if sample_fid.get("ok") else None
-    return {
+    out: dict[str, object] = {
         "soft_complete_phase": WEBUI_SOFT_COMPLETE_PHASE,
         "soft_fertig_honesty_track": True,
         "honesty_milestone": WEBUI_HONESTY_MILESTONE,
@@ -588,6 +601,8 @@ def hard_gaps_summary(_: str = Depends(require_token)) -> dict[str, object]:
             "expect_plan_step_count is the refused step-notes catalog size."
         ),
     }
+    out["layout_fidelity_sample_key_count"] = _layout_fidelity_sample_key_count(out)
+    return out
 
 
 @app.get("/api/v1/hard-gaps/closure")
