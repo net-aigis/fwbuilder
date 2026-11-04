@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "1416"
+WEBUI_SOFT_COMPLETE_PHASE = "1432"
 # Honesty/preview track milestone (last thematic checkpoint; soft marker may be higher).
 # 600: refusals/closure; 650: health/summary/paths + fidelity sample;
 # 700: expect step_notes + SSH alternative/refusal notes;
@@ -75,11 +75,12 @@ WEBUI_SOFT_COMPLETE_PHASE = "1416"
 # 2350: soft_fertig_surface catalog also on hard-gaps/closure;
 # 2400: honesty_paths + honesty_path_notes mirrored on hard-gaps summary;
 # 2450: honesty_paths (+ titles/notes) also on hard-gaps/closure;
-# 2500: UI download/copy soft-fertig surface catalog JSON.
-WEBUI_HONESTY_MILESTONE = 2500
+# 2500: UI download/copy soft-fertig surface catalog JSON;
+# 2550: UI download/copy hard_gap_related_refusals JSON.
+WEBUI_HONESTY_MILESTONE = 2550
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 2500: UI can download/copy the "
-    "soft_fertig_surface_* catalog from /hard-gaps — hard gaps remain open."
+    "Honesty surface checkpoint 2550: UI can download/copy "
+    "hard_gap_related_refusals (+ titles) from /hard-gaps — hard gaps remain open."
 )
 
 HARD_GAPS_OPEN = (

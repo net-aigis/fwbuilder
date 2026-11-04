@@ -2610,6 +2610,68 @@ export function FirewallExtras({
                 Copy soft-fertig surface
               </button>
             ) : null}
+            {hardGapsPayload ? (
+              <button
+                type="button"
+                className="ghost"
+                disabled={busy}
+                title="Download hard_gap_related_refusals (+ titles) from /hard-gaps"
+                onClick={() => {
+                  const catalog: Record<string, unknown> = {
+                    hard_gap_related_refusals:
+                      hardGapsPayload.hard_gap_related_refusals,
+                    hard_gap_related_refusal_titles:
+                      hardGapsPayload.hard_gap_related_refusal_titles,
+                    hard_gap_open: hardGapsPayload.hard_gap_open,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  const text = JSON.stringify(catalog, null, 2);
+                  const blob = new Blob([text + "\n"], {
+                    type: "application/json;charset=utf-8",
+                  });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `fwbweb-related-refusals-${firewallId || "fw"}.json`;
+                  a.click();
+                  URL.revokeObjectURL(url);
+                  onStatus?.("Downloaded related refusals");
+                }}
+              >
+                Download related refusals
+              </button>
+            ) : null}
+            {hardGapsPayload ? (
+              <button
+                type="button"
+                className="ghost"
+                disabled={busy}
+                title="Copy hard_gap_related_refusals (+ titles) to clipboard"
+                onClick={() => {
+                  void (async () => {
+                    const catalog: Record<string, unknown> = {
+                      hard_gap_related_refusals:
+                        hardGapsPayload.hard_gap_related_refusals,
+                      hard_gap_related_refusal_titles:
+                        hardGapsPayload.hard_gap_related_refusal_titles,
+                      hard_gap_open: hardGapsPayload.hard_gap_open,
+                      soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                      honesty_milestone: hardGapsPayload.honesty_milestone,
+                    };
+                    const text = JSON.stringify(catalog, null, 2) + "\n";
+                    try {
+                      await navigator.clipboard.writeText(text);
+                      onStatus?.("Copied related refusals");
+                    } catch (e) {
+                      onError?.(e instanceof Error ? e.message : String(e));
+                    }
+                  })();
+                }}
+              >
+                Copy related refusals
+              </button>
+            ) : null}
             <button
               type="button"
               className="ghost"
