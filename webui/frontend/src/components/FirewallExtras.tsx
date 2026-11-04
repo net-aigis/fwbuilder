@@ -357,6 +357,20 @@ export function FirewallExtras({
         setHonestyPathsSummary(null);
         setHonestyPathsDetail(null);
       }
+      if (
+        typeof gaps?.layout_fidelity_sample_score_percent === "number" &&
+        gaps.layout_fidelity_pixel_parity === false
+      ) {
+        const parts =
+          typeof gaps.layout_fidelity_sample_score_parts_count === "number"
+            ? `, parts=${gaps.layout_fidelity_sample_score_parts_count}`
+            : "";
+        const plat = gaps.layout_fidelity_sample_platform || "iptables";
+        const hos = gaps.layout_fidelity_sample_host_os || "linux24";
+        setHardGapsSummaryFidelity(
+          `Sample fidelity ${plat}/${hos}: ${gaps.layout_fidelity_sample_score_percent}%${parts} (not pixel)`,
+        );
+      }
       try {
         const fid = await fetchLayoutFidelity(plat, hostOs || "");
         if (fid.ok && fid.score_percent != null) {

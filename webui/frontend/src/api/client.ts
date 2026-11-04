@@ -951,6 +951,11 @@ export function fetchHardGaps() {
     honesty_paths?: Record<string, string>;
     honesty_paths_count?: number;
     summary_path?: string;
+    layout_fidelity_sample_platform?: string;
+    layout_fidelity_sample_host_os?: string;
+    layout_fidelity_sample_score_percent?: number | null;
+    layout_fidelity_sample_score_parts_count?: number | null;
+    layout_fidelity_pixel_parity?: boolean;
     note?: string;
   }>("/api/v1/hard-gaps");
 }

@@ -11,7 +11,7 @@ assert isinstance(s.get("layout_fidelity_sample_score_percent"), (int, float))
 assert isinstance(s.get("layout_fidelity_sample_score_parts_count"), int)
 assert s.get("layout_fidelity_sample_platform") == "iptables"
 assert s.get("layout_fidelity_path") == "/api/v1/layout-fidelity"
-assert m.WEBUI_SOFT_COMPLETE_PHASE == "640"
+assert int(m.WEBUI_SOFT_COMPLETE_PHASE) >= 640
 print("summary fidelity sample", s["layout_fidelity_sample_score_percent"])
 PY
 echo "cleaned"

@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "640"
+WEBUI_SOFT_COMPLETE_PHASE = "648"
 # Honesty/preview track milestone (last thematic checkpoint; soft marker may be higher).
 WEBUI_HONESTY_MILESTONE = 600
 
@@ -156,6 +156,15 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
         "closure_path": honesty_paths["closure"],
         "layout_fidelity_path": honesty_paths["layout_fidelity"],
         "layout_fidelity_signal_catalog": signal_catalog,
+        "layout_fidelity_sample_platform": "iptables",
+        "layout_fidelity_sample_host_os": "linux24",
+        "layout_fidelity_sample_score_percent": (
+            sample_fid.get("score_percent") if sample_fid.get("ok") else None
+        ),
+        "layout_fidelity_sample_score_parts_count": (
+            sample_fid.get("score_parts_count") if sample_fid.get("ok") else None
+        ),
+        "layout_fidelity_pixel_parity": False,
         "stack_switch_path": honesty_paths["stack_switch"],
         "option_enable_path": honesty_paths["option_enable"],
         "expect_run_path": honesty_paths["expect_run"],
@@ -183,7 +192,8 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
             "ssh_refusal_paths documents BatchMode-only refuse status codes. "
             "hard_gap_closure documents what would close each gap. "
             "honesty_paths catalogs honesty/preview endpoints. "
-            "GET /hard-gaps/summary is the compact honesty snapshot."
+            "GET /hard-gaps/summary is the compact honesty snapshot. "
+            "layout_fidelity_sample_* mirrors summary (iptables/linux24 heuristic; not pixel)."
         ),
     }
 
