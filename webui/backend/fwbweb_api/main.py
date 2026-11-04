@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "1096"
+WEBUI_SOFT_COMPLETE_PHASE = "1104"
 # Honesty/preview track milestone (last thematic checkpoint; soft marker may be higher).
 # 600: refusals/closure; 650: health/summary/paths + fidelity sample;
 # 700: expect step_notes + SSH alternative/refusal notes;
@@ -55,12 +55,14 @@ WEBUI_SOFT_COMPLETE_PHASE = "1096"
 #       signal_key_count + with_whats_this on hard-gaps sample;
 # 1400: with_enabled/alignment/read_only + pages row_stretch/tooltip samples;
 # 1450: with_external_label + pages_with_buddy_labels samples (catalog complete);
-# 1500: layout_fidelity_sample_catalog_complete flag on hard-gaps/summary.
-WEBUI_HONESTY_MILESTONE = 1500
+# 1500: layout_fidelity_sample_catalog_complete flag on hard-gaps/summary;
+# 1550: alt iosacl/ios sample (buddy_labels + with_external_label).
+WEBUI_HONESTY_MILESTONE = 1550
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 1500: /hard-gaps (+ summary) expose "
-    "layout_fidelity_sample_catalog_complete when the required sample-key "
-    "catalog is present — still not pixel parity. Hard gaps remain open."
+    "Honesty surface checkpoint 1550: /hard-gaps (+ summary) carry an alt "
+    "iosacl/ios fidelity sample with non-zero buddy_labels and "
+    "with_external_label (iptables sample stays primary) — still not pixel "
+    "parity. Hard gaps remain open."
 )
 
 HARD_GAPS_OPEN = (
