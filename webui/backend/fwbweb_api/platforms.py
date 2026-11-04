@@ -478,6 +478,15 @@ def _layout_fidelity_from_dialog(stem: str, info: dict[str, Any]) -> dict[str, A
                 or sp.get("vertical") in {"Expanding", "MinimumExpanding"}
             )
         ),
+        "with_size_policy_fixed": sum(
+            1
+            for v in fields.values()
+            for sp in [v.get("size_policy") or {}]
+            if isinstance(sp, dict)
+            and (
+                sp.get("horizontal") == "Fixed" or sp.get("vertical") == "Fixed"
+            )
+        ),
         "with_minimum_size": sum(1 for v in fields.values() if v.get("minimum_size")),
         "with_maximum_size": sum(1 for v in fields.values() if v.get("maximum_size")),
         "with_alignment": sum(1 for v in fields.values() if v.get("alignment")),
@@ -535,6 +544,7 @@ def _layout_fidelity_from_dialog(stem: str, info: dict[str, Any]) -> dict[str, A
         field_stats["with_label"] / n,
         field_stats["with_size_policy"] / n,
         field_stats["with_size_policy_expanding"] / n,
+        field_stats["with_size_policy_fixed"] / n,
         field_stats["with_visible"] / n,
         field_stats["with_whats_this"] / n,
         field_stats["with_tooltip"] / n,
