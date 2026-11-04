@@ -114,6 +114,10 @@ function hardGapClosureKey(firewallId: string) {
   return `fwbweb.hardGapClosure.${firewallId}`;
 }
 
+function expectRefusalsKey(firewallId: string) {
+  return `fwbweb.expectRefusals.${firewallId}`;
+}
+
 export function FirewallExtras({
   sessionId,
   firewallId,
@@ -418,6 +422,8 @@ export function FirewallExtras({
         if (walkRaw) setExpectWalkthroughText(walkRaw);
         const closureRaw = sessionStorage.getItem(hardGapClosureKey(firewallId));
         if (closureRaw) setHardGapsClosureText(closureRaw);
+        const refusalsRaw = sessionStorage.getItem(expectRefusalsKey(firewallId));
+        if (refusalsRaw) setExpectRefusalsText(refusalsRaw);
       } catch {
         /* ignore */
       }
@@ -1455,10 +1461,16 @@ export function FirewallExtras({
                               ]
                             : []),
                         ].filter((line) => line !== undefined);
-                        const text = lines.join("\n");
+                        const text = lines.filter(Boolean).join("\n");
                         setExpectRefusalsText(text);
+                        try {
+                          sessionStorage.setItem(expectRefusalsKey(firewallId), text);
+                        } catch {
+                          /* ignore */
+                        }
                         onStatus?.(
-                          `Expect refusals: ${r.step_count} steps (all 501 preview)`,
+                          `Expect refusals: ${r.step_count} steps (all 501 preview)` +
+                            (probe?.unknown_step ? " + unknown probe" : ""),
                         );
                       } catch (e) {
                         onError?.(e instanceof Error ? e.message : String(e));
@@ -1469,6 +1481,27 @@ export function FirewallExtras({
                   }}
                 >
                   Preview all step refusals
+                </button>
+                <button
+                  type="button"
+                  className="ghost"
+                  disabled={busy || !expectRefusalsText}
+                  title="Download the last expect step refusals preview"
+                  onClick={() => {
+                    if (!expectRefusalsText) return;
+                    const blob = new Blob([expectRefusalsText + "\n"], {
+                      type: "text/plain;charset=utf-8",
+                    });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = `fwbweb-expect-refusals-${firewallId || "fw"}.txt`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    onStatus?.("Downloaded expect step refusals");
+                  }}
+                >
+                  Download refusals
                 </button>
               </div>
               {expectRefusalsText ? (
