@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "1320"
+WEBUI_SOFT_COMPLETE_PHASE = "1336"
 # Honesty/preview track milestone (last thematic checkpoint; soft marker may be higher).
 # 600: refusals/closure; 650: health/summary/paths + fidelity sample;
 # 700: expect step_notes + SSH alternative/refusal notes;
@@ -69,12 +69,12 @@ WEBUI_SOFT_COMPLETE_PHASE = "1320"
 # 2050: hard_gap_related_refusals (+ titles) mapped per open hard gap;
 # 2100: UI expandable soft_fertig_surface_keys catalog detail;
 # 2150: UI expandable hard_gap_related_refusals detail;
-# 2200: soft_fertig_surface_notes (+ count) for surface key catalog.
-WEBUI_HONESTY_MILESTONE = 2200
+# 2200: soft_fertig_surface_notes (+ count) for surface key catalog;
+# 2250: hard_gap_related_refusals also on closure + full map on summary.
+WEBUI_HONESTY_MILESTONE = 2250
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 2200: /hard-gaps (+ summary) expose "
-    "soft_fertig_surface_notes and soft_fertig_surface_notes_count — "
-    "hard gaps remain open."
+    "Honesty surface checkpoint 2250: /hard-gaps/closure and summary expose "
+    "hard_gap_related_refusals (+ titles) — hard gaps remain open."
 )
 
 HARD_GAPS_OPEN = (
@@ -774,6 +774,9 @@ def hard_gaps_summary(_: str = Depends(require_token)) -> dict[str, object]:
         "hard_gap_related_refusal_titles": dict(
             full.get("hard_gap_related_refusal_titles") or {}
         ),
+        "hard_gap_related_refusals": dict(
+            full.get("hard_gap_related_refusals") or {}
+        ),
         "hard_gap_count": len(HARD_GAPS_OPEN),
         "honesty_paths_count": int(full.get("honesty_paths_count") or 0),
         "honesty_path_titles": dict(full.get("honesty_path_titles") or {}),
@@ -1069,6 +1072,16 @@ def hard_gap_closure(_: str = Depends(require_token)) -> dict[str, object]:
             k: HARD_GAP_CLOSURE_TITLES[k]
             for k in HARD_GAPS_OPEN
             if k in HARD_GAP_CLOSURE_TITLES
+        },
+        "hard_gap_related_refusals": {
+            k: dict(HARD_GAP_RELATED_REFUSALS[k])
+            for k in HARD_GAPS_OPEN
+            if k in HARD_GAP_RELATED_REFUSALS
+        },
+        "hard_gap_related_refusal_titles": {
+            k: HARD_GAP_RELATED_REFUSAL_TITLES[k]
+            for k in HARD_GAPS_OPEN
+            if k in HARD_GAP_RELATED_REFUSAL_TITLES
         },
         "hard_gap_count": len(HARD_GAPS_OPEN),
         "hard_gap_closure": dict(HARD_GAP_CLOSURE),
