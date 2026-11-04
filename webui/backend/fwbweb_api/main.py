@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "1072"
+WEBUI_SOFT_COMPLETE_PHASE = "1080"
 # Honesty/preview track milestone (last thematic checkpoint; soft marker may be higher).
 # 600: refusals/closure; 650: health/summary/paths + fidelity sample;
 # 700: expect step_notes + SSH alternative/refusal notes;
@@ -85,7 +85,7 @@ HARD_GAP_NOTES = {
         "with_grid/label/tooltip field samples + pages/sections/stack_names counts + "
         "chrome window_title/tab_position samples; UI truncates long sample "
         "fidelity lines (title keeps full text); with_size_policy total sample + "
-        "layout_fidelity_sample_key_count + with_visible field sample + spacers_with_size_hint sample + signal_key_count sample + with_whats_this field sample + with_enabled sample + with_alignment sample + with_read_only sample + pages_with_row_stretch sample + pages_with_tooltip sample + with_external_label sample + pages_with_buddy_labels sample; "
+        "layout_fidelity_sample_key_count + with_visible field sample + spacers_with_size_hint sample + signal_key_count sample + with_whats_this field sample + with_enabled sample + with_alignment sample + with_read_only sample + pages_with_row_stretch sample + pages_with_tooltip sample + with_external_label sample + pages_with_buddy_labels sample + catalog_complete flag; "
         "UI applies data-size-type Expanding/Fixed/Maximum/Minimum/Preferred via "
         "qtSpacerStyle/CSS and field size-h/v Expanding/Minimum/Preferred/Fixed classes "
         "(still not desktop-equivalent geometry); visible=false keeps field-ui-hidden "
@@ -145,6 +145,28 @@ def _layout_fidelity_signal_key_count(sample_fid: dict[str, object]) -> int | No
         + len(sk.get("pages") or [])
         + len(sk.get("chrome") or [])
     )
+
+
+_LAYOUT_FIDELITY_SAMPLE_CATALOG_REQUIRED = (
+    "layout_fidelity_sample_with_visible",
+    "layout_fidelity_sample_with_whats_this",
+    "layout_fidelity_sample_with_enabled",
+    "layout_fidelity_sample_with_alignment",
+    "layout_fidelity_sample_with_read_only",
+    "layout_fidelity_sample_with_external_label",
+    "layout_fidelity_sample_with_size_policy",
+    "layout_fidelity_sample_pages_with_buddy_labels",
+    "layout_fidelity_sample_pages_with_row_stretch",
+    "layout_fidelity_sample_pages_with_tooltip",
+    "layout_fidelity_sample_spacers_with_size_hint",
+    "layout_fidelity_sample_signal_key_count",
+    "layout_fidelity_sample_key_count",
+)
+
+
+def _layout_fidelity_sample_catalog_complete(payload: dict[str, object]) -> bool:
+    """True when required field/page sample keys are present on the payload."""
+    return all(k in payload for k in _LAYOUT_FIDELITY_SAMPLE_CATALOG_REQUIRED)
 
 
 @app.get("/api/v1/health")
@@ -477,6 +499,9 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
         ),
     }
     out["layout_fidelity_sample_key_count"] = _layout_fidelity_sample_key_count(out)
+    out["layout_fidelity_sample_catalog_complete"] = (
+        _layout_fidelity_sample_catalog_complete(out)
+    )
     return out
 
 
@@ -727,6 +752,9 @@ def hard_gaps_summary(_: str = Depends(require_token)) -> dict[str, object]:
         ),
     }
     out["layout_fidelity_sample_key_count"] = _layout_fidelity_sample_key_count(out)
+    out["layout_fidelity_sample_catalog_complete"] = (
+        _layout_fidelity_sample_catalog_complete(out)
+    )
     return out
 
 

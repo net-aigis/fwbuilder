@@ -529,6 +529,11 @@ export function FirewallExtras({
           typeof gaps.layout_fidelity_sample_key_count === "number"
             ? `sampleKeys=${gaps.layout_fidelity_sample_key_count}`
             : "",
+          gaps.layout_fidelity_sample_catalog_complete === true
+            ? "catalog=1"
+            : gaps.layout_fidelity_sample_catalog_complete === false
+              ? "catalog=0"
+              : "",
         ]
           .filter(Boolean)
           .join(", ");
@@ -2435,6 +2440,11 @@ export function FirewallExtras({
                         typeof s.layout_fidelity_sample_key_count === "number"
                           ? `sampleKeys=${s.layout_fidelity_sample_key_count}`
                           : "",
+                        s.layout_fidelity_sample_catalog_complete === true
+                          ? "catalog=1"
+                          : s.layout_fidelity_sample_catalog_complete === false
+                            ? "catalog=0"
+                            : "",
                       ]
                         .filter(Boolean)
                         .join(", ");
