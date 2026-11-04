@@ -1921,6 +1921,22 @@ scripts=(
   e2e-phase1910
   e2e-phase1911
   e2e-phase1912
+  e2e-phase1913
+  e2e-phase1914
+  e2e-phase1915
+  e2e-phase1916
+  e2e-phase1917
+  e2e-phase1918
+  e2e-phase1919
+  e2e-phase1920
+  e2e-phase1921
+  e2e-phase1922
+  e2e-phase1923
+  e2e-phase1924
+  e2e-phase1925
+  e2e-phase1926
+  e2e-phase1927
+  e2e-phase1928
 )
 for s in "${scripts[@]}"; do
   script="webui/scripts/${s}.sh"

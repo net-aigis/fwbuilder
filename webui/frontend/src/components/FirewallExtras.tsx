@@ -224,6 +224,9 @@ function buildHonestyBundle(payload: Record<string, unknown>) {
     track_note: {
       soft_fertig_honesty_track_note: payload.soft_fertig_honesty_track_note,
     },
+    readiness: {
+      soft_fertig_honesty_readiness: payload.soft_fertig_honesty_readiness,
+    },
     honesty_exports: {
       soft_fertig_honesty_export_keys: payload.soft_fertig_honesty_export_keys,
       soft_fertig_honesty_export_key_count:
