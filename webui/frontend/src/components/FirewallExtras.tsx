@@ -168,6 +168,9 @@ export function FirewallExtras({
       note?: string;
     }>
   >([]);
+  const [optionEnable, setOptionEnable] = useState<
+    Array<{ target: string; when_option: string; when_in: string[]; note?: string }>
+  >([]);
   const [installerNote, setInstallerNote] = useState<string | null>(null);
   const [installerMode, setInstallerMode] = useState<string | null>(null);
   const [expectSteps, setExpectSteps] = useState<string[]>([]);
@@ -370,6 +373,7 @@ export function FirewallExtras({
         setFields(schema.fields ?? {});
         setDefaults(schema.defaults ?? {});
         setStackSwitchHints(schema.stack_switch ?? []);
+        setOptionEnable(schema.option_enable ?? []);
         let preferred = nextGroups[0]?.id || "platform";
         try {
           const stored = sessionStorage.getItem(groupStorageKey(plat, hostOs || ""));
@@ -385,6 +389,7 @@ export function FirewallExtras({
         );
       } else {
         setStackSwitchHints([]);
+        setOptionEnable([]);
         onStatus?.(`Options: ${Object.keys(o.options ?? {}).length} keys`);
       }
     } catch (err) {
@@ -522,6 +527,18 @@ export function FirewallExtras({
       setActiveStackIndex(next);
     }
   }, [options, stackedPages, stackSwitchHints, showAllStacks]);
+
+  const effectiveFields = useMemo(() => {
+    if (!optionEnable.length) return fields;
+    const next: Record<string, OptionFieldMeta> = { ...fields };
+    for (const rule of optionEnable) {
+      const raw = (options[rule.when_option] ?? "").trim();
+      const ok = rule.when_in.includes(raw);
+      const prev = next[rule.target] || { type: "string" as const };
+      next[rule.target] = { ...prev, enabled: ok };
+    }
+    return next;
+  }, [fields, optionEnable, options]);
 
   const optionSections = useMemo(() => {
     if (filter.trim() || showAll || !activeGroupMeta?.sections?.length) {
@@ -956,7 +973,7 @@ export function FirewallExtras({
         const grid = useQtGridLayout
           ? qtGridStyle(
               sec.keys,
-              fields,
+              effectiveFields,
               pageSpacers,
               pageStretch,
               [...pageNotes, ...pageBuddyLabels],
@@ -1038,7 +1055,7 @@ export function FirewallExtras({
                   key={key}
                   name={key}
                   value={options[key] ?? ""}
-                  meta={fields[key]}
+                  meta={effectiveFields[key]}
                   disabled={busy}
                   onChange={(v) => setOptions((prev) => ({ ...prev, [key]: v }))}
                 />

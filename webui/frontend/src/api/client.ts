@@ -589,6 +589,12 @@ export function fetchOptionSchema(platform: string, hostOs = "") {
       preview_only?: boolean;
       note?: string;
     }>;
+    option_enable?: Array<{
+      target: string;
+      when_option: string;
+      when_in: string[];
+      note?: string;
+    }>;
   }>(`/api/v1/option-schema?${qs.toString()}`);
 }
 

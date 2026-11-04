@@ -129,11 +129,58 @@ _IFACE_OPTION_ENABLE: dict[str, list[dict[str, Any]]] = {
     ],
 }
 
+_OPTION_OPTION_ENABLE: dict[str, list[dict[str, Any]]] = {
+    "iptAdvancedDialog": [
+        {
+            "target": "ulog_cprange",
+            "when_option": "use_ULOG",
+            "when_in": ["True", "true", "1", "yes"],
+            "note": "ULOG stack fields follow use_ULOG (with stack switch).",
+        },
+        {
+            "target": "ulog_qthreshold",
+            "when_option": "use_ULOG",
+            "when_in": ["True", "true", "1", "yes"],
+            "note": "ULOG stack fields follow use_ULOG (with stack switch).",
+        },
+        {
+            "target": "ulog_nlgroup",
+            "when_option": "use_ULOG",
+            "when_in": ["True", "true", "1", "yes"],
+            "note": "ULOG stack fields follow use_ULOG (with stack switch).",
+        },
+        {
+            "target": "log_tcp_seq",
+            "when_option": "use_ULOG",
+            "when_in": ["False", "false", "0", "no", ""],
+            "note": "LOG stack fields when use_ULOG is off.",
+        },
+        {
+            "target": "log_tcp_opt",
+            "when_option": "use_ULOG",
+            "when_in": ["False", "false", "0", "no", ""],
+            "note": "LOG stack fields when use_ULOG is off.",
+        },
+        {
+            "target": "log_ip_opt",
+            "when_option": "use_ULOG",
+            "when_in": ["False", "false", "0", "no", ""],
+            "note": "LOG stack fields when use_ULOG is off.",
+        },
+    ],
+}
+
 
 def _iface_option_enable(stem: str | None) -> list[dict[str, Any]]:
     if not stem:
         return []
     return [dict(h) for h in (_IFACE_OPTION_ENABLE.get(stem) or [])]
+
+
+def _option_option_enable(stem: str | None) -> list[dict[str, Any]]:
+    if not stem:
+        return []
+    return [dict(h) for h in (_OPTION_OPTION_ENABLE.get(stem) or [])]
 
 
 def _res_roots() -> list[Path]:
@@ -690,6 +737,9 @@ def option_schema(platform: str, host_os: str = "") -> dict[str, Any]:
     }
     if stack_switch:
         out["stack_switch"] = stack_switch
+    option_enable = _option_option_enable(stem)
+    if option_enable:
+        out["option_enable"] = option_enable
     return out
 
 
