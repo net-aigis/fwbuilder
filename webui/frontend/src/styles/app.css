@@ -763,6 +763,11 @@ pre.configlet-preview {
   opacity: 0.6;
 }
 
+.field.field-ui-disabled[title*="read"] {
+  /* read_only from .ui uses same disabled chrome */
+  cursor: not-allowed;
+}
+
 ul.hard-gap-notes {
   margin: 0.35rem 0 0;
   padding-left: 1.2rem;
@@ -880,4 +885,8 @@ ul.hard-gap-notes {
     border-right: 0;
     border-bottom: 1px solid var(--line);
   }
+}
+
+.field.field-ui-readonly {
+  cursor: not-allowed;
 }

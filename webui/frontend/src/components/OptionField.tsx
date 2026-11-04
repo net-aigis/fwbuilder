@@ -84,7 +84,8 @@ export function OptionField({ name, value, meta, disabled, onChange }: Props) {
     "block",
     sizeClass,
     external ? "external-label" : "",
-    meta?.enabled === false ? "field-ui-disabled" : "",
+    meta?.enabled === false || meta?.read_only ? "field-ui-disabled" : "",
+    meta?.read_only ? "field-ui-readonly" : "",
   ]
     .filter(Boolean)
     .join(" ");

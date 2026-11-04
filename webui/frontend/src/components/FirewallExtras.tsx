@@ -248,10 +248,12 @@ export function FirewallExtras({
         const ifaceTypes = sw.iface_stack_switch?.by_type
           ? Object.keys(sw.iface_stack_switch.by_type).length
           : 0;
-        if (optN || ifaceTypes) {
+        const enN = (sw.option_enable?.length || 0) + (sw.iface_option_enable?.length || 0);
+        if (optN || ifaceTypes || enN) {
           setStackSwitchSummary(
             `stack-switch: option maps ${optN}` +
               (ifaceTypes ? ` · iface types ${ifaceTypes}` : "") +
+              (enN ? ` · enable rules ${enN}` : "") +
               " (preview/follow)",
           );
         } else {
