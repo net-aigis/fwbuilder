@@ -232,6 +232,10 @@ function catalogSummaryRosterStorageKey(firewallId: string) {
   return `fwbweb.catalogSummaryRoster.${firewallId}`;
 }
 
+function honestyReadinessRosterStorageKey(firewallId: string) {
+  return `fwbweb.honestyReadinessRoster.${firewallId}`;
+}
+
 function buildHonestyBundle(payload: Record<string, unknown>) {
   const surfaceKeys = Array.isArray(payload.soft_fertig_surface_keys)
     ? (payload.soft_fertig_surface_keys as string[])
@@ -2389,6 +2393,39 @@ export function FirewallExtras({
             setCatalogSummaryRosterDetail(catalogSummaryRosterRaw);
           }
         }
+        const honestyReadinessRosterRaw = sessionStorage.getItem(
+          honestyReadinessRosterStorageKey(firewallId),
+        );
+        if (honestyReadinessRosterRaw) {
+          try {
+            const parsed = JSON.parse(honestyReadinessRosterRaw) as {
+              soft_fertig_honesty_readiness_roster?: unknown;
+            };
+            const roster = parsed.soft_fertig_honesty_readiness_roster;
+            if (roster && typeof roster === "object") {
+              const rec = roster as Record<string, unknown>;
+              const entries = Array.isArray(rec.entries)
+                ? (rec.entries as Array<Record<string, unknown>>)
+                : [];
+              setHonestyReadinessRosterDetail(
+                [
+                  `entry_count: ${String(rec.entry_count ?? "")}`,
+                  `hard_gaps_remain: ${String(rec.hard_gaps_remain ?? "")}`,
+                  `note: ${String(rec.note ?? "")}`,
+                  ...entries.map(
+                    (e) =>
+                      `${String(e.id ?? "")}: ${String(e.title ?? "")}` +
+                      (e.note ? ` — ${String(e.note)}` : ""),
+                  ),
+                ].join("\n"),
+              );
+            } else {
+              setHonestyReadinessRosterDetail(honestyReadinessRosterRaw);
+            }
+          } catch {
+            setHonestyReadinessRosterDetail(honestyReadinessRosterRaw);
+          }
+        }
       } catch {
         /* ignore */
       }
@@ -3642,7 +3679,7 @@ export function FirewallExtras({
           type="button"
           className="ghost"
           disabled={busy}
-          title="Clear sessionStorage deploy preferences for this firewall"
+          title="Clear sessionStorage deploy preferences for this firewall, honesty readiness roster"
           onClick={() => {
             try {
               sessionStorage.removeItem(deployPrefsKey(firewallId));
@@ -6351,6 +6388,14 @@ export function FirewallExtras({
                     honesty_milestone: hardGapsPayload.honesty_milestone,
                   };
                   const text = JSON.stringify(catalog, null, 2);
+                  try {
+                    sessionStorage.setItem(
+                      honestyReadinessRosterStorageKey(firewallId),
+                      text,
+                    );
+                  } catch {
+                    /* ignore */
+                  }
                   const blob = new Blob([text + "\n"], {
                     type: "application/json;charset=utf-8",
                   });
@@ -6380,6 +6425,14 @@ export function FirewallExtras({
                       soft_complete_phase: hardGapsPayload.soft_complete_phase,
                       honesty_milestone: hardGapsPayload.honesty_milestone,
                     };
+                    try {
+                      sessionStorage.setItem(
+                        honestyReadinessRosterStorageKey(firewallId),
+                        JSON.stringify(catalog, null, 2),
+                      );
+                    } catch {
+                      /* ignore */
+                    }
                     const text = JSON.stringify(catalog, null, 2) + "\n";
                     try {
                       await navigator.clipboard.writeText(text);
@@ -6679,6 +6732,7 @@ export function FirewallExtras({
                   sessionStorage.removeItem(layoutFidelitySampleRosterStorageKey(firewallId));
                   sessionStorage.removeItem(layoutFidelitySampleFieldRosterStorageKey(firewallId));
                   sessionStorage.removeItem(catalogSummaryRosterStorageKey(firewallId));
+                  sessionStorage.removeItem(honestyReadinessRosterStorageKey(firewallId));
                 } catch {
                   /* ignore */
                 }
