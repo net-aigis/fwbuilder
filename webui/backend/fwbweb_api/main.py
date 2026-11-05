@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "3064"
+WEBUI_SOFT_COMPLETE_PHASE = "3080"
 SOFT_FERTIG_HONESTY_TRACK_NOTE = (
     "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
     "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
@@ -182,12 +182,13 @@ SOFT_FERTIG_HONESTY_TRACK_NOTE = (
 # 7500: Soft 3000+ honesty surface checkpoint (ssh_honesty_roster cycle complete);
 # 7550: soft_fertig_layout_fidelity_signal_roster compact layout fidelity signal ids;
 # 7600: layout_fidelity_signal_roster listed in honesty export + bundle sections;
-# 7650: soft_fertig_honesty_surface_version bumped to 2.8 (layout_fidelity_signal_roster).
-WEBUI_HONESTY_MILESTONE = 7650
+# 7650: soft_fertig_honesty_surface_version bumped to 2.8 (layout_fidelity_signal_roster);
+# 7700: layout_fidelity_signal_roster added to sessionStorage + clear catalogs.
+WEBUI_HONESTY_MILESTONE = 7700
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 7650: soft_fertig_honesty_surface_version "
-    "2.8 documents soft_fertig_layout_fidelity_signal_roster on honesty "
-    "endpoints and in export/bundle — hard gaps remain open."
+    "Honesty surface checkpoint 7700: soft_fertig_layout_fidelity_signal_roster "
+    "is persisted via sessionStorage (fwbweb.layoutFidelitySignalRoster.*) "
+    "and clear catalogs — hard gaps remain open."
 )
 SOFT_FERTIG_SOFT_COMPLETE_NOTE = (
     "WEBUI_SOFT_COMPLETE_PHASE marks soft-fertig honesty/preview catalog "
@@ -538,6 +539,7 @@ SOFT_FERTIG_SESSION_STORAGE_KEYS = {
     "changelog_roster": "fwbweb.changelogRoster.",
     "expect_step_roster": "fwbweb.expectStepRoster.",
     "ssh_honesty_roster": "fwbweb.sshHonestyRoster.",
+    "layout_fidelity_signal_roster": "fwbweb.layoutFidelitySignalRoster.",
 }
 SOFT_FERTIG_SESSION_STORAGE_KEY_TITLES = {
     "hard_gaps": "Full /hard-gaps JSON snapshot",
@@ -561,6 +563,7 @@ SOFT_FERTIG_SESSION_STORAGE_KEY_TITLES = {
     "changelog_roster": "Honesty surface changelog roster JSON",
     "expect_step_roster": "Expect install step roster JSON",
     "ssh_honesty_roster": "SSH honesty roster JSON",
+    "layout_fidelity_signal_roster": "Layout fidelity signal roster JSON",
 }
 SOFT_FERTIG_SESSION_STORAGE_NOTES = {
     "hard_gaps": "Persists last downloaded/copied /hard-gaps JSON per firewall.",
@@ -629,6 +632,11 @@ SOFT_FERTIG_SESSION_STORAGE_NOTES = {
     "ssh_honesty_roster": (
         "Persists last downloaded/copied soft_fertig_ssh_honesty_roster "
         "per firewall; UI restores expandable SSH-honesty-roster detail on load."
+    ),
+    "layout_fidelity_signal_roster": (
+        "Persists last downloaded/copied soft_fertig_layout_fidelity_signal_roster "
+        "per firewall; UI restores expandable layout-fidelity-signal-roster detail "
+        "on load."
     ),
 }
 
@@ -772,7 +780,8 @@ SOFT_FERTIG_HONESTY_EXPORT_NOTES = {
         "sessionStorage fwbweb.sshHonestyRoster.*."
     ),
     "layout_fidelity_signal_roster": (
-        "Download/Copy soft_fertig_layout_fidelity_signal_roster; also on /health."
+        "Download/Copy soft_fertig_layout_fidelity_signal_roster; also on /health; "
+        "sessionStorage fwbweb.layoutFidelitySignalRoster.*."
     ),
 }
 
@@ -903,7 +912,10 @@ SOFT_FERTIG_HONESTY_BUNDLE_NOTES = {
         "Same subset as Download SSH honesty roster; "
         "also sessionStorage fwbweb.sshHonestyRoster.*."
     ),
-    "layout_fidelity_signal_roster": "Same subset as Download layout fidelity signal roster.",
+    "layout_fidelity_signal_roster": (
+        "Same subset as Download layout fidelity signal roster; "
+        "also sessionStorage fwbweb.layoutFidelitySignalRoster.*."
+    ),
     "honesty_exports": "Same subset as Download honesty exports.",
 }
 
