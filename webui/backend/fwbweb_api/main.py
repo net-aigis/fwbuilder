@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "3176"
+WEBUI_SOFT_COMPLETE_PHASE = "3192"
 SOFT_FERTIG_HONESTY_TRACK_NOTE = (
     "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
     "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
@@ -189,12 +189,13 @@ SOFT_FERTIG_HONESTY_TRACK_NOTE = (
 # 7850: layout_fidelity_sample_roster listed in honesty export + bundle sections;
 # 7900: soft_fertig_honesty_surface_version bumped to 2.9 (layout_fidelity_sample_roster);
 # 7950: layout_fidelity_sample_roster added to sessionStorage + clear catalogs;
-# 8000: Soft 3160+ honesty surface checkpoint (layout_fidelity_sample_roster cycle complete).
-WEBUI_HONESTY_MILESTONE = 8000
+# 8000: Soft 3160+ honesty surface checkpoint (layout_fidelity_sample_roster cycle complete);
+# 8050: soft_fertig_layout_fidelity_sample_field_roster compact full hard-gaps sample fields.
+WEBUI_HONESTY_MILESTONE = 8050
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 8000: soft-fertig honesty/preview catalogs "
-    "through Soft 3160+ (schema 2.9, layout_fidelity_sample_roster "
-    "sessionStorage) — hard gaps remain open."
+    "Honesty surface checkpoint 8050: soft_fertig_layout_fidelity_sample_field_roster "
+    "lists all layout_fidelity_sample_* fields on /hard-gaps with titles and notes "
+    "for operators — hard gaps remain open."
 )
 SOFT_FERTIG_SOFT_COMPLETE_NOTE = (
     "WEBUI_SOFT_COMPLETE_PHASE marks soft-fertig honesty/preview catalog "
@@ -349,6 +350,7 @@ SOFT_FERTIG_SURFACE_KEYS = (
     "soft_fertig_ssh_honesty_roster",
     "soft_fertig_layout_fidelity_signal_roster",
     "soft_fertig_layout_fidelity_sample_roster",
+    "soft_fertig_layout_fidelity_sample_field_roster",
 )
 SOFT_FERTIG_SURFACE_KEY_TITLES = {
     "soft_complete_phase": "Soft-complete phase marker",
@@ -433,6 +435,9 @@ SOFT_FERTIG_SURFACE_KEY_TITLES = {
     ),
     "soft_fertig_layout_fidelity_sample_roster": (
         "Required layout_fidelity_sample_* catalog keys with titles and notes"
+    ),
+    "soft_fertig_layout_fidelity_sample_field_roster": (
+        "All layout_fidelity_sample_* fields on /hard-gaps with titles and notes"
     ),
 }
 
@@ -525,6 +530,9 @@ SOFT_FERTIG_SURFACE_NOTES = {
     ),
     "soft_fertig_layout_fidelity_sample_roster": (
         "Per required layout_fidelity_sample_* key: id, title, and note."
+    ),
+    "soft_fertig_layout_fidelity_sample_field_roster": (
+        "Per layout_fidelity_sample_* hard-gaps field: id, title, and note."
     ),
 }
 
@@ -1411,6 +1419,60 @@ def soft_fertig_layout_fidelity_signal_roster() -> dict[str, object]:
     }
 
 
+
+# Full layout_fidelity_sample_* field catalog on /hard-gaps (documentation; not pixel).
+SOFT_FERTIG_LAYOUT_FIDELITY_SAMPLE_FIELD_KEYS: tuple[str, ...] = (
+    "layout_fidelity_sample_annotations",
+    "layout_fidelity_sample_buddy_labels",
+    "layout_fidelity_sample_catalog_complete",
+    "layout_fidelity_sample_chrome_geometry",
+    "layout_fidelity_sample_chrome_size_grip_enabled",
+    "layout_fidelity_sample_chrome_tab_position",
+    "layout_fidelity_sample_chrome_window_title",
+    "layout_fidelity_sample_empty_stacked_sections",
+    "layout_fidelity_sample_fields",
+    "layout_fidelity_sample_host_os",
+    "layout_fidelity_sample_key_count",
+    "layout_fidelity_sample_layout_tree_max_depth",
+    "layout_fidelity_sample_pages",
+    "layout_fidelity_sample_pages_with_buddy_labels",
+    "layout_fidelity_sample_pages_with_column_stretch",
+    "layout_fidelity_sample_pages_with_layout_tree",
+    "layout_fidelity_sample_pages_with_row_stretch",
+    "layout_fidelity_sample_pages_with_spacing",
+    "layout_fidelity_sample_pages_with_tooltip",
+    "layout_fidelity_sample_platform",
+    "layout_fidelity_sample_score_parts_count",
+    "layout_fidelity_sample_score_percent",
+    "layout_fidelity_sample_sections",
+    "layout_fidelity_sample_sections_with_checkable",
+    "layout_fidelity_sample_sections_with_flat",
+    "layout_fidelity_sample_signal_key_count",
+    "layout_fidelity_sample_spacers",
+    "layout_fidelity_sample_spacers_with_orientation",
+    "layout_fidelity_sample_spacers_with_size_hint",
+    "layout_fidelity_sample_spacers_with_size_type",
+    "layout_fidelity_sample_stack_names",
+    "layout_fidelity_sample_stack_names_count",
+    "layout_fidelity_sample_stacked_sections",
+    "layout_fidelity_sample_with_alignment",
+    "layout_fidelity_sample_with_enabled",
+    "layout_fidelity_sample_with_external_label",
+    "layout_fidelity_sample_with_grid",
+    "layout_fidelity_sample_with_label",
+    "layout_fidelity_sample_with_maximum_size",
+    "layout_fidelity_sample_with_minimum_size",
+    "layout_fidelity_sample_with_read_only",
+    "layout_fidelity_sample_with_size_policy",
+    "layout_fidelity_sample_with_size_policy_expanding",
+    "layout_fidelity_sample_with_size_policy_fixed",
+    "layout_fidelity_sample_with_size_policy_minimum",
+    "layout_fidelity_sample_with_size_policy_preferred",
+    "layout_fidelity_sample_with_tooltip",
+    "layout_fidelity_sample_with_visible",
+    "layout_fidelity_sample_with_whats_this",
+)
+
 def soft_fertig_layout_fidelity_sample_roster() -> dict[str, object]:
     """Required layout-fidelity sample catalog roster (documentation; not pixel)."""
     entries: list[dict[str, object]] = []
@@ -1432,6 +1494,36 @@ def soft_fertig_layout_fidelity_sample_roster() -> dict[str, object]:
         "entry_count": len(entries),
         "note": (
             "Catalog of required layout_fidelity_sample_* keys only; "
+            "soft-fertig catalogs do not close hard gaps (not pixel)."
+        ),
+    }
+
+
+def soft_fertig_layout_fidelity_sample_field_roster() -> dict[str, object]:
+    """Full layout_fidelity_sample_* hard-gaps field roster (documentation; not pixel)."""
+    required = set(SOFT_FERTIG_LAYOUT_FIDELITY_SAMPLE_KEYS)
+    entries: list[dict[str, object]] = []
+    for key_id in SOFT_FERTIG_LAYOUT_FIDELITY_SAMPLE_FIELD_KEYS:
+        short = key_id.removeprefix("layout_fidelity_sample_")
+        entries.append(
+            {
+                "id": key_id,
+                "required": key_id in required,
+                "title": f"Layout fidelity sample field: {short}",
+                "note": (
+                    f"Hard-gaps sample field `{key_id}`"
+                    + (" (required for catalog_complete)" if key_id in required else "")
+                    + "; not pixel parity."
+                ),
+            }
+        )
+    return {
+        "hard_gaps_remain": True,
+        "entries": entries,
+        "entry_count": len(entries),
+        "required_count": len(required),
+        "note": (
+            "Catalog of all layout_fidelity_sample_* fields on /hard-gaps; "
             "soft-fertig catalogs do not close hard gaps (not pixel)."
         ),
     }
@@ -1495,6 +1587,9 @@ def soft_fertig_catalog_summary() -> dict[str, object]:
         ),
         "soft_fertig_layout_fidelity_sample_roster_entry_count": (
             soft_fertig_layout_fidelity_sample_roster()["entry_count"]
+        ),
+        "soft_fertig_layout_fidelity_sample_field_roster_entry_count": (
+            soft_fertig_layout_fidelity_sample_field_roster()["entry_count"]
         ),
         "honesty_milestone": WEBUI_HONESTY_MILESTONE,
         "soft_complete_phase": WEBUI_SOFT_COMPLETE_PHASE,
@@ -1614,6 +1709,7 @@ def health() -> dict[str, object]:
         "soft_fertig_ssh_honesty_roster": soft_fertig_ssh_honesty_roster(),
         "soft_fertig_layout_fidelity_signal_roster": soft_fertig_layout_fidelity_signal_roster(),
         "soft_fertig_layout_fidelity_sample_roster": soft_fertig_layout_fidelity_sample_roster(),
+        "soft_fertig_layout_fidelity_sample_field_roster": soft_fertig_layout_fidelity_sample_field_roster(),
         "soft_fertig_honesty_surface_version": SOFT_FERTIG_HONESTY_SURFACE_VERSION,
     }
 
@@ -1661,6 +1757,7 @@ def res_status(_: str = Depends(require_token)) -> dict[str, object]:
         "soft_fertig_ssh_honesty_roster": soft_fertig_ssh_honesty_roster(),
         "soft_fertig_layout_fidelity_signal_roster": soft_fertig_layout_fidelity_signal_roster(),
         "soft_fertig_layout_fidelity_sample_roster": soft_fertig_layout_fidelity_sample_roster(),
+        "soft_fertig_layout_fidelity_sample_field_roster": soft_fertig_layout_fidelity_sample_field_roster(),
         "soft_fertig_honesty_surface_version": SOFT_FERTIG_HONESTY_SURFACE_VERSION,
     }
 
@@ -2045,6 +2142,7 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
         "soft_fertig_ssh_honesty_roster": soft_fertig_ssh_honesty_roster(),
         "soft_fertig_layout_fidelity_signal_roster": soft_fertig_layout_fidelity_signal_roster(),
         "soft_fertig_layout_fidelity_sample_roster": soft_fertig_layout_fidelity_sample_roster(),
+        "soft_fertig_layout_fidelity_sample_field_roster": soft_fertig_layout_fidelity_sample_field_roster(),
         "soft_fertig_honesty_export_keys": list(SOFT_FERTIG_HONESTY_EXPORT_KEYS),
         "soft_fertig_honesty_export_key_count": len(SOFT_FERTIG_HONESTY_EXPORT_KEYS),
         "soft_fertig_honesty_export_key_titles": {
@@ -2239,6 +2337,9 @@ def hard_gaps_summary(_: str = Depends(require_token)) -> dict[str, object]:
         ),
         "soft_fertig_layout_fidelity_sample_roster": dict(
             full.get("soft_fertig_layout_fidelity_sample_roster") or {}
+        ),
+        "soft_fertig_layout_fidelity_sample_field_roster": dict(
+            full.get("soft_fertig_layout_fidelity_sample_field_roster") or {}
         ),
         "soft_fertig_honesty_export_keys": list(
             full.get("soft_fertig_honesty_export_keys") or []
@@ -2614,6 +2715,7 @@ def hard_gap_closure(_: str = Depends(require_token)) -> dict[str, object]:
         "soft_fertig_ssh_honesty_roster": soft_fertig_ssh_honesty_roster(),
         "soft_fertig_layout_fidelity_signal_roster": soft_fertig_layout_fidelity_signal_roster(),
         "soft_fertig_layout_fidelity_sample_roster": soft_fertig_layout_fidelity_sample_roster(),
+        "soft_fertig_layout_fidelity_sample_field_roster": soft_fertig_layout_fidelity_sample_field_roster(),
         "soft_fertig_honesty_export_keys": list(SOFT_FERTIG_HONESTY_EXPORT_KEYS),
         "soft_fertig_honesty_export_key_count": len(SOFT_FERTIG_HONESTY_EXPORT_KEYS),
         "soft_fertig_honesty_export_key_titles": {
