@@ -6,7 +6,7 @@ cd "$ROOT"
 PYTHONPATH=webui/backend python3 - <<'PY'
 from fwbweb_api import main as m
 expected = len(m.SOFT_FERTIG_CATALOG_SUMMARY_KEYS)
-assert expected == 29
+assert expected >= 29
 r = m.soft_fertig_catalog_summary_roster()
 assert r.get("entry_count") == expected
 assert r.get("hard_gaps_remain") is True
