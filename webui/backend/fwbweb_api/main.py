@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "3224"
+WEBUI_SOFT_COMPLETE_PHASE = "3240"
 SOFT_FERTIG_HONESTY_TRACK_NOTE = (
     "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
     "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
@@ -192,12 +192,13 @@ SOFT_FERTIG_HONESTY_TRACK_NOTE = (
 # 8000: Soft 3160+ honesty surface checkpoint (layout_fidelity_sample_roster cycle complete);
 # 8050: soft_fertig_layout_fidelity_sample_field_roster compact full hard-gaps sample fields;
 # 8100: layout_fidelity_sample_field_roster listed in honesty export + bundle sections;
-# 8150: soft_fertig_honesty_surface_version bumped to 3.0 (layout_fidelity_sample_field_roster).
-WEBUI_HONESTY_MILESTONE = 8150
+# 8150: soft_fertig_honesty_surface_version bumped to 3.0 (layout_fidelity_sample_field_roster);
+# 8200: layout_fidelity_sample_field_roster added to sessionStorage + clear catalogs.
+WEBUI_HONESTY_MILESTONE = 8200
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 8150: soft_fertig_honesty_surface_version "
-    "3.0 documents soft_fertig_layout_fidelity_sample_field_roster on honesty "
-    "endpoints and in export/bundle — hard gaps remain open."
+    "Honesty surface checkpoint 8200: soft_fertig_layout_fidelity_sample_field_roster "
+    "is persisted via sessionStorage (fwbweb.layoutFidelitySampleFieldRoster.*) "
+    "and clear catalogs — hard gaps remain open."
 )
 SOFT_FERTIG_SOFT_COMPLETE_NOTE = (
     "WEBUI_SOFT_COMPLETE_PHASE marks soft-fertig honesty/preview catalog "
@@ -564,6 +565,7 @@ SOFT_FERTIG_SESSION_STORAGE_KEYS = {
     "ssh_honesty_roster": "fwbweb.sshHonestyRoster.",
     "layout_fidelity_signal_roster": "fwbweb.layoutFidelitySignalRoster.",
     "layout_fidelity_sample_roster": "fwbweb.layoutFidelitySampleRoster.",
+    "layout_fidelity_sample_field_roster": "fwbweb.layoutFidelitySampleFieldRoster.",
 }
 SOFT_FERTIG_SESSION_STORAGE_KEY_TITLES = {
     "hard_gaps": "Full /hard-gaps JSON snapshot",
@@ -589,6 +591,7 @@ SOFT_FERTIG_SESSION_STORAGE_KEY_TITLES = {
     "ssh_honesty_roster": "SSH honesty roster JSON",
     "layout_fidelity_signal_roster": "Layout fidelity signal roster JSON",
     "layout_fidelity_sample_roster": "Layout fidelity sample roster JSON",
+    "layout_fidelity_sample_field_roster": "Layout fidelity sample field roster JSON",
 }
 SOFT_FERTIG_SESSION_STORAGE_NOTES = {
     "hard_gaps": "Persists last downloaded/copied /hard-gaps JSON per firewall.",
@@ -666,6 +669,11 @@ SOFT_FERTIG_SESSION_STORAGE_NOTES = {
     "layout_fidelity_sample_roster": (
         "Persists last downloaded/copied soft_fertig_layout_fidelity_sample_roster "
         "per firewall; UI restores expandable layout-fidelity-sample-roster detail "
+        "on load."
+    ),
+    "layout_fidelity_sample_field_roster": (
+        "Persists last downloaded/copied soft_fertig_layout_fidelity_sample_field_roster "
+        "per firewall; UI restores expandable layout-fidelity-sample-field-roster detail "
         "on load."
     ),
 }
@@ -822,7 +830,8 @@ SOFT_FERTIG_HONESTY_EXPORT_NOTES = {
         "sessionStorage fwbweb.layoutFidelitySampleRoster.*."
     ),
     "layout_fidelity_sample_field_roster": (
-        "Download/Copy soft_fertig_layout_fidelity_sample_field_roster; also on /health."
+        "Download/Copy soft_fertig_layout_fidelity_sample_field_roster; also on /health; "
+        "sessionStorage fwbweb.layoutFidelitySampleFieldRoster.*"
     ),
 }
 
@@ -966,7 +975,8 @@ SOFT_FERTIG_HONESTY_BUNDLE_NOTES = {
         "also sessionStorage fwbweb.layoutFidelitySampleRoster.*."
     ),
     "layout_fidelity_sample_field_roster": (
-        "Same subset as Download layout fidelity sample field roster."
+        "Same subset as Download layout fidelity sample field roster; "
+        "also sessionStorage fwbweb.layoutFidelitySampleFieldRoster.*"
     ),
     "honesty_exports": "Same subset as Download honesty exports.",
 }
