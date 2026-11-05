@@ -568,6 +568,8 @@ export function FirewallExtras({
     useState<string | null>(null);
   const [honestyReadinessRosterDetail, setHonestyReadinessRosterDetail] =
     useState<string | null>(null);
+  const [sessionStorageClearRosterDetail, setSessionStorageClearRosterDetail] =
+    useState<string | null>(null);
   const [honestyPathsSummary, setHonestyPathsSummary] = useState<string | null>(null);
   const [honestyPathsDetail, setHonestyPathsDetail] = useState<string | null>(null);
   const [hardGapsSummaryPath, setHardGapsSummaryPath] = useState<string | null>(null);
@@ -1460,6 +1462,34 @@ export function FirewallExtras({
           setHonestyReadinessRosterDetail(lines.join("\n"));
         } else {
           setHonestyReadinessRosterDetail(null);
+        }
+      }
+      {
+        const roster =
+          gaps?.soft_fertig_session_storage_clear_roster &&
+          typeof gaps.soft_fertig_session_storage_clear_roster === "object"
+            ? (gaps.soft_fertig_session_storage_clear_roster as Record<
+                string,
+                unknown
+              >)
+            : null;
+        if (roster && Object.keys(roster).length) {
+          const entries = Array.isArray(roster.entries)
+            ? (roster.entries as Array<Record<string, unknown>>)
+            : [];
+          const lines = [
+            `entry_count: ${String(roster.entry_count ?? "")}`,
+            `hard_gaps_remain: ${String(roster.hard_gaps_remain ?? "")}`,
+            `note: ${String(roster.note ?? "")}`,
+            ...entries.map(
+              (e) =>
+                `${String(e.id ?? "")}: ${String(e.title ?? "")}` +
+                (e.note ? ` — ${String(e.note)}` : ""),
+            ),
+          ];
+          setSessionStorageClearRosterDetail(lines.join("\n"));
+        } else {
+          setSessionStorageClearRosterDetail(null);
         }
       }
       if (gaps?.honesty_paths && Object.keys(gaps.honesty_paths).length) {
@@ -4354,6 +4384,14 @@ export function FirewallExtras({
               </pre>
             </details>
           ) : null}
+          {sessionStorageClearRosterDetail ? (
+            <details className="muted">
+              <summary>Soft-fertig session storage clear roster</summary>
+              <pre className="deploy-log configlet-preview" tabIndex={0}>
+                {sessionStorageClearRosterDetail}
+              </pre>
+            </details>
+          ) : null}
           <div className="btn-row pad-tight">
             {hardGapsPayload ? (
               <button
@@ -6446,6 +6484,62 @@ export function FirewallExtras({
                 Copy honesty readiness roster
               </button>
             ) : null}
+            {hardGapsPayload ? (
+              <button
+                type="button"
+                className="ghost"
+                disabled={busy}
+                title="Download soft_fertig_session_storage_clear_roster from /hard-gaps"
+                onClick={() => {
+                  const catalog: Record<string, unknown> = {
+                    soft_fertig_session_storage_clear_roster:
+                      hardGapsPayload.soft_fertig_session_storage_clear_roster,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  const text = JSON.stringify(catalog, null, 2);
+                  const blob = new Blob([text + "\n"], {
+                    type: "application/json;charset=utf-8",
+                  });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `fwbweb-session-storage-clear-roster-${firewallId || "fw"}.json`;
+                  a.click();
+                  URL.revokeObjectURL(url);
+                  onStatus?.("Downloaded session storage clear roster");
+                }}
+              >
+                Download session storage clear roster
+              </button>
+            ) : null}
+            {hardGapsPayload ? (
+              <button
+                type="button"
+                className="ghost"
+                disabled={busy}
+                title="Copy soft_fertig_session_storage_clear_roster to clipboard"
+                onClick={() => {
+                  void (async () => {
+                    const catalog: Record<string, unknown> = {
+                      soft_fertig_session_storage_clear_roster:
+                        hardGapsPayload.soft_fertig_session_storage_clear_roster,
+                      soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                      honesty_milestone: hardGapsPayload.honesty_milestone,
+                    };
+                    const text = JSON.stringify(catalog, null, 2) + "\n";
+                    try {
+                      await navigator.clipboard.writeText(text);
+                      onStatus?.("Copied session storage clear roster");
+                    } catch (e) {
+                      onError?.(e instanceof Error ? e.message : String(e));
+                    }
+                  })();
+                }}
+              >
+                Copy session storage clear roster
+              </button>
+            ) : null}
             <button
               type="button"
               className="ghost"
@@ -6760,6 +6854,7 @@ export function FirewallExtras({
                 setLayoutFidelitySampleFieldRosterDetail(null);
                 setCatalogSummaryRosterDetail(null);
                 setHonestyReadinessRosterDetail(null);
+                setSessionStorageClearRosterDetail(null);
                 onStatus?.("Cleared honesty catalogs");
               }}
             >
