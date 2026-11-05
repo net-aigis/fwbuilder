@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "3272"
+WEBUI_SOFT_COMPLETE_PHASE = "3288"
 SOFT_FERTIG_HONESTY_TRACK_NOTE = (
     "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
     "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
@@ -195,12 +195,12 @@ SOFT_FERTIG_HONESTY_TRACK_NOTE = (
 # 8150: soft_fertig_honesty_surface_version bumped to 3.0 (layout_fidelity_sample_field_roster);
 # 8200: layout_fidelity_sample_field_roster added to sessionStorage + clear catalogs;
 # 8250: Soft 3240+ honesty surface checkpoint (layout_fidelity_sample_field_roster cycle complete);
-# 8300: soft_fertig_catalog_summary_roster compact catalog_summary field keys.
-WEBUI_HONESTY_MILESTONE = 8300
+# 8300: soft_fertig_catalog_summary_roster compact catalog_summary field keys;
+# 8350: catalog_summary_roster listed in honesty export + bundle sections.
+WEBUI_HONESTY_MILESTONE = 8350
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 8300: soft_fertig_catalog_summary_roster "
-    "lists all soft_fertig_catalog_summary field keys with titles and notes "
-    "for operators — hard gaps remain open."
+    "Honesty surface checkpoint 8350: soft_fertig_catalog_summary_roster "
+    "is listed in honesty export and bundle catalogs — hard gaps remain open."
 )
 SOFT_FERTIG_SOFT_COMPLETE_NOTE = (
     "WEBUI_SOFT_COMPLETE_PHASE marks soft-fertig honesty/preview catalog "
@@ -730,6 +730,7 @@ SOFT_FERTIG_HONESTY_EXPORT_KEYS = (
     "layout_fidelity_signal_roster",
     "layout_fidelity_sample_roster",
     "layout_fidelity_sample_field_roster",
+    "catalog_summary_roster",
 )
 SOFT_FERTIG_HONESTY_EXPORT_KEY_TITLES = {
     "hard_gaps": "Full /hard-gaps honesty snapshot JSON",
@@ -759,6 +760,7 @@ SOFT_FERTIG_HONESTY_EXPORT_KEY_TITLES = {
     "layout_fidelity_signal_roster": "Layout-fidelity heuristic signal ids (fields/pages/chrome)",
     "layout_fidelity_sample_roster": "Required layout_fidelity_sample_* catalog keys",
     "layout_fidelity_sample_field_roster": "All layout_fidelity_sample_* fields on /hard-gaps",
+    "catalog_summary_roster": "soft_fertig_catalog_summary field keys with titles and notes",
 }
 SOFT_FERTIG_HONESTY_EXPORT_NOTES = {
     "hard_gaps": "Download hard-gaps JSON button; sessionStorage fwbweb.hardGaps.*.",
@@ -842,6 +844,9 @@ SOFT_FERTIG_HONESTY_EXPORT_NOTES = {
         "Download/Copy soft_fertig_layout_fidelity_sample_field_roster; also on /health; "
         "sessionStorage fwbweb.layoutFidelitySampleFieldRoster.*"
     ),
+    "catalog_summary_roster": (
+        "Download/Copy soft_fertig_catalog_summary_roster; also on /health."
+    ),
 }
 
 # Top-level sections of the combined UI honesty bundle download.
@@ -873,6 +878,7 @@ SOFT_FERTIG_HONESTY_BUNDLE_SECTIONS = (
     "layout_fidelity_signal_roster",
     "layout_fidelity_sample_roster",
     "layout_fidelity_sample_field_roster",
+    "catalog_summary_roster",
     "honesty_exports",
 )
 SOFT_FERTIG_HONESTY_BUNDLE_SECTION_TITLES = {
@@ -903,6 +909,7 @@ SOFT_FERTIG_HONESTY_BUNDLE_SECTION_TITLES = {
     "layout_fidelity_signal_roster": "Layout-fidelity heuristic signal ids (fields/pages/chrome)",
     "layout_fidelity_sample_roster": "Required layout_fidelity_sample_* catalog keys",
     "layout_fidelity_sample_field_roster": "All layout_fidelity_sample_* fields on /hard-gaps",
+    "catalog_summary_roster": "soft_fertig_catalog_summary field keys with titles and notes",
     "honesty_exports": "Export catalog meta (keys/titles/notes)",
 }
 SOFT_FERTIG_HONESTY_BUNDLE_NOTES = {
@@ -986,6 +993,9 @@ SOFT_FERTIG_HONESTY_BUNDLE_NOTES = {
     "layout_fidelity_sample_field_roster": (
         "Same subset as Download layout fidelity sample field roster; "
         "also sessionStorage fwbweb.layoutFidelitySampleFieldRoster.*"
+    ),
+    "catalog_summary_roster": (
+        "Same subset as Download catalog summary roster."
     ),
     "honesty_exports": "Same subset as Download honesty exports.",
 }

@@ -349,6 +349,10 @@ function buildHonestyBundle(payload: Record<string, unknown>) {
       soft_fertig_layout_fidelity_sample_field_roster:
         payload.soft_fertig_layout_fidelity_sample_field_roster,
     },
+    catalog_summary_roster: {
+      soft_fertig_catalog_summary_roster:
+        payload.soft_fertig_catalog_summary_roster,
+    },
     honesty_exports: {
       soft_fertig_honesty_export_keys: payload.soft_fertig_honesty_export_keys,
       soft_fertig_honesty_export_key_count:
