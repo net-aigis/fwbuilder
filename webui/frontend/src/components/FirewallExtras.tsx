@@ -220,6 +220,10 @@ function layoutFidelitySignalRosterStorageKey(firewallId: string) {
   return `fwbweb.layoutFidelitySignalRoster.${firewallId}`;
 }
 
+function layoutFidelitySampleRosterStorageKey(firewallId: string) {
+  return `fwbweb.layoutFidelitySampleRoster.${firewallId}`;
+}
+
 function buildHonestyBundle(payload: Record<string, unknown>) {
   const surfaceKeys = Array.isArray(payload.soft_fertig_surface_keys)
     ? (payload.soft_fertig_surface_keys as string[])
@@ -2167,6 +2171,39 @@ export function FirewallExtras({
             }
           } catch {
             setLayoutFidelitySignalRosterDetail(layoutFidelitySignalRosterRaw);
+          }
+        }
+        const layoutFidelitySampleRosterRaw = sessionStorage.getItem(
+          layoutFidelitySampleRosterStorageKey(firewallId),
+        );
+        if (layoutFidelitySampleRosterRaw) {
+          try {
+            const parsed = JSON.parse(layoutFidelitySampleRosterRaw) as {
+              soft_fertig_layout_fidelity_sample_roster?: unknown;
+            };
+            const roster = parsed.soft_fertig_layout_fidelity_sample_roster;
+            if (roster && typeof roster === "object") {
+              const rec = roster as Record<string, unknown>;
+              const entries = Array.isArray(rec.entries)
+                ? (rec.entries as Array<Record<string, unknown>>)
+                : [];
+              setLayoutFidelitySampleRosterDetail(
+                [
+                  `entry_count: ${String(rec.entry_count ?? "")}`,
+                  `hard_gaps_remain: ${String(rec.hard_gaps_remain ?? "")}`,
+                  `note: ${String(rec.note ?? "")}`,
+                  ...entries.map(
+                    (e) =>
+                      `${String(e.id ?? "")}: ${String(e.title ?? "")}` +
+                      (e.note ? ` — ${String(e.note)}` : ""),
+                  ),
+                ].join("\n"),
+              );
+            } else {
+              setLayoutFidelitySampleRosterDetail(layoutFidelitySampleRosterRaw);
+            }
+          } catch {
+            setLayoutFidelitySampleRosterDetail(layoutFidelitySampleRosterRaw);
           }
         }
       } catch {
@@ -5891,6 +5928,14 @@ export function FirewallExtras({
                     honesty_milestone: hardGapsPayload.honesty_milestone,
                   };
                   const text = JSON.stringify(catalog, null, 2);
+                  try {
+                    sessionStorage.setItem(
+                      layoutFidelitySampleRosterStorageKey(firewallId),
+                      text,
+                    );
+                  } catch {
+                    /* ignore */
+                  }
                   const blob = new Blob([text + "\n"], {
                     type: "application/json;charset=utf-8",
                   });
@@ -5920,6 +5965,14 @@ export function FirewallExtras({
                       soft_complete_phase: hardGapsPayload.soft_complete_phase,
                       honesty_milestone: hardGapsPayload.honesty_milestone,
                     };
+                    try {
+                      sessionStorage.setItem(
+                        layoutFidelitySampleRosterStorageKey(firewallId),
+                        JSON.stringify(catalog, null, 2),
+                      );
+                    } catch {
+                      /* ignore */
+                    }
                     const text = JSON.stringify(catalog, null, 2) + "\n";
                     try {
                       await navigator.clipboard.writeText(text);
@@ -6191,7 +6244,7 @@ export function FirewallExtras({
               type="button"
               className="ghost"
               disabled={busy || (!hardGapsPayload && !hardGapsSummaryText)}
-              title="Clear sessionStorage hard-gaps snapshot, summary, surface, refusals, honesty paths, track note, readiness, soft-complete note, surface changelog, operator brief, hard-gap roster, hard-gap refusal roster, honesty path roster, sessionStorage roster, honesty export roster, honesty bundle roster, surface roster, changelog roster, expect step roster, SSH honesty roster, layout fidelity signal roster"
+              title="Clear sessionStorage hard-gaps snapshot, summary, surface, refusals, honesty paths, track note, readiness, soft-complete note, surface changelog, operator brief, hard-gap roster, hard-gap refusal roster, honesty path roster, sessionStorage roster, honesty export roster, honesty bundle roster, surface roster, changelog roster, expect step roster, SSH honesty roster, layout fidelity signal roster, layout fidelity sample roster"
               onClick={() => {
                 try {
                   sessionStorage.removeItem(hardGapsSnapshotKey(firewallId));
@@ -6216,6 +6269,7 @@ export function FirewallExtras({
                   sessionStorage.removeItem(expectStepRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshHonestyRosterStorageKey(firewallId));
                   sessionStorage.removeItem(layoutFidelitySignalRosterStorageKey(firewallId));
+                  sessionStorage.removeItem(layoutFidelitySampleRosterStorageKey(firewallId));
                 } catch {
                   /* ignore */
                 }
