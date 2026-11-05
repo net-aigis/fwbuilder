@@ -518,6 +518,8 @@ export function FirewallExtras({
   const [sshHonestyRosterDetail, setSshHonestyRosterDetail] = useState<
     string | null
   >(null);
+  const [layoutFidelitySignalRosterDetail, setLayoutFidelitySignalRosterDetail] =
+    useState<string | null>(null);
   const [honestyPathsSummary, setHonestyPathsSummary] = useState<string | null>(null);
   const [honestyPathsDetail, setHonestyPathsDetail] = useState<string | null>(null);
   const [hardGapsSummaryPath, setHardGapsSummaryPath] = useState<string | null>(null);
@@ -1264,6 +1266,37 @@ export function FirewallExtras({
           setSshHonestyRosterDetail(lines.join("\n"));
         } else {
           setSshHonestyRosterDetail(null);
+        }
+      }
+      {
+        const roster =
+          gaps?.soft_fertig_layout_fidelity_signal_roster &&
+          typeof gaps.soft_fertig_layout_fidelity_signal_roster === "object"
+            ? (gaps.soft_fertig_layout_fidelity_signal_roster as Record<
+                string,
+                unknown
+              >)
+            : null;
+        if (roster && Object.keys(roster).length) {
+          const entries = Array.isArray(roster.entries)
+            ? (roster.entries as Array<Record<string, unknown>>)
+            : [];
+          const lines = [
+            `entry_count: ${String(roster.entry_count ?? "")}`,
+            `group_count: ${String(roster.group_count ?? "")}`,
+            `hard_gaps_remain: ${String(roster.hard_gaps_remain ?? "")}`,
+            `note: ${String(roster.note ?? "")}`,
+            ...entries.map(
+              (e) =>
+                `${String(e.id ?? "")}` +
+                (e.group ? ` [${String(e.group)}]` : "") +
+                `: ${String(e.title ?? "")}` +
+                (e.note ? ` — ${String(e.note)}` : ""),
+            ),
+          ];
+          setLayoutFidelitySignalRosterDetail(lines.join("\n"));
+        } else {
+          setLayoutFidelitySignalRosterDetail(null);
         }
       }
       if (gaps?.honesty_paths && Object.keys(gaps.honesty_paths).length) {
@@ -3946,6 +3979,14 @@ export function FirewallExtras({
               </pre>
             </details>
           ) : null}
+          {layoutFidelitySignalRosterDetail ? (
+            <details className="muted">
+              <summary>Soft-fertig layout fidelity signal roster</summary>
+              <pre className="deploy-log configlet-preview" tabIndex={0}>
+                {layoutFidelitySignalRosterDetail}
+              </pre>
+            </details>
+          ) : null}
           <div className="btn-row pad-tight">
             {hardGapsPayload ? (
               <button
@@ -5678,6 +5719,62 @@ export function FirewallExtras({
                 Copy SSH honesty roster
               </button>
             ) : null}
+            {hardGapsPayload ? (
+              <button
+                type="button"
+                className="ghost"
+                disabled={busy}
+                title="Download soft_fertig_layout_fidelity_signal_roster from /hard-gaps"
+                onClick={() => {
+                  const catalog: Record<string, unknown> = {
+                    soft_fertig_layout_fidelity_signal_roster:
+                      hardGapsPayload.soft_fertig_layout_fidelity_signal_roster,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  const text = JSON.stringify(catalog, null, 2);
+                  const blob = new Blob([text + "\n"], {
+                    type: "application/json;charset=utf-8",
+                  });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `fwbweb-layout-fidelity-signal-roster-${firewallId || "fw"}.json`;
+                  a.click();
+                  URL.revokeObjectURL(url);
+                  onStatus?.("Downloaded layout fidelity signal roster");
+                }}
+              >
+                Download layout fidelity signal roster
+              </button>
+            ) : null}
+            {hardGapsPayload ? (
+              <button
+                type="button"
+                className="ghost"
+                disabled={busy}
+                title="Copy soft_fertig_layout_fidelity_signal_roster to clipboard"
+                onClick={() => {
+                  void (async () => {
+                    const catalog: Record<string, unknown> = {
+                      soft_fertig_layout_fidelity_signal_roster:
+                        hardGapsPayload.soft_fertig_layout_fidelity_signal_roster,
+                      soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                      honesty_milestone: hardGapsPayload.honesty_milestone,
+                    };
+                    const text = JSON.stringify(catalog, null, 2) + "\n";
+                    try {
+                      await navigator.clipboard.writeText(text);
+                      onStatus?.("Copied layout fidelity signal roster");
+                    } catch (e) {
+                      onError?.(e instanceof Error ? e.message : String(e));
+                    }
+                  })();
+                }}
+              >
+                Copy layout fidelity signal roster
+              </button>
+            ) : null}
             <button
               type="button"
               className="ghost"
@@ -5982,6 +6079,7 @@ export function FirewallExtras({
                 setChangelogRosterDetail(null);
                 setExpectStepRosterDetail(null);
                 setSshHonestyRosterDetail(null);
+                setLayoutFidelitySignalRosterDetail(null);
                 onStatus?.("Cleared honesty catalogs");
               }}
             >
