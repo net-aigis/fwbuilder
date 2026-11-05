@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "3080"
+WEBUI_SOFT_COMPLETE_PHASE = "3096"
 SOFT_FERTIG_HONESTY_TRACK_NOTE = (
     "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
     "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
@@ -183,12 +183,13 @@ SOFT_FERTIG_HONESTY_TRACK_NOTE = (
 # 7550: soft_fertig_layout_fidelity_signal_roster compact layout fidelity signal ids;
 # 7600: layout_fidelity_signal_roster listed in honesty export + bundle sections;
 # 7650: soft_fertig_honesty_surface_version bumped to 2.8 (layout_fidelity_signal_roster);
-# 7700: layout_fidelity_signal_roster added to sessionStorage + clear catalogs.
-WEBUI_HONESTY_MILESTONE = 7700
+# 7700: layout_fidelity_signal_roster added to sessionStorage + clear catalogs;
+# 7750: Soft 3080+ honesty surface checkpoint (layout_fidelity_signal_roster cycle complete).
+WEBUI_HONESTY_MILESTONE = 7750
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 7700: soft_fertig_layout_fidelity_signal_roster "
-    "is persisted via sessionStorage (fwbweb.layoutFidelitySignalRoster.*) "
-    "and clear catalogs — hard gaps remain open."
+    "Honesty surface checkpoint 7750: soft-fertig honesty/preview catalogs "
+    "through Soft 3080+ (schema 2.8, layout_fidelity_signal_roster "
+    "sessionStorage) — hard gaps remain open."
 )
 SOFT_FERTIG_SOFT_COMPLETE_NOTE = (
     "WEBUI_SOFT_COMPLETE_PHASE marks soft-fertig honesty/preview catalog "
