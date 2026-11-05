@@ -8,7 +8,7 @@ from fwbweb_api import main as m
 from fwbweb_api.deploy import SSH_ALTERNATIVE_NOTES, SSH_REFUSAL_PATH_NOTES
 expected = len(SSH_ALTERNATIVE_NOTES) + len(SSH_REFUSAL_PATH_NOTES)
 assert int(m.WEBUI_SOFT_COMPLETE_PHASE) >= 3000
-assert m.SOFT_FERTIG_HONESTY_SURFACE_VERSION.startswith(("1.", "2."))
+assert m.SOFT_FERTIG_HONESTY_SURFACE_VERSION.startswith(("1.", "2.", "3."))
 assert "ssh_honesty_roster" in m.SOFT_FERTIG_SESSION_STORAGE_KEYS
 assert "ssh_honesty_roster" in m.SOFT_FERTIG_HONESTY_EXPORT_KEYS
 h = m.hard_gaps()

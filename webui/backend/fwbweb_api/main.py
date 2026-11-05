@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "3208"
+WEBUI_SOFT_COMPLETE_PHASE = "3224"
 SOFT_FERTIG_HONESTY_TRACK_NOTE = (
     "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
     "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
@@ -191,11 +191,13 @@ SOFT_FERTIG_HONESTY_TRACK_NOTE = (
 # 7950: layout_fidelity_sample_roster added to sessionStorage + clear catalogs;
 # 8000: Soft 3160+ honesty surface checkpoint (layout_fidelity_sample_roster cycle complete);
 # 8050: soft_fertig_layout_fidelity_sample_field_roster compact full hard-gaps sample fields;
-# 8100: layout_fidelity_sample_field_roster listed in honesty export + bundle sections.
-WEBUI_HONESTY_MILESTONE = 8100
+# 8100: layout_fidelity_sample_field_roster listed in honesty export + bundle sections;
+# 8150: soft_fertig_honesty_surface_version bumped to 3.0 (layout_fidelity_sample_field_roster).
+WEBUI_HONESTY_MILESTONE = 8150
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 8100: soft_fertig_layout_fidelity_sample_field_roster "
-    "is listed in honesty export and bundle catalogs — hard gaps remain open."
+    "Honesty surface checkpoint 8150: soft_fertig_honesty_surface_version "
+    "3.0 documents soft_fertig_layout_fidelity_sample_field_roster on honesty "
+    "endpoints and in export/bundle — hard gaps remain open."
 )
 SOFT_FERTIG_SOFT_COMPLETE_NOTE = (
     "WEBUI_SOFT_COMPLETE_PHASE marks soft-fertig honesty/preview catalog "
@@ -676,9 +678,9 @@ SOFT_FERTIG_SESSION_STORAGE_CLEAR_NOTE = (
 )
 
 # Soft-fertig honesty/preview catalog schema version (documentation; not a lock).
-SOFT_FERTIG_HONESTY_SURFACE_VERSION = "2.9"
+SOFT_FERTIG_HONESTY_SURFACE_VERSION = "3.0"
 SOFT_FERTIG_HONESTY_SURFACE_VERSION_NOTE = (
-    "Schema 2.9: schema 2.8 plus soft_fertig_layout_fidelity_sample_roster on "
+    "Schema 3.0: schema 2.9 plus soft_fertig_layout_fidelity_sample_field_roster on "
     "/health and honesty endpoints (+ export/bundle); hard gaps remain open."
 )
 
@@ -1050,6 +1052,10 @@ SOFT_FERTIG_HONESTY_SURFACE_CHANGELOG = {
     ),
     "2.9": (
         "soft_fertig_layout_fidelity_sample_roster on /health and honesty "
+        "endpoints (+ export/bundle)."
+    ),
+    "3.0": (
+        "soft_fertig_layout_fidelity_sample_field_roster on /health and honesty "
         "endpoints (+ export/bundle)."
     ),
 }

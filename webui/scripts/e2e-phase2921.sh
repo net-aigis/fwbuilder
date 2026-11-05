@@ -7,7 +7,7 @@ PYTHONPATH=webui/backend python3 - <<'PY'
 from fwbweb_api import main as m
 from fwbweb_api.expect_installer import EXPECT_PLAN_STEP_IDS
 assert int(m.WEBUI_SOFT_COMPLETE_PHASE) >= 2920
-assert m.SOFT_FERTIG_HONESTY_SURFACE_VERSION.startswith(("1.", "2."))
+assert m.SOFT_FERTIG_HONESTY_SURFACE_VERSION.startswith(("1.", "2.", "3."))
 assert "expect_step_roster" in m.SOFT_FERTIG_SESSION_STORAGE_KEYS
 assert "expect_step_roster" in m.SOFT_FERTIG_HONESTY_EXPORT_KEYS
 h = m.hard_gaps()

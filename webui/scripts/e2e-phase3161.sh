@@ -7,7 +7,7 @@ PYTHONPATH=webui/backend python3 - <<'PY'
 from fwbweb_api import main as m
 expected = len(m.SOFT_FERTIG_LAYOUT_FIDELITY_SAMPLE_KEYS)
 assert int(m.WEBUI_SOFT_COMPLETE_PHASE) >= 3160
-assert m.SOFT_FERTIG_HONESTY_SURFACE_VERSION.startswith(("1.", "2."))
+assert m.SOFT_FERTIG_HONESTY_SURFACE_VERSION.startswith(("1.", "2.", "3."))
 assert "layout_fidelity_sample_roster" in m.SOFT_FERTIG_SESSION_STORAGE_KEYS
 assert "layout_fidelity_sample_roster" in m.SOFT_FERTIG_HONESTY_EXPORT_KEYS
 h = m.hard_gaps()
