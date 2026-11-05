@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "3112"
+WEBUI_SOFT_COMPLETE_PHASE = "3128"
 SOFT_FERTIG_HONESTY_TRACK_NOTE = (
     "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
     "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
@@ -185,12 +185,12 @@ SOFT_FERTIG_HONESTY_TRACK_NOTE = (
 # 7650: soft_fertig_honesty_surface_version bumped to 2.8 (layout_fidelity_signal_roster);
 # 7700: layout_fidelity_signal_roster added to sessionStorage + clear catalogs;
 # 7750: Soft 3080+ honesty surface checkpoint (layout_fidelity_signal_roster cycle complete);
-# 7800: soft_fertig_layout_fidelity_sample_roster compact required sample catalog keys.
-WEBUI_HONESTY_MILESTONE = 7800
+# 7800: soft_fertig_layout_fidelity_sample_roster compact required sample catalog keys;
+# 7850: layout_fidelity_sample_roster listed in honesty export + bundle sections.
+WEBUI_HONESTY_MILESTONE = 7850
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 7800: soft_fertig_layout_fidelity_sample_roster "
-    "lists required layout_fidelity_sample_* catalog keys with titles and notes "
-    "for operators — hard gaps remain open."
+    "Honesty surface checkpoint 7850: soft_fertig_layout_fidelity_sample_roster "
+    "is listed in honesty export and bundle catalogs — hard gaps remain open."
 )
 SOFT_FERTIG_SOFT_COMPLETE_NOTE = (
     "WEBUI_SOFT_COMPLETE_PHASE marks soft-fertig honesty/preview catalog "
@@ -690,6 +690,7 @@ SOFT_FERTIG_HONESTY_EXPORT_KEYS = (
     "expect_step_roster",
     "ssh_honesty_roster",
     "layout_fidelity_signal_roster",
+    "layout_fidelity_sample_roster",
 )
 SOFT_FERTIG_HONESTY_EXPORT_KEY_TITLES = {
     "hard_gaps": "Full /hard-gaps honesty snapshot JSON",
@@ -717,6 +718,7 @@ SOFT_FERTIG_HONESTY_EXPORT_KEY_TITLES = {
     "expect_step_roster": "Refused expect-install-plan step ids with titles and notes",
     "ssh_honesty_roster": "BatchMode SSH alternative and refusal-path ids with titles and notes",
     "layout_fidelity_signal_roster": "Layout-fidelity heuristic signal ids (fields/pages/chrome)",
+    "layout_fidelity_sample_roster": "Required layout_fidelity_sample_* catalog keys",
 }
 SOFT_FERTIG_HONESTY_EXPORT_NOTES = {
     "hard_gaps": "Download hard-gaps JSON button; sessionStorage fwbweb.hardGaps.*.",
@@ -792,6 +794,9 @@ SOFT_FERTIG_HONESTY_EXPORT_NOTES = {
         "Download/Copy soft_fertig_layout_fidelity_signal_roster; also on /health; "
         "sessionStorage fwbweb.layoutFidelitySignalRoster.*."
     ),
+    "layout_fidelity_sample_roster": (
+        "Download/Copy soft_fertig_layout_fidelity_sample_roster; also on /health."
+    ),
 }
 
 # Top-level sections of the combined UI honesty bundle download.
@@ -821,6 +826,7 @@ SOFT_FERTIG_HONESTY_BUNDLE_SECTIONS = (
     "expect_step_roster",
     "ssh_honesty_roster",
     "layout_fidelity_signal_roster",
+    "layout_fidelity_sample_roster",
     "honesty_exports",
 )
 SOFT_FERTIG_HONESTY_BUNDLE_SECTION_TITLES = {
@@ -849,6 +855,7 @@ SOFT_FERTIG_HONESTY_BUNDLE_SECTION_TITLES = {
     "expect_step_roster": "Refused expect-install-plan step ids with titles and notes",
     "ssh_honesty_roster": "BatchMode SSH alternative and refusal-path ids with titles and notes",
     "layout_fidelity_signal_roster": "Layout-fidelity heuristic signal ids (fields/pages/chrome)",
+    "layout_fidelity_sample_roster": "Required layout_fidelity_sample_* catalog keys",
     "honesty_exports": "Export catalog meta (keys/titles/notes)",
 }
 SOFT_FERTIG_HONESTY_BUNDLE_NOTES = {
@@ -925,6 +932,7 @@ SOFT_FERTIG_HONESTY_BUNDLE_NOTES = {
         "Same subset as Download layout fidelity signal roster; "
         "also sessionStorage fwbweb.layoutFidelitySignalRoster.*."
     ),
+    "layout_fidelity_sample_roster": "Same subset as Download layout fidelity sample roster.",
     "honesty_exports": "Same subset as Download honesty exports.",
 }
 
