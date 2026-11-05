@@ -548,6 +548,8 @@ export function FirewallExtras({
     useState<string | null>(null);
   const [layoutFidelitySampleFieldRosterDetail, setLayoutFidelitySampleFieldRosterDetail] =
     useState<string | null>(null);
+  const [catalogSummaryRosterDetail, setCatalogSummaryRosterDetail] =
+    useState<string | null>(null);
   const [honestyPathsSummary, setHonestyPathsSummary] = useState<string | null>(null);
   const [honestyPathsDetail, setHonestyPathsDetail] = useState<string | null>(null);
   const [hardGapsSummaryPath, setHardGapsSummaryPath] = useState<string | null>(null);
@@ -1384,6 +1386,34 @@ export function FirewallExtras({
           setLayoutFidelitySampleFieldRosterDetail(lines.join("\n"));
         } else {
           setLayoutFidelitySampleFieldRosterDetail(null);
+        }
+      }
+      {
+        const roster =
+          gaps?.soft_fertig_catalog_summary_roster &&
+          typeof gaps.soft_fertig_catalog_summary_roster === "object"
+            ? (gaps.soft_fertig_catalog_summary_roster as Record<
+                string,
+                unknown
+              >)
+            : null;
+        if (roster && Object.keys(roster).length) {
+          const entries = Array.isArray(roster.entries)
+            ? (roster.entries as Array<Record<string, unknown>>)
+            : [];
+          const lines = [
+            `entry_count: ${String(roster.entry_count ?? "")}`,
+            `hard_gaps_remain: ${String(roster.hard_gaps_remain ?? "")}`,
+            `note: ${String(roster.note ?? "")}`,
+            ...entries.map(
+              (e) =>
+                `${String(e.id ?? "")}: ${String(e.title ?? "")}` +
+                (e.note ? ` — ${String(e.note)}` : ""),
+            ),
+          ];
+          setCatalogSummaryRosterDetail(lines.join("\n"));
+        } else {
+          setCatalogSummaryRosterDetail(null);
         }
       }
       if (gaps?.honesty_paths && Object.keys(gaps.honesty_paths).length) {
@@ -4196,6 +4226,14 @@ export function FirewallExtras({
               </pre>
             </details>
           ) : null}
+          {catalogSummaryRosterDetail ? (
+            <details className="muted">
+              <summary>Soft-fertig catalog summary roster</summary>
+              <pre className="deploy-log configlet-preview" tabIndex={0}>
+                {catalogSummaryRosterDetail}
+              </pre>
+            </details>
+          ) : null}
           <div className="btn-row pad-tight">
             {hardGapsPayload ? (
               <button
@@ -6144,6 +6182,62 @@ export function FirewallExtras({
                 Copy layout fidelity sample field roster
               </button>
             ) : null}
+            {hardGapsPayload ? (
+              <button
+                type="button"
+                className="ghost"
+                disabled={busy}
+                title="Download soft_fertig_catalog_summary_roster from /hard-gaps"
+                onClick={() => {
+                  const catalog: Record<string, unknown> = {
+                    soft_fertig_catalog_summary_roster:
+                      hardGapsPayload.soft_fertig_catalog_summary_roster,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  const text = JSON.stringify(catalog, null, 2);
+                  const blob = new Blob([text + "\n"], {
+                    type: "application/json;charset=utf-8",
+                  });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `fwbweb-catalog-summary-roster-${firewallId || "fw"}.json`;
+                  a.click();
+                  URL.revokeObjectURL(url);
+                  onStatus?.("Downloaded catalog summary roster");
+                }}
+              >
+                Download catalog summary roster
+              </button>
+            ) : null}
+            {hardGapsPayload ? (
+              <button
+                type="button"
+                className="ghost"
+                disabled={busy}
+                title="Copy soft_fertig_catalog_summary_roster to clipboard"
+                onClick={() => {
+                  void (async () => {
+                    const catalog: Record<string, unknown> = {
+                      soft_fertig_catalog_summary_roster:
+                        hardGapsPayload.soft_fertig_catalog_summary_roster,
+                      soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                      honesty_milestone: hardGapsPayload.honesty_milestone,
+                    };
+                    const text = JSON.stringify(catalog, null, 2) + "\n";
+                    try {
+                      await navigator.clipboard.writeText(text);
+                      onStatus?.("Copied catalog summary roster");
+                    } catch (e) {
+                      onError?.(e instanceof Error ? e.message : String(e));
+                    }
+                  })();
+                }}
+              >
+                Copy catalog summary roster
+              </button>
+            ) : null}
             <button
               type="button"
               className="ghost"
@@ -6454,6 +6548,7 @@ export function FirewallExtras({
                 setLayoutFidelitySignalRosterDetail(null);
                 setLayoutFidelitySampleRosterDetail(null);
                 setLayoutFidelitySampleFieldRosterDetail(null);
+                setCatalogSummaryRosterDetail(null);
                 onStatus?.("Cleared honesty catalogs");
               }}
             >
