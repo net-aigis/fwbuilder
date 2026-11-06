@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "3928"
+WEBUI_SOFT_COMPLETE_PHASE = "3944"
 SOFT_FERTIG_HONESTY_TRACK_NOTE = (
     "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
     "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
@@ -236,11 +236,13 @@ SOFT_FERTIG_HONESTY_TRACK_NOTE = (
 # 10200: health_roster added to sessionStorage + clear catalogs;
 # 10250: Soft 3880+ honesty surface checkpoint (health_roster cycle complete);
 # 10300: soft_fertig_res_status_roster compact /res-status field keys;
-# 10350: res_status_roster listed in honesty export + bundle sections.
-WEBUI_HONESTY_MILESTONE = 10350
+# 10350: res_status_roster listed in honesty export + bundle sections;
+# 10400: soft_fertig_honesty_surface_version bumped to 3.9 (res_status_roster).
+WEBUI_HONESTY_MILESTONE = 10400
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 10350: soft_fertig_res_status_roster "
-    "is listed in honesty export and bundle catalogs — hard gaps remain open."
+    "Honesty surface checkpoint 10400: soft_fertig_honesty_surface_version "
+    "3.9 documents soft_fertig_res_status_roster on honesty "
+    "endpoints and in export/bundle — hard gaps remain open."
 )
 SOFT_FERTIG_SOFT_COMPLETE_NOTE = (
     "WEBUI_SOFT_COMPLETE_PHASE marks soft-fertig honesty/preview catalog "
@@ -847,9 +849,9 @@ SOFT_FERTIG_SESSION_STORAGE_CLEAR_NOTE = (
 )
 
 # Soft-fertig honesty/preview catalog schema version (documentation; not a lock).
-SOFT_FERTIG_HONESTY_SURFACE_VERSION = "3.8"
+SOFT_FERTIG_HONESTY_SURFACE_VERSION = "3.9"
 SOFT_FERTIG_HONESTY_SURFACE_VERSION_NOTE = (
-    "Schema 3.8: schema 3.7 plus soft_fertig_health_roster on "
+    "Schema 3.9: schema 3.8 plus soft_fertig_res_status_roster on "
     "/health and honesty endpoints (+ export/bundle); hard gaps remain open."
 )
 
@@ -1827,6 +1829,10 @@ SOFT_FERTIG_HONESTY_SURFACE_CHANGELOG = {
     ),
     "3.8": (
         "soft_fertig_health_roster on /health and honesty "
+        "endpoints (+ export/bundle)."
+    ),
+    "3.9": (
+        "soft_fertig_res_status_roster on /health and honesty "
         "endpoints (+ export/bundle)."
     ),
 }
