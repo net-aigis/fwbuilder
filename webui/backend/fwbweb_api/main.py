@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "3784"
+WEBUI_SOFT_COMPLETE_PHASE = "3800"
 SOFT_FERTIG_HONESTY_TRACK_NOTE = (
     "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
     "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
@@ -227,12 +227,13 @@ SOFT_FERTIG_HONESTY_TRACK_NOTE = (
 # 9750: Soft 3720+ honesty surface checkpoint (hard_gaps_summary_roster cycle complete);
 # 9800: soft_fertig_hard_gaps_closure_roster compact /hard-gaps/closure field keys;
 # 9850: hard_gaps_closure_roster listed in honesty export + bundle sections;
-# 9900: soft_fertig_honesty_surface_version bumped to 3.7 (hard_gaps_closure_roster).
-WEBUI_HONESTY_MILESTONE = 9900
+# 9900: soft_fertig_honesty_surface_version bumped to 3.7 (hard_gaps_closure_roster);
+# 9950: hard_gaps_closure_roster added to sessionStorage + clear catalogs.
+WEBUI_HONESTY_MILESTONE = 9950
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 9900: soft_fertig_honesty_surface_version "
-    "3.7 documents soft_fertig_hard_gaps_closure_roster on honesty "
-    "endpoints and in export/bundle — hard gaps remain open."
+    "Honesty surface checkpoint 9950: soft_fertig_hard_gaps_closure_roster "
+    "is persisted via sessionStorage (fwbweb.hardGapsClosureRoster.*) "
+    "and clear catalogs — hard gaps remain open."
 )
 SOFT_FERTIG_SOFT_COMPLETE_NOTE = (
     "WEBUI_SOFT_COMPLETE_PHASE marks soft-fertig honesty/preview catalog "
@@ -655,6 +656,7 @@ SOFT_FERTIG_SESSION_STORAGE_KEYS = {
     "honesty_operator_brief_roster": "fwbweb.honestyOperatorBriefRoster.",
     "surface_changelog_meta_roster": "fwbweb.surfaceChangelogMetaRoster.",
     "hard_gaps_summary_roster": "fwbweb.hardGapsSummaryRoster.",
+    "hard_gaps_closure_roster": "fwbweb.hardGapsClosureRoster.",
 }
 SOFT_FERTIG_SESSION_STORAGE_KEY_TITLES = {
     "hard_gaps": "Full /hard-gaps JSON snapshot",
@@ -687,6 +689,7 @@ SOFT_FERTIG_SESSION_STORAGE_KEY_TITLES = {
     "honesty_operator_brief_roster": "Honesty operator brief roster JSON",
     "surface_changelog_meta_roster": "Surface changelog meta roster JSON",
     "hard_gaps_summary_roster": "Hard-gaps summary roster JSON",
+    "hard_gaps_closure_roster": "Hard-gaps closure roster JSON",
 }
 SOFT_FERTIG_SESSION_STORAGE_NOTES = {
     "hard_gaps": "Persists last downloaded/copied /hard-gaps JSON per firewall.",
@@ -799,6 +802,11 @@ SOFT_FERTIG_SESSION_STORAGE_NOTES = {
     "hard_gaps_summary_roster": (
         "Persists last downloaded/copied soft_fertig_hard_gaps_summary_roster "
         "per firewall; UI restores expandable hard-gaps-summary-roster detail "
+        "on load."
+    ),
+    "hard_gaps_closure_roster": (
+        "Persists last downloaded/copied soft_fertig_hard_gaps_closure_roster "
+        "per firewall; UI restores expandable hard-gaps-closure-roster detail "
         "on load."
     ),
 }
@@ -997,7 +1005,8 @@ SOFT_FERTIG_HONESTY_EXPORT_NOTES = {
         "sessionStorage fwbweb.hardGapsSummaryRoster.*"
     ),
     "hard_gaps_closure_roster": (
-        "Download/Copy soft_fertig_hard_gaps_closure_roster; also on /health."
+        "Download/Copy soft_fertig_hard_gaps_closure_roster; also on /health; "
+        "sessionStorage fwbweb.hardGapsClosureRoster.*"
     ),
 }
 
@@ -1183,7 +1192,8 @@ SOFT_FERTIG_HONESTY_BUNDLE_NOTES = {
         "also sessionStorage fwbweb.hardGapsSummaryRoster.*"
     ),
     "hard_gaps_closure_roster": (
-        "Same subset as Download hard-gaps closure roster."
+        "Same subset as Download hard-gaps closure roster; "
+        "also sessionStorage fwbweb.hardGapsClosureRoster.*"
     ),
     "honesty_exports": "Same subset as Download honesty exports.",
 }
