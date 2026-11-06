@@ -998,6 +998,7 @@ export function fetchHardGaps() {
     soft_fertig_health_roster?: Record<string, unknown>;
     soft_fertig_res_status_roster?: Record<string, unknown>;
     soft_fertig_hard_gaps_field_roster?: Record<string, unknown>;
+    soft_fertig_layout_fidelity_roster?: Record<string, unknown>;
     soft_fertig_honesty_export_keys?: string[];
     soft_fertig_honesty_export_key_count?: number;
     soft_fertig_honesty_export_key_titles?: Record<string, string>;
