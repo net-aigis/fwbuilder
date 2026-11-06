@@ -389,6 +389,10 @@ function buildHonestyBundle(payload: Record<string, unknown>) {
       soft_fertig_surface_changelog_meta_roster:
         payload.soft_fertig_surface_changelog_meta_roster,
     },
+    hard_gaps_summary_roster: {
+      soft_fertig_hard_gaps_summary_roster:
+        payload.soft_fertig_hard_gaps_summary_roster,
+    },
     honesty_exports: {
       soft_fertig_honesty_export_keys: payload.soft_fertig_honesty_export_keys,
       soft_fertig_honesty_export_key_count:
