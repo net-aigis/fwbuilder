@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "3592"
+WEBUI_SOFT_COMPLETE_PHASE = "3608"
 SOFT_FERTIG_HONESTY_TRACK_NOTE = (
     "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
     "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
@@ -215,12 +215,12 @@ SOFT_FERTIG_HONESTY_TRACK_NOTE = (
 # 9150: soft_fertig_honesty_surface_version bumped to 3.4 (honesty_operator_brief_roster);
 # 9200: honesty_operator_brief_roster added to sessionStorage + clear catalogs;
 # 9250: Soft 3560+ honesty surface checkpoint (honesty_operator_brief_roster cycle complete);
-# 9300: soft_fertig_surface_changelog_meta_roster compact changelog meta field keys.
-WEBUI_HONESTY_MILESTONE = 9300
+# 9300: soft_fertig_surface_changelog_meta_roster compact changelog meta field keys;
+# 9350: surface_changelog_meta_roster listed in honesty export + bundle sections.
+WEBUI_HONESTY_MILESTONE = 9350
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 9300: soft_fertig_surface_changelog_meta_roster "
-    "lists soft_fertig_honesty_surface_changelog meta field keys with titles "
-    "and notes for operators — hard gaps remain open."
+    "Honesty surface checkpoint 9350: soft_fertig_surface_changelog_meta_roster "
+    "is listed in honesty export and bundle catalogs — hard gaps remain open."
 )
 SOFT_FERTIG_SOFT_COMPLETE_NOTE = (
     "WEBUI_SOFT_COMPLETE_PHASE marks soft-fertig honesty/preview catalog "
@@ -810,6 +810,7 @@ SOFT_FERTIG_HONESTY_EXPORT_KEYS = (
     "honesty_readiness_roster",
     "session_storage_clear_roster",
     "honesty_operator_brief_roster",
+    "surface_changelog_meta_roster",
 )
 SOFT_FERTIG_HONESTY_EXPORT_KEY_TITLES = {
     "hard_gaps": "Full /hard-gaps honesty snapshot JSON",
@@ -843,6 +844,7 @@ SOFT_FERTIG_HONESTY_EXPORT_KEY_TITLES = {
     "honesty_readiness_roster": "soft_fertig_honesty_readiness field keys with titles and notes",
     "session_storage_clear_roster": "sessionStorage clear-catalog keys with titles and notes",
     "honesty_operator_brief_roster": "soft_fertig_honesty_operator_brief field keys with titles and notes",
+    "surface_changelog_meta_roster": "soft_fertig_honesty_surface_changelog meta field keys with titles and notes",
 }
 SOFT_FERTIG_HONESTY_EXPORT_NOTES = {
     "hard_gaps": "Download hard-gaps JSON button; sessionStorage fwbweb.hardGaps.*.",
@@ -942,6 +944,9 @@ SOFT_FERTIG_HONESTY_EXPORT_NOTES = {
         "Download/Copy soft_fertig_honesty_operator_brief_roster; also on /health; "
         "sessionStorage fwbweb.honestyOperatorBriefRoster.*"
     ),
+    "surface_changelog_meta_roster": (
+        "Download/Copy soft_fertig_surface_changelog_meta_roster; also on /health."
+    ),
 }
 
 # Top-level sections of the combined UI honesty bundle download.
@@ -977,6 +982,7 @@ SOFT_FERTIG_HONESTY_BUNDLE_SECTIONS = (
     "honesty_readiness_roster",
     "session_storage_clear_roster",
     "honesty_operator_brief_roster",
+    "surface_changelog_meta_roster",
     "honesty_exports",
 )
 SOFT_FERTIG_HONESTY_BUNDLE_SECTION_TITLES = {
@@ -1011,6 +1017,7 @@ SOFT_FERTIG_HONESTY_BUNDLE_SECTION_TITLES = {
     "honesty_readiness_roster": "soft_fertig_honesty_readiness field keys with titles and notes",
     "session_storage_clear_roster": "sessionStorage clear-catalog keys with titles and notes",
     "honesty_operator_brief_roster": "soft_fertig_honesty_operator_brief field keys with titles and notes",
+    "surface_changelog_meta_roster": "soft_fertig_honesty_surface_changelog meta field keys with titles and notes",
     "honesty_exports": "Export catalog meta (keys/titles/notes)",
 }
 SOFT_FERTIG_HONESTY_BUNDLE_NOTES = {
@@ -1110,6 +1117,9 @@ SOFT_FERTIG_HONESTY_BUNDLE_NOTES = {
     "honesty_operator_brief_roster": (
         "Same subset as Download honesty operator brief roster; "
         "also sessionStorage fwbweb.honestyOperatorBriefRoster.*"
+    ),
+    "surface_changelog_meta_roster": (
+        "Same subset as Download surface changelog meta roster."
     ),
     "honesty_exports": "Same subset as Download honesty exports.",
 }
