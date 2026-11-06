@@ -7,7 +7,7 @@ PYTHONPATH=webui/backend python3 - <<'PY'
 from fwbweb_api import main as m
 expected = len(m.SOFT_FERTIG_HEALTH_KEYS)
 assert int(m.WEBUI_SOFT_COMPLETE_PHASE) >= 3880
-assert m.SOFT_FERTIG_HONESTY_SURFACE_VERSION.startswith(("1.", "2.", "3."))
+assert m.SOFT_FERTIG_HONESTY_SURFACE_VERSION.startswith(("1.", "2.", "3.", "4."))
 assert "health_roster" in m.SOFT_FERTIG_SESSION_STORAGE_KEYS
 assert "health_roster" in m.SOFT_FERTIG_HONESTY_EXPORT_KEYS
 h = m.health()

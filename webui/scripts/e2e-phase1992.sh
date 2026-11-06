@@ -7,7 +7,7 @@ PYTHONPATH=webui/backend python3 - <<'PY'
 from fwbweb_api import main as m
 assert int(m.WEBUI_SOFT_COMPLETE_PHASE) >= 1992
 assert m.WEBUI_HONESTY_MILESTONE == 4300
-assert m.SOFT_FERTIG_HONESTY_SURFACE_VERSION.startswith(("1.", "2.", "3."))
+assert m.SOFT_FERTIG_HONESTY_SURFACE_VERSION.startswith(("1.", "2.", "3.", "4."))
 print("soft-complete >=1992", m.WEBUI_SOFT_COMPLETE_PHASE, "milestone", m.WEBUI_HONESTY_MILESTONE)
 PY
 grep -qE 'phase1992|Soft-complete STATUS through 1992|through 1992' webui/STATUS.md
