@@ -264,6 +264,10 @@ function resStatusRosterStorageKey(firewallId: string) {
   return `fwbweb.resStatusRoster.${firewallId}`;
 }
 
+function hardGapsFieldRosterStorageKey(firewallId: string) {
+  return `fwbweb.hardGapsFieldRoster.${firewallId}`;
+}
+
 function buildHonestyBundle(payload: Record<string, unknown>) {
   const surfaceKeys = Array.isArray(payload.soft_fertig_surface_keys)
     ? (payload.soft_fertig_surface_keys as string[])
@@ -2957,6 +2961,39 @@ export function FirewallExtras({
             setResStatusRosterDetail(resStatusRosterRaw);
           }
         }
+        const hardGapsFieldRosterRaw = sessionStorage.getItem(
+          hardGapsFieldRosterStorageKey(firewallId),
+        );
+        if (hardGapsFieldRosterRaw) {
+          try {
+            const parsed = JSON.parse(hardGapsFieldRosterRaw) as {
+              soft_fertig_hard_gaps_field_roster?: unknown;
+            };
+            const roster = parsed.soft_fertig_hard_gaps_field_roster;
+            if (roster && typeof roster === "object") {
+              const rec = roster as Record<string, unknown>;
+              const entries = Array.isArray(rec.entries)
+                ? (rec.entries as Array<Record<string, unknown>>)
+                : [];
+              setHardGapsFieldRosterDetail(
+                [
+                  `entry_count: ${String(rec.entry_count ?? "")}`,
+                  `hard_gaps_remain: ${String(rec.hard_gaps_remain ?? "")}`,
+                  `note: ${String(rec.note ?? "")}`,
+                  ...entries.map(
+                    (e) =>
+                      `${String(e.id ?? "")}: ${String(e.title ?? "")}` +
+                      (e.note ? ` — ${String(e.note)}` : ""),
+                  ),
+                ].join("\n"),
+              );
+            } else {
+              setHardGapsFieldRosterDetail(hardGapsFieldRosterRaw);
+            }
+          } catch {
+            setHardGapsFieldRosterDetail(hardGapsFieldRosterRaw);
+          }
+        }
       } catch {
         /* ignore */
       }
@@ -4210,7 +4247,7 @@ export function FirewallExtras({
           type="button"
           className="ghost"
           disabled={busy}
-          title="Clear sessionStorage deploy preferences for this firewall, honesty readiness roster, session storage clear roster, honesty operator brief roster, surface changelog meta roster, hard-gaps summary roster, hard-gaps closure roster, health roster, res-status roster"
+          title="Clear sessionStorage deploy preferences for this firewall, honesty readiness roster, session storage clear roster, honesty operator brief roster, surface changelog meta roster, hard-gaps summary roster, hard-gaps closure roster, health roster, res-status roster, hard-gaps field roster"
           onClick={() => {
             try {
               sessionStorage.removeItem(deployPrefsKey(firewallId));
@@ -7559,6 +7596,14 @@ export function FirewallExtras({
                     honesty_milestone: hardGapsPayload.honesty_milestone,
                   };
                   const text = JSON.stringify(catalog, null, 2);
+                  try {
+                    sessionStorage.setItem(
+                      hardGapsFieldRosterStorageKey(firewallId),
+                      text,
+                    );
+                  } catch {
+                    /* ignore */
+                  }
                   const blob = new Blob([text + "\n"], {
                     type: "application/json;charset=utf-8",
                   });
@@ -7588,6 +7633,14 @@ export function FirewallExtras({
                       soft_complete_phase: hardGapsPayload.soft_complete_phase,
                       honesty_milestone: hardGapsPayload.honesty_milestone,
                     };
+                    try {
+                      sessionStorage.setItem(
+                        hardGapsFieldRosterStorageKey(firewallId),
+                        JSON.stringify(catalog, null, 2),
+                      );
+                    } catch {
+                      /* ignore */
+                    }
                     const text = JSON.stringify(catalog, null, 2) + "\n";
                     try {
                       await navigator.clipboard.writeText(text);
@@ -7895,6 +7948,7 @@ export function FirewallExtras({
                   sessionStorage.removeItem(hardGapsClosureRosterStorageKey(firewallId));
                   sessionStorage.removeItem(healthRosterStorageKey(firewallId));
                   sessionStorage.removeItem(resStatusRosterStorageKey(firewallId));
+                  sessionStorage.removeItem(hardGapsFieldRosterStorageKey(firewallId));
                 } catch {
                   /* ignore */
                 }
