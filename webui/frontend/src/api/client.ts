@@ -991,6 +991,7 @@ export function fetchHardGaps() {
     soft_fertig_catalog_summary_roster?: Record<string, unknown>;
     soft_fertig_honesty_readiness_roster?: Record<string, unknown>;
     soft_fertig_session_storage_clear_roster?: Record<string, unknown>;
+    soft_fertig_honesty_operator_brief_roster?: Record<string, unknown>;
     soft_fertig_honesty_export_keys?: string[];
     soft_fertig_honesty_export_key_count?: number;
     soft_fertig_honesty_export_key_titles?: Record<string, string>;
