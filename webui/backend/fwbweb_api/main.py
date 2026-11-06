@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "3560"
+WEBUI_SOFT_COMPLETE_PHASE = "3576"
 SOFT_FERTIG_HONESTY_TRACK_NOTE = (
     "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
     "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
@@ -213,12 +213,13 @@ SOFT_FERTIG_HONESTY_TRACK_NOTE = (
 # 9050: soft_fertig_honesty_operator_brief_roster compact operator-brief field keys;
 # 9100: honesty_operator_brief_roster listed in honesty export + bundle sections;
 # 9150: soft_fertig_honesty_surface_version bumped to 3.4 (honesty_operator_brief_roster);
-# 9200: honesty_operator_brief_roster added to sessionStorage + clear catalogs.
-WEBUI_HONESTY_MILESTONE = 9200
+# 9200: honesty_operator_brief_roster added to sessionStorage + clear catalogs;
+# 9250: Soft 3560+ honesty surface checkpoint (honesty_operator_brief_roster cycle complete).
+WEBUI_HONESTY_MILESTONE = 9250
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 9200: soft_fertig_honesty_operator_brief_roster "
-    "is persisted via sessionStorage (fwbweb.honestyOperatorBriefRoster.*) "
-    "and clear catalogs — hard gaps remain open."
+    "Honesty surface checkpoint 9250: soft-fertig honesty/preview catalogs "
+    "through Soft 3560+ (schema 3.4, honesty_operator_brief_roster "
+    "sessionStorage) — hard gaps remain open."
 )
 SOFT_FERTIG_SOFT_COMPLETE_NOTE = (
     "WEBUI_SOFT_COMPLETE_PHASE marks soft-fertig honesty/preview catalog "
