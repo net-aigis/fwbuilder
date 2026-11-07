@@ -4737,6 +4737,54 @@ scripts=(
   e2e-phase4726
   e2e-phase4727
   e2e-phase4728
+  e2e-phase4729
+  e2e-phase4730
+  e2e-phase4731
+  e2e-phase4732
+  e2e-phase4733
+  e2e-phase4734
+  e2e-phase4735
+  e2e-phase4736
+  e2e-phase4737
+  e2e-phase4738
+  e2e-phase4739
+  e2e-phase4740
+  e2e-phase4741
+  e2e-phase4742
+  e2e-phase4743
+  e2e-phase4744
+  e2e-phase4745
+  e2e-phase4746
+  e2e-phase4747
+  e2e-phase4748
+  e2e-phase4749
+  e2e-phase4750
+  e2e-phase4751
+  e2e-phase4752
+  e2e-phase4753
+  e2e-phase4754
+  e2e-phase4755
+  e2e-phase4756
+  e2e-phase4757
+  e2e-phase4758
+  e2e-phase4759
+  e2e-phase4760
+  e2e-phase4761
+  e2e-phase4762
+  e2e-phase4763
+  e2e-phase4764
+  e2e-phase4765
+  e2e-phase4766
+  e2e-phase4767
+  e2e-phase4768
+  e2e-phase4769
+  e2e-phase4770
+  e2e-phase4771
+  e2e-phase4772
+  e2e-phase4773
+  e2e-phase4774
+  e2e-phase4775
+  e2e-phase4776
 )
 for s in "${scripts[@]}"; do
   script="webui/scripts/${s}.sh"

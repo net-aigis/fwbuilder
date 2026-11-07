@@ -9251,7 +9251,7 @@ export function FirewallExtras({
               type="button"
               className="ghost"
               disabled={busy || (!hardGapsPayload && !hardGapsSummaryText)}
-              title="Clear sessionStorage hard-gaps snapshot, summary, surface, refusals, honesty paths, track note, readiness, soft-complete note, surface changelog, operator brief, hard-gap roster, hard-gap refusal roster, honesty path roster, sessionStorage roster, honesty export roster, honesty bundle roster, surface roster, changelog roster, expect step roster, SSH honesty roster, layout fidelity signal roster, layout fidelity sample roster, layout fidelity sample field roster, catalog summary roster, layout-fidelity roster, stack-switch roster, option-enable roster, expect-run roster, expect-steps roster, expect-steps-refusals roster, ssh-auth roster, password-ssh roster"
+              title="Clear sessionStorage hard-gaps snapshot, summary, surface, refusals, honesty paths, track note, readiness, soft-complete note, surface changelog, operator brief, hard-gap roster, hard-gap refusal roster, honesty path roster, sessionStorage roster, honesty export roster, honesty bundle roster, surface roster, changelog roster, expect step roster, SSH honesty roster, layout fidelity signal roster, layout fidelity sample roster, layout fidelity sample field roster, catalog summary roster, layout-fidelity roster, stack-switch roster, option-enable roster, expect-run roster, expect-steps roster, expect-steps-refusals roster, ssh-auth roster, password-ssh roster, ssh-not-implemented roster"
               onClick={() => {
                 try {
                   sessionStorage.removeItem(hardGapsSnapshotKey(firewallId));
@@ -9296,6 +9296,7 @@ export function FirewallExtras({
                   sessionStorage.removeItem(expectStepsRefusalsRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshAuthRosterStorageKey(firewallId));
                   sessionStorage.removeItem(passwordSshRosterStorageKey(firewallId));
+                  sessionStorage.removeItem(sshNotImplementedRosterStorageKey(firewallId));
                 } catch {
                   /* ignore */
                 }

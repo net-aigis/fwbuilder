@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "4728"
+WEBUI_SOFT_COMPLETE_PHASE = "4776"
 SOFT_FERTIG_HONESTY_TRACK_NOTE = (
     "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
     "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
@@ -287,11 +287,14 @@ SOFT_FERTIG_HONESTY_TRACK_NOTE = (
 # 12750: Soft 4680+ honesty surface checkpoint (password_ssh_roster cycle complete).
 # 12800: soft_fertig_ssh_not_implemented_roster compact /ssh-auth not_implemented ids;
 # 12850: ssh_not_implemented_roster listed in honesty export + bundle sections;
-WEBUI_HONESTY_MILESTONE = 12850
+# 12900: soft_fertig_honesty_surface_version bumped to 4.9 (ssh_not_implemented_roster);
+# 12950: ssh_not_implemented_roster added to sessionStorage + clear catalogs;
+# 13000: Soft 4760+ honesty surface checkpoint (ssh_not_implemented_roster cycle complete).
+WEBUI_HONESTY_MILESTONE = 13000
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 12850: soft-fertig honesty/preview catalogs "
-    "through Soft 4712+ (schema 4.8, ssh_not_implemented_roster "
-    "in export/bundle) — hard gaps remain open."
+    "Honesty surface checkpoint 13000: soft-fertig honesty/preview catalogs "
+    "through Soft 4760+ (schema 4.9, ssh_not_implemented_roster "
+    "sessionStorage) — hard gaps remain open."
 )
 SOFT_FERTIG_SOFT_COMPLETE_NOTE = (
     "WEBUI_SOFT_COMPLETE_PHASE marks soft-fertig honesty/preview catalog "
@@ -810,6 +813,7 @@ SOFT_FERTIG_SESSION_STORAGE_KEYS = {
     "expect_steps_refusals_roster": "fwbweb.expectStepsRefusalsRoster.",
     "ssh_auth_roster": "fwbweb.sshAuthRoster.",
     "password_ssh_roster": "fwbweb.passwordSshRoster.",
+    "ssh_not_implemented_roster": "fwbweb.sshNotImplementedRoster.",
 }
 SOFT_FERTIG_SESSION_STORAGE_KEY_TITLES = {
     "hard_gaps": "Full /hard-gaps JSON snapshot",
@@ -854,6 +858,7 @@ SOFT_FERTIG_SESSION_STORAGE_KEY_TITLES = {
     "expect_steps_refusals_roster": "Expect-steps-refusals roster JSON",
     "ssh_auth_roster": "SSH-auth roster JSON",
     "password_ssh_roster": "Password-SSH roster JSON",
+    "ssh_not_implemented_roster": "SSH not-implemented roster JSON",
 }
 SOFT_FERTIG_SESSION_STORAGE_NOTES = {
     "hard_gaps": "Persists last downloaded/copied /hard-gaps JSON per firewall.",
@@ -1028,6 +1033,11 @@ SOFT_FERTIG_SESSION_STORAGE_NOTES = {
         "per firewall; UI restores expandable password-ssh-roster detail "
         "on load."
     ),
+    "ssh_not_implemented_roster": (
+        "Persists last downloaded/copied soft_fertig_ssh_not_implemented_roster "
+        "per firewall; UI restores expandable ssh-not-implemented-roster detail "
+        "on load."
+    ),
 }
 
 # Keys removed by the UI "Clear honesty catalogs" action (same set as sessionStorage catalog).
@@ -1038,9 +1048,9 @@ SOFT_FERTIG_SESSION_STORAGE_CLEAR_NOTE = (
 )
 
 # Soft-fertig honesty/preview catalog schema version (documentation; not a lock).
-SOFT_FERTIG_HONESTY_SURFACE_VERSION = "4.8"
+SOFT_FERTIG_HONESTY_SURFACE_VERSION = "4.9"
 SOFT_FERTIG_HONESTY_SURFACE_VERSION_NOTE = (
-    "Schema 4.8: schema 4.7 plus soft_fertig_password_ssh_roster on "
+    "Schema 4.9: schema 4.8 plus soft_fertig_ssh_not_implemented_roster on "
     "/health and honesty endpoints (+ export/bundle); hard gaps remain open."
 )
 
@@ -2724,6 +2734,10 @@ SOFT_FERTIG_HONESTY_SURFACE_CHANGELOG = {
     ),
     "4.8": (
         "soft_fertig_password_ssh_roster on /health and honesty "
+        "endpoints (+ export/bundle)."
+    ),
+    "4.9": (
+        "soft_fertig_ssh_not_implemented_roster on /health and honesty "
         "endpoints (+ export/bundle)."
     ),
 }
