@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "4648"
+WEBUI_SOFT_COMPLETE_PHASE = "4664"
 SOFT_FERTIG_HONESTY_TRACK_NOTE = (
     "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
     "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
@@ -281,11 +281,12 @@ SOFT_FERTIG_HONESTY_TRACK_NOTE = (
 # 12450: ssh_auth_roster added to sessionStorage + clear catalogs;
 # 12500: Soft 4600+ honesty surface checkpoint (ssh_auth_roster cycle complete);
 # 12550: soft_fertig_password_ssh_roster compact /ssh-auth/password refusal field keys;
-# 12600: password_ssh_roster listed in honesty export + bundle sections.
-WEBUI_HONESTY_MILESTONE = 12600
+# 12600: password_ssh_roster listed in honesty export + bundle sections;
+# 12650: soft_fertig_honesty_surface_version bumped to 4.8 (password_ssh_roster).
+WEBUI_HONESTY_MILESTONE = 12650
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 12600: password_ssh_roster listed in "
-    "honesty export and bundle catalogs for operators — hard gaps remain open."
+    "Honesty surface checkpoint 12650: soft_fertig_honesty_surface_version "
+    "4.8 (password_ssh_roster) — hard gaps remain open."
 )
 SOFT_FERTIG_SOFT_COMPLETE_NOTE = (
     "WEBUI_SOFT_COMPLETE_PHASE marks soft-fertig honesty/preview catalog "
@@ -1018,9 +1019,9 @@ SOFT_FERTIG_SESSION_STORAGE_CLEAR_NOTE = (
 )
 
 # Soft-fertig honesty/preview catalog schema version (documentation; not a lock).
-SOFT_FERTIG_HONESTY_SURFACE_VERSION = "4.7"
+SOFT_FERTIG_HONESTY_SURFACE_VERSION = "4.8"
 SOFT_FERTIG_HONESTY_SURFACE_VERSION_NOTE = (
-    "Schema 4.7: schema 4.6 plus soft_fertig_ssh_auth_roster on "
+    "Schema 4.8: schema 4.7 plus soft_fertig_password_ssh_roster on "
     "/health and honesty endpoints (+ export/bundle); hard gaps remain open."
 )
 
@@ -2657,6 +2658,10 @@ SOFT_FERTIG_HONESTY_SURFACE_CHANGELOG = {
     ),
     "4.7": (
         "soft_fertig_ssh_auth_roster on /health and honesty "
+        "endpoints (+ export/bundle)."
+    ),
+    "4.8": (
+        "soft_fertig_password_ssh_roster on /health and honesty "
         "endpoints (+ export/bundle)."
     ),
 }
