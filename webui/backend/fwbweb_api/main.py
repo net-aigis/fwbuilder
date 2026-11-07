@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "4344"
+WEBUI_SOFT_COMPLETE_PHASE = "4360"
 SOFT_FERTIG_HONESTY_TRACK_NOTE = (
     "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
     "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
@@ -262,11 +262,12 @@ SOFT_FERTIG_HONESTY_TRACK_NOTE = (
 # 11500: Soft 4280+ honesty surface checkpoint (option_enable_roster cycle complete);
 # 11550: soft_fertig_expect_run_roster compact /expect-install-plan/run field keys;
 # 11600: expect_run_roster listed in honesty export + bundle sections;
-# 11650: soft_fertig_honesty_surface_version bumped to 4.4 (expect_run_roster).
-WEBUI_HONESTY_MILESTONE = 11650
+# 11650: soft_fertig_honesty_surface_version bumped to 4.4 (expect_run_roster);
+# 11700: expect_run_roster added to sessionStorage + clear catalogs.
+WEBUI_HONESTY_MILESTONE = 11700
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 11650: soft_fertig_honesty_surface_version "
-    "4.4 (expect_run_roster) — hard gaps remain open."
+    "Honesty surface checkpoint 11700: expect_run_roster added to "
+    "sessionStorage and clear catalogs — hard gaps remain open."
 )
 SOFT_FERTIG_SOFT_COMPLETE_NOTE = (
     "WEBUI_SOFT_COMPLETE_PHASE marks soft-fertig honesty/preview catalog "
@@ -745,6 +746,7 @@ SOFT_FERTIG_SESSION_STORAGE_KEYS = {
     "layout_fidelity_roster": "fwbweb.layoutFidelityRoster.",
     "stack_switch_roster": "fwbweb.stackSwitchRoster.",
     "option_enable_roster": "fwbweb.optionEnableRoster.",
+    "expect_run_roster": "fwbweb.expectRunRoster.",
 }
 SOFT_FERTIG_SESSION_STORAGE_KEY_TITLES = {
     "hard_gaps": "Full /hard-gaps JSON snapshot",
@@ -784,6 +786,7 @@ SOFT_FERTIG_SESSION_STORAGE_KEY_TITLES = {
     "layout_fidelity_roster": "Layout-fidelity roster JSON",
     "stack_switch_roster": "Stack-switch roster JSON",
     "option_enable_roster": "Option-enable roster JSON",
+    "expect_run_roster": "Expect-run roster JSON",
 }
 SOFT_FERTIG_SESSION_STORAGE_NOTES = {
     "hard_gaps": "Persists last downloaded/copied /hard-gaps JSON per firewall.",
@@ -931,6 +934,11 @@ SOFT_FERTIG_SESSION_STORAGE_NOTES = {
     "option_enable_roster": (
         "Persists last downloaded/copied soft_fertig_option_enable_roster "
         "per firewall; UI restores expandable option-enable-roster detail "
+        "on load."
+    ),
+    "expect_run_roster": (
+        "Persists last downloaded/copied soft_fertig_expect_run_roster "
+        "per firewall; UI restores expandable expect-run-roster detail "
         "on load."
     ),
 }
