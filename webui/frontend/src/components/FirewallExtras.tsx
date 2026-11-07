@@ -312,6 +312,9 @@ function sshRefusalPathsRosterStorageKey(firewallId: string) {
 function sshRefusalStatusRosterStorageKey(firewallId: string) {
   return `fwbweb.sshRefusalStatusRoster.${firewallId}`;
 }
+function sshMethodListsRosterStorageKey(firewallId: string) {
+  return `fwbweb.sshMethodListsRoster.${firewallId}`;
+}
 
 function buildHonestyBundle(payload: Record<string, unknown>) {
   const surfaceKeys = Array.isArray(payload.soft_fertig_surface_keys)
@@ -529,6 +532,10 @@ function buildHonestyBundle(payload: Record<string, unknown>) {
     ssh_refusal_status_roster: {
       soft_fertig_ssh_refusal_status_roster:
         payload.soft_fertig_ssh_refusal_status_roster,
+    },
+    ssh_method_lists_roster: {
+      soft_fertig_ssh_method_lists_roster:
+        payload.soft_fertig_ssh_method_lists_roster,
     },
     honesty_exports: {
       soft_fertig_honesty_export_keys: payload.soft_fertig_honesty_export_keys,
@@ -776,6 +783,8 @@ export function FirewallExtras({
   const [sshRefusalPathsRosterDetail, setSshRefusalPathsRosterDetail] =
     useState<string | null>(null);
   const [sshRefusalStatusRosterDetail, setSshRefusalStatusRosterDetail] =
+    useState<string | null>(null);
+  const [sshMethodListsRosterDetail, setSshMethodListsRosterDetail] =
     useState<string | null>(null);
   const [honestyPathsSummary, setHonestyPathsSummary] = useState<string | null>(null);
   const [honestyPathsDetail, setHonestyPathsDetail] = useState<string | null>(null);
@@ -2285,6 +2294,33 @@ export function FirewallExtras({
           setSshRefusalStatusRosterDetail(lines.join("\n"));
         } else {
           setSshRefusalStatusRosterDetail(null);
+        }
+      }
+      {
+        const roster =
+          gaps?.soft_fertig_ssh_method_lists_roster &&
+          typeof gaps.soft_fertig_ssh_method_lists_roster === "object"
+            ? (gaps.soft_fertig_ssh_method_lists_roster as Record<string, unknown>)
+            : null;
+        if (roster && Object.keys(roster).length) {
+          const entries = Array.isArray(roster.entries)
+            ? (roster.entries as Array<Record<string, unknown>>)
+            : [];
+          const lines = [
+            `entry_count: ${String(roster.entry_count ?? "")}`,
+            `hard_gaps_remain: ${String(roster.hard_gaps_remain ?? "")}`,
+            `note: ${String(roster.note ?? "")}`,
+            ...entries.map((e) => {
+              const vals = Array.isArray(e.values) ? (e.values as unknown[]).join(", ") : "";
+              return (
+                `${String(e.id ?? "")} [${vals}]: ${String(e.title ?? "")}` +
+                (e.note ? ` — ${String(e.note)}` : "")
+              );
+            }),
+          ];
+          setSshMethodListsRosterDetail(lines.join("\n"));
+        } else {
+          setSshMethodListsRosterDetail(null);
         }
       }
       if (gaps?.honesty_paths && Object.keys(gaps.honesty_paths).length) {
@@ -3964,6 +4000,40 @@ export function FirewallExtras({
             }
           } catch {
             setSshRefusalStatusRosterDetail(sshRefusalStatusRosterRaw);
+          }
+        }
+        const sshMethodListsRosterRaw = sessionStorage.getItem(
+          sshMethodListsRosterStorageKey(firewallId),
+        );
+        if (sshMethodListsRosterRaw) {
+          try {
+            const parsed = JSON.parse(sshMethodListsRosterRaw) as {
+              soft_fertig_ssh_method_lists_roster?: unknown;
+            };
+            const roster = parsed.soft_fertig_ssh_method_lists_roster;
+            if (roster && typeof roster === "object") {
+              const r = roster as Record<string, unknown>;
+              const entries = Array.isArray(r.entries)
+                ? (r.entries as Array<Record<string, unknown>>)
+                : [];
+              const lines = [
+                `entry_count: ${String(r.entry_count ?? "")}`,
+                `hard_gaps_remain: ${String(r.hard_gaps_remain ?? "")}`,
+                `note: ${String(r.note ?? "")}`,
+                ...entries.map((e) => {
+                  const vals = Array.isArray(e.values) ? (e.values as unknown[]).join(", ") : "";
+                  return (
+                    `${String(e.id ?? "")} [${vals}]: ${String(e.title ?? "")}` +
+                    (e.note ? ` — ${String(e.note)}` : "")
+                  );
+                }),
+              ];
+              setSshMethodListsRosterDetail(lines.join("\n"));
+            } else {
+              setSshMethodListsRosterDetail(sshMethodListsRosterRaw);
+            }
+          } catch {
+            setSshMethodListsRosterDetail(sshMethodListsRosterRaw);
           }
         }
       } catch {
@@ -6067,6 +6137,14 @@ export function FirewallExtras({
               <summary>Soft-fertig ssh-refusal-status roster</summary>
               <pre className="deploy-log configlet-preview" tabIndex={0}>
                 {sshRefusalStatusRosterDetail}
+              </pre>
+            </details>
+          ) : null}
+          {sshMethodListsRosterDetail ? (
+            <details className="muted">
+              <summary>Soft-fertig ssh-method-lists roster</summary>
+              <pre className="deploy-log configlet-preview" tabIndex={0}>
+                {sshMethodListsRosterDetail}
               </pre>
             </details>
           ) : null}
@@ -9738,6 +9816,41 @@ export function FirewallExtras({
                 Copy ssh-refusal-status roster
               </button>
             ) : null}
+            {hardGapsPayload ? (
+              <button type="button" className="ghost" disabled={busy}
+                title="Download soft_fertig_ssh_method_lists_roster from /hard-gaps"
+                onClick={() => {
+                  const catalog: Record<string, unknown> = {
+                    soft_fertig_ssh_method_lists_roster: hardGapsPayload.soft_fertig_ssh_method_lists_roster,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  const text = JSON.stringify(catalog, null, 2);
+                  try { sessionStorage.setItem(sshMethodListsRosterStorageKey(firewallId), text); } catch { /* ignore */ }
+                  const blob = new Blob([text + "\n"], { type: "application/json;charset=utf-8" });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `fwbweb-ssh-method-lists-roster-${firewallId || "fw"}.json`;
+                  a.click(); URL.revokeObjectURL(url);
+                  onStatus?.("Downloaded ssh-method-lists roster");
+                }}>Download ssh-method-lists roster</button>
+            ) : null}
+            {hardGapsPayload ? (
+              <button type="button" className="ghost" disabled={busy}
+                title="Copy soft_fertig_ssh_method_lists_roster to clipboard"
+                onClick={() => { void (async () => {
+                  const catalog: Record<string, unknown> = {
+                    soft_fertig_ssh_method_lists_roster: hardGapsPayload.soft_fertig_ssh_method_lists_roster,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  try { sessionStorage.setItem(sshMethodListsRosterStorageKey(firewallId), JSON.stringify(catalog, null, 2)); } catch { /* ignore */ }
+                  const text = JSON.stringify(catalog, null, 2) + "\n";
+                  try { await navigator.clipboard.writeText(text); onStatus?.("Copied ssh-method-lists roster"); }
+                  catch (e) { onError?.(e instanceof Error ? e.message : String(e)); }
+                })(); }}>Copy ssh-method-lists roster</button>
+            ) : null}
             <button
               type="button"
               className="ghost"
@@ -10047,6 +10160,7 @@ export function FirewallExtras({
                   sessionStorage.removeItem(sshAlternativesRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshRefusalPathsRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshRefusalStatusRosterStorageKey(firewallId));
+                  sessionStorage.removeItem(sshMethodListsRosterStorageKey(firewallId));
                 } catch {
                   /* ignore */
                 }

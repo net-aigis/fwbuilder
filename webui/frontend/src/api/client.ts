@@ -1012,6 +1012,7 @@ export function fetchHardGaps() {
     soft_fertig_ssh_alternatives_roster?: Record<string, unknown>;
     soft_fertig_ssh_refusal_paths_roster?: Record<string, unknown>;
     soft_fertig_ssh_refusal_status_roster?: Record<string, unknown>;
+    soft_fertig_ssh_method_lists_roster?: Record<string, unknown>;
     soft_fertig_honesty_export_keys?: string[];
     soft_fertig_honesty_export_key_count?: number;
     soft_fertig_honesty_export_key_titles?: Record<string, string>;
