@@ -322,6 +322,12 @@ function sshAuthPolicyRosterStorageKey(firewallId: string) {
 function sshAlternativeNotesRosterStorageKey(firewallId: string) {
   return `fwbweb.sshAlternativeNotesRoster.${firewallId}`;
 }
+function sshAlternativeTitlesRosterStorageKey(firewallId: string) {
+  return `fwbweb.sshAlternativeTitlesRoster.${firewallId}`;
+}
+function sshRefusalPathTitlesRosterStorageKey(firewallId: string) {
+  return `fwbweb.sshRefusalPathTitlesRoster.${firewallId}`;
+}
 function buildHonestyBundle(payload: Record<string, unknown>) {
   const surfaceKeys = Array.isArray(payload.soft_fertig_surface_keys)
     ? (payload.soft_fertig_surface_keys as string[])
@@ -538,6 +544,14 @@ function buildHonestyBundle(payload: Record<string, unknown>) {
     ssh_refusal_status_roster: {
       soft_fertig_ssh_refusal_status_roster:
         payload.soft_fertig_ssh_refusal_status_roster,
+    },
+    ssh_refusal_path_titles_roster: {
+      soft_fertig_ssh_refusal_path_titles_roster:
+        payload.soft_fertig_ssh_refusal_path_titles_roster,
+    },
+    ssh_alternative_titles_roster: {
+      soft_fertig_ssh_alternative_titles_roster:
+        payload.soft_fertig_ssh_alternative_titles_roster,
     },
     ssh_alternative_notes_roster: {
       soft_fertig_ssh_alternative_notes_roster:
@@ -803,6 +817,10 @@ export function FirewallExtras({
   const [sshAuthPolicyRosterDetail, setSshAuthPolicyRosterDetail] =
     useState<string | null>(null);
   const [sshAlternativeNotesRosterDetail, setSshAlternativeNotesRosterDetail] =
+    useState<string | null>(null);
+  const [sshAlternativeTitlesRosterDetail, setSshAlternativeTitlesRosterDetail] =
+    useState<string | null>(null);
+  const [sshRefusalPathTitlesRosterDetail, setSshRefusalPathTitlesRosterDetail] =
     useState<string | null>(null);
   const [honestyPathsSummary, setHonestyPathsSummary] = useState<string | null>(null);
   const [honestyPathsDetail, setHonestyPathsDetail] = useState<string | null>(null);
@@ -2387,6 +2405,54 @@ export function FirewallExtras({
           setSshAlternativeNotesRosterDetail(lines.join("\n"));
         } else {
           setSshAlternativeNotesRosterDetail(null);
+        }
+      }
+      {
+        const roster =
+          gaps?.soft_fertig_ssh_alternative_titles_roster &&
+          typeof gaps.soft_fertig_ssh_alternative_titles_roster === "object"
+            ? (gaps.soft_fertig_ssh_alternative_titles_roster as Record<string, unknown>)
+            : null;
+        if (roster && Object.keys(roster).length) {
+          const entries = Array.isArray(roster.entries)
+            ? (roster.entries as Array<Record<string, unknown>>)
+            : [];
+          const lines = [
+            `entry_count: ${String(roster.entry_count ?? "")}`,
+            `hard_gaps_remain: ${String(roster.hard_gaps_remain ?? "")}`,
+            `note: ${String(roster.note ?? "")}`,
+            ...entries.map(
+              (e) =>
+                `${String(e.id ?? "")}: ${String(e.title ?? "")}` + (e.note ? ` — ${String(e.note)}` : ""),
+            ),
+          ];
+          setSshAlternativeTitlesRosterDetail(lines.join("\n"));
+        } else {
+          setSshAlternativeTitlesRosterDetail(null);
+        }
+      }
+      {
+        const roster =
+          gaps?.soft_fertig_ssh_refusal_path_titles_roster &&
+          typeof gaps.soft_fertig_ssh_refusal_path_titles_roster === "object"
+            ? (gaps.soft_fertig_ssh_refusal_path_titles_roster as Record<string, unknown>)
+            : null;
+        if (roster && Object.keys(roster).length) {
+          const entries = Array.isArray(roster.entries)
+            ? (roster.entries as Array<Record<string, unknown>>)
+            : [];
+          const lines = [
+            `entry_count: ${String(roster.entry_count ?? "")}`,
+            `hard_gaps_remain: ${String(roster.hard_gaps_remain ?? "")}`,
+            `note: ${String(roster.note ?? "")}`,
+            ...entries.map(
+              (e) =>
+                `${String(e.id ?? "")}: ${String(e.title ?? "")}` + (e.note ? ` — ${String(e.note)}` : ""),
+            ),
+          ];
+          setSshRefusalPathTitlesRosterDetail(lines.join("\n"));
+        } else {
+          setSshRefusalPathTitlesRosterDetail(null);
         }
       }
       if (gaps?.honesty_paths && Object.keys(gaps.honesty_paths).length) {
@@ -4164,6 +4230,68 @@ export function FirewallExtras({
             setSshAlternativeNotesRosterDetail(sshAlternativeNotesRosterRaw);
           }
         }
+        const sshAlternativeTitlesRosterRaw = sessionStorage.getItem(
+          sshAlternativeTitlesRosterStorageKey(firewallId),
+        );
+        if (sshAlternativeTitlesRosterRaw) {
+          try {
+            const parsed = JSON.parse(sshAlternativeTitlesRosterRaw) as {
+              soft_fertig_ssh_alternative_titles_roster?: unknown;
+            };
+            const roster = parsed.soft_fertig_ssh_alternative_titles_roster;
+            if (roster && typeof roster === "object") {
+              const r = roster as Record<string, unknown>;
+              const entries = Array.isArray(r.entries)
+                ? (r.entries as Array<Record<string, unknown>>)
+                : [];
+              const lines = [
+                `entry_count: ${String(r.entry_count ?? "")}`,
+                `hard_gaps_remain: ${String(r.hard_gaps_remain ?? "")}`,
+                `note: ${String(r.note ?? "")}`,
+                ...entries.map(
+                  (e) =>
+                    `${String(e.id ?? "")}: ${String(e.title ?? "")}` + (e.note ? ` — ${String(e.note)}` : ""),
+                ),
+              ];
+              setSshAlternativeTitlesRosterDetail(lines.join("\n"));
+            } else {
+              setSshAlternativeTitlesRosterDetail(sshAlternativeTitlesRosterRaw);
+            }
+          } catch {
+            setSshAlternativeTitlesRosterDetail(sshAlternativeTitlesRosterRaw);
+          }
+        }
+        const sshRefusalPathTitlesRosterRaw = sessionStorage.getItem(
+          sshRefusalPathTitlesRosterStorageKey(firewallId),
+        );
+        if (sshRefusalPathTitlesRosterRaw) {
+          try {
+            const parsed = JSON.parse(sshRefusalPathTitlesRosterRaw) as {
+              soft_fertig_ssh_refusal_path_titles_roster?: unknown;
+            };
+            const roster = parsed.soft_fertig_ssh_refusal_path_titles_roster;
+            if (roster && typeof roster === "object") {
+              const r = roster as Record<string, unknown>;
+              const entries = Array.isArray(r.entries)
+                ? (r.entries as Array<Record<string, unknown>>)
+                : [];
+              const lines = [
+                `entry_count: ${String(r.entry_count ?? "")}`,
+                `hard_gaps_remain: ${String(r.hard_gaps_remain ?? "")}`,
+                `note: ${String(r.note ?? "")}`,
+                ...entries.map(
+                  (e) =>
+                    `${String(e.id ?? "")}: ${String(e.title ?? "")}` + (e.note ? ` — ${String(e.note)}` : ""),
+                ),
+              ];
+              setSshRefusalPathTitlesRosterDetail(lines.join("\n"));
+            } else {
+              setSshRefusalPathTitlesRosterDetail(sshRefusalPathTitlesRosterRaw);
+            }
+          } catch {
+            setSshRefusalPathTitlesRosterDetail(sshRefusalPathTitlesRosterRaw);
+          }
+        }
       } catch {
         /* ignore */
       }
@@ -4955,6 +5083,22 @@ export function FirewallExtras({
               <summary>Soft-fertig ssh-alternative-notes roster</summary>
               <pre className="deploy-log configlet-preview" tabIndex={0}>
                 {sshAlternativeNotesRosterDetail}
+              </pre>
+            </details>
+          ) : null}
+          {sshAlternativeTitlesRosterDetail ? (
+            <details className="muted">
+              <summary>Soft-fertig ssh-alternative-titles roster</summary>
+              <pre className="deploy-log configlet-preview" tabIndex={0}>
+                {sshAlternativeTitlesRosterDetail}
+              </pre>
+            </details>
+          ) : null}
+          {sshRefusalPathTitlesRosterDetail ? (
+            <details className="muted">
+              <summary>Soft-fertig ssh-refusal-path-titles roster</summary>
+              <pre className="deploy-log configlet-preview" tabIndex={0}>
+                {sshRefusalPathTitlesRosterDetail}
               </pre>
             </details>
           ) : null}
@@ -10067,6 +10211,78 @@ export function FirewallExtras({
                 })(); }}>Copy ssh-alternative-notes roster</button>
             ) : null}
 
+            {hardGapsPayload ? (
+              <button type="button" className="ghost" disabled={busy}
+                title="Download soft_fertig_ssh_alternative_titles_roster from /hard-gaps"
+                onClick={() => {
+                  const catalog: Record<string, unknown> = {
+                    soft_fertig_ssh_alternative_titles_roster: hardGapsPayload.soft_fertig_ssh_alternative_titles_roster,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  const text = JSON.stringify(catalog, null, 2);
+                  try { sessionStorage.setItem(sshAlternativeTitlesRosterStorageKey(firewallId), text); } catch { /* ignore */ }
+                  const blob = new Blob([text + "\n"], { type: "application/json;charset=utf-8" });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `fwbweb-ssh-alternative-titles-roster-${firewallId || "fw"}.json`;
+                  a.click(); URL.revokeObjectURL(url);
+                  onStatus?.("Downloaded ssh-alternative-titles roster");
+                }}>Download ssh-alternative-titles roster</button>
+            ) : null}
+            {hardGapsPayload ? (
+              <button type="button" className="ghost" disabled={busy}
+                title="Copy soft_fertig_ssh_alternative_titles_roster to clipboard"
+                onClick={() => { void (async () => {
+                  const catalog: Record<string, unknown> = {
+                    soft_fertig_ssh_alternative_titles_roster: hardGapsPayload.soft_fertig_ssh_alternative_titles_roster,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  try { sessionStorage.setItem(sshAlternativeTitlesRosterStorageKey(firewallId), JSON.stringify(catalog, null, 2)); } catch { /* ignore */ }
+                  const text = JSON.stringify(catalog, null, 2) + "\n";
+                  try { await navigator.clipboard.writeText(text); onStatus?.("Copied ssh-alternative-titles roster"); }
+                  catch (e) { onError?.(e instanceof Error ? e.message : String(e)); }
+                })(); }}>Copy ssh-alternative-titles roster</button>
+            ) : null}
+
+            {hardGapsPayload ? (
+              <button type="button" className="ghost" disabled={busy}
+                title="Download soft_fertig_ssh_refusal_path_titles_roster from /hard-gaps"
+                onClick={() => {
+                  const catalog: Record<string, unknown> = {
+                    soft_fertig_ssh_refusal_path_titles_roster: hardGapsPayload.soft_fertig_ssh_refusal_path_titles_roster,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  const text = JSON.stringify(catalog, null, 2);
+                  try { sessionStorage.setItem(sshRefusalPathTitlesRosterStorageKey(firewallId), text); } catch { /* ignore */ }
+                  const blob = new Blob([text + "\n"], { type: "application/json;charset=utf-8" });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `fwbweb-ssh-refusal-path-titles-roster-${firewallId || "fw"}.json`;
+                  a.click(); URL.revokeObjectURL(url);
+                  onStatus?.("Downloaded ssh-refusal-path-titles roster");
+                }}>Download ssh-refusal-path-titles roster</button>
+            ) : null}
+            {hardGapsPayload ? (
+              <button type="button" className="ghost" disabled={busy}
+                title="Copy soft_fertig_ssh_refusal_path_titles_roster to clipboard"
+                onClick={() => { void (async () => {
+                  const catalog: Record<string, unknown> = {
+                    soft_fertig_ssh_refusal_path_titles_roster: hardGapsPayload.soft_fertig_ssh_refusal_path_titles_roster,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  try { sessionStorage.setItem(sshRefusalPathTitlesRosterStorageKey(firewallId), JSON.stringify(catalog, null, 2)); } catch { /* ignore */ }
+                  const text = JSON.stringify(catalog, null, 2) + "\n";
+                  try { await navigator.clipboard.writeText(text); onStatus?.("Copied ssh-refusal-path-titles roster"); }
+                  catch (e) { onError?.(e instanceof Error ? e.message : String(e)); }
+                })(); }}>Copy ssh-refusal-path-titles roster</button>
+            ) : null}
+
             <button
               type="button"
               className="ghost"
@@ -10379,6 +10595,8 @@ export function FirewallExtras({
                   sessionStorage.removeItem(sshMethodListsRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshAuthPolicyRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshAlternativeNotesRosterStorageKey(firewallId));
+                  sessionStorage.removeItem(sshRefusalPathTitlesRosterStorageKey(firewallId));
+                  sessionStorage.removeItem(sshAlternativeTitlesRosterStorageKey(firewallId));
                 } catch {
                   /* ignore */
                 }
