@@ -337,6 +337,10 @@ function sshAuthNoteRosterStorageKey(firewallId: string) {
 function sshAlternativeSupportRosterStorageKey(firewallId: string) {
   return `fwbweb.sshAlternativeSupportRoster.${firewallId}`;
 }
+function sshBatchModeRosterStorageKey(firewallId: string) {
+  return `fwbweb.sshBatchModeRoster.${firewallId}`;
+}
+
 function sshPasswordSupportRosterStorageKey(firewallId: string) {
   return `fwbweb.sshPasswordSupportRoster.${firewallId}`;
 }
@@ -576,6 +580,10 @@ function buildHonestyBundle(payload: Record<string, unknown>) {
     ssh_alternative_support_roster: {
       soft_fertig_ssh_alternative_support_roster:
         payload.soft_fertig_ssh_alternative_support_roster,
+    },
+    ssh_batch_mode_roster: {
+      soft_fertig_ssh_batch_mode_roster:
+        payload.soft_fertig_ssh_batch_mode_roster,
     },
     ssh_password_support_roster: {
       soft_fertig_ssh_password_support_roster:
@@ -861,6 +869,8 @@ export function FirewallExtras({
   const [sshAlternativeSupportRosterDetail, setSshAlternativeSupportRosterDetail] =
     useState<string | null>(null);
   const [sshPasswordSupportRosterDetail, setSshPasswordSupportRosterDetail] =
+    useState<string | null>(null);
+  const [sshBatchModeRosterDetail, setSshBatchModeRosterDetail] =
     useState<string | null>(null);
   const [honestyPathsSummary, setHonestyPathsSummary] = useState<string | null>(null);
   const [honestyPathsDetail, setHonestyPathsDetail] = useState<string | null>(null);
@@ -2569,6 +2579,30 @@ export function FirewallExtras({
           gaps?.soft_fertig_ssh_password_support_roster &&
           typeof gaps.soft_fertig_ssh_password_support_roster === "object"
             ? (gaps.soft_fertig_ssh_password_support_roster as Record<string, unknown>)
+            : null;
+        if (roster && Object.keys(roster).length) {
+          const entries = Array.isArray(roster.entries)
+            ? (roster.entries as Array<Record<string, unknown>>)
+            : [];
+          const lines = [
+            `entry_count: ${String(roster.entry_count ?? "")}`,
+            `hard_gaps_remain: ${String(roster.hard_gaps_remain ?? "")}`,
+            `note: ${String(roster.note ?? "")}`,
+            ...entries.map(
+              (e) =>
+                `${String(e.id ?? "")}: ${String(e.title ?? "")}` + (e.value ? ` — ${String(e.value)}` : e.note ? ` — ${String(e.note)}` : ""),
+            ),
+          ];
+          setSshAuthNoteRosterDetail(lines.join("\n"));
+        } else {
+          setSshAuthNoteRosterDetail(null);
+        }
+      }
+      {
+        const roster =
+          gaps?.soft_fertig_ssh_batch_mode_roster &&
+          typeof gaps.soft_fertig_ssh_batch_mode_roster === "object"
+            ? (gaps.soft_fertig_ssh_batch_mode_roster as Record<string, unknown>)
             : null;
         if (roster && Object.keys(roster).length) {
           const entries = Array.isArray(roster.entries)
@@ -4544,6 +4578,37 @@ export function FirewallExtras({
             setSshPasswordSupportRosterDetail(sshPasswordSupportRosterRaw);
           }
         }
+        const sshBatchModeRosterRaw = sessionStorage.getItem(
+          sshBatchModeRosterStorageKey(firewallId),
+        );
+        if (sshBatchModeRosterRaw) {
+          try {
+            const parsed = JSON.parse(sshBatchModeRosterRaw) as {
+              soft_fertig_ssh_batch_mode_roster?: unknown;
+            };
+            const roster = parsed.soft_fertig_ssh_batch_mode_roster;
+            if (roster && typeof roster === "object") {
+              const r = roster as Record<string, unknown>;
+              const entries = Array.isArray(r.entries)
+                ? (r.entries as Array<Record<string, unknown>>)
+                : [];
+              const lines = [
+                `entry_count: ${String(r.entry_count ?? "")}`,
+                `hard_gaps_remain: ${String(r.hard_gaps_remain ?? "")}`,
+                `note: ${String(r.note ?? "")}`,
+                ...entries.map(
+                  (e) =>
+                    `${String(e.id ?? "")}: ${String(e.title ?? "")}` + (e.value ? ` — ${String(e.value)}` : e.note ? ` — ${String(e.note)}` : ""),
+                ),
+              ];
+              setSshBatchModeRosterDetail(lines.join("\n"));
+            } else {
+              setSshBatchModeRosterDetail(sshBatchModeRosterRaw);
+            }
+          } catch {
+            setSshBatchModeRosterDetail(sshBatchModeRosterRaw);
+          }
+        }
       } catch {
         /* ignore */
       }
@@ -5383,6 +5448,14 @@ export function FirewallExtras({
               <summary>Soft-fertig ssh-password-support roster</summary>
               <pre className="deploy-log configlet-preview" tabIndex={0}>
                 {sshPasswordSupportRosterDetail}
+              </pre>
+            </details>
+          ) : null}
+          {sshBatchModeRosterDetail ? (
+            <details className="muted">
+              <summary>Soft-fertig ssh-batch-mode roster</summary>
+              <pre className="deploy-log configlet-preview" tabIndex={0}>
+                {sshBatchModeRosterDetail}
               </pre>
             </details>
           ) : null}
@@ -10709,6 +10782,41 @@ export function FirewallExtras({
                   catch (e) { onError?.(e instanceof Error ? e.message : String(e)); }
                 })(); }}>Copy ssh-password-support roster</button>
             ) : null}
+            {hardGapsPayload ? (
+              <button type="button" className="ghost" disabled={busy}
+                title="Download soft_fertig_ssh_batch_mode_roster from /hard-gaps"
+                onClick={() => {
+                  const catalog: Record<string, unknown> = {
+                    soft_fertig_ssh_batch_mode_roster: hardGapsPayload.soft_fertig_ssh_batch_mode_roster,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  const text = JSON.stringify(catalog, null, 2);
+                  try { sessionStorage.setItem(sshBatchModeRosterStorageKey(firewallId), text); } catch { /* ignore */ }
+                  const blob = new Blob([text + "\n"], { type: "application/json;charset=utf-8" });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `fwbweb-ssh-batch-mode-roster-${firewallId || "fw"}.json`;
+                  a.click(); URL.revokeObjectURL(url);
+                  onStatus?.("Downloaded ssh-batch-mode roster");
+                }}>Download ssh-batch-mode roster</button>
+            ) : null}
+            {hardGapsPayload ? (
+              <button type="button" className="ghost" disabled={busy}
+                title="Copy soft_fertig_ssh_batch_mode_roster to clipboard"
+                onClick={() => { void (async () => {
+                  const catalog: Record<string, unknown> = {
+                    soft_fertig_ssh_batch_mode_roster: hardGapsPayload.soft_fertig_ssh_batch_mode_roster,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  try { sessionStorage.setItem(sshBatchModeRosterStorageKey(firewallId), JSON.stringify(catalog, null, 2)); } catch { /* ignore */ }
+                  const text = JSON.stringify(catalog, null, 2) + "\n";
+                  try { await navigator.clipboard.writeText(text); onStatus?.("Copied ssh-batch-mode roster"); }
+                  catch (e) { onError?.(e instanceof Error ? e.message : String(e)); }
+                })(); }}>Copy ssh-batch-mode roster</button>
+            ) : null}
             <button
               type="button"
               className="ghost"
@@ -11025,6 +11133,7 @@ export function FirewallExtras({
                   sessionStorage.removeItem(sshRefusalPathNotesRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshAuthNoteRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshAlternativeSupportRosterStorageKey(firewallId));
+                  sessionStorage.removeItem(sshBatchModeRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshPasswordSupportRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshAlternativeTitlesRosterStorageKey(firewallId));
                 } catch {
