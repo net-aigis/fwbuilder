@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "4664"
+WEBUI_SOFT_COMPLETE_PHASE = "4680"
 SOFT_FERTIG_HONESTY_TRACK_NOTE = (
     "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
     "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
@@ -282,11 +282,12 @@ SOFT_FERTIG_HONESTY_TRACK_NOTE = (
 # 12500: Soft 4600+ honesty surface checkpoint (ssh_auth_roster cycle complete);
 # 12550: soft_fertig_password_ssh_roster compact /ssh-auth/password refusal field keys;
 # 12600: password_ssh_roster listed in honesty export + bundle sections;
-# 12650: soft_fertig_honesty_surface_version bumped to 4.8 (password_ssh_roster).
-WEBUI_HONESTY_MILESTONE = 12650
+# 12650: soft_fertig_honesty_surface_version bumped to 4.8 (password_ssh_roster);
+# 12700: password_ssh_roster added to sessionStorage + clear catalogs.
+WEBUI_HONESTY_MILESTONE = 12700
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 12650: soft_fertig_honesty_surface_version "
-    "4.8 (password_ssh_roster) — hard gaps remain open."
+    "Honesty surface checkpoint 12700: password_ssh_roster added to "
+    "sessionStorage and clear catalogs — hard gaps remain open."
 )
 SOFT_FERTIG_SOFT_COMPLETE_NOTE = (
     "WEBUI_SOFT_COMPLETE_PHASE marks soft-fertig honesty/preview catalog "
@@ -797,6 +798,7 @@ SOFT_FERTIG_SESSION_STORAGE_KEYS = {
     "expect_steps_roster": "fwbweb.expectStepsRoster.",
     "expect_steps_refusals_roster": "fwbweb.expectStepsRefusalsRoster.",
     "ssh_auth_roster": "fwbweb.sshAuthRoster.",
+    "password_ssh_roster": "fwbweb.passwordSshRoster.",
 }
 SOFT_FERTIG_SESSION_STORAGE_KEY_TITLES = {
     "hard_gaps": "Full /hard-gaps JSON snapshot",
@@ -840,6 +842,7 @@ SOFT_FERTIG_SESSION_STORAGE_KEY_TITLES = {
     "expect_steps_roster": "Expect-steps roster JSON",
     "expect_steps_refusals_roster": "Expect-steps-refusals roster JSON",
     "ssh_auth_roster": "SSH-auth roster JSON",
+    "password_ssh_roster": "Password-SSH roster JSON",
 }
 SOFT_FERTIG_SESSION_STORAGE_NOTES = {
     "hard_gaps": "Persists last downloaded/copied /hard-gaps JSON per firewall.",
@@ -1007,6 +1010,11 @@ SOFT_FERTIG_SESSION_STORAGE_NOTES = {
     "ssh_auth_roster": (
         "Persists last downloaded/copied soft_fertig_ssh_auth_roster "
         "per firewall; UI restores expandable ssh-auth-roster detail "
+        "on load."
+    ),
+    "password_ssh_roster": (
+        "Persists last downloaded/copied soft_fertig_password_ssh_roster "
+        "per firewall; UI restores expandable password-ssh-roster detail "
         "on load."
     ),
 }
