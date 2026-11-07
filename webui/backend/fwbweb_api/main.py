@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "4472"
+WEBUI_SOFT_COMPLETE_PHASE = "4488"
 SOFT_FERTIG_HONESTY_TRACK_NOTE = (
     "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
     "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
@@ -270,12 +270,12 @@ SOFT_FERTIG_HONESTY_TRACK_NOTE = (
 # 11900: soft_fertig_honesty_surface_version bumped to 4.5 (expect_steps_roster);
 # 11950: expect_steps_roster added to sessionStorage + clear catalogs;
 # 12000: Soft 4440+ honesty surface checkpoint (expect_steps_roster cycle complete);
-# 12050: soft_fertig_expect_steps_refusals_roster compact /steps/refusals field keys.
-WEBUI_HONESTY_MILESTONE = 12050
+# 12050: soft_fertig_expect_steps_refusals_roster compact /steps/refusals field keys;
+# 12100: expect_steps_refusals_roster listed in honesty export + bundle sections.
+WEBUI_HONESTY_MILESTONE = 12100
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 12050: soft_fertig_expect_steps_refusals_roster "
-    "lists all /expect-install-plan/steps/refusals field keys with titles and notes "
-    "for operators — hard gaps remain open."
+    "Honesty surface checkpoint 12100: expect_steps_refusals_roster listed in "
+    "honesty export and bundle catalogs for operators — hard gaps remain open."
 )
 SOFT_FERTIG_SOFT_COMPLETE_NOTE = (
     "WEBUI_SOFT_COMPLETE_PHASE marks soft-fertig honesty/preview catalog "
@@ -1030,6 +1030,7 @@ SOFT_FERTIG_HONESTY_EXPORT_KEYS = (
     "option_enable_roster",
     "expect_run_roster",
     "expect_steps_roster",
+    "expect_steps_refusals_roster",
 )
 SOFT_FERTIG_HONESTY_EXPORT_KEY_TITLES = {
     "hard_gaps": "Full /hard-gaps honesty snapshot JSON",
@@ -1074,6 +1075,7 @@ SOFT_FERTIG_HONESTY_EXPORT_KEY_TITLES = {
     "option_enable_roster": "/option-enable field keys with titles and notes",
     "expect_run_roster": "/expect-install-plan/run refusal field keys with titles and notes",
     "expect_steps_roster": "/expect-install-plan/steps field keys with titles and notes",
+    "expect_steps_refusals_roster": "/expect-install-plan/steps/refusals field keys with titles and notes",
 }
 SOFT_FERTIG_HONESTY_EXPORT_NOTES = {
     "hard_gaps": "Download hard-gaps JSON button; sessionStorage fwbweb.hardGaps.*.",
@@ -1217,6 +1219,10 @@ SOFT_FERTIG_HONESTY_EXPORT_NOTES = {
         "Download/Copy soft_fertig_expect_steps_roster; also on /hard-gaps; "
         "sessionStorage fwbweb.expectStepsRoster.*"
     ),
+    "expect_steps_refusals_roster": (
+        "Download/Copy soft_fertig_expect_steps_refusals_roster; also on /hard-gaps; "
+        "sessionStorage fwbweb.expectStepsRefusalsRoster.*"
+    ),
 }
 
 # Top-level sections of the combined UI honesty bundle download.
@@ -1263,6 +1269,7 @@ SOFT_FERTIG_HONESTY_BUNDLE_SECTIONS = (
     "option_enable_roster",
     "expect_run_roster",
     "expect_steps_roster",
+    "expect_steps_refusals_roster",
     "honesty_exports",
 )
 SOFT_FERTIG_HONESTY_BUNDLE_SECTION_TITLES = {
@@ -1308,6 +1315,7 @@ SOFT_FERTIG_HONESTY_BUNDLE_SECTION_TITLES = {
     "option_enable_roster": "/option-enable field keys with titles and notes",
     "expect_run_roster": "/expect-install-plan/run refusal field keys with titles and notes",
     "expect_steps_roster": "/expect-install-plan/steps field keys with titles and notes",
+    "expect_steps_refusals_roster": "/expect-install-plan/steps/refusals field keys with titles and notes",
     "honesty_exports": "Export catalog meta (keys/titles/notes)",
 }
 SOFT_FERTIG_HONESTY_BUNDLE_NOTES = {
@@ -1451,6 +1459,10 @@ SOFT_FERTIG_HONESTY_BUNDLE_NOTES = {
     "expect_steps_roster": (
         "Same subset as Download expect-steps roster; "
         "also sessionStorage fwbweb.expectStepsRoster.*"
+    ),
+    "expect_steps_refusals_roster": (
+        "Same subset as Download expect-steps-refusals roster; "
+        "also sessionStorage fwbweb.expectStepsRefusalsRoster.*"
     ),
     "honesty_exports": "Same subset as Download honesty exports.",
 }
