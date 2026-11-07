@@ -491,6 +491,10 @@ function buildHonestyBundle(payload: Record<string, unknown>) {
       soft_fertig_password_ssh_roster:
         payload.soft_fertig_password_ssh_roster,
     },
+    ssh_not_implemented_roster: {
+      soft_fertig_ssh_not_implemented_roster:
+        payload.soft_fertig_ssh_not_implemented_roster,
+    },
     honesty_exports: {
       soft_fertig_honesty_export_keys: payload.soft_fertig_honesty_export_keys,
       soft_fertig_honesty_export_key_count:

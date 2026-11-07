@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "4712"
+WEBUI_SOFT_COMPLETE_PHASE = "4728"
 SOFT_FERTIG_HONESTY_TRACK_NOTE = (
     "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
     "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
@@ -286,11 +286,12 @@ SOFT_FERTIG_HONESTY_TRACK_NOTE = (
 # 12700: password_ssh_roster added to sessionStorage + clear catalogs;
 # 12750: Soft 4680+ honesty surface checkpoint (password_ssh_roster cycle complete).
 # 12800: soft_fertig_ssh_not_implemented_roster compact /ssh-auth not_implemented ids;
-WEBUI_HONESTY_MILESTONE = 12800
+# 12850: ssh_not_implemented_roster listed in honesty export + bundle sections;
+WEBUI_HONESTY_MILESTONE = 12850
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 12800: soft-fertig honesty/preview catalogs "
-    "through Soft 4696+ (schema 4.8, ssh_not_implemented_roster "
-    "on /health and honesty endpoints) — hard gaps remain open."
+    "Honesty surface checkpoint 12850: soft-fertig honesty/preview catalogs "
+    "through Soft 4712+ (schema 4.8, ssh_not_implemented_roster "
+    "in export/bundle) — hard gaps remain open."
 )
 SOFT_FERTIG_SOFT_COMPLETE_NOTE = (
     "WEBUI_SOFT_COMPLETE_PHASE marks soft-fertig honesty/preview catalog "
@@ -1090,6 +1091,7 @@ SOFT_FERTIG_HONESTY_EXPORT_KEYS = (
     "expect_steps_refusals_roster",
     "ssh_auth_roster",
     "password_ssh_roster",
+    "ssh_not_implemented_roster",
 )
 SOFT_FERTIG_HONESTY_EXPORT_KEY_TITLES = {
     "hard_gaps": "Full /hard-gaps honesty snapshot JSON",
@@ -1137,6 +1139,7 @@ SOFT_FERTIG_HONESTY_EXPORT_KEY_TITLES = {
     "expect_steps_refusals_roster": "/expect-install-plan/steps/refusals field keys with titles and notes",
     "ssh_auth_roster": "/ssh-auth field keys with titles and notes",
     "password_ssh_roster": "/ssh-auth/password refusal field keys with titles and notes",
+    "ssh_not_implemented_roster": "/ssh-auth not_implemented method ids with titles and notes",
 }
 SOFT_FERTIG_HONESTY_EXPORT_NOTES = {
     "hard_gaps": "Download hard-gaps JSON button; sessionStorage fwbweb.hardGaps.*.",
@@ -1292,6 +1295,10 @@ SOFT_FERTIG_HONESTY_EXPORT_NOTES = {
         "Download/Copy soft_fertig_password_ssh_roster; also on /hard-gaps; "
         "sessionStorage fwbweb.passwordSshRoster.*"
     ),
+    "ssh_not_implemented_roster": (
+        "Download/Copy soft_fertig_ssh_not_implemented_roster; also on /hard-gaps; "
+        "sessionStorage fwbweb.sshNotImplementedRoster.*"
+    ),
 }
 
 # Top-level sections of the combined UI honesty bundle download.
@@ -1341,6 +1348,7 @@ SOFT_FERTIG_HONESTY_BUNDLE_SECTIONS = (
     "expect_steps_refusals_roster",
     "ssh_auth_roster",
     "password_ssh_roster",
+    "ssh_not_implemented_roster",
     "honesty_exports",
 )
 SOFT_FERTIG_HONESTY_BUNDLE_SECTION_TITLES = {
@@ -1389,6 +1397,7 @@ SOFT_FERTIG_HONESTY_BUNDLE_SECTION_TITLES = {
     "expect_steps_refusals_roster": "/expect-install-plan/steps/refusals field keys with titles and notes",
     "ssh_auth_roster": "/ssh-auth field keys with titles and notes",
     "password_ssh_roster": "/ssh-auth/password refusal field keys with titles and notes",
+    "ssh_not_implemented_roster": "/ssh-auth not_implemented method ids with titles and notes",
     "honesty_exports": "Export catalog meta (keys/titles/notes)",
 }
 SOFT_FERTIG_HONESTY_BUNDLE_NOTES = {
@@ -1544,6 +1553,10 @@ SOFT_FERTIG_HONESTY_BUNDLE_NOTES = {
     "password_ssh_roster": (
         "Same subset as Download password-ssh roster; "
         "also sessionStorage fwbweb.passwordSshRoster.*"
+    ),
+    "ssh_not_implemented_roster": (
+        "Same subset as Download ssh-not-implemented roster; "
+        "also sessionStorage fwbweb.sshNotImplementedRoster.*"
     ),
     "honesty_exports": "Same subset as Download honesty exports.",
 }
