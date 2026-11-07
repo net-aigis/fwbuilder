@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "4408"
+WEBUI_SOFT_COMPLETE_PHASE = "4424"
 SOFT_FERTIG_HONESTY_TRACK_NOTE = (
     "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
     "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
@@ -266,11 +266,12 @@ SOFT_FERTIG_HONESTY_TRACK_NOTE = (
 # 11700: expect_run_roster added to sessionStorage + clear catalogs;
 # 11750: Soft 4360+ honesty surface checkpoint (expect_run_roster cycle complete);
 # 11800: soft_fertig_expect_steps_roster compact /expect-install-plan/steps field keys;
-# 11850: expect_steps_roster listed in honesty export + bundle sections.
-WEBUI_HONESTY_MILESTONE = 11850
+# 11850: expect_steps_roster listed in honesty export + bundle sections;
+# 11900: soft_fertig_honesty_surface_version bumped to 4.5 (expect_steps_roster).
+WEBUI_HONESTY_MILESTONE = 11900
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 11850: expect_steps_roster listed in "
-    "honesty export and bundle catalogs for operators — hard gaps remain open."
+    "Honesty surface checkpoint 11900: soft_fertig_honesty_surface_version "
+    "4.5 (expect_steps_roster) — hard gaps remain open."
 )
 SOFT_FERTIG_SOFT_COMPLETE_NOTE = (
     "WEBUI_SOFT_COMPLETE_PHASE marks soft-fertig honesty/preview catalog "
@@ -961,9 +962,9 @@ SOFT_FERTIG_SESSION_STORAGE_CLEAR_NOTE = (
 )
 
 # Soft-fertig honesty/preview catalog schema version (documentation; not a lock).
-SOFT_FERTIG_HONESTY_SURFACE_VERSION = "4.4"
+SOFT_FERTIG_HONESTY_SURFACE_VERSION = "4.5"
 SOFT_FERTIG_HONESTY_SURFACE_VERSION_NOTE = (
-    "Schema 4.4: schema 4.3 plus soft_fertig_expect_run_roster on "
+    "Schema 4.5: schema 4.4 plus soft_fertig_expect_steps_roster on "
     "/health and honesty endpoints (+ export/bundle); hard gaps remain open."
 )
 
@@ -2430,6 +2431,10 @@ SOFT_FERTIG_HONESTY_SURFACE_CHANGELOG = {
     ),
     "4.4": (
         "soft_fertig_expect_run_roster on /health and honesty "
+        "endpoints (+ export/bundle)."
+    ),
+    "4.5": (
+        "soft_fertig_expect_steps_roster on /health and honesty "
         "endpoints (+ export/bundle)."
     ),
 }
