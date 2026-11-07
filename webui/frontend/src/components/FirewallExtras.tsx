@@ -300,6 +300,9 @@ function sshNotImplementedRosterStorageKey(firewallId: string) {
 function sshImplementedRosterStorageKey(firewallId: string) {
   return `fwbweb.sshImplementedRoster.${firewallId}`;
 }
+function sshCapabilityFlagsRosterStorageKey(firewallId: string) {
+  return `fwbweb.sshCapabilityFlagsRoster.${firewallId}`;
+}
 
 function buildHonestyBundle(payload: Record<string, unknown>) {
   const surfaceKeys = Array.isArray(payload.soft_fertig_surface_keys)
@@ -501,6 +504,10 @@ function buildHonestyBundle(payload: Record<string, unknown>) {
     ssh_implemented_roster: {
       soft_fertig_ssh_implemented_roster:
         payload.soft_fertig_ssh_implemented_roster,
+    },
+    ssh_capability_flags_roster: {
+      soft_fertig_ssh_capability_flags_roster:
+        payload.soft_fertig_ssh_capability_flags_roster,
     },
     honesty_exports: {
       soft_fertig_honesty_export_keys: payload.soft_fertig_honesty_export_keys,
@@ -740,6 +747,8 @@ export function FirewallExtras({
   const [sshNotImplementedRosterDetail, setSshNotImplementedRosterDetail] =
     useState<string | null>(null);
   const [sshImplementedRosterDetail, setSshImplementedRosterDetail] =
+    useState<string | null>(null);
+  const [sshCapabilityFlagsRosterDetail, setSshCapabilityFlagsRosterDetail] =
     useState<string | null>(null);
   const [honestyPathsSummary, setHonestyPathsSummary] = useState<string | null>(null);
   const [honestyPathsDetail, setHonestyPathsDetail] = useState<string | null>(null);
@@ -2137,6 +2146,34 @@ export function FirewallExtras({
           setSshImplementedRosterDetail(lines.join("\n"));
         } else {
           setSshImplementedRosterDetail(null);
+        }
+      }
+      {
+        const roster =
+          gaps?.soft_fertig_ssh_capability_flags_roster &&
+          typeof gaps.soft_fertig_ssh_capability_flags_roster === "object"
+            ? (gaps.soft_fertig_ssh_capability_flags_roster as Record<
+                string,
+                unknown
+              >)
+            : null;
+        if (roster && Object.keys(roster).length) {
+          const entries = Array.isArray(roster.entries)
+            ? (roster.entries as Array<Record<string, unknown>>)
+            : [];
+          const lines = [
+            `entry_count: ${String(roster.entry_count ?? "")}`,
+            `hard_gaps_remain: ${String(roster.hard_gaps_remain ?? "")}`,
+            `note: ${String(roster.note ?? "")}`,
+            ...entries.map(
+              (e) =>
+                `${String(e.id ?? "")}: ${String(e.title ?? "")}` +
+                (e.note ? ` — ${String(e.note)}` : ""),
+            ),
+          ];
+          setSshCapabilityFlagsRosterDetail(lines.join("\n"));
+        } else {
+          setSshCapabilityFlagsRosterDetail(null);
         }
       }
       if (gaps?.honesty_paths && Object.keys(gaps.honesty_paths).length) {
@@ -3688,6 +3725,38 @@ export function FirewallExtras({
             }
           } catch {
             setSshImplementedRosterDetail(sshImplementedRosterRaw);
+          }
+        }
+        const sshCapabilityFlagsRosterRaw = sessionStorage.getItem(
+          sshCapabilityFlagsRosterStorageKey(firewallId),
+        );
+        if (sshCapabilityFlagsRosterRaw) {
+          try {
+            const parsed = JSON.parse(sshCapabilityFlagsRosterRaw) as {
+              soft_fertig_ssh_capability_flags_roster?: unknown;
+            };
+            const roster = parsed.soft_fertig_ssh_capability_flags_roster;
+            if (roster && typeof roster === "object") {
+              const r = roster as Record<string, unknown>;
+              const entries = Array.isArray(r.entries)
+                ? (r.entries as Array<Record<string, unknown>>)
+                : [];
+              const lines = [
+                `entry_count: ${String(r.entry_count ?? "")}`,
+                `hard_gaps_remain: ${String(r.hard_gaps_remain ?? "")}`,
+                `note: ${String(r.note ?? "")}`,
+                ...entries.map(
+                  (e) =>
+                    `${String(e.id ?? "")}: ${String(e.title ?? "")}` +
+                    (e.note ? ` — ${String(e.note)}` : ""),
+                ),
+              ];
+              setSshCapabilityFlagsRosterDetail(lines.join("\n"));
+            } else {
+              setSshCapabilityFlagsRosterDetail(sshCapabilityFlagsRosterRaw);
+            }
+          } catch {
+            setSshCapabilityFlagsRosterDetail(sshCapabilityFlagsRosterRaw);
           }
         }
       } catch {
@@ -5759,6 +5828,14 @@ export function FirewallExtras({
               <summary>Soft-fertig ssh-implemented roster</summary>
               <pre className="deploy-log configlet-preview" tabIndex={0}>
                 {sshImplementedRosterDetail}
+              </pre>
+            </details>
+          ) : null}
+          {sshCapabilityFlagsRosterDetail ? (
+            <details className="muted">
+              <summary>Soft-fertig ssh-capability-flags roster</summary>
+              <pre className="deploy-log configlet-preview" tabIndex={0}>
+                {sshCapabilityFlagsRosterDetail}
               </pre>
             </details>
           ) : null}
@@ -9142,6 +9219,78 @@ export function FirewallExtras({
                 Copy ssh-implemented roster
               </button>
             ) : null}
+            {hardGapsPayload ? (
+              <button
+                type="button"
+                className="ghost"
+                disabled={busy}
+                title="Download soft_fertig_ssh_capability_flags_roster from /hard-gaps"
+                onClick={() => {
+                  const catalog: Record<string, unknown> = {
+                    soft_fertig_ssh_capability_flags_roster:
+                      hardGapsPayload.soft_fertig_ssh_capability_flags_roster,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  const text = JSON.stringify(catalog, null, 2);
+                  try {
+                    sessionStorage.setItem(
+                      sshCapabilityFlagsRosterStorageKey(firewallId),
+                      text,
+                    );
+                  } catch {
+                    /* ignore */
+                  }
+                  const blob = new Blob([text + "\n"], {
+                    type: "application/json;charset=utf-8",
+                  });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `fwbweb-ssh-capability-flags-roster-${firewallId || "fw"}.json`;
+                  a.click();
+                  URL.revokeObjectURL(url);
+                  onStatus?.("Downloaded ssh-capability-flags roster");
+                }}
+              >
+                Download ssh-capability-flags roster
+              </button>
+            ) : null}
+            {hardGapsPayload ? (
+              <button
+                type="button"
+                className="ghost"
+                disabled={busy}
+                title="Copy soft_fertig_ssh_capability_flags_roster to clipboard"
+                onClick={() => {
+                  void (async () => {
+                    const catalog: Record<string, unknown> = {
+                      soft_fertig_ssh_capability_flags_roster:
+                        hardGapsPayload.soft_fertig_ssh_capability_flags_roster,
+                      soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                      honesty_milestone: hardGapsPayload.honesty_milestone,
+                    };
+                    try {
+                      sessionStorage.setItem(
+                        sshCapabilityFlagsRosterStorageKey(firewallId),
+                        JSON.stringify(catalog, null, 2),
+                      );
+                    } catch {
+                      /* ignore */
+                    }
+                    const text = JSON.stringify(catalog, null, 2) + "\n";
+                    try {
+                      await navigator.clipboard.writeText(text);
+                      onStatus?.("Copied ssh-capability-flags roster");
+                    } catch (e) {
+                      onError?.(e instanceof Error ? e.message : String(e));
+                    }
+                  })();
+                }}
+              >
+                Copy ssh-capability-flags roster
+              </button>
+            ) : null}
             <button
               type="button"
               className="ghost"
@@ -9400,7 +9549,7 @@ export function FirewallExtras({
               type="button"
               className="ghost"
               disabled={busy || (!hardGapsPayload && !hardGapsSummaryText)}
-              title="Clear sessionStorage hard-gaps snapshot, summary, surface, refusals, honesty paths, track note, readiness, soft-complete note, surface changelog, operator brief, hard-gap roster, hard-gap refusal roster, honesty path roster, sessionStorage roster, honesty export roster, honesty bundle roster, surface roster, changelog roster, expect step roster, SSH honesty roster, layout fidelity signal roster, layout fidelity sample roster, layout fidelity sample field roster, catalog summary roster, layout-fidelity roster, stack-switch roster, option-enable roster, expect-run roster, expect-steps roster, expect-steps-refusals roster, ssh-auth roster, password-ssh roster, ssh-not-implemented roster, ssh-implemented roster"
+              title="Clear sessionStorage hard-gaps snapshot, summary, surface, refusals, honesty paths, track note, readiness, soft-complete note, surface changelog, operator brief, hard-gap roster, hard-gap refusal roster, honesty path roster, sessionStorage roster, honesty export roster, honesty bundle roster, surface roster, changelog roster, expect step roster, SSH honesty roster, layout fidelity signal roster, layout fidelity sample roster, layout fidelity sample field roster, catalog summary roster, layout-fidelity roster, stack-switch roster, option-enable roster, expect-run roster, expect-steps roster, expect-steps-refusals roster, ssh-auth roster, password-ssh roster, ssh-not-implemented roster, ssh-implemented roster, ssh-capability-flags roster"
               onClick={() => {
                 try {
                   sessionStorage.removeItem(hardGapsSnapshotKey(firewallId));
@@ -9447,6 +9596,7 @@ export function FirewallExtras({
                   sessionStorage.removeItem(passwordSshRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshNotImplementedRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshImplementedRosterStorageKey(firewallId));
+                  sessionStorage.removeItem(sshCapabilityFlagsRosterStorageKey(firewallId));
                 } catch {
                   /* ignore */
                 }
