@@ -6,6 +6,11 @@ ASA/PIX, router ACLs, and more). Configuration lives in a portable `.fwb` file.
 This fork tracks **Qt6** builds and an optional **WebUI** that edits the same
 `.fwb` projects through **libfwbuilder** (no second object model or compilers).
 
+## Support
+
+- [GitHub Sponsors](https://github.com/sponsors/net-aigis?metadata_project=fwbuilder)
+- [PayPal](https://www.paypal.com/ncp/payment/Q8RW6JD6EM3Z2)
+
 ## Status (honest)
 
 | Track | State |
