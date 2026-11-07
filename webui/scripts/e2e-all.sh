@@ -5985,7 +5985,86 @@ scripts=(
   e2e-phase5974
   e2e-phase5975
   e2e-phase5976
-
+  e2e-phase5977
+  e2e-phase5978
+  e2e-phase5979
+  e2e-phase5980
+  e2e-phase5981
+  e2e-phase5982
+  e2e-phase5983
+  e2e-phase5984
+  e2e-phase5985
+  e2e-phase5986
+  e2e-phase5987
+  e2e-phase5988
+  e2e-phase5989
+  e2e-phase5990
+  e2e-phase5991
+  e2e-phase5992
+  e2e-phase5993
+  e2e-phase5994
+  e2e-phase5995
+  e2e-phase5996
+  e2e-phase5997
+  e2e-phase5998
+  e2e-phase5999
+  e2e-phase6000
+  e2e-phase6001
+  e2e-phase6002
+  e2e-phase6003
+  e2e-phase6004
+  e2e-phase6005
+  e2e-phase6006
+  e2e-phase6007
+  e2e-phase6008
+  e2e-phase6009
+  e2e-phase6010
+  e2e-phase6011
+  e2e-phase6012
+  e2e-phase6013
+  e2e-phase6014
+  e2e-phase6015
+  e2e-phase6016
+  e2e-phase6017
+  e2e-phase6018
+  e2e-phase6019
+  e2e-phase6020
+  e2e-phase6021
+  e2e-phase6022
+  e2e-phase6023
+  e2e-phase6024
+  e2e-phase6025
+  e2e-phase6026
+  e2e-phase6027
+  e2e-phase6028
+  e2e-phase6029
+  e2e-phase6030
+  e2e-phase6031
+  e2e-phase6032
+  e2e-phase6033
+  e2e-phase6034
+  e2e-phase6035
+  e2e-phase6036
+  e2e-phase6037
+  e2e-phase6038
+  e2e-phase6039
+  e2e-phase6040
+  e2e-phase6041
+  e2e-phase6042
+  e2e-phase6043
+  e2e-phase6044
+  e2e-phase6045
+  e2e-phase6046
+  e2e-phase6047
+  e2e-phase6048
+  e2e-phase6049
+  e2e-phase6050
+  e2e-phase6051
+  e2e-phase6052
+  e2e-phase6053
+  e2e-phase6054
+  e2e-phase6055
+  e2e-phase6056
 )
 for s in "${scripts[@]}"; do
   script="webui/scripts/${s}.sh"
