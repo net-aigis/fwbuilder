@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "4152"
+WEBUI_SOFT_COMPLETE_PHASE = "4168"
 SOFT_FERTIG_HONESTY_TRACK_NOTE = (
     "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
     "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
@@ -250,12 +250,12 @@ SOFT_FERTIG_HONESTY_TRACK_NOTE = (
 # 10900: soft_fertig_honesty_surface_version bumped to 4.1 (layout_fidelity_roster);
 # 10950: layout_fidelity_roster added to sessionStorage + clear catalogs;
 # 11000: Soft 4120+ honesty surface checkpoint (layout_fidelity_roster cycle complete);
-# 11050: soft_fertig_stack_switch_roster compact /stack-switch field keys.
-WEBUI_HONESTY_MILESTONE = 11050
+# 11050: soft_fertig_stack_switch_roster compact /stack-switch field keys;
+# 11100: stack_switch_roster listed in honesty export + bundle sections.
+WEBUI_HONESTY_MILESTONE = 11100
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 11050: soft_fertig_stack_switch_roster "
-    "lists all /stack-switch field keys with titles and notes "
-    "for operators — hard gaps remain open."
+    "Honesty surface checkpoint 11100: soft_fertig_stack_switch_roster "
+    "is listed in honesty export and bundle catalogs — hard gaps remain open."
 )
 SOFT_FERTIG_SOFT_COMPLETE_NOTE = (
     "WEBUI_SOFT_COMPLETE_PHASE marks soft-fertig honesty/preview catalog "
@@ -950,6 +950,7 @@ SOFT_FERTIG_HONESTY_EXPORT_KEYS = (
     "res_status_roster",
     "hard_gaps_field_roster",
     "layout_fidelity_roster",
+    "stack_switch_roster",
 )
 SOFT_FERTIG_HONESTY_EXPORT_KEY_TITLES = {
     "hard_gaps": "Full /hard-gaps honesty snapshot JSON",
@@ -990,6 +991,7 @@ SOFT_FERTIG_HONESTY_EXPORT_KEY_TITLES = {
     "res_status_roster": "/res-status field keys with titles and notes",
     "hard_gaps_field_roster": "/hard-gaps field keys with titles and notes",
     "layout_fidelity_roster": "/layout-fidelity field keys with titles and notes",
+    "stack_switch_roster": "/stack-switch field keys with titles and notes",
 }
 SOFT_FERTIG_HONESTY_EXPORT_NOTES = {
     "hard_gaps": "Download hard-gaps JSON button; sessionStorage fwbweb.hardGaps.*.",
@@ -1117,6 +1119,9 @@ SOFT_FERTIG_HONESTY_EXPORT_NOTES = {
         "Download/Copy soft_fertig_layout_fidelity_roster; also on /hard-gaps; "
         "sessionStorage fwbweb.layoutFidelityRoster.*"
     ),
+    "stack_switch_roster": (
+        "Download/Copy soft_fertig_stack_switch_roster; also on /hard-gaps."
+    ),
 }
 
 # Top-level sections of the combined UI honesty bundle download.
@@ -1159,6 +1164,7 @@ SOFT_FERTIG_HONESTY_BUNDLE_SECTIONS = (
     "res_status_roster",
     "hard_gaps_field_roster",
     "layout_fidelity_roster",
+    "stack_switch_roster",
     "honesty_exports",
 )
 SOFT_FERTIG_HONESTY_BUNDLE_SECTION_TITLES = {
@@ -1200,6 +1206,7 @@ SOFT_FERTIG_HONESTY_BUNDLE_SECTION_TITLES = {
     "res_status_roster": "/res-status field keys with titles and notes",
     "hard_gaps_field_roster": "/hard-gaps field keys with titles and notes",
     "layout_fidelity_roster": "/layout-fidelity field keys with titles and notes",
+    "stack_switch_roster": "/stack-switch field keys with titles and notes",
     "honesty_exports": "Export catalog meta (keys/titles/notes)",
 }
 SOFT_FERTIG_HONESTY_BUNDLE_NOTES = {
@@ -1327,6 +1334,9 @@ SOFT_FERTIG_HONESTY_BUNDLE_NOTES = {
     "layout_fidelity_roster": (
         "Same subset as Download layout-fidelity roster; "
         "also sessionStorage fwbweb.layoutFidelityRoster.*"
+    ),
+    "stack_switch_roster": (
+        "Same subset as Download stack-switch roster."
     ),
     "honesty_exports": "Same subset as Download honesty exports.",
 }
