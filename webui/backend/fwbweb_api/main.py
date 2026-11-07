@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "4136"
+WEBUI_SOFT_COMPLETE_PHASE = "4152"
 SOFT_FERTIG_HONESTY_TRACK_NOTE = (
     "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
     "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
@@ -249,12 +249,13 @@ SOFT_FERTIG_HONESTY_TRACK_NOTE = (
 # 10850: layout_fidelity_roster listed in honesty export + bundle sections;
 # 10900: soft_fertig_honesty_surface_version bumped to 4.1 (layout_fidelity_roster);
 # 10950: layout_fidelity_roster added to sessionStorage + clear catalogs;
-# 11000: Soft 4120+ honesty surface checkpoint (layout_fidelity_roster cycle complete).
-WEBUI_HONESTY_MILESTONE = 11000
+# 11000: Soft 4120+ honesty surface checkpoint (layout_fidelity_roster cycle complete);
+# 11050: soft_fertig_stack_switch_roster compact /stack-switch field keys.
+WEBUI_HONESTY_MILESTONE = 11050
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 11000: soft-fertig honesty/preview catalogs "
-    "through Soft 4120+ (schema 4.1, layout_fidelity_roster "
-    "sessionStorage) — hard gaps remain open."
+    "Honesty surface checkpoint 11050: soft_fertig_stack_switch_roster "
+    "lists all /stack-switch field keys with titles and notes "
+    "for operators — hard gaps remain open."
 )
 SOFT_FERTIG_SOFT_COMPLETE_NOTE = (
     "WEBUI_SOFT_COMPLETE_PHASE marks soft-fertig honesty/preview catalog "
@@ -421,6 +422,7 @@ SOFT_FERTIG_SURFACE_KEYS = (
     "soft_fertig_res_status_roster",
     "soft_fertig_hard_gaps_field_roster",
     "soft_fertig_layout_fidelity_roster",
+    "soft_fertig_stack_switch_roster",
 )
 SOFT_FERTIG_SURFACE_KEY_TITLES = {
     "soft_complete_phase": "Soft-complete phase marker",
@@ -541,6 +543,9 @@ SOFT_FERTIG_SURFACE_KEY_TITLES = {
     ),
     "soft_fertig_layout_fidelity_roster": (
         "/layout-fidelity field keys with titles and notes"
+    ),
+    "soft_fertig_stack_switch_roster": (
+        "/stack-switch field keys with titles and notes"
     ),
 }
 
@@ -669,6 +674,9 @@ SOFT_FERTIG_SURFACE_NOTES = {
     ),
     "soft_fertig_layout_fidelity_roster": (
         "Per /layout-fidelity field: id, title, and note."
+    ),
+    "soft_fertig_stack_switch_roster": (
+        "Per /stack-switch field: id, title, and note."
     ),
 }
 
@@ -1962,6 +1970,47 @@ def soft_fertig_layout_fidelity_roster() -> dict[str, object]:
     }
 
 
+SOFT_FERTIG_STACK_SWITCH_KEYS: tuple[str, ...] = (
+    "dialog_stem",
+    "host_os",
+    "iface_option_enable",
+    "iface_stack_switch",
+    "interface_dialog_stem",
+    "note",
+    "ok",
+    "option_enable",
+    "option_enable_path",
+    "option_stack_switch",
+    "pixel_parity",
+    "platform",
+)
+
+
+def soft_fertig_stack_switch_roster() -> dict[str, object]:
+    """Stack-switch endpoint field roster (documentation; does not close hard gaps)."""
+    entries: list[dict[str, object]] = []
+    for key_id in SOFT_FERTIG_STACK_SWITCH_KEYS:
+        entries.append(
+            {
+                "id": key_id,
+                "title": f"Stack-switch field: {key_id}",
+                "note": (
+                    f"Field `{key_id}` on /stack-switch; "
+                    "soft-fertig catalogs do not close hard gaps."
+                ),
+            }
+        )
+    return {
+        "hard_gaps_remain": True,
+        "entries": entries,
+        "entry_count": len(entries),
+        "note": (
+            "Catalog of /stack-switch field keys; "
+            "soft-fertig catalogs do not close hard gaps."
+        ),
+    }
+
+
 def soft_fertig_honesty_readiness_roster() -> dict[str, object]:
     """Honesty-readiness field roster (documentation; does not close hard gaps)."""
     entries: list[dict[str, object]] = []
@@ -2745,6 +2794,7 @@ SOFT_FERTIG_CATALOG_SUMMARY_KEYS: tuple[str, ...] = (
     "soft_fertig_res_status_roster_entry_count",
     "soft_fertig_hard_gaps_field_roster_entry_count",
     "soft_fertig_layout_fidelity_roster_entry_count",
+    "soft_fertig_stack_switch_roster_entry_count",
     "honesty_milestone",
     "soft_complete_phase",
 )
@@ -2869,6 +2919,9 @@ def soft_fertig_catalog_summary() -> dict[str, object]:
         ),
         "soft_fertig_layout_fidelity_roster_entry_count": (
             soft_fertig_layout_fidelity_roster()["entry_count"]
+        ),
+        "soft_fertig_stack_switch_roster_entry_count": (
+            soft_fertig_stack_switch_roster()["entry_count"]
         ),
         "honesty_milestone": WEBUI_HONESTY_MILESTONE,
         "soft_complete_phase": WEBUI_SOFT_COMPLETE_PHASE,
@@ -3000,6 +3053,7 @@ def health() -> dict[str, object]:
         "soft_fertig_res_status_roster": soft_fertig_res_status_roster(),
         "soft_fertig_hard_gaps_field_roster": soft_fertig_hard_gaps_field_roster(),
         "soft_fertig_layout_fidelity_roster": soft_fertig_layout_fidelity_roster(),
+        "soft_fertig_stack_switch_roster": soft_fertig_stack_switch_roster(),
         "soft_fertig_honesty_surface_version": SOFT_FERTIG_HONESTY_SURFACE_VERSION,
     }
 
@@ -3059,6 +3113,7 @@ def res_status(_: str = Depends(require_token)) -> dict[str, object]:
         "soft_fertig_res_status_roster": soft_fertig_res_status_roster(),
         "soft_fertig_hard_gaps_field_roster": soft_fertig_hard_gaps_field_roster(),
         "soft_fertig_layout_fidelity_roster": soft_fertig_layout_fidelity_roster(),
+        "soft_fertig_stack_switch_roster": soft_fertig_stack_switch_roster(),
         "soft_fertig_honesty_surface_version": SOFT_FERTIG_HONESTY_SURFACE_VERSION,
     }
 
@@ -3455,6 +3510,7 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
         "soft_fertig_res_status_roster": soft_fertig_res_status_roster(),
         "soft_fertig_hard_gaps_field_roster": soft_fertig_hard_gaps_field_roster(),
         "soft_fertig_layout_fidelity_roster": soft_fertig_layout_fidelity_roster(),
+        "soft_fertig_stack_switch_roster": soft_fertig_stack_switch_roster(),
         "soft_fertig_honesty_export_keys": list(SOFT_FERTIG_HONESTY_EXPORT_KEYS),
         "soft_fertig_honesty_export_key_count": len(SOFT_FERTIG_HONESTY_EXPORT_KEYS),
         "soft_fertig_honesty_export_key_titles": {
@@ -3685,6 +3741,9 @@ def hard_gaps_summary(_: str = Depends(require_token)) -> dict[str, object]:
         ),
         "soft_fertig_layout_fidelity_roster": dict(
             full.get("soft_fertig_layout_fidelity_roster") or {}
+        ),
+        "soft_fertig_stack_switch_roster": dict(
+            full.get("soft_fertig_stack_switch_roster") or {}
         ),
         "soft_fertig_honesty_export_keys": list(
             full.get("soft_fertig_honesty_export_keys") or []
@@ -4072,6 +4131,7 @@ def hard_gap_closure(_: str = Depends(require_token)) -> dict[str, object]:
         "soft_fertig_res_status_roster": soft_fertig_res_status_roster(),
         "soft_fertig_hard_gaps_field_roster": soft_fertig_hard_gaps_field_roster(),
         "soft_fertig_layout_fidelity_roster": soft_fertig_layout_fidelity_roster(),
+        "soft_fertig_stack_switch_roster": soft_fertig_stack_switch_roster(),
         "soft_fertig_honesty_export_keys": list(SOFT_FERTIG_HONESTY_EXPORT_KEYS),
         "soft_fertig_honesty_export_key_count": len(SOFT_FERTIG_HONESTY_EXPORT_KEYS),
         "soft_fertig_honesty_export_key_titles": {
