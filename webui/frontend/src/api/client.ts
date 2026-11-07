@@ -1020,6 +1020,7 @@ export function fetchHardGaps() {
     soft_fertig_ssh_alternative_support_roster?: Record<string, unknown>;
     soft_fertig_ssh_batch_mode_roster?: Record<string, unknown>;
     soft_fertig_ssh_implemented_check_roster?: Record<string, unknown>;
+    soft_fertig_ssh_not_implemented_check_roster?: Record<string, unknown>;
     soft_fertig_ssh_password_support_roster?: Record<string, unknown>;
     soft_fertig_ssh_alternative_titles_roster?: Record<string, unknown>;
     soft_fertig_ssh_auth_policy_roster?: Record<string, unknown>;
