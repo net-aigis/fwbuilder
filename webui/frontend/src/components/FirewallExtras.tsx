@@ -328,6 +328,10 @@ function sshAlternativeTitlesRosterStorageKey(firewallId: string) {
 function sshRefusalPathTitlesRosterStorageKey(firewallId: string) {
   return `fwbweb.sshRefusalPathTitlesRoster.${firewallId}`;
 }
+function sshRefusalPathNotesRosterStorageKey(firewallId: string) {
+  return `fwbweb.sshRefusalPathNotesRoster.${firewallId}`;
+}
+
 function buildHonestyBundle(payload: Record<string, unknown>) {
   const surfaceKeys = Array.isArray(payload.soft_fertig_surface_keys)
     ? (payload.soft_fertig_surface_keys as string[])
@@ -548,6 +552,10 @@ function buildHonestyBundle(payload: Record<string, unknown>) {
     ssh_refusal_path_titles_roster: {
       soft_fertig_ssh_refusal_path_titles_roster:
         payload.soft_fertig_ssh_refusal_path_titles_roster,
+    },
+    ssh_refusal_path_notes_roster: {
+      soft_fertig_ssh_refusal_path_notes_roster:
+        payload.soft_fertig_ssh_refusal_path_notes_roster,
     },
     ssh_alternative_titles_roster: {
       soft_fertig_ssh_alternative_titles_roster:
@@ -821,6 +829,8 @@ export function FirewallExtras({
   const [sshAlternativeTitlesRosterDetail, setSshAlternativeTitlesRosterDetail] =
     useState<string | null>(null);
   const [sshRefusalPathTitlesRosterDetail, setSshRefusalPathTitlesRosterDetail] =
+    useState<string | null>(null);
+  const [sshRefusalPathNotesRosterDetail, setSshRefusalPathNotesRosterDetail] =
     useState<string | null>(null);
   const [honestyPathsSummary, setHonestyPathsSummary] = useState<string | null>(null);
   const [honestyPathsDetail, setHonestyPathsDetail] = useState<string | null>(null);
@@ -2453,6 +2463,30 @@ export function FirewallExtras({
           setSshRefusalPathTitlesRosterDetail(lines.join("\n"));
         } else {
           setSshRefusalPathTitlesRosterDetail(null);
+        }
+      }
+      {
+        const roster =
+          gaps?.soft_fertig_ssh_refusal_path_notes_roster &&
+          typeof gaps.soft_fertig_ssh_refusal_path_notes_roster === "object"
+            ? (gaps.soft_fertig_ssh_refusal_path_notes_roster as Record<string, unknown>)
+            : null;
+        if (roster && Object.keys(roster).length) {
+          const entries = Array.isArray(roster.entries)
+            ? (roster.entries as Array<Record<string, unknown>>)
+            : [];
+          const lines = [
+            `entry_count: ${String(roster.entry_count ?? "")}`,
+            `hard_gaps_remain: ${String(roster.hard_gaps_remain ?? "")}`,
+            `note: ${String(roster.note ?? "")}`,
+            ...entries.map(
+              (e) =>
+                `${String(e.id ?? "")}: ${String(e.title ?? "")}` + (e.note ? ` — ${String(e.note)}` : ""),
+            ),
+          ];
+          setSshRefusalPathNotesRosterDetail(lines.join("\n"));
+        } else {
+          setSshRefusalPathNotesRosterDetail(null);
         }
       }
       if (gaps?.honesty_paths && Object.keys(gaps.honesty_paths).length) {
@@ -4292,6 +4326,37 @@ export function FirewallExtras({
             setSshRefusalPathTitlesRosterDetail(sshRefusalPathTitlesRosterRaw);
           }
         }
+        const sshRefusalPathNotesRosterRaw = sessionStorage.getItem(
+          sshRefusalPathNotesRosterStorageKey(firewallId),
+        );
+        if (sshRefusalPathNotesRosterRaw) {
+          try {
+            const parsed = JSON.parse(sshRefusalPathNotesRosterRaw) as {
+              soft_fertig_ssh_refusal_path_notes_roster?: unknown;
+            };
+            const roster = parsed.soft_fertig_ssh_refusal_path_notes_roster;
+            if (roster && typeof roster === "object") {
+              const r = roster as Record<string, unknown>;
+              const entries = Array.isArray(r.entries)
+                ? (r.entries as Array<Record<string, unknown>>)
+                : [];
+              const lines = [
+                `entry_count: ${String(r.entry_count ?? "")}`,
+                `hard_gaps_remain: ${String(r.hard_gaps_remain ?? "")}`,
+                `note: ${String(r.note ?? "")}`,
+                ...entries.map(
+                  (e) =>
+                    `${String(e.id ?? "")}: ${String(e.title ?? "")}` + (e.note ? ` — ${String(e.note)}` : ""),
+                ),
+              ];
+              setSshRefusalPathNotesRosterDetail(lines.join("\n"));
+            } else {
+              setSshRefusalPathNotesRosterDetail(sshRefusalPathNotesRosterRaw);
+            }
+          } catch {
+            setSshRefusalPathNotesRosterDetail(sshRefusalPathNotesRosterRaw);
+          }
+        }
       } catch {
         /* ignore */
       }
@@ -5099,6 +5164,14 @@ export function FirewallExtras({
               <summary>Soft-fertig ssh-refusal-path-titles roster</summary>
               <pre className="deploy-log configlet-preview" tabIndex={0}>
                 {sshRefusalPathTitlesRosterDetail}
+              </pre>
+            </details>
+          ) : null}
+          {sshRefusalPathNotesRosterDetail ? (
+            <details className="muted">
+              <summary>Soft-fertig ssh-refusal-path-notes roster</summary>
+              <pre className="deploy-log configlet-preview" tabIndex={0}>
+                {sshRefusalPathNotesRosterDetail}
               </pre>
             </details>
           ) : null}
@@ -10283,6 +10356,42 @@ export function FirewallExtras({
                 })(); }}>Copy ssh-refusal-path-titles roster</button>
             ) : null}
 
+            {hardGapsPayload ? (
+              <button type="button" className="ghost" disabled={busy}
+                title="Download soft_fertig_ssh_refusal_path_notes_roster from /hard-gaps"
+                onClick={() => {
+                  const catalog: Record<string, unknown> = {
+                    soft_fertig_ssh_refusal_path_notes_roster: hardGapsPayload.soft_fertig_ssh_refusal_path_notes_roster,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  const text = JSON.stringify(catalog, null, 2);
+                  try { sessionStorage.setItem(sshRefusalPathNotesRosterStorageKey(firewallId), text); } catch { /* ignore */ }
+                  const blob = new Blob([text + "\n"], { type: "application/json;charset=utf-8" });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `fwbweb-ssh-refusal-path-notes-roster-${firewallId || "fw"}.json`;
+                  a.click(); URL.revokeObjectURL(url);
+                  onStatus?.("Downloaded ssh-refusal-path-notes roster");
+                }}>Download ssh-refusal-path-notes roster</button>
+            ) : null}
+            {hardGapsPayload ? (
+              <button type="button" className="ghost" disabled={busy}
+                title="Copy soft_fertig_ssh_refusal_path_notes_roster to clipboard"
+                onClick={() => { void (async () => {
+                  const catalog: Record<string, unknown> = {
+                    soft_fertig_ssh_refusal_path_notes_roster: hardGapsPayload.soft_fertig_ssh_refusal_path_notes_roster,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  try { sessionStorage.setItem(sshRefusalPathNotesRosterStorageKey(firewallId), JSON.stringify(catalog, null, 2)); } catch { /* ignore */ }
+                  const text = JSON.stringify(catalog, null, 2) + "\n";
+                  try { await navigator.clipboard.writeText(text); onStatus?.("Copied ssh-refusal-path-notes roster"); }
+                  catch (e) { onError?.(e instanceof Error ? e.message : String(e)); }
+                })(); }}>Copy ssh-refusal-path-notes roster</button>
+            ) : null}
+
             <button
               type="button"
               className="ghost"
@@ -10596,6 +10705,7 @@ export function FirewallExtras({
                   sessionStorage.removeItem(sshAuthPolicyRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshAlternativeNotesRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshRefusalPathTitlesRosterStorageKey(firewallId));
+                  sessionStorage.removeItem(sshRefusalPathNotesRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshAlternativeTitlesRosterStorageKey(firewallId));
                 } catch {
                   /* ignore */
