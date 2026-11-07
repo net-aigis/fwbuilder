@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "4264"
+WEBUI_SOFT_COMPLETE_PHASE = "4280"
 SOFT_FERTIG_HONESTY_TRACK_NOTE = (
     "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
     "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
@@ -257,12 +257,13 @@ SOFT_FERTIG_HONESTY_TRACK_NOTE = (
 # 11250: Soft 4200+ honesty surface checkpoint (stack_switch_roster cycle complete);
 # 11300: soft_fertig_option_enable_roster compact /option-enable field keys;
 # 11350: option_enable_roster listed in honesty export + bundle sections;
-# 11400: soft_fertig_honesty_surface_version bumped to 4.3 (option_enable_roster).
-WEBUI_HONESTY_MILESTONE = 11400
+# 11400: soft_fertig_honesty_surface_version bumped to 4.3 (option_enable_roster);
+# 11450: option_enable_roster added to sessionStorage + clear catalogs.
+WEBUI_HONESTY_MILESTONE = 11450
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 11400: soft_fertig_honesty_surface_version "
-    "4.3 documents soft_fertig_option_enable_roster on honesty "
-    "endpoints and in export/bundle — hard gaps remain open."
+    "Honesty surface checkpoint 11450: soft_fertig_option_enable_roster "
+    "is persisted via sessionStorage (fwbweb.optionEnableRoster.*) "
+    "and clear catalogs — hard gaps remain open."
 )
 SOFT_FERTIG_SOFT_COMPLETE_NOTE = (
     "WEBUI_SOFT_COMPLETE_PHASE marks soft-fertig honesty/preview catalog "
@@ -733,6 +734,7 @@ SOFT_FERTIG_SESSION_STORAGE_KEYS = {
     "hard_gaps_field_roster": "fwbweb.hardGapsFieldRoster.",
     "layout_fidelity_roster": "fwbweb.layoutFidelityRoster.",
     "stack_switch_roster": "fwbweb.stackSwitchRoster.",
+    "option_enable_roster": "fwbweb.optionEnableRoster.",
 }
 SOFT_FERTIG_SESSION_STORAGE_KEY_TITLES = {
     "hard_gaps": "Full /hard-gaps JSON snapshot",
@@ -771,6 +773,7 @@ SOFT_FERTIG_SESSION_STORAGE_KEY_TITLES = {
     "hard_gaps_field_roster": "Hard-gaps field roster JSON",
     "layout_fidelity_roster": "Layout-fidelity roster JSON",
     "stack_switch_roster": "Stack-switch roster JSON",
+    "option_enable_roster": "Option-enable roster JSON",
 }
 SOFT_FERTIG_SESSION_STORAGE_NOTES = {
     "hard_gaps": "Persists last downloaded/copied /hard-gaps JSON per firewall.",
@@ -913,6 +916,11 @@ SOFT_FERTIG_SESSION_STORAGE_NOTES = {
     "stack_switch_roster": (
         "Persists last downloaded/copied soft_fertig_stack_switch_roster "
         "per firewall; UI restores expandable stack-switch-roster detail "
+        "on load."
+    ),
+    "option_enable_roster": (
+        "Persists last downloaded/copied soft_fertig_option_enable_roster "
+        "per firewall; UI restores expandable option-enable-roster detail "
         "on load."
     ),
 }
@@ -1147,7 +1155,8 @@ SOFT_FERTIG_HONESTY_EXPORT_NOTES = {
         "sessionStorage fwbweb.stackSwitchRoster.*"
     ),
     "option_enable_roster": (
-        "Download/Copy soft_fertig_option_enable_roster; also on /hard-gaps."
+        "Download/Copy soft_fertig_option_enable_roster; also on /hard-gaps; "
+        "sessionStorage fwbweb.optionEnableRoster.*"
     ),
 }
 
@@ -1369,7 +1378,8 @@ SOFT_FERTIG_HONESTY_BUNDLE_NOTES = {
         "also sessionStorage fwbweb.stackSwitchRoster.*"
     ),
     "option_enable_roster": (
-        "Same subset as Download option-enable roster."
+        "Same subset as Download option-enable roster; "
+        "also sessionStorage fwbweb.optionEnableRoster.*"
     ),
     "honesty_exports": "Same subset as Download honesty exports.",
 }
