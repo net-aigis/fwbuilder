@@ -445,6 +445,10 @@ function buildHonestyBundle(payload: Record<string, unknown>) {
       soft_fertig_stack_switch_roster:
         payload.soft_fertig_stack_switch_roster,
     },
+    option_enable_roster: {
+      soft_fertig_option_enable_roster:
+        payload.soft_fertig_option_enable_roster,
+    },
     honesty_exports: {
       soft_fertig_honesty_export_keys: payload.soft_fertig_honesty_export_keys,
       soft_fertig_honesty_export_key_count:
