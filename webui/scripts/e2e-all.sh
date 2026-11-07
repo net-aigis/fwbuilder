@@ -4433,6 +4433,22 @@ scripts=(
   e2e-phase4422
   e2e-phase4423
   e2e-phase4424
+  e2e-phase4425
+  e2e-phase4426
+  e2e-phase4427
+  e2e-phase4428
+  e2e-phase4429
+  e2e-phase4430
+  e2e-phase4431
+  e2e-phase4432
+  e2e-phase4433
+  e2e-phase4434
+  e2e-phase4435
+  e2e-phase4436
+  e2e-phase4437
+  e2e-phase4438
+  e2e-phase4439
+  e2e-phase4440
 )
 for s in "${scripts[@]}"; do
   script="webui/scripts/${s}.sh"

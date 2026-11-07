@@ -282,6 +282,9 @@ function optionEnableRosterStorageKey(firewallId: string) {
 function expectRunRosterStorageKey(firewallId: string) {
   return `fwbweb.expectRunRoster.${firewallId}`;
 }
+function expectStepsRosterStorageKey(firewallId: string) {
+  return `fwbweb.expectStepsRoster.${firewallId}`;
+}
 
 function buildHonestyBundle(payload: Record<string, unknown>) {
   const surfaceKeys = Array.isArray(payload.soft_fertig_surface_keys)
@@ -3310,6 +3313,38 @@ export function FirewallExtras({
             setExpectRunRosterDetail(expectRunRosterRaw);
           }
         }
+        const expectStepsRosterRaw = sessionStorage.getItem(
+          expectStepsRosterStorageKey(firewallId),
+        );
+        if (expectStepsRosterRaw) {
+          try {
+            const parsed = JSON.parse(expectStepsRosterRaw) as {
+              soft_fertig_expect_steps_roster?: unknown;
+            };
+            const roster = parsed.soft_fertig_expect_steps_roster;
+            if (roster && typeof roster === "object") {
+              const r = roster as Record<string, unknown>;
+              const entries = Array.isArray(r.entries)
+                ? (r.entries as Array<Record<string, unknown>>)
+                : [];
+              const lines = [
+                `entry_count: ${String(r.entry_count ?? "")}`,
+                `hard_gaps_remain: ${String(r.hard_gaps_remain ?? "")}`,
+                `note: ${String(r.note ?? "")}`,
+                ...entries.map(
+                  (e) =>
+                    `${String(e.id ?? "")}: ${String(e.title ?? "")}` +
+                    (e.note ? ` — ${String(e.note)}` : ""),
+                ),
+              ];
+              setExpectStepsRosterDetail(lines.join("\n"));
+            } else {
+              setExpectStepsRosterDetail(expectStepsRosterRaw);
+            }
+          } catch {
+            setExpectStepsRosterDetail(expectStepsRosterRaw);
+          }
+        }
       } catch {
         /* ignore */
       }
@@ -4563,7 +4598,7 @@ export function FirewallExtras({
           type="button"
           className="ghost"
           disabled={busy}
-          title="Clear sessionStorage deploy preferences for this firewall, honesty readiness roster, session storage clear roster, honesty operator brief roster, surface changelog meta roster, hard-gaps summary roster, hard-gaps closure roster, health roster, res-status roster, hard-gaps field roster, layout-fidelity roster, stack-switch roster, option-enable roster, expect-run roster"
+          title="Clear sessionStorage deploy preferences for this firewall, honesty readiness roster, session storage clear roster, honesty operator brief roster, surface changelog meta roster, hard-gaps summary roster, hard-gaps closure roster, health roster, res-status roster, hard-gaps field roster, layout-fidelity roster, stack-switch roster, option-enable roster, expect-run roster, expect-steps roster"
           onClick={() => {
             try {
               sessionStorage.removeItem(deployPrefsKey(firewallId));
@@ -8304,6 +8339,14 @@ export function FirewallExtras({
                     honesty_milestone: hardGapsPayload.honesty_milestone,
                   };
                   const text = JSON.stringify(catalog, null, 2);
+                  try {
+                    sessionStorage.setItem(
+                      expectStepsRosterStorageKey(firewallId),
+                      text,
+                    );
+                  } catch {
+                    /* ignore */
+                  }
                   const blob = new Blob([text + "\n"], {
                     type: "application/json;charset=utf-8",
                   });
@@ -8333,6 +8376,14 @@ export function FirewallExtras({
                       soft_complete_phase: hardGapsPayload.soft_complete_phase,
                       honesty_milestone: hardGapsPayload.honesty_milestone,
                     };
+                    try {
+                      sessionStorage.setItem(
+                        expectStepsRosterStorageKey(firewallId),
+                        JSON.stringify(catalog, null, 2),
+                      );
+                    } catch {
+                      /* ignore */
+                    }
                     const text = JSON.stringify(catalog, null, 2) + "\n";
                     try {
                       await navigator.clipboard.writeText(text);
@@ -8604,7 +8655,7 @@ export function FirewallExtras({
               type="button"
               className="ghost"
               disabled={busy || (!hardGapsPayload && !hardGapsSummaryText)}
-              title="Clear sessionStorage hard-gaps snapshot, summary, surface, refusals, honesty paths, track note, readiness, soft-complete note, surface changelog, operator brief, hard-gap roster, hard-gap refusal roster, honesty path roster, sessionStorage roster, honesty export roster, honesty bundle roster, surface roster, changelog roster, expect step roster, SSH honesty roster, layout fidelity signal roster, layout fidelity sample roster, layout fidelity sample field roster, catalog summary roster, layout-fidelity roster, stack-switch roster, option-enable roster, expect-run roster"
+              title="Clear sessionStorage hard-gaps snapshot, summary, surface, refusals, honesty paths, track note, readiness, soft-complete note, surface changelog, operator brief, hard-gap roster, hard-gap refusal roster, honesty path roster, sessionStorage roster, honesty export roster, honesty bundle roster, surface roster, changelog roster, expect step roster, SSH honesty roster, layout fidelity signal roster, layout fidelity sample roster, layout fidelity sample field roster, catalog summary roster, layout-fidelity roster, stack-switch roster, option-enable roster, expect-run roster, expect-steps roster"
               onClick={() => {
                 try {
                   sessionStorage.removeItem(hardGapsSnapshotKey(firewallId));
@@ -8645,6 +8696,7 @@ export function FirewallExtras({
                   sessionStorage.removeItem(stackSwitchRosterStorageKey(firewallId));
                   sessionStorage.removeItem(optionEnableRosterStorageKey(firewallId));
                   sessionStorage.removeItem(expectRunRosterStorageKey(firewallId));
+                  sessionStorage.removeItem(expectStepsRosterStorageKey(firewallId));
                 } catch {
                   /* ignore */
                 }
