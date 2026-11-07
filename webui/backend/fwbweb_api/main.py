@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "4520"
+WEBUI_SOFT_COMPLETE_PHASE = "4536"
 SOFT_FERTIG_HONESTY_TRACK_NOTE = (
     "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
     "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
@@ -273,11 +273,13 @@ SOFT_FERTIG_HONESTY_TRACK_NOTE = (
 # 12050: soft_fertig_expect_steps_refusals_roster compact /steps/refusals field keys;
 # 12100: expect_steps_refusals_roster listed in honesty export + bundle sections;
 # 12150: soft_fertig_honesty_surface_version bumped to 4.6 (expect_steps_refusals_roster);
-# 12200: expect_steps_refusals_roster added to sessionStorage + clear catalogs.
-WEBUI_HONESTY_MILESTONE = 12200
+# 12200: expect_steps_refusals_roster added to sessionStorage + clear catalogs;
+# 12250: Soft 4520+ honesty surface checkpoint (expect_steps_refusals_roster cycle complete).
+WEBUI_HONESTY_MILESTONE = 12250
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 12200: expect_steps_refusals_roster added to "
-    "sessionStorage and clear catalogs — hard gaps remain open."
+    "Honesty surface checkpoint 12250: soft-fertig honesty/preview catalogs "
+    "through Soft 4520+ (schema 4.6, expect_steps_refusals_roster "
+    "sessionStorage) — hard gaps remain open."
 )
 SOFT_FERTIG_SOFT_COMPLETE_NOTE = (
     "WEBUI_SOFT_COMPLETE_PHASE marks soft-fertig honesty/preview catalog "
