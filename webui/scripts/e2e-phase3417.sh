@@ -6,7 +6,7 @@ cd "$ROOT"
 PYTHONPATH=webui/backend python3 - <<'PY'
 from fwbweb_api import main as m
 expected = len(m.SOFT_FERTIG_SESSION_STORAGE_CLEAR_KEYS)
-assert expected == 34
+assert expected == 35
 r = m.soft_fertig_session_storage_clear_roster()
 assert r.get("entry_count") == expected
 assert r.get("hard_gaps_remain") is True
