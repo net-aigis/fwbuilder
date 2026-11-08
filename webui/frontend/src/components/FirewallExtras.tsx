@@ -688,6 +688,9 @@ function sshAuthMs45KEchoRosterStorageKey(firewallId: string) {
 function sshAuthSchema127EchoRosterStorageKey(firewallId: string) {
   return `fwbweb.sshAuthSchema127EchoRoster.${firewallId}`;
 }
+function sshAuthTripleCheckpointRosterStorageKey(firewallId: string) {
+  return `fwbweb.sshAuthTripleCheckpointRoster.${firewallId}`;
+}
 
 function sshPasswordSupportRosterStorageKey(firewallId: string) {
   return `fwbweb.sshPasswordSupportRoster.${firewallId}`;
@@ -1527,6 +1530,8 @@ export function FirewallExtras({
   const [sshAuthMs45KEchoRosterDetail, setSshAuthMs45KEchoRosterDetail] =
     useState<string | null>(null);
   const [sshAuthSchema127EchoRosterDetail, setSshAuthSchema127EchoRosterDetail] =
+    useState<string | null>(null);
+  const [sshAuthTripleCheckpointRosterDetail, setSshAuthTripleCheckpointRosterDetail] =
     useState<string | null>(null);
   const [honestyPathsSummary, setHonestyPathsSummary] = useState<string | null>(null);
   const [honestyPathsDetail, setHonestyPathsDetail] = useState<string | null>(null);
@@ -6275,6 +6280,32 @@ export function FirewallExtras({
           setSshAuthSchema127EchoRosterDetail(null);
         }
       }
+      {
+        const roster =
+          gaps?.soft_fertig_ssh_auth_triple_checkpoint_roster &&
+          typeof gaps.soft_fertig_ssh_auth_triple_checkpoint_roster === "object"
+            ? (gaps.soft_fertig_ssh_auth_triple_checkpoint_roster as Record<string, unknown>)
+            : null;
+        if (roster && Object.keys(roster).length) {
+          const entries = Array.isArray(roster.entries)
+            ? (roster.entries as Array<Record<string, unknown>>)
+            : [];
+          const lines = [
+            `entry_count: ${String(roster.entry_count ?? "")}`,
+            `hard_gaps_remain: ${String(roster.hard_gaps_remain ?? "")}`,
+            `note: ${String(roster.note ?? "")}`,
+            ...entries.map(
+              (e) =>
+                `${String(e.id ?? "")}=${String(e.value ?? "")}` +
+                (e.title ? ` — ${String(e.title)}` : "") +
+                (e.note ? ` — ${String(e.note)}` : ""),
+            ),
+          ];
+          setSshAuthTripleCheckpointRosterDetail(lines.join("\n"));
+        } else {
+          setSshAuthTripleCheckpointRosterDetail(null);
+        }
+      }
       if (gaps?.honesty_paths && Object.keys(gaps.honesty_paths).length) {
         const entries = Object.entries(gaps.honesty_paths);
         const n =
@@ -10707,6 +10738,26 @@ export function FirewallExtras({
             setSshAuthSchema127EchoRosterDetail(sshAuthSchema127EchoRosterRaw);
           }
         }
+        const sshAuthTripleCheckpointRosterRaw = sessionStorage.getItem(
+          sshAuthTripleCheckpointRosterStorageKey(firewallId),
+        );
+        if (sshAuthTripleCheckpointRosterRaw) {
+          try {
+            const parsed = JSON.parse(sshAuthTripleCheckpointRosterRaw) as {
+              soft_fertig_ssh_auth_triple_checkpoint_roster?: unknown;
+            };
+            const roster = parsed.soft_fertig_ssh_auth_triple_checkpoint_roster;
+            if (roster && typeof roster === "object") {
+              setSshAuthTripleCheckpointRosterDetail(
+                JSON.stringify({ soft_fertig_ssh_auth_triple_checkpoint_roster: roster }, null, 2),
+              );
+            } else {
+              setSshAuthTripleCheckpointRosterDetail(sshAuthTripleCheckpointRosterRaw);
+            }
+          } catch {
+            setSshAuthTripleCheckpointRosterDetail(sshAuthTripleCheckpointRosterRaw);
+          }
+        }
       } catch {
         /* ignore */
       }
@@ -11634,6 +11685,14 @@ export function FirewallExtras({
               <summary>Soft-fertig ssh-not-implemented-keyboard roster</summary>
               <pre className="deploy-log configlet-preview" tabIndex={0}>
                 {sshNotImplementedKeyboardRosterDetail}
+              </pre>
+            </details>
+          ) : null}
+          {sshAuthTripleCheckpointRosterDetail ? (
+            <details className="muted">
+              <summary>Soft-fertig ssh-auth-triple-checkpoint roster</summary>
+              <pre className="deploy-log configlet-preview" tabIndex={0}>
+                {sshAuthTripleCheckpointRosterDetail}
               </pre>
             </details>
           ) : null}
@@ -21903,6 +21962,41 @@ export function FirewallExtras({
                   catch (e) { onError?.(e instanceof Error ? e.message : String(e)); }
                 })(); }}>Copy ssh-auth-schema-127-echo roster</button>
             ) : null}
+            {hardGapsPayload ? (
+              <button type="button" className="ghost" disabled={busy}
+                title="Download soft_fertig_ssh_auth_triple_checkpoint_roster from /hard-gaps"
+                onClick={() => {
+                  const catalog: Record<string, unknown> = {
+                    soft_fertig_ssh_auth_triple_checkpoint_roster: hardGapsPayload.soft_fertig_ssh_auth_triple_checkpoint_roster,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  const text = JSON.stringify(catalog, null, 2);
+                  try { sessionStorage.setItem(sshAuthTripleCheckpointRosterStorageKey(firewallId), text); } catch { /* ignore */ }
+                  const blob = new Blob([text + "\n"], { type: "application/json;charset=utf-8" });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `fwbweb-ssh-auth-triple-checkpoint-roster-${firewallId || "fw"}.json`;
+                  a.click(); URL.revokeObjectURL(url);
+                  onStatus?.("Downloaded ssh-auth-triple-checkpoint roster");
+                }}>Download ssh-auth-triple-checkpoint roster</button>
+            ) : null}
+            {hardGapsPayload ? (
+              <button type="button" className="ghost" disabled={busy}
+                title="Copy soft_fertig_ssh_auth_triple_checkpoint_roster to clipboard"
+                onClick={() => { void (async () => {
+                  const catalog: Record<string, unknown> = {
+                    soft_fertig_ssh_auth_triple_checkpoint_roster: hardGapsPayload.soft_fertig_ssh_auth_triple_checkpoint_roster,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  try { sessionStorage.setItem(sshAuthTripleCheckpointRosterStorageKey(firewallId), JSON.stringify(catalog, null, 2)); } catch { /* ignore */ }
+                  const text = JSON.stringify(catalog, null, 2) + "\n";
+                  try { await navigator.clipboard.writeText(text); onStatus?.("Copied ssh-auth-triple-checkpoint roster"); }
+                  catch (e) { onError?.(e instanceof Error ? e.message : String(e)); }
+                })(); }}>Copy ssh-auth-triple-checkpoint roster</button>
+            ) : null}
             <button
               type="button"
               className="ghost"
@@ -22336,6 +22430,7 @@ export function FirewallExtras({
                   sessionStorage.removeItem(sshAuthSoft15KEchoRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshAuthMs45KEchoRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshAuthSchema127EchoRosterStorageKey(firewallId));
+                  sessionStorage.removeItem(sshAuthTripleCheckpointRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshPasswordSupportRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshAlternativeTitlesRosterStorageKey(firewallId));
                 } catch {
