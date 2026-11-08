@@ -1082,6 +1082,7 @@ export function fetchHardGaps() {
     soft_fertig_ssh_auth_hard_gap_echo_roster?: Record<string, unknown>;
     soft_fertig_ssh_auth_gap_label_echo_roster?: Record<string, unknown>;
     soft_fertig_ssh_auth_gap_closure_echo_roster?: Record<string, unknown>;
+    soft_fertig_ssh_auth_refusal_related_roster?: Record<string, unknown>;
     soft_fertig_ssh_password_support_roster?: Record<string, unknown>;
     soft_fertig_ssh_alternative_titles_roster?: Record<string, unknown>;
     soft_fertig_ssh_auth_policy_roster?: Record<string, unknown>;
