@@ -460,6 +460,9 @@ function sshAuthFieldPresenceRosterStorageKey(firewallId: string) {
 function sshAuthListLengthRosterStorageKey(firewallId: string) {
   return `fwbweb.sshAuthListLengthRoster.${firewallId}`;
 }
+function sshAuthBoolFlagRosterStorageKey(firewallId: string) {
+  return `fwbweb.sshAuthBoolFlagRoster.${firewallId}`;
+}
 
 function sshPasswordSupportRosterStorageKey(firewallId: string) {
   return `fwbweb.sshPasswordSupportRoster.${firewallId}`;
@@ -1147,6 +1150,8 @@ export function FirewallExtras({
   const [sshAuthFieldPresenceRosterDetail, setSshAuthFieldPresenceRosterDetail] =
     useState<string | null>(null);
   const [sshAuthListLengthRosterDetail, setSshAuthListLengthRosterDetail] =
+    useState<string | null>(null);
+  const [sshAuthBoolFlagRosterDetail, setSshAuthBoolFlagRosterDetail] =
     useState<string | null>(null);
   const [honestyPathsSummary, setHonestyPathsSummary] = useState<string | null>(null);
   const [honestyPathsDetail, setHonestyPathsDetail] = useState<string | null>(null);
@@ -3917,6 +3922,32 @@ export function FirewallExtras({
           setSshAuthListLengthRosterDetail(lines.join("\n"));
         } else {
           setSshAuthListLengthRosterDetail(null);
+        }
+      }
+      {
+        const roster =
+          gaps?.soft_fertig_ssh_auth_bool_flag_roster &&
+          typeof gaps.soft_fertig_ssh_auth_bool_flag_roster === "object"
+            ? (gaps.soft_fertig_ssh_auth_bool_flag_roster as Record<string, unknown>)
+            : null;
+        if (roster && Object.keys(roster).length) {
+          const entries = Array.isArray(roster.entries)
+            ? (roster.entries as Array<Record<string, unknown>>)
+            : [];
+          const lines = [
+            `entry_count: ${String(roster.entry_count ?? "")}`,
+            `hard_gaps_remain: ${String(roster.hard_gaps_remain ?? "")}`,
+            `note: ${String(roster.note ?? "")}`,
+            ...entries.map(
+              (e) =>
+                `${String(e.id ?? "")}=${String(e.value ?? "")}` +
+                (e.title ? ` — ${String(e.title)}` : "") +
+                (e.note ? ` — ${String(e.note)}` : ""),
+            ),
+          ];
+          setSshAuthBoolFlagRosterDetail(lines.join("\n"));
+        } else {
+          setSshAuthBoolFlagRosterDetail(null);
         }
       }
       if (gaps?.honesty_paths && Object.keys(gaps.honesty_paths).length) {
@@ -6831,6 +6862,26 @@ export function FirewallExtras({
             setSshAuthListLengthRosterDetail(sshAuthListLengthRosterRaw);
           }
         }
+        const sshAuthBoolFlagRosterRaw = sessionStorage.getItem(
+          sshAuthBoolFlagRosterStorageKey(firewallId),
+        );
+        if (sshAuthBoolFlagRosterRaw) {
+          try {
+            const parsed = JSON.parse(sshAuthBoolFlagRosterRaw) as {
+              soft_fertig_ssh_auth_bool_flag_roster?: unknown;
+            };
+            const roster = parsed.soft_fertig_ssh_auth_bool_flag_roster;
+            if (roster && typeof roster === "object") {
+              setSshAuthBoolFlagRosterDetail(
+                JSON.stringify({ soft_fertig_ssh_auth_bool_flag_roster: roster }, null, 2),
+              );
+            } else {
+              setSshAuthBoolFlagRosterDetail(sshAuthBoolFlagRosterRaw);
+            }
+          } catch {
+            setSshAuthBoolFlagRosterDetail(sshAuthBoolFlagRosterRaw);
+          }
+        }
       } catch {
         /* ignore */
       }
@@ -7758,6 +7809,14 @@ export function FirewallExtras({
               <summary>Soft-fertig ssh-not-implemented-keyboard roster</summary>
               <pre className="deploy-log configlet-preview" tabIndex={0}>
                 {sshNotImplementedKeyboardRosterDetail}
+              </pre>
+            </details>
+          ) : null}
+          {sshAuthBoolFlagRosterDetail ? (
+            <details className="muted">
+              <summary>Soft-fertig ssh-auth-bool-flag roster</summary>
+              <pre className="deploy-log configlet-preview" tabIndex={0}>
+                {sshAuthBoolFlagRosterDetail}
               </pre>
             </details>
           ) : null}
@@ -14759,6 +14818,41 @@ export function FirewallExtras({
                   catch (e) { onError?.(e instanceof Error ? e.message : String(e)); }
                 })(); }}>Copy ssh-auth-list-length roster</button>
             ) : null}
+            {hardGapsPayload ? (
+              <button type="button" className="ghost" disabled={busy}
+                title="Download soft_fertig_ssh_auth_bool_flag_roster from /hard-gaps"
+                onClick={() => {
+                  const catalog: Record<string, unknown> = {
+                    soft_fertig_ssh_auth_bool_flag_roster: hardGapsPayload.soft_fertig_ssh_auth_bool_flag_roster,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  const text = JSON.stringify(catalog, null, 2);
+                  try { sessionStorage.setItem(sshAuthBoolFlagRosterStorageKey(firewallId), text); } catch { /* ignore */ }
+                  const blob = new Blob([text + "\n"], { type: "application/json;charset=utf-8" });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `fwbweb-ssh-auth-bool-flag-roster-${firewallId || "fw"}.json`;
+                  a.click(); URL.revokeObjectURL(url);
+                  onStatus?.("Downloaded ssh-auth-bool-flag roster");
+                }}>Download ssh-auth-bool-flag roster</button>
+            ) : null}
+            {hardGapsPayload ? (
+              <button type="button" className="ghost" disabled={busy}
+                title="Copy soft_fertig_ssh_auth_bool_flag_roster to clipboard"
+                onClick={() => { void (async () => {
+                  const catalog: Record<string, unknown> = {
+                    soft_fertig_ssh_auth_bool_flag_roster: hardGapsPayload.soft_fertig_ssh_auth_bool_flag_roster,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  try { sessionStorage.setItem(sshAuthBoolFlagRosterStorageKey(firewallId), JSON.stringify(catalog, null, 2)); } catch { /* ignore */ }
+                  const text = JSON.stringify(catalog, null, 2) + "\n";
+                  try { await navigator.clipboard.writeText(text); onStatus?.("Copied ssh-auth-bool-flag roster"); }
+                  catch (e) { onError?.(e instanceof Error ? e.message : String(e)); }
+                })(); }}>Copy ssh-auth-bool-flag roster</button>
+            ) : null}
             <button
               type="button"
               className="ghost"
@@ -15116,6 +15210,7 @@ export function FirewallExtras({
                   sessionStorage.removeItem(sshAuthRefreshRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshAuthFieldPresenceRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshAuthListLengthRosterStorageKey(firewallId));
+                  sessionStorage.removeItem(sshAuthBoolFlagRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshPasswordSupportRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshAlternativeTitlesRosterStorageKey(firewallId));
                 } catch {
