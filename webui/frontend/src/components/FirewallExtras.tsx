@@ -532,6 +532,9 @@ function sshAuthGapClosureEchoRosterStorageKey(firewallId: string) {
 function sshAuthRefusalRelatedRosterStorageKey(firewallId: string) {
   return `fwbweb.sshAuthRefusalRelatedRoster.${firewallId}`;
 }
+function sshAuthSessionHintRosterStorageKey(firewallId: string) {
+  return `fwbweb.sshAuthSessionHintRoster.${firewallId}`;
+}
 
 function sshPasswordSupportRosterStorageKey(firewallId: string) {
   return `fwbweb.sshPasswordSupportRoster.${firewallId}`;
@@ -1267,6 +1270,8 @@ export function FirewallExtras({
   const [sshAuthGapClosureEchoRosterDetail, setSshAuthGapClosureEchoRosterDetail] =
     useState<string | null>(null);
   const [sshAuthRefusalRelatedRosterDetail, setSshAuthRefusalRelatedRosterDetail] =
+    useState<string | null>(null);
+  const [sshAuthSessionHintRosterDetail, setSshAuthSessionHintRosterDetail] =
     useState<string | null>(null);
   const [honestyPathsSummary, setHonestyPathsSummary] = useState<string | null>(null);
   const [honestyPathsDetail, setHonestyPathsDetail] = useState<string | null>(null);
@@ -4663,6 +4668,32 @@ export function FirewallExtras({
           setSshAuthRefusalRelatedRosterDetail(null);
         }
       }
+      {
+        const roster =
+          gaps?.soft_fertig_ssh_auth_session_hint_roster &&
+          typeof gaps.soft_fertig_ssh_auth_session_hint_roster === "object"
+            ? (gaps.soft_fertig_ssh_auth_session_hint_roster as Record<string, unknown>)
+            : null;
+        if (roster && Object.keys(roster).length) {
+          const entries = Array.isArray(roster.entries)
+            ? (roster.entries as Array<Record<string, unknown>>)
+            : [];
+          const lines = [
+            `entry_count: ${String(roster.entry_count ?? "")}`,
+            `hard_gaps_remain: ${String(roster.hard_gaps_remain ?? "")}`,
+            `note: ${String(roster.note ?? "")}`,
+            ...entries.map(
+              (e) =>
+                `${String(e.id ?? "")}=${String(e.value ?? "")}` +
+                (e.title ? ` — ${String(e.title)}` : "") +
+                (e.note ? ` — ${String(e.note)}` : ""),
+            ),
+          ];
+          setSshAuthSessionHintRosterDetail(lines.join("\n"));
+        } else {
+          setSshAuthSessionHintRosterDetail(null);
+        }
+      }
       if (gaps?.honesty_paths && Object.keys(gaps.honesty_paths).length) {
         const entries = Object.entries(gaps.honesty_paths);
         const n =
@@ -8055,6 +8086,26 @@ export function FirewallExtras({
             setSshAuthRefusalRelatedRosterDetail(sshAuthRefusalRelatedRosterRaw);
           }
         }
+        const sshAuthSessionHintRosterRaw = sessionStorage.getItem(
+          sshAuthSessionHintRosterStorageKey(firewallId),
+        );
+        if (sshAuthSessionHintRosterRaw) {
+          try {
+            const parsed = JSON.parse(sshAuthSessionHintRosterRaw) as {
+              soft_fertig_ssh_auth_session_hint_roster?: unknown;
+            };
+            const roster = parsed.soft_fertig_ssh_auth_session_hint_roster;
+            if (roster && typeof roster === "object") {
+              setSshAuthSessionHintRosterDetail(
+                JSON.stringify({ soft_fertig_ssh_auth_session_hint_roster: roster }, null, 2),
+              );
+            } else {
+              setSshAuthSessionHintRosterDetail(sshAuthSessionHintRosterRaw);
+            }
+          } catch {
+            setSshAuthSessionHintRosterDetail(sshAuthSessionHintRosterRaw);
+          }
+        }
       } catch {
         /* ignore */
       }
@@ -8982,6 +9033,14 @@ export function FirewallExtras({
               <summary>Soft-fertig ssh-not-implemented-keyboard roster</summary>
               <pre className="deploy-log configlet-preview" tabIndex={0}>
                 {sshNotImplementedKeyboardRosterDetail}
+              </pre>
+            </details>
+          ) : null}
+          {sshAuthSessionHintRosterDetail ? (
+            <details className="muted">
+              <summary>Soft-fertig ssh-auth-session-hint roster</summary>
+              <pre className="deploy-log configlet-preview" tabIndex={0}>
+                {sshAuthSessionHintRosterDetail}
               </pre>
             </details>
           ) : null}
@@ -17015,6 +17074,41 @@ export function FirewallExtras({
                   catch (e) { onError?.(e instanceof Error ? e.message : String(e)); }
                 })(); }}>Copy ssh-auth-refusal-related roster</button>
             ) : null}
+            {hardGapsPayload ? (
+              <button type="button" className="ghost" disabled={busy}
+                title="Download soft_fertig_ssh_auth_session_hint_roster from /hard-gaps"
+                onClick={() => {
+                  const catalog: Record<string, unknown> = {
+                    soft_fertig_ssh_auth_session_hint_roster: hardGapsPayload.soft_fertig_ssh_auth_session_hint_roster,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  const text = JSON.stringify(catalog, null, 2);
+                  try { sessionStorage.setItem(sshAuthSessionHintRosterStorageKey(firewallId), text); } catch { /* ignore */ }
+                  const blob = new Blob([text + "\n"], { type: "application/json;charset=utf-8" });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `fwbweb-ssh-auth-session-hint-roster-${firewallId || "fw"}.json`;
+                  a.click(); URL.revokeObjectURL(url);
+                  onStatus?.("Downloaded ssh-auth-session-hint roster");
+                }}>Download ssh-auth-session-hint roster</button>
+            ) : null}
+            {hardGapsPayload ? (
+              <button type="button" className="ghost" disabled={busy}
+                title="Copy soft_fertig_ssh_auth_session_hint_roster to clipboard"
+                onClick={() => { void (async () => {
+                  const catalog: Record<string, unknown> = {
+                    soft_fertig_ssh_auth_session_hint_roster: hardGapsPayload.soft_fertig_ssh_auth_session_hint_roster,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  try { sessionStorage.setItem(sshAuthSessionHintRosterStorageKey(firewallId), JSON.stringify(catalog, null, 2)); } catch { /* ignore */ }
+                  const text = JSON.stringify(catalog, null, 2) + "\n";
+                  try { await navigator.clipboard.writeText(text); onStatus?.("Copied ssh-auth-session-hint roster"); }
+                  catch (e) { onError?.(e instanceof Error ? e.message : String(e)); }
+                })(); }}>Copy ssh-auth-session-hint roster</button>
+            ) : null}
             <button
               type="button"
               className="ghost"
@@ -17396,6 +17490,7 @@ export function FirewallExtras({
                   sessionStorage.removeItem(sshAuthGapLabelEchoRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshAuthGapClosureEchoRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshAuthRefusalRelatedRosterStorageKey(firewallId));
+                  sessionStorage.removeItem(sshAuthSessionHintRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshPasswordSupportRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshAlternativeTitlesRosterStorageKey(firewallId));
                 } catch {
