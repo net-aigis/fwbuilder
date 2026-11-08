@@ -358,6 +358,9 @@ function sshNotImplementedBatchRosterStorageKey(firewallId: string) {
 function sshImplementedAgentRosterStorageKey(firewallId: string) {
   return `fwbweb.sshImplementedAgentRoster.${firewallId}`;
 }
+function sshAuthNoteSnapshotRosterStorageKey(firewallId: string) {
+  return `fwbweb.sshAuthNoteSnapshotRoster.${firewallId}`;
+}
 
 function sshPasswordSupportRosterStorageKey(firewallId: string) {
   return `fwbweb.sshPasswordSupportRoster.${firewallId}`;
@@ -626,6 +629,10 @@ function buildHonestyBundle(payload: Record<string, unknown>) {
     ssh_implemented_agent_roster: {
       soft_fertig_ssh_implemented_agent_roster:
         payload.soft_fertig_ssh_implemented_agent_roster,
+    },
+    ssh_auth_note_snapshot_roster: {
+      soft_fertig_ssh_auth_note_snapshot_roster:
+        payload.soft_fertig_ssh_auth_note_snapshot_roster,
     },
     ssh_password_support_roster: {
       soft_fertig_ssh_password_support_roster:
@@ -925,6 +932,8 @@ export function FirewallExtras({
   const [sshNotImplementedBatchRosterDetail, setSshNotImplementedBatchRosterDetail] =
     useState<string | null>(null);
   const [sshImplementedAgentRosterDetail, setSshImplementedAgentRosterDetail] =
+    useState<string | null>(null);
+  const [sshAuthNoteSnapshotRosterDetail, setSshAuthNoteSnapshotRosterDetail] =
     useState<string | null>(null);
   const [honestyPathsSummary, setHonestyPathsSummary] = useState<string | null>(null);
   const [honestyPathsDetail, setHonestyPathsDetail] = useState<string | null>(null);
@@ -2818,6 +2827,31 @@ export function FirewallExtras({
           setSshImplementedAgentRosterDetail(lines.join("\n"));
         } else {
           setSshImplementedAgentRosterDetail(null);
+        }
+      }
+      {
+        const roster =
+          gaps?.soft_fertig_ssh_auth_note_snapshot_roster &&
+          typeof gaps.soft_fertig_ssh_auth_note_snapshot_roster === "object"
+            ? (gaps.soft_fertig_ssh_auth_note_snapshot_roster as Record<string, unknown>)
+            : null;
+        if (roster && Object.keys(roster).length) {
+          const entries = Array.isArray(roster.entries)
+            ? (roster.entries as Array<Record<string, unknown>>)
+            : [];
+          const lines = [
+            `entry_count: ${String(roster.entry_count ?? "")}`,
+            `hard_gaps_remain: ${String(roster.hard_gaps_remain ?? "")}`,
+            `note: ${String(roster.note ?? "")}`,
+            ...(typeof roster.note_text === "string" ? [`note_text: ${roster.note_text}`] : []),
+            ...entries.map(
+              (e) =>
+                `${String(e.id ?? "")}: ${String(e.title ?? "")}` + (e.value ? ` — ${String(e.value)}` : e.note ? ` — ${String(e.note)}` : ""),
+            ),
+          ];
+          setSshAuthNoteSnapshotRosterDetail(lines.join("\n"));
+        } else {
+          setSshAuthNoteSnapshotRosterDetail(null);
         }
       }
       if (gaps?.honesty_paths && Object.keys(gaps.honesty_paths).length) {
@@ -4993,6 +5027,38 @@ export function FirewallExtras({
             setSshImplementedAgentRosterDetail(sshImplementedAgentRosterRaw);
           }
         }
+        const sshAuthNoteSnapshotRosterRaw = sessionStorage.getItem(
+          sshAuthNoteSnapshotRosterStorageKey(firewallId),
+        );
+        if (sshAuthNoteSnapshotRosterRaw) {
+          try {
+            const parsed = JSON.parse(sshAuthNoteSnapshotRosterRaw) as {
+              soft_fertig_ssh_auth_note_snapshot_roster?: unknown;
+            };
+            const roster = parsed.soft_fertig_ssh_auth_note_snapshot_roster;
+            if (roster && typeof roster === "object") {
+              const r = roster as Record<string, unknown>;
+              const entries = Array.isArray(r.entries)
+                ? (r.entries as Array<Record<string, unknown>>)
+                : [];
+              const lines = [
+                `entry_count: ${String(r.entry_count ?? "")}`,
+                `hard_gaps_remain: ${String(r.hard_gaps_remain ?? "")}`,
+                `note: ${String(r.note ?? "")}`,
+                ...(typeof r.note_text === "string" ? [`note_text: ${r.note_text}`] : []),
+                ...entries.map(
+                  (e) =>
+                    `${String(e.id ?? "")}: ${String(e.title ?? "")}` + (e.value ? ` — ${String(e.value)}` : e.note ? ` — ${String(e.note)}` : ""),
+                ),
+              ];
+              setSshAuthNoteSnapshotRosterDetail(lines.join("\n"));
+            } else {
+              setSshAuthNoteSnapshotRosterDetail(sshAuthNoteSnapshotRosterRaw);
+            }
+          } catch {
+            setSshAuthNoteSnapshotRosterDetail(sshAuthNoteSnapshotRosterRaw);
+          }
+        }
       } catch {
         /* ignore */
       }
@@ -5888,6 +5954,14 @@ export function FirewallExtras({
               <summary>Soft-fertig ssh-implemented-agent roster</summary>
               <pre className="deploy-log configlet-preview" tabIndex={0}>
                 {sshImplementedAgentRosterDetail}
+              </pre>
+            </details>
+          ) : null}
+          {sshAuthNoteSnapshotRosterDetail ? (
+            <details className="muted">
+              <summary>Soft-fertig ssh-auth-note-snapshot roster</summary>
+              <pre className="deploy-log configlet-preview" tabIndex={0}>
+                {sshAuthNoteSnapshotRosterDetail}
               </pre>
             </details>
           ) : null}
@@ -11459,6 +11533,41 @@ export function FirewallExtras({
                   catch (e) { onError?.(e instanceof Error ? e.message : String(e)); }
                 })(); }}>Copy ssh-implemented-agent roster</button>
             ) : null}
+            {hardGapsPayload ? (
+              <button type="button" className="ghost" disabled={busy}
+                title="Download soft_fertig_ssh_auth_note_snapshot_roster from /hard-gaps"
+                onClick={() => {
+                  const catalog: Record<string, unknown> = {
+                    soft_fertig_ssh_auth_note_snapshot_roster: hardGapsPayload.soft_fertig_ssh_auth_note_snapshot_roster,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  const text = JSON.stringify(catalog, null, 2);
+                  try { sessionStorage.setItem(sshAuthNoteSnapshotRosterStorageKey(firewallId), text); } catch { /* ignore */ }
+                  const blob = new Blob([text + "\n"], { type: "application/json;charset=utf-8" });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `fwbweb-ssh-auth-note-snapshot-roster-${firewallId || "fw"}.json`;
+                  a.click(); URL.revokeObjectURL(url);
+                  onStatus?.("Downloaded ssh-auth-note-snapshot roster");
+                }}>Download ssh-auth-note-snapshot roster</button>
+            ) : null}
+            {hardGapsPayload ? (
+              <button type="button" className="ghost" disabled={busy}
+                title="Copy soft_fertig_ssh_auth_note_snapshot_roster to clipboard"
+                onClick={() => { void (async () => {
+                  const catalog: Record<string, unknown> = {
+                    soft_fertig_ssh_auth_note_snapshot_roster: hardGapsPayload.soft_fertig_ssh_auth_note_snapshot_roster,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  try { sessionStorage.setItem(sshAuthNoteSnapshotRosterStorageKey(firewallId), JSON.stringify(catalog, null, 2)); } catch { /* ignore */ }
+                  const text = JSON.stringify(catalog, null, 2) + "\n";
+                  try { await navigator.clipboard.writeText(text); onStatus?.("Copied ssh-auth-note-snapshot roster"); }
+                  catch (e) { onError?.(e instanceof Error ? e.message : String(e)); }
+                })(); }}>Copy ssh-auth-note-snapshot roster</button>
+            ) : null}
             <button
               type="button"
               className="ghost"
@@ -11782,6 +11891,7 @@ export function FirewallExtras({
                   sessionStorage.removeItem(sshImplementedBatchRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshNotImplementedBatchRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshImplementedAgentRosterStorageKey(firewallId));
+                  sessionStorage.removeItem(sshAuthNoteSnapshotRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshPasswordSupportRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshAlternativeTitlesRosterStorageKey(firewallId));
                 } catch {
