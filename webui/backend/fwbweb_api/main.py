@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "11416"
+WEBUI_SOFT_COMPLETE_PHASE = "11496"
 SOFT_FERTIG_HONESTY_TRACK_NOTE = (
     "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
     "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
@@ -475,10 +475,10 @@ SOFT_FERTIG_HONESTY_TRACK_NOTE = (
 # 20650: soft_fertig_honesty_surface_version bumped to 5.30 (ssh_alternative_titles_refresh_roster);
 # 20700: ssh_alternative_titles_refresh_roster added to sessionStorage + clear catalogs;
 # 20750: Soft 7240+ honesty surface checkpoint (ssh_alternative_titles_refresh_roster cycle complete).
-WEBUI_HONESTY_MILESTONE = 33750
+WEBUI_HONESTY_MILESTONE = 34000
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 33750: soft-fertig honesty/preview catalogs "
-    "through Soft 11400+ (schema 5.82, ssh_auth_surface_hint_roster "
+    "Honesty surface checkpoint 34000: soft-fertig honesty/preview catalogs "
+    "through Soft 11480+ (schema 5.83, ssh_auth_clear_hint_roster "
     "sessionStorage) — hard gaps remain open."
 )
 SOFT_FERTIG_SOFT_COMPLETE_NOTE = (
@@ -736,6 +736,7 @@ SOFT_FERTIG_SURFACE_KEYS = (
     "soft_fertig_ssh_auth_export_hint_roster",
     "soft_fertig_ssh_auth_bundle_hint_roster",
     "soft_fertig_ssh_auth_surface_hint_roster",
+    "soft_fertig_ssh_auth_clear_hint_roster",
     "soft_fertig_ssh_alternative_titles_roster",
 )
 SOFT_FERTIG_SURFACE_KEY_TITLES = {
@@ -1131,6 +1132,9 @@ SOFT_FERTIG_SURFACE_KEY_TITLES = {
     "soft_fertig_ssh_auth_surface_hint_roster": (
         "/ssh-auth auth-surface-hint with titles and notes"
     ),
+    "soft_fertig_ssh_auth_clear_hint_roster": (
+        "/ssh-auth auth-clear-hint with titles and notes"
+    ),
 }
 
 SOFT_FERTIG_SURFACE_NOTES = {
@@ -1453,6 +1457,7 @@ SOFT_FERTIG_SESSION_STORAGE_KEYS = {
     "ssh_auth_export_hint_roster": "fwbweb.sshAuthExportHintRoster.",
     "ssh_auth_bundle_hint_roster": "fwbweb.sshAuthBundleHintRoster.",
     "ssh_auth_surface_hint_roster": "fwbweb.sshAuthSurfaceHintRoster.",
+    "ssh_auth_clear_hint_roster": "fwbweb.sshAuthClearHintRoster.",
 }
 SOFT_FERTIG_SESSION_STORAGE_KEY_TITLES = {
     "hard_gaps": "Full /hard-gaps JSON snapshot",
@@ -1581,6 +1586,7 @@ SOFT_FERTIG_SESSION_STORAGE_KEY_TITLES = {
     "ssh_auth_export_hint_roster": "SSH auth-export-hint roster JSON",
     "ssh_auth_bundle_hint_roster": "SSH auth-bundle-hint roster JSON",
     "ssh_auth_surface_hint_roster": "SSH auth-surface-hint roster JSON",
+    "ssh_auth_clear_hint_roster": "SSH auth-clear-hint roster JSON",
 }
 SOFT_FERTIG_SESSION_STORAGE_NOTES = {
     "hard_gaps": "Persists last downloaded/copied /hard-gaps JSON per firewall.",
@@ -2175,6 +2181,11 @@ SOFT_FERTIG_SESSION_STORAGE_NOTES = {
         "per firewall; UI restores expandable ssh-auth-surface-hint-roster detail "
         "on load."
     ),
+    "ssh_auth_clear_hint_roster": (
+        "Persists last downloaded/copied soft_fertig_ssh_auth_clear_hint_roster "
+        "per firewall; UI restores expandable ssh-auth-clear-hint-roster detail "
+        "on load."
+    ),
 }
 
 # Keys removed by the UI "Clear honesty catalogs" action (same set as sessionStorage catalog).
@@ -2185,9 +2196,9 @@ SOFT_FERTIG_SESSION_STORAGE_CLEAR_NOTE = (
 )
 
 # Soft-fertig honesty/preview catalog schema version (documentation; not a lock).
-SOFT_FERTIG_HONESTY_SURFACE_VERSION = "5.82"
+SOFT_FERTIG_HONESTY_SURFACE_VERSION = "5.83"
 SOFT_FERTIG_HONESTY_SURFACE_VERSION_NOTE = (
-    "Schema 5.82: schema 5.81 plus soft_fertig_ssh_auth_surface_hint_roster on "
+    "Schema 5.83: schema 5.82 plus soft_fertig_ssh_auth_clear_hint_roster on "
     "/health and honesty endpoints (+ export/bundle); hard gaps remain open."
 )
 
@@ -2322,6 +2333,7 @@ SOFT_FERTIG_HONESTY_EXPORT_KEYS = (
     "ssh_auth_export_hint_roster",
     "ssh_auth_bundle_hint_roster",
     "ssh_auth_surface_hint_roster",
+    "ssh_auth_clear_hint_roster",
 )
 SOFT_FERTIG_HONESTY_EXPORT_KEY_TITLES = {
     "hard_gaps": "Full /hard-gaps honesty snapshot JSON",
@@ -2450,6 +2462,7 @@ SOFT_FERTIG_HONESTY_EXPORT_KEY_TITLES = {
     "ssh_auth_export_hint_roster": "/ssh-auth auth-export-hint with titles and notes",
     "ssh_auth_bundle_hint_roster": "/ssh-auth auth-bundle-hint with titles and notes",
     "ssh_auth_surface_hint_roster": "/ssh-auth auth-surface-hint with titles and notes",
+    "ssh_auth_clear_hint_roster": "/ssh-auth auth-clear-hint with titles and notes",
 }
 SOFT_FERTIG_HONESTY_EXPORT_NOTES = {
     "hard_gaps": "Download hard-gaps JSON button; sessionStorage fwbweb.hardGaps.*.",
@@ -2936,6 +2949,10 @@ SOFT_FERTIG_HONESTY_EXPORT_NOTES = {
         "Download/Copy soft_fertig_ssh_auth_surface_hint_roster; also on /hard-gaps; "
         "sessionStorage fwbweb.sshAuthSurfaceHintRoster.*"
     ),
+    "ssh_auth_clear_hint_roster": (
+        "Download/Copy soft_fertig_ssh_auth_clear_hint_roster; also on /hard-gaps; "
+        "sessionStorage fwbweb.sshAuthClearHintRoster.*"
+    ),
 }
 
 # Top-level sections of the combined UI honesty bundle download.
@@ -3069,6 +3086,7 @@ SOFT_FERTIG_HONESTY_BUNDLE_SECTIONS = (
     "ssh_auth_export_hint_roster",
     "ssh_auth_bundle_hint_roster",
     "ssh_auth_surface_hint_roster",
+    "ssh_auth_clear_hint_roster",
     "honesty_exports",
 )
 SOFT_FERTIG_HONESTY_BUNDLE_SECTION_TITLES = {
@@ -3201,6 +3219,7 @@ SOFT_FERTIG_HONESTY_BUNDLE_SECTION_TITLES = {
     "ssh_auth_export_hint_roster": "/ssh-auth auth-export-hint with titles and notes",
     "ssh_auth_bundle_hint_roster": "/ssh-auth auth-bundle-hint with titles and notes",
     "ssh_auth_surface_hint_roster": "/ssh-auth auth-surface-hint with titles and notes",
+    "ssh_auth_clear_hint_roster": "/ssh-auth auth-clear-hint with titles and notes",
     "honesty_exports": "Export catalog meta (keys/titles/notes)",
 }
 SOFT_FERTIG_HONESTY_BUNDLE_NOTES = {
@@ -3690,6 +3709,10 @@ SOFT_FERTIG_HONESTY_BUNDLE_NOTES = {
     "ssh_auth_surface_hint_roster": (
         "Same subset as Download ssh-auth-surface-hint roster; "
         "also sessionStorage fwbweb.sshAuthSurfaceHintRoster.*"
+    ),
+    "ssh_auth_clear_hint_roster": (
+        "Same subset as Download ssh-auth-clear-hint roster; "
+        "also sessionStorage fwbweb.sshAuthClearHintRoster.*"
     ),
     "honesty_exports": "Same subset as Download honesty exports.",
 }
@@ -7987,6 +8010,44 @@ def soft_fertig_ssh_auth_surface_hint_roster() -> dict[str, object]:
     }
 
 
+SOFT_FERTIG_SSH_AUTH_CLEAR_HINT_KEYS: tuple[str, ...] = (
+    "ssh_auth_session_hint_roster",
+    "ssh_auth_surface_hint_roster",
+    "ssh_auth_bundle_hint_roster",
+    "ssh_auth_export_hint_roster",
+)
+
+
+def soft_fertig_ssh_auth_clear_hint_roster() -> dict[str, object]:
+    """SSH-auth sessionStorage-clear key hint roster (documentation; does not close hard gaps)."""
+    keys = set(SOFT_FERTIG_SESSION_STORAGE_CLEAR_KEYS)
+    entries: list[dict[str, object]] = []
+    for key_id in SOFT_FERTIG_SSH_AUTH_CLEAR_HINT_KEYS:
+        value = key_id in keys
+        entries.append(
+            {
+                "id": key_id,
+                "kind": "auth_clear_hint",
+                "value": value,
+                "in_session_storage_clear_keys": value,
+                "title": f"SSH-auth clear hint: {key_id}",
+                "note": (
+                    f"Clear key `{key_id}` listed={value!r}; "
+                    "soft-fertig catalogs do not close hard gaps."
+                ),
+            }
+        )
+    return {
+        "hard_gaps_remain": True,
+        "entries": entries,
+        "entry_count": len(entries),
+        "note": (
+            "Hint catalog of recent SSH-auth sessionStorage-clear keys; "
+            "soft-fertig catalogs do not close hard gaps."
+        ),
+    }
+
+
 def soft_fertig_honesty_readiness_roster() -> dict[str, object]:
     """Honesty-readiness field roster (documentation; does not close hard gaps)."""
     entries: list[dict[str, object]] = []
@@ -8530,6 +8591,10 @@ SOFT_FERTIG_HONESTY_SURFACE_CHANGELOG = {
     ),
     "5.82": (
         "soft_fertig_ssh_auth_surface_hint_roster on /health and honesty "
+        "endpoints (+ export/bundle)."
+    ),
+    "5.83": (
+        "soft_fertig_ssh_auth_clear_hint_roster on /health and honesty "
         "endpoints (+ export/bundle)."
     ),
 }
@@ -9222,6 +9287,7 @@ SOFT_FERTIG_CATALOG_SUMMARY_KEYS: tuple[str, ...] = (
     "soft_fertig_ssh_auth_export_hint_roster_entry_count",
     "soft_fertig_ssh_auth_bundle_hint_roster_entry_count",
     "soft_fertig_ssh_auth_surface_hint_roster_entry_count",
+    "soft_fertig_ssh_auth_clear_hint_roster_entry_count",
     "soft_fertig_ssh_password_support_roster_entry_count",
     "soft_fertig_ssh_alternative_titles_roster_entry_count",
     "soft_fertig_ssh_auth_policy_roster_entry_count",
@@ -9614,6 +9680,9 @@ def soft_fertig_catalog_summary() -> dict[str, object]:
         "soft_fertig_ssh_auth_surface_hint_roster_entry_count": (
             soft_fertig_ssh_auth_surface_hint_roster()["entry_count"]
         ),
+        "soft_fertig_ssh_auth_clear_hint_roster_entry_count": (
+            soft_fertig_ssh_auth_clear_hint_roster()["entry_count"]
+        ),
         "soft_fertig_ssh_password_support_roster_entry_count": (
             soft_fertig_ssh_password_support_roster()["entry_count"]
         ),
@@ -9842,6 +9911,7 @@ def health() -> dict[str, object]:
         "soft_fertig_ssh_auth_export_hint_roster": soft_fertig_ssh_auth_export_hint_roster(),
         "soft_fertig_ssh_auth_bundle_hint_roster": soft_fertig_ssh_auth_bundle_hint_roster(),
         "soft_fertig_ssh_auth_surface_hint_roster": soft_fertig_ssh_auth_surface_hint_roster(),
+        "soft_fertig_ssh_auth_clear_hint_roster": soft_fertig_ssh_auth_clear_hint_roster(),
         "soft_fertig_ssh_alternative_titles_roster": soft_fertig_ssh_alternative_titles_roster(),
         "soft_fertig_ssh_auth_policy_roster": soft_fertig_ssh_auth_policy_roster(),
         "soft_fertig_honesty_surface_version": SOFT_FERTIG_HONESTY_SURFACE_VERSION,
@@ -10406,6 +10476,7 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
         "soft_fertig_ssh_auth_export_hint_roster": soft_fertig_ssh_auth_export_hint_roster(),
         "soft_fertig_ssh_auth_bundle_hint_roster": soft_fertig_ssh_auth_bundle_hint_roster(),
         "soft_fertig_ssh_auth_surface_hint_roster": soft_fertig_ssh_auth_surface_hint_roster(),
+        "soft_fertig_ssh_auth_clear_hint_roster": soft_fertig_ssh_auth_clear_hint_roster(),
         "soft_fertig_ssh_alternative_titles_roster": soft_fertig_ssh_alternative_titles_roster(),
         "soft_fertig_ssh_auth_policy_roster": soft_fertig_ssh_auth_policy_roster(),
         "soft_fertig_honesty_export_keys": list(SOFT_FERTIG_HONESTY_EXPORT_KEYS),
@@ -10906,6 +10977,9 @@ def hard_gaps_summary(_: str = Depends(require_token)) -> dict[str, object]:
         "soft_fertig_ssh_auth_surface_hint_roster": dict(
             full.get("soft_fertig_ssh_auth_surface_hint_roster") or {}
         ),
+        "soft_fertig_ssh_auth_clear_hint_roster": dict(
+            full.get("soft_fertig_ssh_auth_clear_hint_roster") or {}
+        ),
         "soft_fertig_ssh_alternative_titles_roster": dict(
             full.get("soft_fertig_ssh_alternative_titles_roster") or {}
         ),
@@ -11387,6 +11461,7 @@ def hard_gap_closure(_: str = Depends(require_token)) -> dict[str, object]:
         "soft_fertig_ssh_auth_export_hint_roster": soft_fertig_ssh_auth_export_hint_roster(),
         "soft_fertig_ssh_auth_bundle_hint_roster": soft_fertig_ssh_auth_bundle_hint_roster(),
         "soft_fertig_ssh_auth_surface_hint_roster": soft_fertig_ssh_auth_surface_hint_roster(),
+        "soft_fertig_ssh_auth_clear_hint_roster": soft_fertig_ssh_auth_clear_hint_roster(),
         "soft_fertig_ssh_alternative_titles_roster": soft_fertig_ssh_alternative_titles_roster(),
         "soft_fertig_ssh_auth_policy_roster": soft_fertig_ssh_auth_policy_roster(),
         "soft_fertig_honesty_export_keys": list(SOFT_FERTIG_HONESTY_EXPORT_KEYS),
