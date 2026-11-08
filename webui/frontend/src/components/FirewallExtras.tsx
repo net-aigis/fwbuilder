@@ -385,6 +385,9 @@ function sshRefusalPathsRefreshRosterStorageKey(firewallId: string) {
 function sshAlternativesRefreshRosterStorageKey(firewallId: string) {
   return `fwbweb.sshAlternativesRefreshRoster.${firewallId}`;
 }
+function sshAlternativeTitlesRefreshRosterStorageKey(firewallId: string) {
+  return `fwbweb.sshAlternativeTitlesRefreshRoster.${firewallId}`;
+}
 
 function sshPasswordSupportRosterStorageKey(firewallId: string) {
   return `fwbweb.sshPasswordSupportRoster.${firewallId}`;
@@ -689,6 +692,10 @@ function buildHonestyBundle(payload: Record<string, unknown>) {
     ssh_alternatives_refresh_roster: {
       soft_fertig_ssh_alternatives_refresh_roster:
         payload.soft_fertig_ssh_alternatives_refresh_roster,
+    },
+    ssh_alternative_titles_refresh_roster: {
+      soft_fertig_ssh_alternative_titles_refresh_roster:
+        payload.soft_fertig_ssh_alternative_titles_refresh_roster,
     },
     ssh_password_support_roster: {
       soft_fertig_ssh_password_support_roster:
@@ -1006,6 +1013,8 @@ export function FirewallExtras({
   const [sshRefusalPathsRefreshRosterDetail, setSshRefusalPathsRefreshRosterDetail] =
     useState<string | null>(null);
   const [sshAlternativesRefreshRosterDetail, setSshAlternativesRefreshRosterDetail] =
+    useState<string | null>(null);
+  const [sshAlternativeTitlesRefreshRosterDetail, setSshAlternativeTitlesRefreshRosterDetail] =
     useState<string | null>(null);
   const [honestyPathsSummary, setHonestyPathsSummary] = useState<string | null>(null);
   const [honestyPathsDetail, setHonestyPathsDetail] = useState<string | null>(null);
@@ -3126,6 +3135,32 @@ export function FirewallExtras({
           setSshAlternativesRefreshRosterDetail(lines.join("\n"));
         } else {
           setSshAlternativesRefreshRosterDetail(null);
+        }
+      }
+      {
+        const roster =
+          gaps?.soft_fertig_ssh_alternative_titles_refresh_roster &&
+          typeof gaps.soft_fertig_ssh_alternative_titles_refresh_roster === "object"
+            ? (gaps.soft_fertig_ssh_alternative_titles_refresh_roster as Record<string, unknown>)
+            : null;
+        if (roster && Object.keys(roster).length) {
+          const entries = Array.isArray(roster.entries)
+            ? (roster.entries as Array<Record<string, unknown>>)
+            : [];
+          const lines = [
+            `entry_count: ${String(roster.entry_count ?? "")}`,
+            `hard_gaps_remain: ${String(roster.hard_gaps_remain ?? "")}`,
+            `note: ${String(roster.note ?? "")}`,
+            ...entries.map(
+              (e) =>
+                `${String(e.id ?? "")}: ${String(e.display_title ?? "")}` +
+                (e.title ? ` — ${String(e.title)}` : "") +
+                (e.note ? ` — ${String(e.note)}` : ""),
+            ),
+          ];
+          setSshAlternativeTitlesRefreshRosterDetail(lines.join("\n"));
+        } else {
+          setSshAlternativeTitlesRefreshRosterDetail(null);
         }
       }
       if (gaps?.honesty_paths && Object.keys(gaps.honesty_paths).length) {
@@ -5540,6 +5575,26 @@ export function FirewallExtras({
             setSshAlternativesRefreshRosterDetail(sshAlternativesRefreshRosterRaw);
           }
         }
+        const sshAlternativeTitlesRefreshRosterRaw = sessionStorage.getItem(
+          sshAlternativeTitlesRefreshRosterStorageKey(firewallId),
+        );
+        if (sshAlternativeTitlesRefreshRosterRaw) {
+          try {
+            const parsed = JSON.parse(sshAlternativeTitlesRefreshRosterRaw) as {
+              soft_fertig_ssh_alternative_titles_refresh_roster?: unknown;
+            };
+            const roster = parsed.soft_fertig_ssh_alternative_titles_refresh_roster;
+            if (roster && typeof roster === "object") {
+              setSshAlternativeTitlesRefreshRosterDetail(
+                JSON.stringify({ soft_fertig_ssh_alternative_titles_refresh_roster: roster }, null, 2),
+              );
+            } else {
+              setSshAlternativeTitlesRefreshRosterDetail(sshAlternativeTitlesRefreshRosterRaw);
+            }
+          } catch {
+            setSshAlternativeTitlesRefreshRosterDetail(sshAlternativeTitlesRefreshRosterRaw);
+          }
+        }
       } catch {
         /* ignore */
       }
@@ -6467,6 +6522,14 @@ export function FirewallExtras({
               <summary>Soft-fertig ssh-not-implemented-keyboard roster</summary>
               <pre className="deploy-log configlet-preview" tabIndex={0}>
                 {sshNotImplementedKeyboardRosterDetail}
+              </pre>
+            </details>
+          ) : null}
+          {sshAlternativeTitlesRefreshRosterDetail ? (
+            <details className="muted">
+              <summary>Soft-fertig ssh-alternative-titles-refresh roster</summary>
+              <pre className="deploy-log configlet-preview" tabIndex={0}>
+                {sshAlternativeTitlesRefreshRosterDetail}
               </pre>
             </details>
           ) : null}
@@ -12393,6 +12456,41 @@ export function FirewallExtras({
                   catch (e) { onError?.(e instanceof Error ? e.message : String(e)); }
                 })(); }}>Copy ssh-alternatives-refresh roster</button>
             ) : null}
+            {hardGapsPayload ? (
+              <button type="button" className="ghost" disabled={busy}
+                title="Download soft_fertig_ssh_alternative_titles_refresh_roster from /hard-gaps"
+                onClick={() => {
+                  const catalog: Record<string, unknown> = {
+                    soft_fertig_ssh_alternative_titles_refresh_roster: hardGapsPayload.soft_fertig_ssh_alternative_titles_refresh_roster,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  const text = JSON.stringify(catalog, null, 2);
+                  try { sessionStorage.setItem(sshAlternativeTitlesRefreshRosterStorageKey(firewallId), text); } catch { /* ignore */ }
+                  const blob = new Blob([text + "\n"], { type: "application/json;charset=utf-8" });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `fwbweb-ssh-alternative-titles-refresh-roster-${firewallId || "fw"}.json`;
+                  a.click(); URL.revokeObjectURL(url);
+                  onStatus?.("Downloaded ssh-alternative-titles-refresh roster");
+                }}>Download ssh-alternative-titles-refresh roster</button>
+            ) : null}
+            {hardGapsPayload ? (
+              <button type="button" className="ghost" disabled={busy}
+                title="Copy soft_fertig_ssh_alternative_titles_refresh_roster to clipboard"
+                onClick={() => { void (async () => {
+                  const catalog: Record<string, unknown> = {
+                    soft_fertig_ssh_alternative_titles_refresh_roster: hardGapsPayload.soft_fertig_ssh_alternative_titles_refresh_roster,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  try { sessionStorage.setItem(sshAlternativeTitlesRefreshRosterStorageKey(firewallId), JSON.stringify(catalog, null, 2)); } catch { /* ignore */ }
+                  const text = JSON.stringify(catalog, null, 2) + "\n";
+                  try { await navigator.clipboard.writeText(text); onStatus?.("Copied ssh-alternative-titles-refresh roster"); }
+                  catch (e) { onError?.(e instanceof Error ? e.message : String(e)); }
+                })(); }}>Copy ssh-alternative-titles-refresh roster</button>
+            ) : null}
             <button
               type="button"
               className="ghost"
@@ -12725,6 +12823,7 @@ export function FirewallExtras({
                   sessionStorage.removeItem(sshAuthPolicyRefreshRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshRefusalPathsRefreshRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshAlternativesRefreshRosterStorageKey(firewallId));
+                  sessionStorage.removeItem(sshAlternativeTitlesRefreshRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshPasswordSupportRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshAlternativeTitlesRosterStorageKey(firewallId));
                 } catch {
