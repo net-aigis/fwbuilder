@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "14696"
+WEBUI_SOFT_COMPLETE_PHASE = "14776"
 SOFT_FERTIG_HONESTY_TRACK_NOTE = (
     "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
     "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
@@ -475,10 +475,10 @@ SOFT_FERTIG_HONESTY_TRACK_NOTE = (
 # 20650: soft_fertig_honesty_surface_version bumped to 5.30 (ssh_alternative_titles_refresh_roster);
 # 20700: ssh_alternative_titles_refresh_roster added to sessionStorage + clear catalogs;
 # 20750: Soft 7240+ honesty surface checkpoint (ssh_alternative_titles_refresh_roster cycle complete).
-WEBUI_HONESTY_MILESTONE = 44000
+WEBUI_HONESTY_MILESTONE = 44250
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 44000: soft-fertig honesty/preview catalogs "
-    "through Soft 14680+ (schema 5.123, ssh_auth_auth_prefix_ratio_roster "
+    "Honesty surface checkpoint 44250: soft-fertig honesty/preview catalogs "
+    "through Soft 14760+ (schema 5.124, ssh_auth_ms_delta_roster "
     "sessionStorage) — hard gaps remain open."
 )
 SOFT_FERTIG_SOFT_COMPLETE_NOTE = (
@@ -777,6 +777,7 @@ SOFT_FERTIG_SURFACE_KEYS = (
     "soft_fertig_ssh_auth_clear_ssh_ratio_roster",
     "soft_fertig_ssh_auth_refresh_ratio_roster",
     "soft_fertig_ssh_auth_auth_prefix_ratio_roster",
+    "soft_fertig_ssh_auth_ms_delta_roster",
     "soft_fertig_ssh_alternative_titles_roster",
 )
 SOFT_FERTIG_SURFACE_KEY_TITLES = {
@@ -1295,6 +1296,9 @@ SOFT_FERTIG_SURFACE_KEY_TITLES = {
     "soft_fertig_ssh_auth_auth_prefix_ratio_roster": (
         "/ssh-auth auth-auth-prefix-ratio with titles and notes"
     ),
+    "soft_fertig_ssh_auth_ms_delta_roster": (
+        "/ssh-auth auth-ms-delta with titles and notes"
+    ),
 }
 
 SOFT_FERTIG_SURFACE_NOTES = {
@@ -1658,6 +1662,7 @@ SOFT_FERTIG_SESSION_STORAGE_KEYS = {
     "ssh_auth_clear_ssh_ratio_roster": "fwbweb.sshAuthClearSshRatioRoster.",
     "ssh_auth_refresh_ratio_roster": "fwbweb.sshAuthRefreshRatioRoster.",
     "ssh_auth_auth_prefix_ratio_roster": "fwbweb.sshAuthAuthPrefixRatioRoster.",
+    "ssh_auth_ms_delta_roster": "fwbweb.sshAuthMsDeltaRoster.",
 }
 SOFT_FERTIG_SESSION_STORAGE_KEY_TITLES = {
     "hard_gaps": "Full /hard-gaps JSON snapshot",
@@ -1827,6 +1832,7 @@ SOFT_FERTIG_SESSION_STORAGE_KEY_TITLES = {
     "ssh_auth_clear_ssh_ratio_roster": "SSH auth-clear-ssh-ratio roster JSON",
     "ssh_auth_refresh_ratio_roster": "SSH auth-refresh-ratio roster JSON",
     "ssh_auth_auth_prefix_ratio_roster": "SSH auth-auth-prefix-ratio roster JSON",
+    "ssh_auth_ms_delta_roster": "SSH auth-ms-delta roster JSON",
 }
 SOFT_FERTIG_SESSION_STORAGE_NOTES = {
     "hard_gaps": "Persists last downloaded/copied /hard-gaps JSON per firewall.",
@@ -2626,6 +2632,11 @@ SOFT_FERTIG_SESSION_STORAGE_NOTES = {
         "per firewall; UI restores expandable ssh-auth-auth-prefix-ratio-roster detail "
         "on load."
     ),
+    "ssh_auth_ms_delta_roster": (
+        "Persists last downloaded/copied soft_fertig_ssh_auth_ms_delta_roster "
+        "per firewall; UI restores expandable ssh-auth-ms-delta-roster detail "
+        "on load."
+    ),
 }
 
 # Keys removed by the UI "Clear honesty catalogs" action (same set as sessionStorage catalog).
@@ -2636,9 +2647,9 @@ SOFT_FERTIG_SESSION_STORAGE_CLEAR_NOTE = (
 )
 
 # Soft-fertig honesty/preview catalog schema version (documentation; not a lock).
-SOFT_FERTIG_HONESTY_SURFACE_VERSION = "5.123"
+SOFT_FERTIG_HONESTY_SURFACE_VERSION = "5.124"
 SOFT_FERTIG_HONESTY_SURFACE_VERSION_NOTE = (
-    "Schema 5.123: schema 5.122 plus soft_fertig_ssh_auth_auth_prefix_ratio_roster on "
+    "Schema 5.124: schema 5.123 plus soft_fertig_ssh_auth_ms_delta_roster on "
     "/health and honesty endpoints (+ export/bundle); hard gaps remain open."
 )
 
@@ -2814,6 +2825,7 @@ SOFT_FERTIG_HONESTY_EXPORT_KEYS = (
     "ssh_auth_clear_ssh_ratio_roster",
     "ssh_auth_refresh_ratio_roster",
     "ssh_auth_auth_prefix_ratio_roster",
+    "ssh_auth_ms_delta_roster",
 )
 SOFT_FERTIG_HONESTY_EXPORT_KEY_TITLES = {
     "hard_gaps": "Full /hard-gaps honesty snapshot JSON",
@@ -2983,6 +2995,7 @@ SOFT_FERTIG_HONESTY_EXPORT_KEY_TITLES = {
     "ssh_auth_clear_ssh_ratio_roster": "/ssh-auth auth-clear-ssh-ratio with titles and notes",
     "ssh_auth_refresh_ratio_roster": "/ssh-auth auth-refresh-ratio with titles and notes",
     "ssh_auth_auth_prefix_ratio_roster": "/ssh-auth auth-auth-prefix-ratio with titles and notes",
+    "ssh_auth_ms_delta_roster": "/ssh-auth auth-ms-delta with titles and notes",
 }
 SOFT_FERTIG_HONESTY_EXPORT_NOTES = {
     "hard_gaps": "Download hard-gaps JSON button; sessionStorage fwbweb.hardGaps.*.",
@@ -3633,6 +3646,10 @@ SOFT_FERTIG_HONESTY_EXPORT_NOTES = {
         "Download/Copy soft_fertig_ssh_auth_auth_prefix_ratio_roster; also on /hard-gaps; "
         "sessionStorage fwbweb.sshAuthAuthPrefixRatioRoster.*"
     ),
+    "ssh_auth_ms_delta_roster": (
+        "Download/Copy soft_fertig_ssh_auth_ms_delta_roster; also on /hard-gaps; "
+        "sessionStorage fwbweb.sshAuthMsDeltaRoster.*"
+    ),
 }
 
 # Top-level sections of the combined UI honesty bundle download.
@@ -3807,6 +3824,7 @@ SOFT_FERTIG_HONESTY_BUNDLE_SECTIONS = (
     "ssh_auth_clear_ssh_ratio_roster",
     "ssh_auth_refresh_ratio_roster",
     "ssh_auth_auth_prefix_ratio_roster",
+    "ssh_auth_ms_delta_roster",
     "honesty_exports",
 )
 SOFT_FERTIG_HONESTY_BUNDLE_SECTION_TITLES = {
@@ -3980,6 +3998,7 @@ SOFT_FERTIG_HONESTY_BUNDLE_SECTION_TITLES = {
     "ssh_auth_clear_ssh_ratio_roster": "/ssh-auth auth-clear-ssh-ratio with titles and notes",
     "ssh_auth_refresh_ratio_roster": "/ssh-auth auth-refresh-ratio with titles and notes",
     "ssh_auth_auth_prefix_ratio_roster": "/ssh-auth auth-auth-prefix-ratio with titles and notes",
+    "ssh_auth_ms_delta_roster": "/ssh-auth auth-ms-delta with titles and notes",
     "honesty_exports": "Export catalog meta (keys/titles/notes)",
 }
 SOFT_FERTIG_HONESTY_BUNDLE_NOTES = {
@@ -4633,6 +4652,10 @@ SOFT_FERTIG_HONESTY_BUNDLE_NOTES = {
     "ssh_auth_auth_prefix_ratio_roster": (
         "Same subset as Download ssh-auth-auth-prefix-ratio roster; "
         "also sessionStorage fwbweb.sshAuthAuthPrefixRatioRoster.*"
+    ),
+    "ssh_auth_ms_delta_roster": (
+        "Same subset as Download ssh-auth-ms-delta roster; "
+        "also sessionStorage fwbweb.sshAuthMsDeltaRoster.*"
     ),
     "honesty_exports": "Same subset as Download honesty exports.",
 }
@@ -10672,6 +10695,48 @@ def soft_fertig_ssh_auth_auth_prefix_ratio_roster() -> dict[str, object]:
     }
 
 
+SOFT_FERTIG_SSH_AUTH_MS_DELTA_KEYS: tuple[str, ...] = (
+    "honesty_milestone",
+    "soft_complete_phase",
+    "milestone_minus_soft",
+)
+
+
+def soft_fertig_ssh_auth_ms_delta_roster() -> dict[str, object]:
+    """SSH-auth milestone vs Soft-phase delta roster (documentation; does not close hard gaps)."""
+    ms = int(WEBUI_HONESTY_MILESTONE)
+    soft_i = int(WEBUI_SOFT_COMPLETE_PHASE)
+    values = {
+        "honesty_milestone": ms,
+        "soft_complete_phase": soft_i,
+        "milestone_minus_soft": ms - soft_i,
+    }
+    entries: list[dict[str, object]] = []
+    for key_id in SOFT_FERTIG_SSH_AUTH_MS_DELTA_KEYS:
+        value = values[key_id]
+        entries.append(
+            {
+                "id": key_id,
+                "kind": "auth_ms_delta",
+                "value": value,
+                "title": f"SSH-auth MS/Soft delta: {key_id}",
+                "note": (
+                    f"Delta field `{key_id}` is {value!r}; "
+                    "soft-fertig catalogs do not close hard gaps."
+                ),
+            }
+        )
+    return {
+        "hard_gaps_remain": True,
+        "entries": entries,
+        "entry_count": len(entries),
+        "note": (
+            "Delta catalog of honesty milestone vs Soft-complete phase; "
+            "soft-fertig catalogs do not close hard gaps."
+        ),
+    }
+
+
 def soft_fertig_honesty_readiness_roster() -> dict[str, object]:
     """Honesty-readiness field roster (documentation; does not close hard gaps)."""
     entries: list[dict[str, object]] = []
@@ -11379,6 +11444,10 @@ SOFT_FERTIG_HONESTY_SURFACE_CHANGELOG = {
     ),
     "5.123": (
         "soft_fertig_ssh_auth_auth_prefix_ratio_roster on /health and honesty "
+        "endpoints (+ export/bundle)."
+    ),
+    "5.124": (
+        "soft_fertig_ssh_auth_ms_delta_roster on /health and honesty "
         "endpoints (+ export/bundle)."
     ),
 }
@@ -12112,6 +12181,7 @@ SOFT_FERTIG_CATALOG_SUMMARY_KEYS: tuple[str, ...] = (
     "soft_fertig_ssh_auth_clear_ssh_ratio_roster_entry_count",
     "soft_fertig_ssh_auth_refresh_ratio_roster_entry_count",
     "soft_fertig_ssh_auth_auth_prefix_ratio_roster_entry_count",
+    "soft_fertig_ssh_auth_ms_delta_roster_entry_count",
     "soft_fertig_ssh_password_support_roster_entry_count",
     "soft_fertig_ssh_alternative_titles_roster_entry_count",
     "soft_fertig_ssh_auth_policy_roster_entry_count",
@@ -12627,6 +12697,9 @@ def soft_fertig_catalog_summary() -> dict[str, object]:
         "soft_fertig_ssh_auth_auth_prefix_ratio_roster_entry_count": (
             soft_fertig_ssh_auth_auth_prefix_ratio_roster()["entry_count"]
         ),
+        "soft_fertig_ssh_auth_ms_delta_roster_entry_count": (
+            soft_fertig_ssh_auth_ms_delta_roster()["entry_count"]
+        ),
         "soft_fertig_ssh_password_support_roster_entry_count": (
             soft_fertig_ssh_password_support_roster()["entry_count"]
         ),
@@ -12896,6 +12969,7 @@ def health() -> dict[str, object]:
         "soft_fertig_ssh_auth_clear_ssh_ratio_roster": soft_fertig_ssh_auth_clear_ssh_ratio_roster(),
         "soft_fertig_ssh_auth_refresh_ratio_roster": soft_fertig_ssh_auth_refresh_ratio_roster(),
         "soft_fertig_ssh_auth_auth_prefix_ratio_roster": soft_fertig_ssh_auth_auth_prefix_ratio_roster(),
+        "soft_fertig_ssh_auth_ms_delta_roster": soft_fertig_ssh_auth_ms_delta_roster(),
         "soft_fertig_ssh_alternative_titles_roster": soft_fertig_ssh_alternative_titles_roster(),
         "soft_fertig_ssh_auth_policy_roster": soft_fertig_ssh_auth_policy_roster(),
         "soft_fertig_honesty_surface_version": SOFT_FERTIG_HONESTY_SURFACE_VERSION,
@@ -13501,6 +13575,7 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
         "soft_fertig_ssh_auth_clear_ssh_ratio_roster": soft_fertig_ssh_auth_clear_ssh_ratio_roster(),
         "soft_fertig_ssh_auth_refresh_ratio_roster": soft_fertig_ssh_auth_refresh_ratio_roster(),
         "soft_fertig_ssh_auth_auth_prefix_ratio_roster": soft_fertig_ssh_auth_auth_prefix_ratio_roster(),
+        "soft_fertig_ssh_auth_ms_delta_roster": soft_fertig_ssh_auth_ms_delta_roster(),
         "soft_fertig_ssh_alternative_titles_roster": soft_fertig_ssh_alternative_titles_roster(),
         "soft_fertig_ssh_auth_policy_roster": soft_fertig_ssh_auth_policy_roster(),
         "soft_fertig_honesty_export_keys": list(SOFT_FERTIG_HONESTY_EXPORT_KEYS),
@@ -14124,6 +14199,9 @@ def hard_gaps_summary(_: str = Depends(require_token)) -> dict[str, object]:
         "soft_fertig_ssh_auth_auth_prefix_ratio_roster": dict(
             full.get("soft_fertig_ssh_auth_auth_prefix_ratio_roster") or {}
         ),
+        "soft_fertig_ssh_auth_ms_delta_roster": dict(
+            full.get("soft_fertig_ssh_auth_ms_delta_roster") or {}
+        ),
         "soft_fertig_ssh_alternative_titles_roster": dict(
             full.get("soft_fertig_ssh_alternative_titles_roster") or {}
         ),
@@ -14646,6 +14724,7 @@ def hard_gap_closure(_: str = Depends(require_token)) -> dict[str, object]:
         "soft_fertig_ssh_auth_clear_ssh_ratio_roster": soft_fertig_ssh_auth_clear_ssh_ratio_roster(),
         "soft_fertig_ssh_auth_refresh_ratio_roster": soft_fertig_ssh_auth_refresh_ratio_roster(),
         "soft_fertig_ssh_auth_auth_prefix_ratio_roster": soft_fertig_ssh_auth_auth_prefix_ratio_roster(),
+        "soft_fertig_ssh_auth_ms_delta_roster": soft_fertig_ssh_auth_ms_delta_roster(),
         "soft_fertig_ssh_alternative_titles_roster": soft_fertig_ssh_alternative_titles_roster(),
         "soft_fertig_ssh_auth_policy_roster": soft_fertig_ssh_auth_policy_roster(),
         "soft_fertig_honesty_export_keys": list(SOFT_FERTIG_HONESTY_EXPORT_KEYS),
