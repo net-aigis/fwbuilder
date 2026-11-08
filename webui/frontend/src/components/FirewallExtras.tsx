@@ -712,6 +712,9 @@ function sshAuthMs46500EchoRosterStorageKey(firewallId: string) {
 function sshAuthSchema135EchoRosterStorageKey(firewallId: string) {
   return `fwbweb.sshAuthSchema135EchoRoster.${firewallId}`;
 }
+function sshAuthPentaCheckpointRosterStorageKey(firewallId: string) {
+  return `fwbweb.sshAuthPentaCheckpointRoster.${firewallId}`;
+}
 
 function sshPasswordSupportRosterStorageKey(firewallId: string) {
   return `fwbweb.sshPasswordSupportRoster.${firewallId}`;
@@ -1567,6 +1570,8 @@ export function FirewallExtras({
   const [sshAuthMs46500EchoRosterDetail, setSshAuthMs46500EchoRosterDetail] =
     useState<string | null>(null);
   const [sshAuthSchema135EchoRosterDetail, setSshAuthSchema135EchoRosterDetail] =
+    useState<string | null>(null);
+  const [sshAuthPentaCheckpointRosterDetail, setSshAuthPentaCheckpointRosterDetail] =
     useState<string | null>(null);
   const [honestyPathsSummary, setHonestyPathsSummary] = useState<string | null>(null);
   const [honestyPathsDetail, setHonestyPathsDetail] = useState<string | null>(null);
@@ -6523,6 +6528,32 @@ export function FirewallExtras({
           setSshAuthSchema135EchoRosterDetail(null);
         }
       }
+      {
+        const roster =
+          gaps?.soft_fertig_ssh_auth_penta_checkpoint_roster &&
+          typeof gaps.soft_fertig_ssh_auth_penta_checkpoint_roster === "object"
+            ? (gaps.soft_fertig_ssh_auth_penta_checkpoint_roster as Record<string, unknown>)
+            : null;
+        if (roster && Object.keys(roster).length) {
+          const entries = Array.isArray(roster.entries)
+            ? (roster.entries as Array<Record<string, unknown>>)
+            : [];
+          const lines = [
+            `entry_count: ${String(roster.entry_count ?? "")}`,
+            `hard_gaps_remain: ${String(roster.hard_gaps_remain ?? "")}`,
+            `note: ${String(roster.note ?? "")}`,
+            ...entries.map(
+              (e) =>
+                `${String(e.id ?? "")}=${String(e.value ?? "")}` +
+                (e.title ? ` — ${String(e.title)}` : "") +
+                (e.note ? ` — ${String(e.note)}` : ""),
+            ),
+          ];
+          setSshAuthPentaCheckpointRosterDetail(lines.join("\n"));
+        } else {
+          setSshAuthPentaCheckpointRosterDetail(null);
+        }
+      }
       if (gaps?.honesty_paths && Object.keys(gaps.honesty_paths).length) {
         const entries = Object.entries(gaps.honesty_paths);
         const n =
@@ -11115,6 +11146,26 @@ export function FirewallExtras({
             setSshAuthSchema135EchoRosterDetail(sshAuthSchema135EchoRosterRaw);
           }
         }
+        const sshAuthPentaCheckpointRosterRaw = sessionStorage.getItem(
+          sshAuthPentaCheckpointRosterStorageKey(firewallId),
+        );
+        if (sshAuthPentaCheckpointRosterRaw) {
+          try {
+            const parsed = JSON.parse(sshAuthPentaCheckpointRosterRaw) as {
+              soft_fertig_ssh_auth_penta_checkpoint_roster?: unknown;
+            };
+            const roster = parsed.soft_fertig_ssh_auth_penta_checkpoint_roster;
+            if (roster && typeof roster === "object") {
+              setSshAuthPentaCheckpointRosterDetail(
+                JSON.stringify({ soft_fertig_ssh_auth_penta_checkpoint_roster: roster }, null, 2),
+              );
+            } else {
+              setSshAuthPentaCheckpointRosterDetail(sshAuthPentaCheckpointRosterRaw);
+            }
+          } catch {
+            setSshAuthPentaCheckpointRosterDetail(sshAuthPentaCheckpointRosterRaw);
+          }
+        }
       } catch {
         /* ignore */
       }
@@ -12042,6 +12093,14 @@ export function FirewallExtras({
               <summary>Soft-fertig ssh-not-implemented-keyboard roster</summary>
               <pre className="deploy-log configlet-preview" tabIndex={0}>
                 {sshNotImplementedKeyboardRosterDetail}
+              </pre>
+            </details>
+          ) : null}
+          {sshAuthPentaCheckpointRosterDetail ? (
+            <details className="muted">
+              <summary>Soft-fertig ssh-auth-penta-checkpoint roster</summary>
+              <pre className="deploy-log configlet-preview" tabIndex={0}>
+                {sshAuthPentaCheckpointRosterDetail}
               </pre>
             </details>
           ) : null}
@@ -22655,6 +22714,41 @@ export function FirewallExtras({
                   catch (e) { onError?.(e instanceof Error ? e.message : String(e)); }
                 })(); }}>Copy ssh-auth-schema-135-echo roster</button>
             ) : null}
+            {hardGapsPayload ? (
+              <button type="button" className="ghost" disabled={busy}
+                title="Download soft_fertig_ssh_auth_penta_checkpoint_roster from /hard-gaps"
+                onClick={() => {
+                  const catalog: Record<string, unknown> = {
+                    soft_fertig_ssh_auth_penta_checkpoint_roster: hardGapsPayload.soft_fertig_ssh_auth_penta_checkpoint_roster,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  const text = JSON.stringify(catalog, null, 2);
+                  try { sessionStorage.setItem(sshAuthPentaCheckpointRosterStorageKey(firewallId), text); } catch { /* ignore */ }
+                  const blob = new Blob([text + "\n"], { type: "application/json;charset=utf-8" });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `fwbweb-ssh-auth-penta-checkpoint-roster-${firewallId || "fw"}.json`;
+                  a.click(); URL.revokeObjectURL(url);
+                  onStatus?.("Downloaded ssh-auth-penta-checkpoint roster");
+                }}>Download ssh-auth-penta-checkpoint roster</button>
+            ) : null}
+            {hardGapsPayload ? (
+              <button type="button" className="ghost" disabled={busy}
+                title="Copy soft_fertig_ssh_auth_penta_checkpoint_roster to clipboard"
+                onClick={() => { void (async () => {
+                  const catalog: Record<string, unknown> = {
+                    soft_fertig_ssh_auth_penta_checkpoint_roster: hardGapsPayload.soft_fertig_ssh_auth_penta_checkpoint_roster,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  try { sessionStorage.setItem(sshAuthPentaCheckpointRosterStorageKey(firewallId), JSON.stringify(catalog, null, 2)); } catch { /* ignore */ }
+                  const text = JSON.stringify(catalog, null, 2) + "\n";
+                  try { await navigator.clipboard.writeText(text); onStatus?.("Copied ssh-auth-penta-checkpoint roster"); }
+                  catch (e) { onError?.(e instanceof Error ? e.message : String(e)); }
+                })(); }}>Copy ssh-auth-penta-checkpoint roster</button>
+            ) : null}
             <button
               type="button"
               className="ghost"
@@ -23096,6 +23190,7 @@ export function FirewallExtras({
                   sessionStorage.removeItem(sshAuthSoft15600EchoRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshAuthMs46500EchoRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshAuthSchema135EchoRosterStorageKey(firewallId));
+                  sessionStorage.removeItem(sshAuthPentaCheckpointRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshPasswordSupportRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshAlternativeTitlesRosterStorageKey(firewallId));
                 } catch {
