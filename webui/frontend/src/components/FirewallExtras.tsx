@@ -361,6 +361,9 @@ function sshImplementedAgentRosterStorageKey(firewallId: string) {
 function sshAuthNoteSnapshotRosterStorageKey(firewallId: string) {
   return `fwbweb.sshAuthNoteSnapshotRoster.${firewallId}`;
 }
+function sshHonestyRefreshRosterStorageKey(firewallId: string) {
+  return `fwbweb.sshHonestyRefreshRoster.${firewallId}`;
+}
 
 function sshPasswordSupportRosterStorageKey(firewallId: string) {
   return `fwbweb.sshPasswordSupportRoster.${firewallId}`;
@@ -633,6 +636,10 @@ function buildHonestyBundle(payload: Record<string, unknown>) {
     ssh_auth_note_snapshot_roster: {
       soft_fertig_ssh_auth_note_snapshot_roster:
         payload.soft_fertig_ssh_auth_note_snapshot_roster,
+    },
+    ssh_honesty_refresh_roster: {
+      soft_fertig_ssh_honesty_refresh_roster:
+        payload.soft_fertig_ssh_honesty_refresh_roster,
     },
     ssh_password_support_roster: {
       soft_fertig_ssh_password_support_roster:
@@ -934,6 +941,8 @@ export function FirewallExtras({
   const [sshImplementedAgentRosterDetail, setSshImplementedAgentRosterDetail] =
     useState<string | null>(null);
   const [sshAuthNoteSnapshotRosterDetail, setSshAuthNoteSnapshotRosterDetail] =
+    useState<string | null>(null);
+  const [sshHonestyRefreshRosterDetail, setSshHonestyRefreshRosterDetail] =
     useState<string | null>(null);
   const [honestyPathsSummary, setHonestyPathsSummary] = useState<string | null>(null);
   const [honestyPathsDetail, setHonestyPathsDetail] = useState<string | null>(null);
@@ -2852,6 +2861,33 @@ export function FirewallExtras({
           setSshAuthNoteSnapshotRosterDetail(lines.join("\n"));
         } else {
           setSshAuthNoteSnapshotRosterDetail(null);
+        }
+      }
+      {
+        const roster =
+          gaps?.soft_fertig_ssh_honesty_refresh_roster &&
+          typeof gaps.soft_fertig_ssh_honesty_refresh_roster === "object"
+            ? (gaps.soft_fertig_ssh_honesty_refresh_roster as Record<string, unknown>)
+            : null;
+        if (roster && Object.keys(roster).length) {
+          const entries = Array.isArray(roster.entries)
+            ? (roster.entries as Array<Record<string, unknown>>)
+            : [];
+          const lines = [
+            `entry_count: ${String(roster.entry_count ?? "")}`,
+            `base_roster_entry_count: ${String(roster.base_roster_entry_count ?? "")}`,
+            `hard_gaps_remain: ${String(roster.hard_gaps_remain ?? "")}`,
+            `note: ${String(roster.note ?? "")}`,
+            ...entries.map(
+              (e) =>
+                `${String(e.id ?? "")} [${String(e.kind ?? "")}]: ${String(e.title ?? "")}` +
+                (e.value !== undefined ? ` — ${String(e.value)}` : "") +
+                (e.status_code !== undefined ? ` (HTTP ${String(e.status_code)})` : ""),
+            ),
+          ];
+          setSshHonestyRefreshRosterDetail(lines.join("\n"));
+        } else {
+          setSshHonestyRefreshRosterDetail(null);
         }
       }
       if (gaps?.honesty_paths && Object.keys(gaps.honesty_paths).length) {
@@ -5059,6 +5095,40 @@ export function FirewallExtras({
             setSshAuthNoteSnapshotRosterDetail(sshAuthNoteSnapshotRosterRaw);
           }
         }
+        const sshHonestyRefreshRosterRaw = sessionStorage.getItem(
+          sshHonestyRefreshRosterStorageKey(firewallId),
+        );
+        if (sshHonestyRefreshRosterRaw) {
+          try {
+            const parsed = JSON.parse(sshHonestyRefreshRosterRaw) as {
+              soft_fertig_ssh_honesty_refresh_roster?: unknown;
+            };
+            const roster = parsed.soft_fertig_ssh_honesty_refresh_roster;
+            if (roster && typeof roster === "object") {
+              const r = roster as Record<string, unknown>;
+              const entries = Array.isArray(r.entries)
+                ? (r.entries as Array<Record<string, unknown>>)
+                : [];
+              const lines = [
+                `entry_count: ${String(r.entry_count ?? "")}`,
+                `base_roster_entry_count: ${String(r.base_roster_entry_count ?? "")}`,
+                `hard_gaps_remain: ${String(r.hard_gaps_remain ?? "")}`,
+                `note: ${String(r.note ?? "")}`,
+                ...entries.map(
+                  (e) =>
+                    `${String(e.id ?? "")} [${String(e.kind ?? "")}]: ${String(e.title ?? "")}` +
+                    (e.value !== undefined ? ` — ${String(e.value)}` : "") +
+                    (e.status_code !== undefined ? ` (HTTP ${String(e.status_code)})` : ""),
+                ),
+              ];
+              setSshHonestyRefreshRosterDetail(lines.join("\n"));
+            } else {
+              setSshHonestyRefreshRosterDetail(sshHonestyRefreshRosterRaw);
+            }
+          } catch {
+            setSshHonestyRefreshRosterDetail(sshHonestyRefreshRosterRaw);
+          }
+        }
       } catch {
         /* ignore */
       }
@@ -5962,6 +6032,14 @@ export function FirewallExtras({
               <summary>Soft-fertig ssh-auth-note-snapshot roster</summary>
               <pre className="deploy-log configlet-preview" tabIndex={0}>
                 {sshAuthNoteSnapshotRosterDetail}
+              </pre>
+            </details>
+          ) : null}
+          {sshHonestyRefreshRosterDetail ? (
+            <details className="muted">
+              <summary>Soft-fertig ssh-honesty-refresh roster</summary>
+              <pre className="deploy-log configlet-preview" tabIndex={0}>
+                {sshHonestyRefreshRosterDetail}
               </pre>
             </details>
           ) : null}
@@ -11568,6 +11646,41 @@ export function FirewallExtras({
                   catch (e) { onError?.(e instanceof Error ? e.message : String(e)); }
                 })(); }}>Copy ssh-auth-note-snapshot roster</button>
             ) : null}
+            {hardGapsPayload ? (
+              <button type="button" className="ghost" disabled={busy}
+                title="Download soft_fertig_ssh_honesty_refresh_roster from /hard-gaps"
+                onClick={() => {
+                  const catalog: Record<string, unknown> = {
+                    soft_fertig_ssh_honesty_refresh_roster: hardGapsPayload.soft_fertig_ssh_honesty_refresh_roster,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  const text = JSON.stringify(catalog, null, 2);
+                  try { sessionStorage.setItem(sshHonestyRefreshRosterStorageKey(firewallId), text); } catch { /* ignore */ }
+                  const blob = new Blob([text + "\n"], { type: "application/json;charset=utf-8" });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `fwbweb-ssh-honesty-refresh-roster-${firewallId || "fw"}.json`;
+                  a.click(); URL.revokeObjectURL(url);
+                  onStatus?.("Downloaded ssh-honesty-refresh roster");
+                }}>Download ssh-honesty-refresh roster</button>
+            ) : null}
+            {hardGapsPayload ? (
+              <button type="button" className="ghost" disabled={busy}
+                title="Copy soft_fertig_ssh_honesty_refresh_roster to clipboard"
+                onClick={() => { void (async () => {
+                  const catalog: Record<string, unknown> = {
+                    soft_fertig_ssh_honesty_refresh_roster: hardGapsPayload.soft_fertig_ssh_honesty_refresh_roster,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  try { sessionStorage.setItem(sshHonestyRefreshRosterStorageKey(firewallId), JSON.stringify(catalog, null, 2)); } catch { /* ignore */ }
+                  const text = JSON.stringify(catalog, null, 2) + "\n";
+                  try { await navigator.clipboard.writeText(text); onStatus?.("Copied ssh-honesty-refresh roster"); }
+                  catch (e) { onError?.(e instanceof Error ? e.message : String(e)); }
+                })(); }}>Copy ssh-honesty-refresh roster</button>
+            ) : null}
             <button
               type="button"
               className="ghost"
@@ -11892,6 +12005,7 @@ export function FirewallExtras({
                   sessionStorage.removeItem(sshNotImplementedBatchRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshImplementedAgentRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshAuthNoteSnapshotRosterStorageKey(firewallId));
+                  sessionStorage.removeItem(sshHonestyRefreshRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshPasswordSupportRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshAlternativeTitlesRosterStorageKey(firewallId));
                 } catch {
