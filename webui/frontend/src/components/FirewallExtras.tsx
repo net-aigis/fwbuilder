@@ -661,6 +661,9 @@ function sshAuthSessionSshRatioRosterStorageKey(firewallId: string) {
 function sshAuthClearSshRatioRosterStorageKey(firewallId: string) {
   return `fwbweb.sshAuthClearSshRatioRoster.${firewallId}`;
 }
+function sshAuthRefreshRatioRosterStorageKey(firewallId: string) {
+  return `fwbweb.sshAuthRefreshRatioRoster.${firewallId}`;
+}
 
 function sshPasswordSupportRosterStorageKey(firewallId: string) {
   return `fwbweb.sshPasswordSupportRoster.${firewallId}`;
@@ -1482,6 +1485,8 @@ export function FirewallExtras({
   const [sshAuthSessionSshRatioRosterDetail, setSshAuthSessionSshRatioRosterDetail] =
     useState<string | null>(null);
   const [sshAuthClearSshRatioRosterDetail, setSshAuthClearSshRatioRosterDetail] =
+    useState<string | null>(null);
+  const [sshAuthRefreshRatioRosterDetail, setSshAuthRefreshRatioRosterDetail] =
     useState<string | null>(null);
   const [honestyPathsSummary, setHonestyPathsSummary] = useState<string | null>(null);
   const [honestyPathsDetail, setHonestyPathsDetail] = useState<string | null>(null);
@@ -5996,6 +6001,32 @@ export function FirewallExtras({
           setSshAuthClearSshRatioRosterDetail(null);
         }
       }
+      {
+        const roster =
+          gaps?.soft_fertig_ssh_auth_refresh_ratio_roster &&
+          typeof gaps.soft_fertig_ssh_auth_refresh_ratio_roster === "object"
+            ? (gaps.soft_fertig_ssh_auth_refresh_ratio_roster as Record<string, unknown>)
+            : null;
+        if (roster && Object.keys(roster).length) {
+          const entries = Array.isArray(roster.entries)
+            ? (roster.entries as Array<Record<string, unknown>>)
+            : [];
+          const lines = [
+            `entry_count: ${String(roster.entry_count ?? "")}`,
+            `hard_gaps_remain: ${String(roster.hard_gaps_remain ?? "")}`,
+            `note: ${String(roster.note ?? "")}`,
+            ...entries.map(
+              (e) =>
+                `${String(e.id ?? "")}=${String(e.value ?? "")}` +
+                (e.title ? ` — ${String(e.title)}` : "") +
+                (e.note ? ` — ${String(e.note)}` : ""),
+            ),
+          ];
+          setSshAuthRefreshRatioRosterDetail(lines.join("\n"));
+        } else {
+          setSshAuthRefreshRatioRosterDetail(null);
+        }
+      }
       if (gaps?.honesty_paths && Object.keys(gaps.honesty_paths).length) {
         const entries = Object.entries(gaps.honesty_paths);
         const n =
@@ -10248,6 +10279,26 @@ export function FirewallExtras({
             setSshAuthClearSshRatioRosterDetail(sshAuthClearSshRatioRosterRaw);
           }
         }
+        const sshAuthRefreshRatioRosterRaw = sessionStorage.getItem(
+          sshAuthRefreshRatioRosterStorageKey(firewallId),
+        );
+        if (sshAuthRefreshRatioRosterRaw) {
+          try {
+            const parsed = JSON.parse(sshAuthRefreshRatioRosterRaw) as {
+              soft_fertig_ssh_auth_refresh_ratio_roster?: unknown;
+            };
+            const roster = parsed.soft_fertig_ssh_auth_refresh_ratio_roster;
+            if (roster && typeof roster === "object") {
+              setSshAuthRefreshRatioRosterDetail(
+                JSON.stringify({ soft_fertig_ssh_auth_refresh_ratio_roster: roster }, null, 2),
+              );
+            } else {
+              setSshAuthRefreshRatioRosterDetail(sshAuthRefreshRatioRosterRaw);
+            }
+          } catch {
+            setSshAuthRefreshRatioRosterDetail(sshAuthRefreshRatioRosterRaw);
+          }
+        }
       } catch {
         /* ignore */
       }
@@ -11175,6 +11226,14 @@ export function FirewallExtras({
               <summary>Soft-fertig ssh-not-implemented-keyboard roster</summary>
               <pre className="deploy-log configlet-preview" tabIndex={0}>
                 {sshNotImplementedKeyboardRosterDetail}
+              </pre>
+            </details>
+          ) : null}
+          {sshAuthRefreshRatioRosterDetail ? (
+            <details className="muted">
+              <summary>Soft-fertig ssh-auth-refresh-ratio roster</summary>
+              <pre className="deploy-log configlet-preview" tabIndex={0}>
+                {sshAuthRefreshRatioRosterDetail}
               </pre>
             </details>
           ) : null}
@@ -21057,6 +21116,41 @@ export function FirewallExtras({
                   catch (e) { onError?.(e instanceof Error ? e.message : String(e)); }
                 })(); }}>Copy ssh-auth-clear-ssh-ratio roster</button>
             ) : null}
+            {hardGapsPayload ? (
+              <button type="button" className="ghost" disabled={busy}
+                title="Download soft_fertig_ssh_auth_refresh_ratio_roster from /hard-gaps"
+                onClick={() => {
+                  const catalog: Record<string, unknown> = {
+                    soft_fertig_ssh_auth_refresh_ratio_roster: hardGapsPayload.soft_fertig_ssh_auth_refresh_ratio_roster,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  const text = JSON.stringify(catalog, null, 2);
+                  try { sessionStorage.setItem(sshAuthRefreshRatioRosterStorageKey(firewallId), text); } catch { /* ignore */ }
+                  const blob = new Blob([text + "\n"], { type: "application/json;charset=utf-8" });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `fwbweb-ssh-auth-refresh-ratio-roster-${firewallId || "fw"}.json`;
+                  a.click(); URL.revokeObjectURL(url);
+                  onStatus?.("Downloaded ssh-auth-refresh-ratio roster");
+                }}>Download ssh-auth-refresh-ratio roster</button>
+            ) : null}
+            {hardGapsPayload ? (
+              <button type="button" className="ghost" disabled={busy}
+                title="Copy soft_fertig_ssh_auth_refresh_ratio_roster to clipboard"
+                onClick={() => { void (async () => {
+                  const catalog: Record<string, unknown> = {
+                    soft_fertig_ssh_auth_refresh_ratio_roster: hardGapsPayload.soft_fertig_ssh_auth_refresh_ratio_roster,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  try { sessionStorage.setItem(sshAuthRefreshRatioRosterStorageKey(firewallId), JSON.stringify(catalog, null, 2)); } catch { /* ignore */ }
+                  const text = JSON.stringify(catalog, null, 2) + "\n";
+                  try { await navigator.clipboard.writeText(text); onStatus?.("Copied ssh-auth-refresh-ratio roster"); }
+                  catch (e) { onError?.(e instanceof Error ? e.message : String(e)); }
+                })(); }}>Copy ssh-auth-refresh-ratio roster</button>
+            ) : null}
             <button
               type="button"
               className="ghost"
@@ -21481,6 +21575,7 @@ export function FirewallExtras({
                   sessionStorage.removeItem(sshAuthSurfaceSshRatioRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshAuthSessionSshRatioRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshAuthClearSshRatioRosterStorageKey(firewallId));
+                  sessionStorage.removeItem(sshAuthRefreshRatioRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshPasswordSupportRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshAlternativeTitlesRosterStorageKey(firewallId));
                 } catch {
