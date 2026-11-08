@@ -664,6 +664,9 @@ function sshAuthClearSshRatioRosterStorageKey(firewallId: string) {
 function sshAuthRefreshRatioRosterStorageKey(firewallId: string) {
   return `fwbweb.sshAuthRefreshRatioRoster.${firewallId}`;
 }
+function sshAuthAuthPrefixRatioRosterStorageKey(firewallId: string) {
+  return `fwbweb.sshAuthAuthPrefixRatioRoster.${firewallId}`;
+}
 
 function sshPasswordSupportRosterStorageKey(firewallId: string) {
   return `fwbweb.sshPasswordSupportRoster.${firewallId}`;
@@ -1487,6 +1490,8 @@ export function FirewallExtras({
   const [sshAuthClearSshRatioRosterDetail, setSshAuthClearSshRatioRosterDetail] =
     useState<string | null>(null);
   const [sshAuthRefreshRatioRosterDetail, setSshAuthRefreshRatioRosterDetail] =
+    useState<string | null>(null);
+  const [sshAuthAuthPrefixRatioRosterDetail, setSshAuthAuthPrefixRatioRosterDetail] =
     useState<string | null>(null);
   const [honestyPathsSummary, setHonestyPathsSummary] = useState<string | null>(null);
   const [honestyPathsDetail, setHonestyPathsDetail] = useState<string | null>(null);
@@ -6027,6 +6032,32 @@ export function FirewallExtras({
           setSshAuthRefreshRatioRosterDetail(null);
         }
       }
+      {
+        const roster =
+          gaps?.soft_fertig_ssh_auth_auth_prefix_ratio_roster &&
+          typeof gaps.soft_fertig_ssh_auth_auth_prefix_ratio_roster === "object"
+            ? (gaps.soft_fertig_ssh_auth_auth_prefix_ratio_roster as Record<string, unknown>)
+            : null;
+        if (roster && Object.keys(roster).length) {
+          const entries = Array.isArray(roster.entries)
+            ? (roster.entries as Array<Record<string, unknown>>)
+            : [];
+          const lines = [
+            `entry_count: ${String(roster.entry_count ?? "")}`,
+            `hard_gaps_remain: ${String(roster.hard_gaps_remain ?? "")}`,
+            `note: ${String(roster.note ?? "")}`,
+            ...entries.map(
+              (e) =>
+                `${String(e.id ?? "")}=${String(e.value ?? "")}` +
+                (e.title ? ` — ${String(e.title)}` : "") +
+                (e.note ? ` — ${String(e.note)}` : ""),
+            ),
+          ];
+          setSshAuthAuthPrefixRatioRosterDetail(lines.join("\n"));
+        } else {
+          setSshAuthAuthPrefixRatioRosterDetail(null);
+        }
+      }
       if (gaps?.honesty_paths && Object.keys(gaps.honesty_paths).length) {
         const entries = Object.entries(gaps.honesty_paths);
         const n =
@@ -10299,6 +10330,26 @@ export function FirewallExtras({
             setSshAuthRefreshRatioRosterDetail(sshAuthRefreshRatioRosterRaw);
           }
         }
+        const sshAuthAuthPrefixRatioRosterRaw = sessionStorage.getItem(
+          sshAuthAuthPrefixRatioRosterStorageKey(firewallId),
+        );
+        if (sshAuthAuthPrefixRatioRosterRaw) {
+          try {
+            const parsed = JSON.parse(sshAuthAuthPrefixRatioRosterRaw) as {
+              soft_fertig_ssh_auth_auth_prefix_ratio_roster?: unknown;
+            };
+            const roster = parsed.soft_fertig_ssh_auth_auth_prefix_ratio_roster;
+            if (roster && typeof roster === "object") {
+              setSshAuthAuthPrefixRatioRosterDetail(
+                JSON.stringify({ soft_fertig_ssh_auth_auth_prefix_ratio_roster: roster }, null, 2),
+              );
+            } else {
+              setSshAuthAuthPrefixRatioRosterDetail(sshAuthAuthPrefixRatioRosterRaw);
+            }
+          } catch {
+            setSshAuthAuthPrefixRatioRosterDetail(sshAuthAuthPrefixRatioRosterRaw);
+          }
+        }
       } catch {
         /* ignore */
       }
@@ -11226,6 +11277,14 @@ export function FirewallExtras({
               <summary>Soft-fertig ssh-not-implemented-keyboard roster</summary>
               <pre className="deploy-log configlet-preview" tabIndex={0}>
                 {sshNotImplementedKeyboardRosterDetail}
+              </pre>
+            </details>
+          ) : null}
+          {sshAuthAuthPrefixRatioRosterDetail ? (
+            <details className="muted">
+              <summary>Soft-fertig ssh-auth-auth-prefix-ratio roster</summary>
+              <pre className="deploy-log configlet-preview" tabIndex={0}>
+                {sshAuthAuthPrefixRatioRosterDetail}
               </pre>
             </details>
           ) : null}
@@ -21151,6 +21210,41 @@ export function FirewallExtras({
                   catch (e) { onError?.(e instanceof Error ? e.message : String(e)); }
                 })(); }}>Copy ssh-auth-refresh-ratio roster</button>
             ) : null}
+            {hardGapsPayload ? (
+              <button type="button" className="ghost" disabled={busy}
+                title="Download soft_fertig_ssh_auth_auth_prefix_ratio_roster from /hard-gaps"
+                onClick={() => {
+                  const catalog: Record<string, unknown> = {
+                    soft_fertig_ssh_auth_auth_prefix_ratio_roster: hardGapsPayload.soft_fertig_ssh_auth_auth_prefix_ratio_roster,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  const text = JSON.stringify(catalog, null, 2);
+                  try { sessionStorage.setItem(sshAuthAuthPrefixRatioRosterStorageKey(firewallId), text); } catch { /* ignore */ }
+                  const blob = new Blob([text + "\n"], { type: "application/json;charset=utf-8" });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `fwbweb-ssh-auth-auth-prefix-ratio-roster-${firewallId || "fw"}.json`;
+                  a.click(); URL.revokeObjectURL(url);
+                  onStatus?.("Downloaded ssh-auth-auth-prefix-ratio roster");
+                }}>Download ssh-auth-auth-prefix-ratio roster</button>
+            ) : null}
+            {hardGapsPayload ? (
+              <button type="button" className="ghost" disabled={busy}
+                title="Copy soft_fertig_ssh_auth_auth_prefix_ratio_roster to clipboard"
+                onClick={() => { void (async () => {
+                  const catalog: Record<string, unknown> = {
+                    soft_fertig_ssh_auth_auth_prefix_ratio_roster: hardGapsPayload.soft_fertig_ssh_auth_auth_prefix_ratio_roster,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  try { sessionStorage.setItem(sshAuthAuthPrefixRatioRosterStorageKey(firewallId), JSON.stringify(catalog, null, 2)); } catch { /* ignore */ }
+                  const text = JSON.stringify(catalog, null, 2) + "\n";
+                  try { await navigator.clipboard.writeText(text); onStatus?.("Copied ssh-auth-auth-prefix-ratio roster"); }
+                  catch (e) { onError?.(e instanceof Error ? e.message : String(e)); }
+                })(); }}>Copy ssh-auth-auth-prefix-ratio roster</button>
+            ) : null}
             <button
               type="button"
               className="ghost"
@@ -21576,6 +21670,7 @@ export function FirewallExtras({
                   sessionStorage.removeItem(sshAuthSessionSshRatioRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshAuthClearSshRatioRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshAuthRefreshRatioRosterStorageKey(firewallId));
+                  sessionStorage.removeItem(sshAuthAuthPrefixRatioRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshPasswordSupportRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshAlternativeTitlesRosterStorageKey(firewallId));
                 } catch {
