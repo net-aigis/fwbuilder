@@ -412,6 +412,9 @@ function sshBatchModeRefreshRosterStorageKey(firewallId: string) {
 function sshImplementedRefreshRosterStorageKey(firewallId: string) {
   return `fwbweb.sshImplementedRefreshRoster.${firewallId}`;
 }
+function sshNotImplementedRefreshRosterStorageKey(firewallId: string) {
+  return `fwbweb.sshNotImplementedRefreshRoster.${firewallId}`;
+}
 
 function sshPasswordSupportRosterStorageKey(firewallId: string) {
   return `fwbweb.sshPasswordSupportRoster.${firewallId}`;
@@ -1067,6 +1070,8 @@ export function FirewallExtras({
   const [sshBatchModeRefreshRosterDetail, setSshBatchModeRefreshRosterDetail] =
     useState<string | null>(null);
   const [sshImplementedRefreshRosterDetail, setSshImplementedRefreshRosterDetail] =
+    useState<string | null>(null);
+  const [sshNotImplementedRefreshRosterDetail, setSshNotImplementedRefreshRosterDetail] =
     useState<string | null>(null);
   const [honestyPathsSummary, setHonestyPathsSummary] = useState<string | null>(null);
   const [honestyPathsDetail, setHonestyPathsDetail] = useState<string | null>(null);
@@ -3421,6 +3426,32 @@ export function FirewallExtras({
           setSshImplementedRefreshRosterDetail(lines.join("\n"));
         } else {
           setSshImplementedRefreshRosterDetail(null);
+        }
+      }
+      {
+        const roster =
+          gaps?.soft_fertig_ssh_not_implemented_refresh_roster &&
+          typeof gaps.soft_fertig_ssh_not_implemented_refresh_roster === "object"
+            ? (gaps.soft_fertig_ssh_not_implemented_refresh_roster as Record<string, unknown>)
+            : null;
+        if (roster && Object.keys(roster).length) {
+          const entries = Array.isArray(roster.entries)
+            ? (roster.entries as Array<Record<string, unknown>>)
+            : [];
+          const lines = [
+            `entry_count: ${String(roster.entry_count ?? "")}`,
+            `hard_gaps_remain: ${String(roster.hard_gaps_remain ?? "")}`,
+            `note: ${String(roster.note ?? "")}`,
+            ...entries.map(
+              (e) =>
+                `${String(e.id ?? "")}=${String(e.value ?? "")}` +
+                (e.title ? ` — ${String(e.title)}` : "") +
+                (e.note ? ` — ${String(e.note)}` : ""),
+            ),
+          ];
+          setSshNotImplementedRefreshRosterDetail(lines.join("\n"));
+        } else {
+          setSshNotImplementedRefreshRosterDetail(null);
         }
       }
       if (gaps?.honesty_paths && Object.keys(gaps.honesty_paths).length) {
@@ -6015,6 +6046,26 @@ export function FirewallExtras({
             setSshImplementedRefreshRosterDetail(sshImplementedRefreshRosterRaw);
           }
         }
+        const sshNotImplementedRefreshRosterRaw = sessionStorage.getItem(
+          sshNotImplementedRefreshRosterStorageKey(firewallId),
+        );
+        if (sshNotImplementedRefreshRosterRaw) {
+          try {
+            const parsed = JSON.parse(sshNotImplementedRefreshRosterRaw) as {
+              soft_fertig_ssh_not_implemented_refresh_roster?: unknown;
+            };
+            const roster = parsed.soft_fertig_ssh_not_implemented_refresh_roster;
+            if (roster && typeof roster === "object") {
+              setSshNotImplementedRefreshRosterDetail(
+                JSON.stringify({ soft_fertig_ssh_not_implemented_refresh_roster: roster }, null, 2),
+              );
+            } else {
+              setSshNotImplementedRefreshRosterDetail(sshNotImplementedRefreshRosterRaw);
+            }
+          } catch {
+            setSshNotImplementedRefreshRosterDetail(sshNotImplementedRefreshRosterRaw);
+          }
+        }
       } catch {
         /* ignore */
       }
@@ -6942,6 +6993,14 @@ export function FirewallExtras({
               <summary>Soft-fertig ssh-not-implemented-keyboard roster</summary>
               <pre className="deploy-log configlet-preview" tabIndex={0}>
                 {sshNotImplementedKeyboardRosterDetail}
+              </pre>
+            </details>
+          ) : null}
+          {sshNotImplementedRefreshRosterDetail ? (
+            <details className="muted">
+              <summary>Soft-fertig ssh-not-implemented-refresh roster</summary>
+              <pre className="deploy-log configlet-preview" tabIndex={0}>
+                {sshNotImplementedRefreshRosterDetail}
               </pre>
             </details>
           ) : null}
@@ -13255,6 +13314,41 @@ export function FirewallExtras({
                   catch (e) { onError?.(e instanceof Error ? e.message : String(e)); }
                 })(); }}>Copy ssh-implemented-refresh roster</button>
             ) : null}
+            {hardGapsPayload ? (
+              <button type="button" className="ghost" disabled={busy}
+                title="Download soft_fertig_ssh_not_implemented_refresh_roster from /hard-gaps"
+                onClick={() => {
+                  const catalog: Record<string, unknown> = {
+                    soft_fertig_ssh_not_implemented_refresh_roster: hardGapsPayload.soft_fertig_ssh_not_implemented_refresh_roster,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  const text = JSON.stringify(catalog, null, 2);
+                  try { sessionStorage.setItem(sshNotImplementedRefreshRosterStorageKey(firewallId), text); } catch { /* ignore */ }
+                  const blob = new Blob([text + "\n"], { type: "application/json;charset=utf-8" });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `fwbweb-ssh-not-implemented-refresh-roster-${firewallId || "fw"}.json`;
+                  a.click(); URL.revokeObjectURL(url);
+                  onStatus?.("Downloaded ssh-not-implemented-refresh roster");
+                }}>Download ssh-not-implemented-refresh roster</button>
+            ) : null}
+            {hardGapsPayload ? (
+              <button type="button" className="ghost" disabled={busy}
+                title="Copy soft_fertig_ssh_not_implemented_refresh_roster to clipboard"
+                onClick={() => { void (async () => {
+                  const catalog: Record<string, unknown> = {
+                    soft_fertig_ssh_not_implemented_refresh_roster: hardGapsPayload.soft_fertig_ssh_not_implemented_refresh_roster,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  try { sessionStorage.setItem(sshNotImplementedRefreshRosterStorageKey(firewallId), JSON.stringify(catalog, null, 2)); } catch { /* ignore */ }
+                  const text = JSON.stringify(catalog, null, 2) + "\n";
+                  try { await navigator.clipboard.writeText(text); onStatus?.("Copied ssh-not-implemented-refresh roster"); }
+                  catch (e) { onError?.(e instanceof Error ? e.message : String(e)); }
+                })(); }}>Copy ssh-not-implemented-refresh roster</button>
+            ) : null}
             <button
               type="button"
               className="ghost"
@@ -13596,6 +13690,7 @@ export function FirewallExtras({
                   sessionStorage.removeItem(sshMethodListsRefreshRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshBatchModeRefreshRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshImplementedRefreshRosterStorageKey(firewallId));
+                  sessionStorage.removeItem(sshNotImplementedRefreshRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshPasswordSupportRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshAlternativeTitlesRosterStorageKey(firewallId));
                 } catch {
