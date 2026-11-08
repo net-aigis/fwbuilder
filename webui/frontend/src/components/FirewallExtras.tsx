@@ -499,6 +499,9 @@ function sshAuthBatchGateRosterStorageKey(firewallId: string) {
 function sshAuthSupportGateRosterStorageKey(firewallId: string) {
   return `fwbweb.sshAuthSupportGateRoster.${firewallId}`;
 }
+function sshAuthMethodPartitionRosterStorageKey(firewallId: string) {
+  return `fwbweb.sshAuthMethodPartitionRoster.${firewallId}`;
+}
 
 function sshPasswordSupportRosterStorageKey(firewallId: string) {
   return `fwbweb.sshPasswordSupportRoster.${firewallId}`;
@@ -1212,6 +1215,8 @@ export function FirewallExtras({
   const [sshAuthBatchGateRosterDetail, setSshAuthBatchGateRosterDetail] =
     useState<string | null>(null);
   const [sshAuthSupportGateRosterDetail, setSshAuthSupportGateRosterDetail] =
+    useState<string | null>(null);
+  const [sshAuthMethodPartitionRosterDetail, setSshAuthMethodPartitionRosterDetail] =
     useState<string | null>(null);
   const [honestyPathsSummary, setHonestyPathsSummary] = useState<string | null>(null);
   const [honestyPathsDetail, setHonestyPathsDetail] = useState<string | null>(null);
@@ -4320,6 +4325,32 @@ export function FirewallExtras({
           setSshAuthSupportGateRosterDetail(lines.join("\n"));
         } else {
           setSshAuthSupportGateRosterDetail(null);
+        }
+      }
+      {
+        const roster =
+          gaps?.soft_fertig_ssh_auth_method_partition_roster &&
+          typeof gaps.soft_fertig_ssh_auth_method_partition_roster === "object"
+            ? (gaps.soft_fertig_ssh_auth_method_partition_roster as Record<string, unknown>)
+            : null;
+        if (roster && Object.keys(roster).length) {
+          const entries = Array.isArray(roster.entries)
+            ? (roster.entries as Array<Record<string, unknown>>)
+            : [];
+          const lines = [
+            `entry_count: ${String(roster.entry_count ?? "")}`,
+            `hard_gaps_remain: ${String(roster.hard_gaps_remain ?? "")}`,
+            `note: ${String(roster.note ?? "")}`,
+            ...entries.map(
+              (e) =>
+                `${String(e.id ?? "")}=${String(e.value ?? "")}` +
+                (e.title ? ` — ${String(e.title)}` : "") +
+                (e.note ? ` — ${String(e.note)}` : ""),
+            ),
+          ];
+          setSshAuthMethodPartitionRosterDetail(lines.join("\n"));
+        } else {
+          setSshAuthMethodPartitionRosterDetail(null);
         }
       }
       if (gaps?.honesty_paths && Object.keys(gaps.honesty_paths).length) {
@@ -7494,6 +7525,26 @@ export function FirewallExtras({
             setSshAuthSupportGateRosterDetail(sshAuthSupportGateRosterRaw);
           }
         }
+        const sshAuthMethodPartitionRosterRaw = sessionStorage.getItem(
+          sshAuthMethodPartitionRosterStorageKey(firewallId),
+        );
+        if (sshAuthMethodPartitionRosterRaw) {
+          try {
+            const parsed = JSON.parse(sshAuthMethodPartitionRosterRaw) as {
+              soft_fertig_ssh_auth_method_partition_roster?: unknown;
+            };
+            const roster = parsed.soft_fertig_ssh_auth_method_partition_roster;
+            if (roster && typeof roster === "object") {
+              setSshAuthMethodPartitionRosterDetail(
+                JSON.stringify({ soft_fertig_ssh_auth_method_partition_roster: roster }, null, 2),
+              );
+            } else {
+              setSshAuthMethodPartitionRosterDetail(sshAuthMethodPartitionRosterRaw);
+            }
+          } catch {
+            setSshAuthMethodPartitionRosterDetail(sshAuthMethodPartitionRosterRaw);
+          }
+        }
       } catch {
         /* ignore */
       }
@@ -8421,6 +8472,14 @@ export function FirewallExtras({
               <summary>Soft-fertig ssh-not-implemented-keyboard roster</summary>
               <pre className="deploy-log configlet-preview" tabIndex={0}>
                 {sshNotImplementedKeyboardRosterDetail}
+              </pre>
+            </details>
+          ) : null}
+          {sshAuthMethodPartitionRosterDetail ? (
+            <details className="muted">
+              <summary>Soft-fertig ssh-auth-method-partition roster</summary>
+              <pre className="deploy-log configlet-preview" tabIndex={0}>
+                {sshAuthMethodPartitionRosterDetail}
               </pre>
             </details>
           ) : null}
@@ -15981,6 +16040,41 @@ export function FirewallExtras({
                   catch (e) { onError?.(e instanceof Error ? e.message : String(e)); }
                 })(); }}>Copy ssh-auth-support-gate roster</button>
             ) : null}
+            {hardGapsPayload ? (
+              <button type="button" className="ghost" disabled={busy}
+                title="Download soft_fertig_ssh_auth_method_partition_roster from /hard-gaps"
+                onClick={() => {
+                  const catalog: Record<string, unknown> = {
+                    soft_fertig_ssh_auth_method_partition_roster: hardGapsPayload.soft_fertig_ssh_auth_method_partition_roster,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  const text = JSON.stringify(catalog, null, 2);
+                  try { sessionStorage.setItem(sshAuthMethodPartitionRosterStorageKey(firewallId), text); } catch { /* ignore */ }
+                  const blob = new Blob([text + "\n"], { type: "application/json;charset=utf-8" });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `fwbweb-ssh-auth-method-partition-roster-${firewallId || "fw"}.json`;
+                  a.click(); URL.revokeObjectURL(url);
+                  onStatus?.("Downloaded ssh-auth-method-partition roster");
+                }}>Download ssh-auth-method-partition roster</button>
+            ) : null}
+            {hardGapsPayload ? (
+              <button type="button" className="ghost" disabled={busy}
+                title="Copy soft_fertig_ssh_auth_method_partition_roster to clipboard"
+                onClick={() => { void (async () => {
+                  const catalog: Record<string, unknown> = {
+                    soft_fertig_ssh_auth_method_partition_roster: hardGapsPayload.soft_fertig_ssh_auth_method_partition_roster,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  try { sessionStorage.setItem(sshAuthMethodPartitionRosterStorageKey(firewallId), JSON.stringify(catalog, null, 2)); } catch { /* ignore */ }
+                  const text = JSON.stringify(catalog, null, 2) + "\n";
+                  try { await navigator.clipboard.writeText(text); onStatus?.("Copied ssh-auth-method-partition roster"); }
+                  catch (e) { onError?.(e instanceof Error ? e.message : String(e)); }
+                })(); }}>Copy ssh-auth-method-partition roster</button>
+            ) : null}
             <button
               type="button"
               className="ghost"
@@ -16351,6 +16445,7 @@ export function FirewallExtras({
                   sessionStorage.removeItem(sshAuthCapabilityCountRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshAuthBatchGateRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshAuthSupportGateRosterStorageKey(firewallId));
+                  sessionStorage.removeItem(sshAuthMethodPartitionRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshPasswordSupportRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshAlternativeTitlesRosterStorageKey(firewallId));
                 } catch {
