@@ -1095,6 +1095,7 @@ export function fetchHardGaps() {
     soft_fertig_ssh_auth_export_count_roster?: Record<string, unknown>;
     soft_fertig_ssh_auth_hard_gap_count_roster?: Record<string, unknown>;
     soft_fertig_ssh_auth_path_count_roster?: Record<string, unknown>;
+    soft_fertig_ssh_auth_readiness_echo_roster?: Record<string, unknown>;
     soft_fertig_ssh_password_support_roster?: Record<string, unknown>;
     soft_fertig_ssh_alternative_titles_roster?: Record<string, unknown>;
     soft_fertig_ssh_auth_policy_roster?: Record<string, unknown>;
