@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# Phase-7114: UI honesty bundle includes ssh_alternatives_refresh_roster section.
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/../.." && pwd)"; cd "$ROOT"
+grep -Fq 'ssh_alternatives_refresh_roster:' webui/frontend/src/components/FirewallExtras.tsx
+grep -Fq 'soft_fertig_ssh_alternatives_refresh_roster:' webui/frontend/src/components/FirewallExtras.tsx
+echo "UI ssh_alternatives_refresh_roster bundle section ok"; echo "cleaned"; echo "OK: phase7114 e2e passed"
