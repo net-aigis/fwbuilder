@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "14056"
+WEBUI_SOFT_COMPLETE_PHASE = "14136"
 SOFT_FERTIG_HONESTY_TRACK_NOTE = (
     "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
     "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
@@ -475,10 +475,10 @@ SOFT_FERTIG_HONESTY_TRACK_NOTE = (
 # 20650: soft_fertig_honesty_surface_version bumped to 5.30 (ssh_alternative_titles_refresh_roster);
 # 20700: ssh_alternative_titles_refresh_roster added to sessionStorage + clear catalogs;
 # 20750: Soft 7240+ honesty surface checkpoint (ssh_alternative_titles_refresh_roster cycle complete).
-WEBUI_HONESTY_MILESTONE = 42000
+WEBUI_HONESTY_MILESTONE = 42250
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 42000: soft-fertig honesty/preview catalogs "
-    "through Soft 14040+ (schema 5.115, ssh_auth_gap_note_echo_roster "
+    "Honesty surface checkpoint 42250: soft-fertig honesty/preview catalogs "
+    "through Soft 14120+ (schema 5.116, ssh_auth_gap_refusal_title_roster "
     "sessionStorage) — hard gaps remain open."
 )
 SOFT_FERTIG_SOFT_COMPLETE_NOTE = (
@@ -769,6 +769,7 @@ SOFT_FERTIG_SURFACE_KEYS = (
     "soft_fertig_ssh_auth_title_count_roster",
     "soft_fertig_ssh_auth_notes_count_roster",
     "soft_fertig_ssh_auth_gap_note_echo_roster",
+    "soft_fertig_ssh_auth_gap_refusal_title_roster",
     "soft_fertig_ssh_alternative_titles_roster",
 )
 SOFT_FERTIG_SURFACE_KEY_TITLES = {
@@ -1263,6 +1264,9 @@ SOFT_FERTIG_SURFACE_KEY_TITLES = {
     "soft_fertig_ssh_auth_gap_note_echo_roster": (
         "/ssh-auth auth-gap-note-echo with titles and notes"
     ),
+    "soft_fertig_ssh_auth_gap_refusal_title_roster": (
+        "/ssh-auth auth-gap-refusal-title with titles and notes"
+    ),
 }
 
 SOFT_FERTIG_SURFACE_NOTES = {
@@ -1618,6 +1622,7 @@ SOFT_FERTIG_SESSION_STORAGE_KEYS = {
     "ssh_auth_title_count_roster": "fwbweb.sshAuthTitleCountRoster.",
     "ssh_auth_notes_count_roster": "fwbweb.sshAuthNotesCountRoster.",
     "ssh_auth_gap_note_echo_roster": "fwbweb.sshAuthGapNoteEchoRoster.",
+    "ssh_auth_gap_refusal_title_roster": "fwbweb.sshAuthGapRefusalTitleRoster.",
 }
 SOFT_FERTIG_SESSION_STORAGE_KEY_TITLES = {
     "hard_gaps": "Full /hard-gaps JSON snapshot",
@@ -1779,6 +1784,7 @@ SOFT_FERTIG_SESSION_STORAGE_KEY_TITLES = {
     "ssh_auth_title_count_roster": "SSH auth-title-count roster JSON",
     "ssh_auth_notes_count_roster": "SSH auth-notes-count roster JSON",
     "ssh_auth_gap_note_echo_roster": "SSH auth-gap-note-echo roster JSON",
+    "ssh_auth_gap_refusal_title_roster": "SSH auth-gap-refusal-title roster JSON",
 }
 SOFT_FERTIG_SESSION_STORAGE_NOTES = {
     "hard_gaps": "Persists last downloaded/copied /hard-gaps JSON per firewall.",
@@ -2538,6 +2544,11 @@ SOFT_FERTIG_SESSION_STORAGE_NOTES = {
         "per firewall; UI restores expandable ssh-auth-gap-note-echo-roster detail "
         "on load."
     ),
+    "ssh_auth_gap_refusal_title_roster": (
+        "Persists last downloaded/copied soft_fertig_ssh_auth_gap_refusal_title_roster "
+        "per firewall; UI restores expandable ssh-auth-gap-refusal-title-roster detail "
+        "on load."
+    ),
 }
 
 # Keys removed by the UI "Clear honesty catalogs" action (same set as sessionStorage catalog).
@@ -2548,9 +2559,9 @@ SOFT_FERTIG_SESSION_STORAGE_CLEAR_NOTE = (
 )
 
 # Soft-fertig honesty/preview catalog schema version (documentation; not a lock).
-SOFT_FERTIG_HONESTY_SURFACE_VERSION = "5.115"
+SOFT_FERTIG_HONESTY_SURFACE_VERSION = "5.116"
 SOFT_FERTIG_HONESTY_SURFACE_VERSION_NOTE = (
-    "Schema 5.115: schema 5.114 plus soft_fertig_ssh_auth_gap_note_echo_roster on "
+    "Schema 5.116: schema 5.115 plus soft_fertig_ssh_auth_gap_refusal_title_roster on "
     "/health and honesty endpoints (+ export/bundle); hard gaps remain open."
 )
 
@@ -2718,6 +2729,7 @@ SOFT_FERTIG_HONESTY_EXPORT_KEYS = (
     "ssh_auth_title_count_roster",
     "ssh_auth_notes_count_roster",
     "ssh_auth_gap_note_echo_roster",
+    "ssh_auth_gap_refusal_title_roster",
 )
 SOFT_FERTIG_HONESTY_EXPORT_KEY_TITLES = {
     "hard_gaps": "Full /hard-gaps honesty snapshot JSON",
@@ -2879,6 +2891,7 @@ SOFT_FERTIG_HONESTY_EXPORT_KEY_TITLES = {
     "ssh_auth_title_count_roster": "/ssh-auth auth-title-count with titles and notes",
     "ssh_auth_notes_count_roster": "/ssh-auth auth-notes-count with titles and notes",
     "ssh_auth_gap_note_echo_roster": "/ssh-auth auth-gap-note-echo with titles and notes",
+    "ssh_auth_gap_refusal_title_roster": "/ssh-auth auth-gap-refusal-title with titles and notes",
 }
 SOFT_FERTIG_HONESTY_EXPORT_NOTES = {
     "hard_gaps": "Download hard-gaps JSON button; sessionStorage fwbweb.hardGaps.*.",
@@ -3497,6 +3510,10 @@ SOFT_FERTIG_HONESTY_EXPORT_NOTES = {
         "Download/Copy soft_fertig_ssh_auth_gap_note_echo_roster; also on /hard-gaps; "
         "sessionStorage fwbweb.sshAuthGapNoteEchoRoster.*"
     ),
+    "ssh_auth_gap_refusal_title_roster": (
+        "Download/Copy soft_fertig_ssh_auth_gap_refusal_title_roster; also on /hard-gaps; "
+        "sessionStorage fwbweb.sshAuthGapRefusalTitleRoster.*"
+    ),
 }
 
 # Top-level sections of the combined UI honesty bundle download.
@@ -3663,6 +3680,7 @@ SOFT_FERTIG_HONESTY_BUNDLE_SECTIONS = (
     "ssh_auth_title_count_roster",
     "ssh_auth_notes_count_roster",
     "ssh_auth_gap_note_echo_roster",
+    "ssh_auth_gap_refusal_title_roster",
     "honesty_exports",
 )
 SOFT_FERTIG_HONESTY_BUNDLE_SECTION_TITLES = {
@@ -3828,6 +3846,7 @@ SOFT_FERTIG_HONESTY_BUNDLE_SECTION_TITLES = {
     "ssh_auth_title_count_roster": "/ssh-auth auth-title-count with titles and notes",
     "ssh_auth_notes_count_roster": "/ssh-auth auth-notes-count with titles and notes",
     "ssh_auth_gap_note_echo_roster": "/ssh-auth auth-gap-note-echo with titles and notes",
+    "ssh_auth_gap_refusal_title_roster": "/ssh-auth auth-gap-refusal-title with titles and notes",
     "honesty_exports": "Export catalog meta (keys/titles/notes)",
 }
 SOFT_FERTIG_HONESTY_BUNDLE_NOTES = {
@@ -4449,6 +4468,10 @@ SOFT_FERTIG_HONESTY_BUNDLE_NOTES = {
     "ssh_auth_gap_note_echo_roster": (
         "Same subset as Download ssh-auth-gap-note-echo roster; "
         "also sessionStorage fwbweb.sshAuthGapNoteEchoRoster.*"
+    ),
+    "ssh_auth_gap_refusal_title_roster": (
+        "Same subset as Download ssh-auth-gap-refusal-title roster; "
+        "also sessionStorage fwbweb.sshAuthGapRefusalTitleRoster.*"
     ),
     "honesty_exports": "Same subset as Download honesty exports.",
 }
@@ -10157,6 +10180,42 @@ def soft_fertig_ssh_auth_gap_note_echo_roster() -> dict[str, object]:
     }
 
 
+SOFT_FERTIG_SSH_AUTH_GAP_REFUSAL_TITLE_KEYS: tuple[str, ...] = (
+    "full_qt_pixel_layout",
+    "expect_sshsession_runtime",
+    "password_keyboard_interactive_ssh",
+)
+
+
+def soft_fertig_ssh_auth_gap_refusal_title_roster() -> dict[str, object]:
+    """SSH-auth hard-gap related-refusal title echo roster (documentation; does not close hard gaps)."""
+    entries: list[dict[str, object]] = []
+    for key_id in SOFT_FERTIG_SSH_AUTH_GAP_REFUSAL_TITLE_KEYS:
+        title = HARD_GAP_RELATED_REFUSAL_TITLES.get(key_id, "")
+        entries.append(
+            {
+                "id": key_id,
+                "kind": "auth_gap_refusal_title",
+                "value": title,
+                "related_refusal_title": title,
+                "title": f"SSH-auth hard-gap refusal title: {key_id}",
+                "note": (
+                    f"Hard gap `{key_id}` related-refusal title is {title!r}; "
+                    "soft-fertig catalogs do not close hard gaps."
+                ),
+            }
+        )
+    return {
+        "hard_gaps_remain": True,
+        "entries": entries,
+        "entry_count": len(entries),
+        "note": (
+            "Echo catalog of HARD_GAP_RELATED_REFUSAL_TITLES; "
+            "soft-fertig catalogs do not close hard gaps."
+        ),
+    }
+
+
 def soft_fertig_honesty_readiness_roster() -> dict[str, object]:
     """Honesty-readiness field roster (documentation; does not close hard gaps)."""
     entries: list[dict[str, object]] = []
@@ -10832,6 +10891,10 @@ SOFT_FERTIG_HONESTY_SURFACE_CHANGELOG = {
     ),
     "5.115": (
         "soft_fertig_ssh_auth_gap_note_echo_roster on /health and honesty "
+        "endpoints (+ export/bundle)."
+    ),
+    "5.116": (
+        "soft_fertig_ssh_auth_gap_refusal_title_roster on /health and honesty "
         "endpoints (+ export/bundle)."
     ),
 }
@@ -11557,6 +11620,7 @@ SOFT_FERTIG_CATALOG_SUMMARY_KEYS: tuple[str, ...] = (
     "soft_fertig_ssh_auth_title_count_roster_entry_count",
     "soft_fertig_ssh_auth_notes_count_roster_entry_count",
     "soft_fertig_ssh_auth_gap_note_echo_roster_entry_count",
+    "soft_fertig_ssh_auth_gap_refusal_title_roster_entry_count",
     "soft_fertig_ssh_password_support_roster_entry_count",
     "soft_fertig_ssh_alternative_titles_roster_entry_count",
     "soft_fertig_ssh_auth_policy_roster_entry_count",
@@ -12048,6 +12112,9 @@ def soft_fertig_catalog_summary() -> dict[str, object]:
         "soft_fertig_ssh_auth_gap_note_echo_roster_entry_count": (
             soft_fertig_ssh_auth_gap_note_echo_roster()["entry_count"]
         ),
+        "soft_fertig_ssh_auth_gap_refusal_title_roster_entry_count": (
+            soft_fertig_ssh_auth_gap_refusal_title_roster()["entry_count"]
+        ),
         "soft_fertig_ssh_password_support_roster_entry_count": (
             soft_fertig_ssh_password_support_roster()["entry_count"]
         ),
@@ -12309,6 +12376,7 @@ def health() -> dict[str, object]:
         "soft_fertig_ssh_auth_title_count_roster": soft_fertig_ssh_auth_title_count_roster(),
         "soft_fertig_ssh_auth_notes_count_roster": soft_fertig_ssh_auth_notes_count_roster(),
         "soft_fertig_ssh_auth_gap_note_echo_roster": soft_fertig_ssh_auth_gap_note_echo_roster(),
+        "soft_fertig_ssh_auth_gap_refusal_title_roster": soft_fertig_ssh_auth_gap_refusal_title_roster(),
         "soft_fertig_ssh_alternative_titles_roster": soft_fertig_ssh_alternative_titles_roster(),
         "soft_fertig_ssh_auth_policy_roster": soft_fertig_ssh_auth_policy_roster(),
         "soft_fertig_honesty_surface_version": SOFT_FERTIG_HONESTY_SURFACE_VERSION,
@@ -12906,6 +12974,7 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
         "soft_fertig_ssh_auth_title_count_roster": soft_fertig_ssh_auth_title_count_roster(),
         "soft_fertig_ssh_auth_notes_count_roster": soft_fertig_ssh_auth_notes_count_roster(),
         "soft_fertig_ssh_auth_gap_note_echo_roster": soft_fertig_ssh_auth_gap_note_echo_roster(),
+        "soft_fertig_ssh_auth_gap_refusal_title_roster": soft_fertig_ssh_auth_gap_refusal_title_roster(),
         "soft_fertig_ssh_alternative_titles_roster": soft_fertig_ssh_alternative_titles_roster(),
         "soft_fertig_ssh_auth_policy_roster": soft_fertig_ssh_auth_policy_roster(),
         "soft_fertig_honesty_export_keys": list(SOFT_FERTIG_HONESTY_EXPORT_KEYS),
@@ -13505,6 +13574,9 @@ def hard_gaps_summary(_: str = Depends(require_token)) -> dict[str, object]:
         "soft_fertig_ssh_auth_gap_note_echo_roster": dict(
             full.get("soft_fertig_ssh_auth_gap_note_echo_roster") or {}
         ),
+        "soft_fertig_ssh_auth_gap_refusal_title_roster": dict(
+            full.get("soft_fertig_ssh_auth_gap_refusal_title_roster") or {}
+        ),
         "soft_fertig_ssh_alternative_titles_roster": dict(
             full.get("soft_fertig_ssh_alternative_titles_roster") or {}
         ),
@@ -14019,6 +14091,7 @@ def hard_gap_closure(_: str = Depends(require_token)) -> dict[str, object]:
         "soft_fertig_ssh_auth_title_count_roster": soft_fertig_ssh_auth_title_count_roster(),
         "soft_fertig_ssh_auth_notes_count_roster": soft_fertig_ssh_auth_notes_count_roster(),
         "soft_fertig_ssh_auth_gap_note_echo_roster": soft_fertig_ssh_auth_gap_note_echo_roster(),
+        "soft_fertig_ssh_auth_gap_refusal_title_roster": soft_fertig_ssh_auth_gap_refusal_title_roster(),
         "soft_fertig_ssh_alternative_titles_roster": soft_fertig_ssh_alternative_titles_roster(),
         "soft_fertig_ssh_auth_policy_roster": soft_fertig_ssh_auth_policy_roster(),
         "soft_fertig_honesty_export_keys": list(SOFT_FERTIG_HONESTY_EXPORT_KEYS),
