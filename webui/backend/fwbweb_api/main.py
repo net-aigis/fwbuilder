@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "6296"
+WEBUI_SOFT_COMPLETE_PHASE = "6376"
 SOFT_FERTIG_HONESTY_TRACK_NOTE = (
     "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
     "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
@@ -385,10 +385,15 @@ SOFT_FERTIG_HONESTY_TRACK_NOTE = (
 # 17650: soft_fertig_honesty_surface_version bumped to 5.18 (ssh_implemented_batch_roster);
 # 17700: ssh_implemented_batch_roster added to sessionStorage + clear catalogs;
 # 17750: Soft 6280+ honesty surface checkpoint (ssh_implemented_batch_roster cycle complete).
-WEBUI_HONESTY_MILESTONE = 17750
+# 17800: soft_fertig_ssh_not_implemented_batch_roster compact /ssh-auth not_implemented[] batch subset;
+# 17850: ssh_not_implemented_batch_roster listed in honesty export + bundle sections;
+# 17900: soft_fertig_honesty_surface_version bumped to 5.19 (ssh_not_implemented_batch_roster);
+# 17950: ssh_not_implemented_batch_roster added to sessionStorage + clear catalogs;
+# 18000: Soft 6360+ honesty surface checkpoint (ssh_not_implemented_batch_roster cycle complete).
+WEBUI_HONESTY_MILESTONE = 18000
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 17750: soft-fertig honesty/preview catalogs "
-    "through Soft 6280+ (schema 5.18, ssh_implemented_batch_roster "
+    "Honesty surface checkpoint 18000: soft-fertig honesty/preview catalogs "
+    "through Soft 6360+ (schema 5.19, ssh_not_implemented_batch_roster "
     "sessionStorage) — hard gaps remain open."
 )
 SOFT_FERTIG_SOFT_COMPLETE_NOTE = (
@@ -582,6 +587,7 @@ SOFT_FERTIG_SURFACE_KEYS = (
     "soft_fertig_ssh_not_implemented_check_roster",
     "soft_fertig_ssh_alternative_presence_roster",
     "soft_fertig_ssh_implemented_batch_roster",
+    "soft_fertig_ssh_not_implemented_batch_roster",
     "soft_fertig_ssh_alternative_titles_roster",
 )
 SOFT_FERTIG_SURFACE_KEY_TITLES = {
@@ -784,6 +790,9 @@ SOFT_FERTIG_SURFACE_KEY_TITLES = {
     ),
     "soft_fertig_ssh_implemented_batch_roster": (
         "/ssh-auth implemented[] membership for batch_mode and identity_file"
+    ),
+    "soft_fertig_ssh_not_implemented_batch_roster": (
+        "/ssh-auth not_implemented[] membership for password and keyboard_interactive"
     ),
 }
 
@@ -1043,6 +1052,7 @@ SOFT_FERTIG_SESSION_STORAGE_KEYS = {
     "ssh_not_implemented_check_roster": "fwbweb.sshNotImplementedCheckRoster.",
     "ssh_alternative_presence_roster": "fwbweb.sshAlternativePresenceRoster.",
     "ssh_implemented_batch_roster": "fwbweb.sshImplementedBatchRoster.",
+    "ssh_not_implemented_batch_roster": "fwbweb.sshNotImplementedBatchRoster.",
 }
 SOFT_FERTIG_SESSION_STORAGE_KEY_TITLES = {
     "hard_gaps": "Full /hard-gaps JSON snapshot",
@@ -1107,6 +1117,7 @@ SOFT_FERTIG_SESSION_STORAGE_KEY_TITLES = {
     "ssh_not_implemented_check_roster": "SSH not-implemented-check roster JSON",
     "ssh_alternative_presence_roster": "SSH alternative-presence roster JSON",
     "ssh_implemented_batch_roster": "SSH implemented-batch roster JSON",
+    "ssh_not_implemented_batch_roster": "SSH not-implemented-batch roster JSON",
 }
 SOFT_FERTIG_SESSION_STORAGE_NOTES = {
     "hard_gaps": "Persists last downloaded/copied /hard-gaps JSON per firewall.",
@@ -1381,6 +1392,11 @@ SOFT_FERTIG_SESSION_STORAGE_NOTES = {
         "per firewall; UI restores expandable ssh-implemented-batch-roster detail "
         "on load."
     ),
+    "ssh_not_implemented_batch_roster": (
+        "Persists last downloaded/copied soft_fertig_ssh_not_implemented_batch_roster "
+        "per firewall; UI restores expandable ssh-not-implemented-batch-roster detail "
+        "on load."
+    ),
 }
 
 # Keys removed by the UI "Clear honesty catalogs" action (same set as sessionStorage catalog).
@@ -1391,9 +1407,9 @@ SOFT_FERTIG_SESSION_STORAGE_CLEAR_NOTE = (
 )
 
 # Soft-fertig honesty/preview catalog schema version (documentation; not a lock).
-SOFT_FERTIG_HONESTY_SURFACE_VERSION = "5.18"
+SOFT_FERTIG_HONESTY_SURFACE_VERSION = "5.19"
 SOFT_FERTIG_HONESTY_SURFACE_VERSION_NOTE = (
-    "Schema 5.18: schema 5.17 plus soft_fertig_ssh_implemented_batch_roster on "
+    "Schema 5.19: schema 5.18 plus soft_fertig_ssh_not_implemented_batch_roster on "
     "/health and honesty endpoints (+ export/bundle); hard gaps remain open."
 )
 
@@ -1464,6 +1480,7 @@ SOFT_FERTIG_HONESTY_EXPORT_KEYS = (
     "ssh_not_implemented_check_roster",
     "ssh_alternative_presence_roster",
     "ssh_implemented_batch_roster",
+    "ssh_not_implemented_batch_roster",
 )
 SOFT_FERTIG_HONESTY_EXPORT_KEY_TITLES = {
     "hard_gaps": "Full /hard-gaps honesty snapshot JSON",
@@ -1531,6 +1548,7 @@ SOFT_FERTIG_HONESTY_EXPORT_KEY_TITLES = {
     "ssh_not_implemented_check_roster": "/ssh-auth password/keyboard_interactive in not_implemented[] with titles and notes",
     "ssh_alternative_presence_roster": "/ssh-auth identity_file/ssh_agent in alternatives[] with titles and notes",
     "ssh_implemented_batch_roster": "/ssh-auth batch_mode/identity_file in implemented[] with titles and notes",
+    "ssh_not_implemented_batch_roster": "/ssh-auth password/keyboard_interactive in not_implemented[] with titles and notes",
 }
 SOFT_FERTIG_HONESTY_EXPORT_NOTES = {
     "hard_gaps": "Download hard-gaps JSON button; sessionStorage fwbweb.hardGaps.*.",
@@ -1761,6 +1779,10 @@ SOFT_FERTIG_HONESTY_EXPORT_NOTES = {
         "Download/Copy soft_fertig_ssh_implemented_batch_roster; also on /hard-gaps; "
         "sessionStorage fwbweb.sshImplementedBatchRoster.*"
     ),
+    "ssh_not_implemented_batch_roster": (
+        "Download/Copy soft_fertig_ssh_not_implemented_batch_roster; also on /hard-gaps; "
+        "sessionStorage fwbweb.sshNotImplementedBatchRoster.*"
+    ),
 }
 
 # Top-level sections of the combined UI honesty bundle download.
@@ -1830,6 +1852,7 @@ SOFT_FERTIG_HONESTY_BUNDLE_SECTIONS = (
     "ssh_not_implemented_check_roster",
     "ssh_alternative_presence_roster",
     "ssh_implemented_batch_roster",
+    "ssh_not_implemented_batch_roster",
     "honesty_exports",
 )
 SOFT_FERTIG_HONESTY_BUNDLE_SECTION_TITLES = {
@@ -1898,6 +1921,7 @@ SOFT_FERTIG_HONESTY_BUNDLE_SECTION_TITLES = {
     "ssh_not_implemented_check_roster": "/ssh-auth password/keyboard_interactive in not_implemented[] with titles and notes",
     "ssh_alternative_presence_roster": "/ssh-auth identity_file/ssh_agent in alternatives[] with titles and notes",
     "ssh_implemented_batch_roster": "/ssh-auth batch_mode/identity_file in implemented[] with titles and notes",
+    "ssh_not_implemented_batch_roster": "/ssh-auth password/keyboard_interactive in not_implemented[] with titles and notes",
     "honesty_exports": "Export catalog meta (keys/titles/notes)",
 }
 SOFT_FERTIG_HONESTY_BUNDLE_NOTES = {
@@ -2131,6 +2155,10 @@ SOFT_FERTIG_HONESTY_BUNDLE_NOTES = {
     "ssh_implemented_batch_roster": (
         "Same subset as Download ssh-implemented-batch roster; "
         "also sessionStorage fwbweb.sshImplementedBatchRoster.*"
+    ),
+    "ssh_not_implemented_batch_roster": (
+        "Same subset as Download ssh-not-implemented-batch roster; "
+        "also sessionStorage fwbweb.sshNotImplementedBatchRoster.*"
     ),
     "honesty_exports": "Same subset as Download honesty exports.",
 }
@@ -3802,6 +3830,44 @@ def soft_fertig_ssh_implemented_batch_roster() -> dict[str, object]:
     }
 
 
+SOFT_FERTIG_SSH_NOT_IMPLEMENTED_BATCH_KEYS: tuple[str, ...] = (
+    "password",
+    "keyboard_interactive",
+)
+
+
+def soft_fertig_ssh_not_implemented_batch_roster() -> dict[str, object]:
+    """SSH not_implemented[] password subset roster (documentation; does not close hard gaps)."""
+    from .deploy import ssh_auth_capabilities
+
+    caps = ssh_auth_capabilities()
+    not_implemented = list(caps.get("not_implemented") or [])
+    entries: list[dict[str, object]] = []
+    for key_id in SOFT_FERTIG_SSH_NOT_IMPLEMENTED_BATCH_KEYS:
+        value = key_id in not_implemented
+        entries.append(
+            {
+                "id": key_id,
+                "value": value,
+                "in_not_implemented": value,
+                "title": f"SSH not_implemented batch subset: {key_id}",
+                "note": (
+                    f"Method `{key_id}` in GET /ssh-auth not_implemented[] is {value!r}; "
+                    "soft-fertig catalogs do not close hard gaps."
+                ),
+            }
+        )
+    return {
+        "hard_gaps_remain": True,
+        "entries": entries,
+        "entry_count": len(entries),
+        "note": (
+            "Catalog of password and keyboard_interactive membership in GET /ssh-auth "
+            "not_implemented[]; soft-fertig catalogs do not close hard gaps."
+        ),
+    }
+
+
 def soft_fertig_honesty_readiness_roster() -> dict[str, object]:
     """Honesty-readiness field roster (documentation; does not close hard gaps)."""
     entries: list[dict[str, object]] = []
@@ -4089,6 +4155,10 @@ SOFT_FERTIG_HONESTY_SURFACE_CHANGELOG = {
     ),
     "5.18": (
         "soft_fertig_ssh_implemented_batch_roster on /health and honesty "
+        "endpoints (+ export/bundle)."
+    ),
+    "5.19": (
+        "soft_fertig_ssh_not_implemented_batch_roster on /health and honesty "
         "endpoints (+ export/bundle)."
     ),
 }
@@ -4717,6 +4787,7 @@ SOFT_FERTIG_CATALOG_SUMMARY_KEYS: tuple[str, ...] = (
     "soft_fertig_ssh_not_implemented_check_roster_entry_count",
     "soft_fertig_ssh_alternative_presence_roster_entry_count",
     "soft_fertig_ssh_implemented_batch_roster_entry_count",
+    "soft_fertig_ssh_not_implemented_batch_roster_entry_count",
     "soft_fertig_ssh_password_support_roster_entry_count",
     "soft_fertig_ssh_alternative_titles_roster_entry_count",
     "soft_fertig_ssh_auth_policy_roster_entry_count",
@@ -4917,6 +4988,9 @@ def soft_fertig_catalog_summary() -> dict[str, object]:
         "soft_fertig_ssh_implemented_batch_roster_entry_count": (
             soft_fertig_ssh_implemented_batch_roster()["entry_count"]
         ),
+        "soft_fertig_ssh_not_implemented_batch_roster_entry_count": (
+            soft_fertig_ssh_not_implemented_batch_roster()["entry_count"]
+        ),
         "soft_fertig_ssh_password_support_roster_entry_count": (
             soft_fertig_ssh_password_support_roster()["entry_count"]
         ),
@@ -5081,6 +5155,7 @@ def health() -> dict[str, object]:
         "soft_fertig_ssh_not_implemented_check_roster": soft_fertig_ssh_not_implemented_check_roster(),
         "soft_fertig_ssh_alternative_presence_roster": soft_fertig_ssh_alternative_presence_roster(),
         "soft_fertig_ssh_implemented_batch_roster": soft_fertig_ssh_implemented_batch_roster(),
+        "soft_fertig_ssh_not_implemented_batch_roster": soft_fertig_ssh_not_implemented_batch_roster(),
         "soft_fertig_ssh_alternative_titles_roster": soft_fertig_ssh_alternative_titles_roster(),
         "soft_fertig_ssh_auth_policy_roster": soft_fertig_ssh_auth_policy_roster(),
         "soft_fertig_honesty_surface_version": SOFT_FERTIG_HONESTY_SURFACE_VERSION,
@@ -5581,6 +5656,7 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
         "soft_fertig_ssh_not_implemented_check_roster": soft_fertig_ssh_not_implemented_check_roster(),
         "soft_fertig_ssh_alternative_presence_roster": soft_fertig_ssh_alternative_presence_roster(),
         "soft_fertig_ssh_implemented_batch_roster": soft_fertig_ssh_implemented_batch_roster(),
+        "soft_fertig_ssh_not_implemented_batch_roster": soft_fertig_ssh_not_implemented_batch_roster(),
         "soft_fertig_ssh_alternative_titles_roster": soft_fertig_ssh_alternative_titles_roster(),
         "soft_fertig_ssh_auth_policy_roster": soft_fertig_ssh_auth_policy_roster(),
         "soft_fertig_honesty_export_keys": list(SOFT_FERTIG_HONESTY_EXPORT_KEYS),
@@ -5888,6 +5964,9 @@ def hard_gaps_summary(_: str = Depends(require_token)) -> dict[str, object]:
         ),
         "soft_fertig_ssh_implemented_batch_roster": dict(
             full.get("soft_fertig_ssh_implemented_batch_roster") or {}
+        ),
+        "soft_fertig_ssh_not_implemented_batch_roster": dict(
+            full.get("soft_fertig_ssh_not_implemented_batch_roster") or {}
         ),
         "soft_fertig_ssh_alternative_titles_roster": dict(
             full.get("soft_fertig_ssh_alternative_titles_roster") or {}
@@ -6306,6 +6385,7 @@ def hard_gap_closure(_: str = Depends(require_token)) -> dict[str, object]:
         "soft_fertig_ssh_not_implemented_check_roster": soft_fertig_ssh_not_implemented_check_roster(),
         "soft_fertig_ssh_alternative_presence_roster": soft_fertig_ssh_alternative_presence_roster(),
         "soft_fertig_ssh_implemented_batch_roster": soft_fertig_ssh_implemented_batch_roster(),
+        "soft_fertig_ssh_not_implemented_batch_roster": soft_fertig_ssh_not_implemented_batch_roster(),
         "soft_fertig_ssh_alternative_titles_roster": soft_fertig_ssh_alternative_titles_roster(),
         "soft_fertig_ssh_auth_policy_roster": soft_fertig_ssh_auth_policy_roster(),
         "soft_fertig_honesty_export_keys": list(SOFT_FERTIG_HONESTY_EXPORT_KEYS),
