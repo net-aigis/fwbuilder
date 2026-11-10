@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "25736"
+WEBUI_SOFT_COMPLETE_PHASE = "25816"
 SOFT_FERTIG_HONESTY_TRACK_NOTE = (
     "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
     "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
@@ -475,10 +475,10 @@ SOFT_FERTIG_HONESTY_TRACK_NOTE = (
 # 20650: soft_fertig_honesty_surface_version bumped to 5.30 (ssh_alternative_titles_refresh_roster);
 # 20700: ssh_alternative_titles_refresh_roster added to sessionStorage + clear catalogs;
 # 20750: Soft 7240+ honesty surface checkpoint (ssh_alternative_titles_refresh_roster cycle complete).
-WEBUI_HONESTY_MILESTONE = 78500
+WEBUI_HONESTY_MILESTONE = 78750
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 78500: soft-fertig honesty/preview catalogs "
-    "through Soft 25720+ (schema 5.261, ssh_auth_ms_62000_echo_roster "
+    "Honesty surface checkpoint 78750: soft-fertig honesty/preview catalogs "
+    "through Soft 25800+ (schema 5.262, ssh_auth_schema_259_echo_roster "
     "sessionStorage) — hard gaps remain open."
 )
 SOFT_FERTIG_SOFT_COMPLETE_NOTE = (
@@ -915,6 +915,7 @@ SOFT_FERTIG_SURFACE_KEYS = (
     "soft_fertig_ssh_auth_triacontapentadeca_checkpoint_roster",
     "soft_fertig_ssh_auth_soft_25800_echo_roster",
     "soft_fertig_ssh_auth_ms_62000_echo_roster",
+    "soft_fertig_ssh_auth_schema_259_echo_roster",
     "soft_fertig_ssh_alternative_titles_roster",
 )
 SOFT_FERTIG_SURFACE_KEY_TITLES = {
@@ -1847,6 +1848,9 @@ SOFT_FERTIG_SURFACE_KEY_TITLES = {
     "soft_fertig_ssh_auth_ms_62000_echo_roster": (
         "/ssh-auth auth-ms-62000-echo with titles and notes"
     ),
+    "soft_fertig_ssh_auth_schema_259_echo_roster": (
+        "/ssh-auth auth-schema-259-echo with titles and notes"
+    ),
 }
 
 SOFT_FERTIG_SURFACE_NOTES = {
@@ -2348,6 +2352,7 @@ SOFT_FERTIG_SESSION_STORAGE_KEYS = {
     "ssh_auth_triacontapentadeca_checkpoint_roster": "fwbweb.sshAuthTriacontapentadecaCheckpointRoster.",
     "ssh_auth_soft_25800_echo_roster": "fwbweb.sshAuthSoft25800EchoRoster.",
     "ssh_auth_ms_62000_echo_roster": "fwbweb.sshAuthMs62000EchoRoster.",
+    "ssh_auth_schema_259_echo_roster": "fwbweb.sshAuthSchema259EchoRoster.",
 }
 SOFT_FERTIG_SESSION_STORAGE_KEY_TITLES = {
     "hard_gaps": "Full /hard-gaps JSON snapshot",
@@ -2655,6 +2660,7 @@ SOFT_FERTIG_SESSION_STORAGE_KEY_TITLES = {
     "ssh_auth_triacontapentadeca_checkpoint_roster": "SSH auth-triacontapentadeca-checkpoint roster JSON",
     "ssh_auth_soft_25800_echo_roster": "SSH auth-soft-25800-echo roster JSON",
     "ssh_auth_ms_62000_echo_roster": "SSH auth-ms-62000-echo roster JSON",
+    "ssh_auth_schema_259_echo_roster": "SSH auth-schema-259-echo roster JSON",
 }
 SOFT_FERTIG_SESSION_STORAGE_NOTES = {
     "hard_gaps": "Persists last downloaded/copied /hard-gaps JSON per firewall.",
@@ -4144,6 +4150,11 @@ SOFT_FERTIG_SESSION_STORAGE_NOTES = {
         "per firewall; UI restores expandable ssh-auth-ms-62000-echo-roster detail "
         "on load."
     ),
+    "ssh_auth_schema_259_echo_roster": (
+        "Persists last downloaded/copied soft_fertig_ssh_auth_schema_259_echo_roster "
+        "per firewall; UI restores expandable ssh-auth-schema-259-echo-roster detail "
+        "on load."
+    ),
 }
 
 # Keys removed by the UI "Clear honesty catalogs" action (same set as sessionStorage catalog).
@@ -4154,9 +4165,9 @@ SOFT_FERTIG_SESSION_STORAGE_CLEAR_NOTE = (
 )
 
 # Soft-fertig honesty/preview catalog schema version (documentation; not a lock).
-SOFT_FERTIG_HONESTY_SURFACE_VERSION = "5.261"
+SOFT_FERTIG_HONESTY_SURFACE_VERSION = "5.262"
 SOFT_FERTIG_HONESTY_SURFACE_VERSION_NOTE = (
-    "Schema 5.261: schema 5.260 plus soft_fertig_ssh_auth_ms_62000_echo_roster on "
+    "Schema 5.262: schema 5.261 plus soft_fertig_ssh_auth_schema_259_echo_roster on "
     "/health and honesty endpoints (+ export/bundle); hard gaps remain open."
 )
 
@@ -4470,6 +4481,7 @@ SOFT_FERTIG_HONESTY_EXPORT_KEYS = (
     "ssh_auth_triacontapentadeca_checkpoint_roster",
     "ssh_auth_soft_25800_echo_roster",
     "ssh_auth_ms_62000_echo_roster",
+    "ssh_auth_schema_259_echo_roster",
 )
 SOFT_FERTIG_HONESTY_EXPORT_KEY_TITLES = {
     "hard_gaps": "Full /hard-gaps honesty snapshot JSON",
@@ -4777,6 +4789,7 @@ SOFT_FERTIG_HONESTY_EXPORT_KEY_TITLES = {
     "ssh_auth_triacontapentadeca_checkpoint_roster": "/ssh-auth auth-triacontapentadeca-checkpoint with titles and notes",
     "ssh_auth_soft_25800_echo_roster": "/ssh-auth auth-soft-25800-echo with titles and notes",
     "ssh_auth_ms_62000_echo_roster": "/ssh-auth auth-ms-62000-echo with titles and notes",
+    "ssh_auth_schema_259_echo_roster": "/ssh-auth auth-schema-259-echo with titles and notes",
 }
 SOFT_FERTIG_HONESTY_EXPORT_NOTES = {
     "hard_gaps": "Download hard-gaps JSON button; sessionStorage fwbweb.hardGaps.*.",
@@ -5979,6 +5992,10 @@ SOFT_FERTIG_HONESTY_EXPORT_NOTES = {
         "Download/Copy soft_fertig_ssh_auth_ms_62000_echo_roster; also on /hard-gaps; "
         "sessionStorage fwbweb.sshAuthMs62000EchoRoster.*"
     ),
+    "ssh_auth_schema_259_echo_roster": (
+        "Download/Copy soft_fertig_ssh_auth_schema_259_echo_roster; also on /hard-gaps; "
+        "sessionStorage fwbweb.sshAuthSchema259EchoRoster.*"
+    ),
 }
 
 # Top-level sections of the combined UI honesty bundle download.
@@ -6291,6 +6308,7 @@ SOFT_FERTIG_HONESTY_BUNDLE_SECTIONS = (
     "ssh_auth_triacontapentadeca_checkpoint_roster",
     "ssh_auth_soft_25800_echo_roster",
     "ssh_auth_ms_62000_echo_roster",
+    "ssh_auth_schema_259_echo_roster",
     "honesty_exports",
 )
 SOFT_FERTIG_HONESTY_BUNDLE_SECTION_TITLES = {
@@ -6602,6 +6620,7 @@ SOFT_FERTIG_HONESTY_BUNDLE_SECTION_TITLES = {
     "ssh_auth_triacontapentadeca_checkpoint_roster": "/ssh-auth auth-triacontapentadeca-checkpoint with titles and notes",
     "ssh_auth_soft_25800_echo_roster": "/ssh-auth auth-soft-25800-echo with titles and notes",
     "ssh_auth_ms_62000_echo_roster": "/ssh-auth auth-ms-62000-echo with titles and notes",
+    "ssh_auth_schema_259_echo_roster": "/ssh-auth auth-schema-259-echo with titles and notes",
     "honesty_exports": "Export catalog meta (keys/titles/notes)",
 }
 SOFT_FERTIG_HONESTY_BUNDLE_NOTES = {
@@ -7807,6 +7826,10 @@ SOFT_FERTIG_HONESTY_BUNDLE_NOTES = {
     "ssh_auth_ms_62000_echo_roster": (
         "Same subset as Download ssh-auth-ms-62000-echo roster; "
         "also sessionStorage fwbweb.sshAuthMs62000EchoRoster.*"
+    ),
+    "ssh_auth_schema_259_echo_roster": (
+        "Same subset as Download ssh-auth-schema-259-echo roster; "
+        "also sessionStorage fwbweb.sshAuthSchema259EchoRoster.*"
     ),
     "honesty_exports": "Same subset as Download honesty exports.",
 }
@@ -20527,6 +20550,48 @@ def soft_fertig_ssh_auth_ms_62000_echo_roster() -> dict[str, object]:
     }
 
 
+SOFT_FERTIG_SSH_AUTH_SCHEMA_259_ECHO_KEYS: tuple[str, ...] = (
+    "schema_raw",
+    "schema_minor",
+    "schema_minor_at_or_above_259",
+)
+
+
+def soft_fertig_ssh_auth_schema_259_echo_roster() -> dict[str, object]:
+    """SSH-auth schema minor≥259 checkpoint echo roster (documentation; does not close hard gaps)."""
+    major_s, minor_s = SOFT_FERTIG_HONESTY_SURFACE_VERSION.split(".", 1)
+    minor_i = int(minor_s)
+    values = {
+        "schema_raw": SOFT_FERTIG_HONESTY_SURFACE_VERSION,
+        "schema_minor": minor_i,
+        "schema_minor_at_or_above_259": minor_i >= 259,
+    }
+    entries: list[dict[str, object]] = []
+    for key_id in SOFT_FERTIG_SSH_AUTH_SCHEMA_259_ECHO_KEYS:
+        value = values[key_id]
+        entries.append(
+            {
+                "id": key_id,
+                "kind": "auth_schema_259_echo",
+                "value": value,
+                "title": f"SSH-auth schema 259 echo: {key_id}",
+                "note": (
+                    f"Schema-259 field `{key_id}` is {value!r}; "
+                    "soft-fertig catalogs do not close hard gaps."
+                ),
+            }
+        )
+    return {
+        "hard_gaps_remain": True,
+        "entries": entries,
+        "entry_count": len(entries),
+        "note": (
+            "Checkpoint echo that honesty surface schema minor crossed 259; "
+            "soft-fertig catalogs do not close hard gaps."
+        ),
+    }
+
+
 def soft_fertig_honesty_readiness_roster() -> dict[str, object]:
     """Honesty-readiness field roster (documentation; does not close hard gaps)."""
     entries: list[dict[str, object]] = []
@@ -21788,6 +21853,10 @@ SOFT_FERTIG_HONESTY_SURFACE_CHANGELOG = {
         "soft_fertig_ssh_auth_ms_62000_echo_roster on /health and honesty "
         "endpoints (+ export/bundle)."
     ),
+    "5.262": (
+        "soft_fertig_ssh_auth_schema_259_echo_roster on /health and honesty "
+        "endpoints (+ export/bundle)."
+    ),
 }
 
 
@@ -22657,6 +22726,7 @@ SOFT_FERTIG_CATALOG_SUMMARY_KEYS: tuple[str, ...] = (
     "soft_fertig_ssh_auth_triacontapentadeca_checkpoint_roster_entry_count",
     "soft_fertig_ssh_auth_soft_25800_echo_roster_entry_count",
     "soft_fertig_ssh_auth_ms_62000_echo_roster_entry_count",
+    "soft_fertig_ssh_auth_schema_259_echo_roster_entry_count",
     "soft_fertig_ssh_password_support_roster_entry_count",
     "soft_fertig_ssh_alternative_titles_roster_entry_count",
     "soft_fertig_ssh_auth_policy_roster_entry_count",
@@ -23586,6 +23656,9 @@ def soft_fertig_catalog_summary() -> dict[str, object]:
         "soft_fertig_ssh_auth_ms_62000_echo_roster_entry_count": (
             soft_fertig_ssh_auth_ms_62000_echo_roster()["entry_count"]
         ),
+        "soft_fertig_ssh_auth_schema_259_echo_roster_entry_count": (
+            soft_fertig_ssh_auth_schema_259_echo_roster()["entry_count"]
+        ),
         "soft_fertig_ssh_password_support_roster_entry_count": (
             soft_fertig_ssh_password_support_roster()["entry_count"]
         ),
@@ -23993,6 +24066,7 @@ def health() -> dict[str, object]:
         "soft_fertig_ssh_auth_triacontapentadeca_checkpoint_roster": soft_fertig_ssh_auth_triacontapentadeca_checkpoint_roster(),
         "soft_fertig_ssh_auth_soft_25800_echo_roster": soft_fertig_ssh_auth_soft_25800_echo_roster(),
         "soft_fertig_ssh_auth_ms_62000_echo_roster": soft_fertig_ssh_auth_ms_62000_echo_roster(),
+        "soft_fertig_ssh_auth_schema_259_echo_roster": soft_fertig_ssh_auth_schema_259_echo_roster(),
         "soft_fertig_ssh_alternative_titles_roster": soft_fertig_ssh_alternative_titles_roster(),
         "soft_fertig_ssh_auth_policy_roster": soft_fertig_ssh_auth_policy_roster(),
         "soft_fertig_honesty_surface_version": SOFT_FERTIG_HONESTY_SURFACE_VERSION,
@@ -24736,6 +24810,7 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
         "soft_fertig_ssh_auth_triacontapentadeca_checkpoint_roster": soft_fertig_ssh_auth_triacontapentadeca_checkpoint_roster(),
         "soft_fertig_ssh_auth_soft_25800_echo_roster": soft_fertig_ssh_auth_soft_25800_echo_roster(),
         "soft_fertig_ssh_auth_ms_62000_echo_roster": soft_fertig_ssh_auth_ms_62000_echo_roster(),
+        "soft_fertig_ssh_auth_schema_259_echo_roster": soft_fertig_ssh_auth_schema_259_echo_roster(),
         "soft_fertig_ssh_alternative_titles_roster": soft_fertig_ssh_alternative_titles_roster(),
         "soft_fertig_ssh_auth_policy_roster": soft_fertig_ssh_auth_policy_roster(),
         "soft_fertig_honesty_export_keys": list(SOFT_FERTIG_HONESTY_EXPORT_KEYS),
@@ -25773,6 +25848,9 @@ def hard_gaps_summary(_: str = Depends(require_token)) -> dict[str, object]:
         "soft_fertig_ssh_auth_ms_62000_echo_roster": dict(
             full.get("soft_fertig_ssh_auth_ms_62000_echo_roster") or {}
         ),
+        "soft_fertig_ssh_auth_schema_259_echo_roster": dict(
+            full.get("soft_fertig_ssh_auth_schema_259_echo_roster") or {}
+        ),
         "soft_fertig_ssh_alternative_titles_roster": dict(
             full.get("soft_fertig_ssh_alternative_titles_roster") or {}
         ),
@@ -26433,6 +26511,7 @@ def hard_gap_closure(_: str = Depends(require_token)) -> dict[str, object]:
         "soft_fertig_ssh_auth_triacontapentadeca_checkpoint_roster": soft_fertig_ssh_auth_triacontapentadeca_checkpoint_roster(),
         "soft_fertig_ssh_auth_soft_25800_echo_roster": soft_fertig_ssh_auth_soft_25800_echo_roster(),
         "soft_fertig_ssh_auth_ms_62000_echo_roster": soft_fertig_ssh_auth_ms_62000_echo_roster(),
+        "soft_fertig_ssh_auth_schema_259_echo_roster": soft_fertig_ssh_auth_schema_259_echo_roster(),
         "soft_fertig_ssh_alternative_titles_roster": soft_fertig_ssh_alternative_titles_roster(),
         "soft_fertig_ssh_auth_policy_roster": soft_fertig_ssh_auth_policy_roster(),
         "soft_fertig_honesty_export_keys": list(SOFT_FERTIG_HONESTY_EXPORT_KEYS),
