@@ -1193,6 +1193,9 @@ function sshAuthMs66500EchoRosterStorageKey(firewallId: string) {
 function sshAuthSchema295EchoRosterStorageKey(firewallId: string) {
   return `fwbweb.sshAuthSchema295EchoRoster.${firewallId}`;
 }
+function sshAuthTriacontapentacosadecaCheckpointRosterStorageKey(firewallId: string) {
+  return `fwbweb.sshAuthTriacontapentacosadecaCheckpointRoster.${firewallId}`;
+}
 
 function sshPasswordSupportRosterStorageKey(firewallId: string) {
   return `fwbweb.sshPasswordSupportRoster.${firewallId}`;
@@ -2368,6 +2371,8 @@ export function FirewallExtras({
   const [sshAuthMs66500EchoRosterDetail, setSshAuthMs66500EchoRosterDetail] =
     useState<string | null>(null);
   const [sshAuthSchema295EchoRosterDetail, setSshAuthSchema295EchoRosterDetail] =
+    useState<string | null>(null);
+  const [sshAuthTriacontapentacosadecaCheckpointRosterDetail, setSshAuthTriacontapentacosadecaCheckpointRosterDetail] =
     useState<string | null>(null);
   const [honestyPathsSummary, setHonestyPathsSummary] = useState<string | null>(null);
   const [honestyPathsDetail, setHonestyPathsDetail] = useState<string | null>(null);
@@ -11484,6 +11489,32 @@ export function FirewallExtras({
           setSshAuthSchema295EchoRosterDetail(null);
         }
       }
+      {
+        const roster =
+          gaps?.soft_fertig_ssh_auth_triacontapentacosadeca_checkpoint_roster &&
+          typeof gaps.soft_fertig_ssh_auth_triacontapentacosadeca_checkpoint_roster === "object"
+            ? (gaps.soft_fertig_ssh_auth_triacontapentacosadeca_checkpoint_roster as Record<string, unknown>)
+            : null;
+        if (roster && Object.keys(roster).length) {
+          const entries = Array.isArray(roster.entries)
+            ? (roster.entries as Array<Record<string, unknown>>)
+            : [];
+          const lines = [
+            `entry_count: ${String(roster.entry_count ?? "")}`,
+            `hard_gaps_remain: ${String(roster.hard_gaps_remain ?? "")}`,
+            `note: ${String(roster.note ?? "")}`,
+            ...entries.map(
+              (e) =>
+                `${String(e.id ?? "")}=${String(e.value ?? "")}` +
+                (e.title ? ` — ${String(e.title)}` : "") +
+                (e.note ? ` — ${String(e.note)}` : ""),
+            ),
+          ];
+          setSshAuthTriacontapentacosadecaCheckpointRosterDetail(lines.join("\n"));
+        } else {
+          setSshAuthTriacontapentacosadecaCheckpointRosterDetail(null);
+        }
+      }
       if (gaps?.honesty_paths && Object.keys(gaps.honesty_paths).length) {
         const entries = Object.entries(gaps.honesty_paths);
         const n =
@@ -19276,6 +19307,26 @@ export function FirewallExtras({
             setSshAuthSchema295EchoRosterDetail(sshAuthSchema295EchoRosterRaw);
           }
         }
+        const sshAuthTriacontapentacosadecaCheckpointRosterRaw = sessionStorage.getItem(
+          sshAuthTriacontapentacosadecaCheckpointRosterStorageKey(firewallId),
+        );
+        if (sshAuthTriacontapentacosadecaCheckpointRosterRaw) {
+          try {
+            const parsed = JSON.parse(sshAuthTriacontapentacosadecaCheckpointRosterRaw) as {
+              soft_fertig_ssh_auth_triacontapentacosadeca_checkpoint_roster?: unknown;
+            };
+            const roster = parsed.soft_fertig_ssh_auth_triacontapentacosadeca_checkpoint_roster;
+            if (roster && typeof roster === "object") {
+              setSshAuthTriacontapentacosadecaCheckpointRosterDetail(
+                JSON.stringify({ soft_fertig_ssh_auth_triacontapentacosadeca_checkpoint_roster: roster }, null, 2),
+              );
+            } else {
+              setSshAuthTriacontapentacosadecaCheckpointRosterDetail(sshAuthTriacontapentacosadecaCheckpointRosterRaw);
+            }
+          } catch {
+            setSshAuthTriacontapentacosadecaCheckpointRosterDetail(sshAuthTriacontapentacosadecaCheckpointRosterRaw);
+          }
+        }
       } catch {
         /* ignore */
       }
@@ -20211,6 +20262,14 @@ export function FirewallExtras({
               <summary>Soft-fertig ssh-auth-ms-54000-echo roster</summary>
               <pre className="deploy-log configlet-preview" tabIndex={0}>
                 {sshAuthMs54000EchoRosterDetail}
+              </pre>
+            </details>
+          ) : null}
+          {sshAuthTriacontapentacosadecaCheckpointRosterDetail ? (
+            <details className="muted">
+              <summary>Soft-fertig ssh-auth-triacontapentacosadeca-checkpoint roster</summary>
+              <pre className="deploy-log configlet-preview" tabIndex={0}>
+                {sshAuthTriacontapentacosadecaCheckpointRosterDetail}
               </pre>
             </details>
           ) : null}
@@ -37696,6 +37755,41 @@ export function FirewallExtras({
                   catch (e) { onError?.(e instanceof Error ? e.message : String(e)); }
                 })(); }}>Copy ssh-auth-schema-295-echo roster</button>
             ) : null}
+            {hardGapsPayload ? (
+              <button type="button" className="ghost" disabled={busy}
+                title="Download soft_fertig_ssh_auth_triacontapentacosadeca_checkpoint_roster from /hard-gaps"
+                onClick={() => {
+                  const catalog: Record<string, unknown> = {
+                    soft_fertig_ssh_auth_triacontapentacosadeca_checkpoint_roster: hardGapsPayload.soft_fertig_ssh_auth_triacontapentacosadeca_checkpoint_roster,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  const text = JSON.stringify(catalog, null, 2);
+                  try { sessionStorage.setItem(sshAuthTriacontapentacosadecaCheckpointRosterStorageKey(firewallId), text); } catch { /* ignore */ }
+                  const blob = new Blob([text + "\n"], { type: "application/json;charset=utf-8" });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `fwbweb-ssh-auth-triacontapentacosadeca-checkpoint-roster-${firewallId || "fw"}.json`;
+                  a.click(); URL.revokeObjectURL(url);
+                  onStatus?.("Downloaded ssh-auth-triacontapentacosadeca-checkpoint roster");
+                }}>Download ssh-auth-triacontapentacosadeca-checkpoint roster</button>
+            ) : null}
+            {hardGapsPayload ? (
+              <button type="button" className="ghost" disabled={busy}
+                title="Copy soft_fertig_ssh_auth_triacontapentacosadeca_checkpoint_roster to clipboard"
+                onClick={() => { void (async () => {
+                  const catalog: Record<string, unknown> = {
+                    soft_fertig_ssh_auth_triacontapentacosadeca_checkpoint_roster: hardGapsPayload.soft_fertig_ssh_auth_triacontapentacosadeca_checkpoint_roster,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  try { sessionStorage.setItem(sshAuthTriacontapentacosadecaCheckpointRosterStorageKey(firewallId), JSON.stringify(catalog, null, 2)); } catch { /* ignore */ }
+                  const text = JSON.stringify(catalog, null, 2) + "\n";
+                  try { await navigator.clipboard.writeText(text); onStatus?.("Copied ssh-auth-triacontapentacosadeca-checkpoint roster"); }
+                  catch (e) { onError?.(e instanceof Error ? e.message : String(e)); }
+                })(); }}>Copy ssh-auth-triacontapentacosadeca-checkpoint roster</button>
+            ) : null}
             <button
               type="button"
               className="ghost"
@@ -38297,6 +38391,7 @@ export function FirewallExtras({
                   sessionStorage.removeItem(sshAuthSoft29040EchoRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshAuthMs66500EchoRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshAuthSchema295EchoRosterStorageKey(firewallId));
+                  sessionStorage.removeItem(sshAuthTriacontapentacosadecaCheckpointRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshPasswordSupportRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshAlternativeTitlesRosterStorageKey(firewallId));
                 } catch {
