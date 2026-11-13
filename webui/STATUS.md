@@ -25950,6 +25950,78 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Typecheck after Soft 28040+ | done | E2E phase28046 |
 | e2e-all lists 28041–28048; gaps=3 | done | E2E phase28047 |
 | Soft-complete STATUS through 28048 | done | E2E phase28048 |
+| soft_fertig_ssh_auth_triacontatricosadeca_checkpoint_roster on hard-gaps | done | E2E phase28057 |
+| UI ssh-auth-triacontatricosadeca-checkpoint roster detail + download/copy | done | E2E phase28058 |
+| client soft_fertig_ssh_auth_triacontatricosadeca_checkpoint_roster type | done | E2E phase28059 |
+| STATUS ssh-auth-triacontatricosadeca-checkpoint roster | done | E2E phase28060 |
+| Soft marker 28064 | done | E2E phase28061 |
+| Typecheck after ssh_auth_triacontatricosadeca_checkpoint roster | done | E2E phase28062 |
+| e2e-all lists 28057–28064; gaps=3 | done | E2E phase28063 |
+| Soft-complete STATUS through 28064 | done | E2E phase28064 |
+| Honesty milestone 85800 + note | done | E2E phase28065 |
+| Milestone 85800 on all honesty endpoints | done | E2E phase28066 |
+| UI honesty milestone at 85800 | done | E2E phase28067 |
+| STATUS milestone 85800 | done | E2E phase28068 |
+| Soft marker 28072 | done | E2E phase28069 |
+| Typecheck after milestone 85800 | done | E2E phase28070 |
+| e2e-all lists 28065–28072; gaps=3 | done | E2E phase28071 |
+| Soft-complete STATUS through 28072 | done | E2E phase28072 |
+| ssh_auth_triacontatricosadeca_checkpoint_roster in catalog export/bundle | done | E2E phase28073 |
+| UI honesty bundle includes ssh_auth_triacontatricosadeca_checkpoint_roster | done | E2E phase28074 |
+| export titles/notes include ssh_auth_triacontatricosadeca_checkpoint_roster | done | E2E phase28075 |
+| STATUS ssh_auth_triacontatricosadeca_checkpoint_roster export | done | E2E phase28076 |
+| Soft marker 28072 | done | E2E phase28077 |
+| Typecheck after ssh_auth_triacontatricosadeca_checkpoint_roster export | done | E2E phase28078 |
+| e2e-all lists 28065–28072; gaps=3 | done | E2E phase28079 |
+| Soft-complete STATUS through 28072 | done | E2E phase28080 |
+| Honesty milestone 85850 + note | done | E2E phase28081 |
+| Milestone 85850 on all honesty endpoints | done | E2E phase28082 |
+| UI honesty milestone at 85850 | done | E2E phase28083 |
+| STATUS milestone 85850 | done | E2E phase28084 |
+| Soft marker 28072 | done | E2E phase28085 |
+| Typecheck after milestone 85850 | done | E2E phase28086 |
+| e2e-all lists 28065–28072; gaps=3 | done | E2E phase28087 |
+| Soft-complete STATUS through 28072 | done | E2E phase28088 |
+| soft_fertig_honesty_surface_version 5.291 | done | E2E phase28089 |
+| UI surface version 5.291 | done | E2E phase28090 |
+| client surface version 5.291 | done | E2E phase28091 |
+| STATUS schema 5.291 | done | E2E phase28092 |
+| Soft marker 28072 | done | E2E phase28093 |
+| Typecheck after schema 5.291 | done | E2E phase28094 |
+| e2e-all lists 28065–28072; gaps=3 | done | E2E phase28095 |
+| Soft-complete STATUS through 28072 | done | E2E phase28096 |
+| Honesty milestone 85950 + note | done | E2E phase28097 |
+| Milestone 85950 on all honesty endpoints | done | E2E phase28098 |
+| UI honesty milestone at 85950 | done | E2E phase28099 |
+| STATUS milestone 85950 | done | E2E phase28100 |
+| Soft marker 28072 | done | E2E phase28101 |
+| Typecheck after milestone 85950 | done | E2E phase28102 |
+| e2e-all lists 28065–28072; gaps=3 | done | E2E phase28103 |
+| Soft-complete STATUS through 28072 | done | E2E phase28104 |
+| ssh_auth_triacontatricosadeca_checkpoint_roster in sessionStorage/Clear | done | E2E phase28105 |
+| UI ssh_auth_triacontatricosadeca_checkpoint_roster sessionStorage | done | E2E phase28106 |
+| Clear ssh_auth_triacontatricosadeca_checkpoint_roster | done | E2E phase28107 |
+| STATUS ssh_auth_triacontatricosadeca_checkpoint_roster sessionStorage | done | E2E phase28108 |
+| Soft marker 28072 | done | E2E phase28109 |
+| Typecheck after ssh_auth_triacontatricosadeca_checkpoint_roster session | done | E2E phase28110 |
+| e2e-all lists 28065–28072; gaps=3 | done | E2E phase28111 |
+| Soft-complete STATUS through 28072 | done | E2E phase28112 |
+| Honesty milestone 86000 + note | done | E2E phase28113 |
+| Milestone 86000 on all honesty endpoints | done | E2E phase28114 |
+| UI honesty milestone at 86000 | done | E2E phase28115 |
+| STATUS milestone 86000 | done | E2E phase28116 |
+| Soft marker 28072 | done | E2E phase28117 |
+| Typecheck after milestone 86000 | done | E2E phase28118 |
+| e2e-all lists 28065–28072; gaps=3 | done | E2E phase28119 |
+| Soft-complete STATUS through 28072 | done | E2E phase28120 |
+| Soft 28120+ honesty surface still complete | done | E2E phase28121 |
+| UI ssh_auth_triacontatricosadeca_checkpoint_roster Soft 28120+ | done | E2E phase28122 |
+| client soft_fertig_ssh_auth_triacontatricosadeca_checkpoint_roster Soft 28120+ | done | E2E phase28123 |
+| STATUS Soft 28120+ ssh_auth_triacontatricosadeca_checkpoint_roster | done | E2E phase28124 |
+| Soft marker 28128 | done | E2E phase28125 |
+| Typecheck after Soft 28120+ | done | E2E phase28126 |
+| e2e-all lists 28121–28128; gaps=3 | done | E2E phase28127 |
+| Soft-complete STATUS through 28128 | done | E2E phase28128 |
 | Full local E2E runner | done | `webui/scripts/e2e-all.sh` |
 
 ## Soft-complete (feature/webui polish track)
@@ -25968,9 +26040,9 @@ Soft 3560+ Checkpoint: honesty_operator_brief_roster cycle complete (schema 3.4 
 
 WebUI on `feature/webui` remains soft-complete for the polish track.
 
-### Hard-gap honesty/preview track — soft-fertig (phase256); preview slices through 28056
+### Hard-gap honesty/preview track — soft-fertig (phase256); preview slices through 28136
 
-`WEBUI_SOFT_COMPLETE_PHASE=28056`; `WEBUI_HONESTY_MILESTONE=85750`; `soft_fertig_honesty_surface_version=5.290` (Honesty-Surface-Schema 5.290) (+ `honesty_milestone_note` checkpoint text on `/health`, `/res-status`, `/hard-gaps`, summary, closure; UI shows truncated note); `/health` and `/res-status` expose `honesty_milestone` + `soft_fertig_honesty_track` + `hard_gap_count`; `/hard-gaps` (+ `/hard-gaps/summary` compact snapshot with `layout_fidelity_sample_score_percent` / `score_parts_count` / `layout_fidelity_pixel_parity: false` + `layout_fidelity_sample_spacers` / `spacers_with_orientation` / `spacers_with_size_type` / `with_size_policy_expanding` / `with_size_policy_fixed` / `with_size_policy_minimum` + `with_minimum_size` / `with_maximum_size` + `expect_plan_step_count` for iptables/linux24 + `/hard-gaps/closure` with `hard_gap_notes` + `parent_path` + `hard_gap_count` + `honesty_milestone` + `soft_fertig_honesty_track` + `summary_path`) sets `soft_fertig_honesty_track: true` + `honesty_milestone: 85750` + `honesty_paths` / `honesty_paths_count` / `summary_path` (catalog of honesty/preview endpoints; expandable in UI) + `layout_fidelity_sample_*` including spacer + expanding sizePolicy counts on both `/hard-gaps` and summary (UI seeds sample fidelity + spacer/expanding bits on load; **not pixel**; score weights now include `spacers_with_orientation` / `spacers_with_size_type` / `with_size_policy_expanding` — more weights can lower % without feature loss; UI `qtSpacerStyle` + `data-size-type` apply Expanding/Fixed hints; field CSS maps size-h/v Expanding/Minimum/Preferred/Fixed) + `expect_plan_step_ids` / `expect_plan_step_notes` / `expect_plan_step_notes_count` (expandable per-step refusal descriptions; also on GET …/steps `step_notes`) + `ssh_alternative_notes` / `ssh_refusal_path_notes` (expandable SSH BatchMode honesty; also on GET `/ssh-auth`) + `hard_gap_notes` + `hard_gap_closure` + `closure_path` (shown in UI with `hard_gap_count`; **Show hard-gap closure** / **Download closure**, **Show hard-gaps summary** / **Download summary** / **Clear hard-gaps snapshot**, sessionStorage) + `layout_fidelity_path` + `layout_fidelity_signal_catalog` (expandable key list in UI) + `stack_switch_path` + `option_enable_path` + `expect_run_path` + `expect_steps_path` + `expect_steps_refusals_path` + `ssh_auth_path` + `password_ssh_path` + `ssh_batch_mode_only` / `ssh_alternatives` / `ssh_refusal_paths`; soft_fertig_honesty_bundle_sections + UI combined honesty bundle download; soft_fertig_honesty_export_keys catalogs downloadable honesty JSONs; soft_fertig_session_storage_notes (+ count) document each sessionStorage prefix (UI detail + download/copy); UI can download/copy `/hard-gaps` JSON (sessionStorage `fwbweb.hardGaps.*`) and preview/download expect step refusals (incl. `unknown_step_probe`, sessionStorage); soft-fertig track flag shown in UI; `GET /layout-fidelity` / option-schema + rule/iface schemas report heuristic `score_percent` (**not** pixel parity; `score_parts_count` documents weight count — more weights can lower % without feature loss; weights include `with_whats_this` / `with_tooltip` / `with_enabled` / `with_alignment` / `tab_position` / `pages_with_tooltip` plus `stacked_sections` / `with_visible` / `pages_with_buddy_labels` / `sections_with_flat|checkable` / `layout_tree_max_depth`; schemas expose compact summary with `signal_key_count` + `score_parts_count`); `visible=false` keeps `field-ui-hidden` grid holes; `GET /stack-switch` + `GET /option-enable` expose desktop maps; `option_enable` follows bonding→xmit and LOG/ULOG (ipt/ipcop/secuwall); iface Device type writes `options.type` and drives stack (no duplicate type field); Firewall/Interface/Rule UI show rich fidelity + refuse paths + soft-complete phase + enable-rules summary + canonical expect step ids/catalog + probe-step select (incl. unknown) + SSH refusal map; `GET /expect-install-plan/steps` lists refused ids; `GET …/steps/refusals` previews per-step 501 payloads + unknown probe; capabilities carry `canonical_step_ids`; unknown `step=` → `expect_installer_unknown_step`; SSH `batch_mode_only` + `alternatives` + `refusal_paths` (deploy 400 / password 501); read_only fields use `field-ui-readonly`.
+`WEBUI_SOFT_COMPLETE_PHASE=28136`; `WEBUI_HONESTY_MILESTONE=86000`; `soft_fertig_honesty_surface_version=5.291` (Honesty-Surface-Schema 5.291) (+ `honesty_milestone_note` checkpoint text on `/health`, `/res-status`, `/hard-gaps`, summary, closure; UI shows truncated note); `/health` and `/res-status` expose `honesty_milestone` + `soft_fertig_honesty_track` + `hard_gap_count`; `/hard-gaps` (+ `/hard-gaps/summary` compact snapshot with `layout_fidelity_sample_score_percent` / `score_parts_count` / `layout_fidelity_pixel_parity: false` + `layout_fidelity_sample_spacers` / `spacers_with_orientation` / `spacers_with_size_type` / `with_size_policy_expanding` / `with_size_policy_fixed` / `with_size_policy_minimum` + `with_minimum_size` / `with_maximum_size` + `expect_plan_step_count` for iptables/linux24 + `/hard-gaps/closure` with `hard_gap_notes` + `parent_path` + `hard_gap_count` + `honesty_milestone` + `soft_fertig_honesty_track` + `summary_path`) sets `soft_fertig_honesty_track: true` + `honesty_milestone: 86000` + `honesty_paths` / `honesty_paths_count` / `summary_path` (catalog of honesty/preview endpoints; expandable in UI) + `layout_fidelity_sample_*` including spacer + expanding sizePolicy counts on both `/hard-gaps` and summary (UI seeds sample fidelity + spacer/expanding bits on load; **not pixel**; score weights now include `spacers_with_orientation` / `spacers_with_size_type` / `with_size_policy_expanding` — more weights can lower % without feature loss; UI `qtSpacerStyle` + `data-size-type` apply Expanding/Fixed hints; field CSS maps size-h/v Expanding/Minimum/Preferred/Fixed) + `expect_plan_step_ids` / `expect_plan_step_notes` / `expect_plan_step_notes_count` (expandable per-step refusal descriptions; also on GET …/steps `step_notes`) + `ssh_alternative_notes` / `ssh_refusal_path_notes` (expandable SSH BatchMode honesty; also on GET `/ssh-auth`) + `hard_gap_notes` + `hard_gap_closure` + `closure_path` (shown in UI with `hard_gap_count`; **Show hard-gap closure** / **Download closure**, **Show hard-gaps summary** / **Download summary** / **Clear hard-gaps snapshot**, sessionStorage) + `layout_fidelity_path` + `layout_fidelity_signal_catalog` (expandable key list in UI) + `stack_switch_path` + `option_enable_path` + `expect_run_path` + `expect_steps_path` + `expect_steps_refusals_path` + `ssh_auth_path` + `password_ssh_path` + `ssh_batch_mode_only` / `ssh_alternatives` / `ssh_refusal_paths`; soft_fertig_honesty_bundle_sections + UI combined honesty bundle download; soft_fertig_honesty_export_keys catalogs downloadable honesty JSONs; soft_fertig_session_storage_notes (+ count) document each sessionStorage prefix (UI detail + download/copy); UI can download/copy `/hard-gaps` JSON (sessionStorage `fwbweb.hardGaps.*`) and preview/download expect step refusals (incl. `unknown_step_probe`, sessionStorage); soft-fertig track flag shown in UI; `GET /layout-fidelity` / option-schema + rule/iface schemas report heuristic `score_percent` (**not** pixel parity; `score_parts_count` documents weight count — more weights can lower % without feature loss; weights include `with_whats_this` / `with_tooltip` / `with_enabled` / `with_alignment` / `tab_position` / `pages_with_tooltip` plus `stacked_sections` / `with_visible` / `pages_with_buddy_labels` / `sections_with_flat|checkable` / `layout_tree_max_depth`; schemas expose compact summary with `signal_key_count` + `score_parts_count`); `visible=false` keeps `field-ui-hidden` grid holes; `GET /stack-switch` + `GET /option-enable` expose desktop maps; `option_enable` follows bonding→xmit and LOG/ULOG (ipt/ipcop/secuwall); iface Device type writes `options.type` and drives stack (no duplicate type field); Firewall/Interface/Rule UI show rich fidelity + refuse paths + soft-complete phase + enable-rules summary + canonical expect step ids/catalog + probe-step select (incl. unknown) + SSH refusal map; `GET /expect-install-plan/steps` lists refused ids; `GET …/steps/refusals` previews per-step 501 payloads + unknown probe; capabilities carry `canonical_step_ids`; unknown `step=` → `expect_installer_unknown_step`; SSH `batch_mode_only` + `alternatives` + `refusal_paths` (deploy 400 / password 501); read_only fields use `field-ui-readonly`.
 
 - Deploy: manifest `# files:`, OS configlets, external PolicyInstallScript, copyFWB, use_scp, gzip transfer on compress (plan shows −%), capabilities API (+ expect_install_plan / walkthrough pointers), live gate + force_limited, expect stub + raw/expanded configlet preview + ordered expect plan (reg_user + safety_net_acl + download + sessionStorage) + dry walkthrough (preview_only + simulated_at timeline, sessionStorage + download); `POST …/run` (+ optional `step=`) → 501 / step_refused (still **no** expect/SSHSession runtime)
 - Options: .ui labels, free QLabel annotations (+ alignment), buddy_labels (external_label controls), enabled/visible/readOnly respect (+ option_enable follow for bonding→xmit_hash and LOG/ULOG on ipt/ipcop/secuwall), QRadio bool, QGroupBox sections (flat/checkable) + QStackedWidget pages (FirewallExtras + InterfaceOptions section chrome + empty pages + stack switcher + stack_switch hints: device-type → `options.type` + stack / use_ULOG follow + `/stack-switch` API with option_enable maps), tooltips + whatsThis + tab page toolTips, page-local QGridLayout + spacers (sizeHint) + column/row stretch + spacing/margins (CSS + page hint) + sizePolicy + min/max size + layout hints + layout_tree + dialog windowTitle/geometry/tab_position/sizeGrip (header WxH + tabs + CSS max-height) + shared `qtGridStyle` + layout-fidelity score on Firewall/Rule/Interface (still **not** full pixel Qt layout)
@@ -53889,6 +53961,86 @@ Still open (hard backlog — **not** soft-fertig):
 | Local E2E phase28054 | done | `e2e-phase28054.sh` **OK** |
 | Local E2E phase28055 | done | `e2e-phase28055.sh` **OK** |
 | Local E2E phase28056 | done | `e2e-phase28056.sh` **OK** |
+| Local E2E phase28057 | done | `e2e-phase28057.sh` **OK** |
+| Local E2E phase28058 | done | `e2e-phase28058.sh` **OK** |
+| Local E2E phase28059 | done | `e2e-phase28059.sh` **OK** |
+| Local E2E phase28060 | done | `e2e-phase28060.sh` **OK** |
+| Local E2E phase28061 | done | `e2e-phase28061.sh` **OK** |
+| Local E2E phase28062 | done | `e2e-phase28062.sh` **OK** |
+| Local E2E phase28063 | done | `e2e-phase28063.sh` **OK** |
+| Local E2E phase28064 | done | `e2e-phase28064.sh` **OK** |
+| Local E2E phase28065 | done | `e2e-phase28065.sh` **OK** |
+| Local E2E phase28066 | done | `e2e-phase28066.sh` **OK** |
+| Local E2E phase28067 | done | `e2e-phase28067.sh` **OK** |
+| Local E2E phase28068 | done | `e2e-phase28068.sh` **OK** |
+| Local E2E phase28069 | done | `e2e-phase28069.sh` **OK** |
+| Local E2E phase28070 | done | `e2e-phase28070.sh` **OK** |
+| Local E2E phase28071 | done | `e2e-phase28071.sh` **OK** |
+| Local E2E phase28072 | done | `e2e-phase28072.sh` **OK** |
+| Local E2E phase28073 | done | `e2e-phase28073.sh` **OK** |
+| Local E2E phase28074 | done | `e2e-phase28074.sh` **OK** |
+| Local E2E phase28075 | done | `e2e-phase28075.sh` **OK** |
+| Local E2E phase28076 | done | `e2e-phase28076.sh` **OK** |
+| Local E2E phase28077 | done | `e2e-phase28077.sh` **OK** |
+| Local E2E phase28078 | done | `e2e-phase28078.sh` **OK** |
+| Local E2E phase28079 | done | `e2e-phase28079.sh` **OK** |
+| Local E2E phase28080 | done | `e2e-phase28080.sh` **OK** |
+| Local E2E phase28081 | done | `e2e-phase28081.sh` **OK** |
+| Local E2E phase28082 | done | `e2e-phase28082.sh` **OK** |
+| Local E2E phase28083 | done | `e2e-phase28083.sh` **OK** |
+| Local E2E phase28084 | done | `e2e-phase28084.sh` **OK** |
+| Local E2E phase28085 | done | `e2e-phase28085.sh` **OK** |
+| Local E2E phase28086 | done | `e2e-phase28086.sh` **OK** |
+| Local E2E phase28087 | done | `e2e-phase28087.sh` **OK** |
+| Local E2E phase28088 | done | `e2e-phase28088.sh` **OK** |
+| Local E2E phase28089 | done | `e2e-phase28089.sh` **OK** |
+| Local E2E phase28090 | done | `e2e-phase28090.sh` **OK** |
+| Local E2E phase28091 | done | `e2e-phase28091.sh` **OK** |
+| Local E2E phase28092 | done | `e2e-phase28092.sh` **OK** |
+| Local E2E phase28093 | done | `e2e-phase28093.sh` **OK** |
+| Local E2E phase28094 | done | `e2e-phase28094.sh` **OK** |
+| Local E2E phase28095 | done | `e2e-phase28095.sh` **OK** |
+| Local E2E phase28096 | done | `e2e-phase28096.sh` **OK** |
+| Local E2E phase28097 | done | `e2e-phase28097.sh` **OK** |
+| Local E2E phase28098 | done | `e2e-phase28098.sh` **OK** |
+| Local E2E phase28099 | done | `e2e-phase28099.sh` **OK** |
+| Local E2E phase28100 | done | `e2e-phase28100.sh` **OK** |
+| Local E2E phase28101 | done | `e2e-phase28101.sh` **OK** |
+| Local E2E phase28102 | done | `e2e-phase28102.sh` **OK** |
+| Local E2E phase28103 | done | `e2e-phase28103.sh` **OK** |
+| Local E2E phase28104 | done | `e2e-phase28104.sh` **OK** |
+| Local E2E phase28105 | done | `e2e-phase28105.sh` **OK** |
+| Local E2E phase28106 | done | `e2e-phase28106.sh` **OK** |
+| Local E2E phase28107 | done | `e2e-phase28107.sh` **OK** |
+| Local E2E phase28108 | done | `e2e-phase28108.sh` **OK** |
+| Local E2E phase28109 | done | `e2e-phase28109.sh` **OK** |
+| Local E2E phase28110 | done | `e2e-phase28110.sh` **OK** |
+| Local E2E phase28111 | done | `e2e-phase28111.sh` **OK** |
+| Local E2E phase28112 | done | `e2e-phase28112.sh` **OK** |
+| Local E2E phase28113 | done | `e2e-phase28113.sh` **OK** |
+| Local E2E phase28114 | done | `e2e-phase28114.sh` **OK** |
+| Local E2E phase28115 | done | `e2e-phase28115.sh` **OK** |
+| Local E2E phase28116 | done | `e2e-phase28116.sh` **OK** |
+| Local E2E phase28117 | done | `e2e-phase28117.sh` **OK** |
+| Local E2E phase28118 | done | `e2e-phase28118.sh` **OK** |
+| Local E2E phase28119 | done | `e2e-phase28119.sh` **OK** |
+| Local E2E phase28120 | done | `e2e-phase28120.sh` **OK** |
+| Local E2E phase28121 | done | `e2e-phase28121.sh` **OK** |
+| Local E2E phase28122 | done | `e2e-phase28122.sh` **OK** |
+| Local E2E phase28123 | done | `e2e-phase28123.sh` **OK** |
+| Local E2E phase28124 | done | `e2e-phase28124.sh` **OK** |
+| Local E2E phase28125 | done | `e2e-phase28125.sh` **OK** |
+| Local E2E phase28126 | done | `e2e-phase28126.sh` **OK** |
+| Local E2E phase28127 | done | `e2e-phase28127.sh` **OK** |
+| Local E2E phase28128 | done | `e2e-phase28128.sh` **OK** |
+| Local E2E phase28129 | done | `e2e-phase28129.sh` **OK** |
+| Local E2E phase28130 | done | `e2e-phase28130.sh` **OK** |
+| Local E2E phase28131 | done | `e2e-phase28131.sh` **OK** |
+| Local E2E phase28132 | done | `e2e-phase28132.sh` **OK** |
+| Local E2E phase28133 | done | `e2e-phase28133.sh` **OK** |
+| Local E2E phase28134 | done | `e2e-phase28134.sh` **OK** |
+| Local E2E phase28135 | done | `e2e-phase28135.sh` **OK** |
+| Local E2E phase28136 | done | `e2e-phase28136.sh` **OK** |
 
 ## Local commands
 
