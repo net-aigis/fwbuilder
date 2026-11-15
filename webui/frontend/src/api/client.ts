@@ -1327,6 +1327,7 @@ export function fetchHardGaps() {
     soft_fertig_ssh_auth_schema_299_echo_roster?: Record<string, unknown>;
     soft_fertig_ssh_auth_triacontahexacosadeca_checkpoint_roster?: Record<string, unknown>;
     soft_fertig_ssh_auth_soft_33360_echo_roster?: Record<string, unknown>;
+    soft_fertig_ssh_auth_ms_72500_echo_roster?: Record<string, unknown>;
     soft_fertig_ssh_auth_soft_29760_echo_roster?: Record<string, unknown>;
     soft_fertig_ssh_auth_ms_67500_echo_roster?: Record<string, unknown>;
     soft_fertig_ssh_auth_schema_303_echo_roster?: Record<string, unknown>;
