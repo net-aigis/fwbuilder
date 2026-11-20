@@ -1142,6 +1142,9 @@ function sshAuthSoft49120EchoRosterStorageKey(firewallId: string) {
 function sshAuthMs94500EchoRosterStorageKey(firewallId: string) {
   return `fwbweb.sshAuthMs94500EchoRoster.${firewallId}`;
 }
+function sshAuthSchema519EchoRosterStorageKey(firewallId: string) {
+  return `fwbweb.sshAuthSchema519EchoRoster.${firewallId}`;
+}
 function sshAuthSoft45520EchoRosterStorageKey(firewallId: string) {
   return `fwbweb.sshAuthSoft45520EchoRoster.${firewallId}`;
 }
@@ -2850,6 +2853,8 @@ export function FirewallExtras({
   const [sshAuthSoft49120EchoRosterDetail, setSshAuthSoft49120EchoRosterDetail] =
     useState<string | null>(null);
   const [sshAuthMs94500EchoRosterDetail, setSshAuthMs94500EchoRosterDetail] =
+    useState<string | null>(null);
+  const [sshAuthSchema519EchoRosterDetail, setSshAuthSchema519EchoRosterDetail] =
     useState<string | null>(null);
   const [sshAuthSoft45520EchoRosterDetail, setSshAuthSoft45520EchoRosterDetail] =
     useState<string | null>(null);
@@ -12056,6 +12061,32 @@ export function FirewallExtras({
           setSshAuthTriacontadocosadecaCheckpointRosterDetail(lines.join("\n"));
         } else {
           setSshAuthTriacontadocosadecaCheckpointRosterDetail(null);
+        }
+      }
+      {
+        const roster =
+          gaps?.soft_fertig_ssh_auth_schema_519_echo_roster &&
+          typeof gaps.soft_fertig_ssh_auth_schema_519_echo_roster === "object"
+            ? (gaps.soft_fertig_ssh_auth_schema_519_echo_roster as Record<string, unknown>)
+            : null;
+        if (roster && Object.keys(roster).length) {
+          const entries = Array.isArray(roster.entries)
+            ? (roster.entries as Array<Record<string, unknown>>)
+            : [];
+          const lines = [
+            `entry_count: ${String(roster.entry_count ?? "")}`,
+            `hard_gaps_remain: ${String(roster.hard_gaps_remain ?? "")}`,
+            `note: ${String(roster.note ?? "")}`,
+            ...entries.map(
+              (e) =>
+                `${String(e.id ?? "")}=${String(e.value ?? "")}` +
+                (e.title ? ` — ${String(e.title)}` : "") +
+                (e.note ? ` — ${String(e.note)}` : ""),
+            ),
+          ];
+          setSshAuthSchema519EchoRosterDetail(lines.join("\n"));
+        } else {
+          setSshAuthSoft31920EchoRosterDetail(null);
         }
       }
       {
@@ -24112,6 +24143,26 @@ export function FirewallExtras({
             setSshAuthMs94500EchoRosterDetail(sshAuthMs94500EchoRosterRaw);
           }
         }
+        const sshAuthSchema519EchoRosterRaw = sessionStorage.getItem(
+          sshAuthSchema519EchoRosterStorageKey(firewallId),
+        );
+        if (sshAuthSchema519EchoRosterRaw) {
+          try {
+            const parsed = JSON.parse(sshAuthSchema519EchoRosterRaw) as {
+              soft_fertig_ssh_auth_schema_519_echo_roster?: unknown;
+            };
+            const roster = parsed.soft_fertig_ssh_auth_schema_519_echo_roster;
+            if (roster && typeof roster === "object") {
+              setSshAuthSchema519EchoRosterDetail(
+                JSON.stringify({ soft_fertig_ssh_auth_schema_519_echo_roster: roster }, null, 2),
+              );
+            } else {
+              setSshAuthSchema519EchoRosterDetail(sshAuthSchema519EchoRosterRaw);
+            }
+          } catch {
+            setSshAuthSchema519EchoRosterDetail(sshAuthSchema519EchoRosterRaw);
+          }
+        }
         const sshAuthSoft45520EchoRosterRaw = sessionStorage.getItem(
           sshAuthSoft45520EchoRosterStorageKey(firewallId),
         );
@@ -30339,6 +30390,14 @@ export function FirewallExtras({
               <summary>Soft-fertig ssh-auth-soft-45520-echo roster</summary>
               <pre className="deploy-log configlet-preview" tabIndex={0}>
                 {sshAuthSoft45520EchoRosterDetail}
+              </pre>
+            </details>
+          ) : null}
+          {sshAuthSchema519EchoRosterDetail ? (
+            <details className="muted">
+              <summary>Soft-fertig ssh-auth-schema-519-echo roster</summary>
+              <pre className="deploy-log configlet-preview" tabIndex={0}>
+                {sshAuthSchema519EchoRosterDetail}
               </pre>
             </details>
           ) : null}
@@ -47095,6 +47154,41 @@ export function FirewallExtras({
             ) : null}
             {hardGapsPayload ? (
               <button type="button" className="ghost" disabled={busy}
+                title="Download soft_fertig_ssh_auth_schema_519_echo_roster from /hard-gaps"
+                onClick={() => {
+                  const catalog: Record<string, unknown> = {
+                    soft_fertig_ssh_auth_schema_519_echo_roster: hardGapsPayload.soft_fertig_ssh_auth_schema_519_echo_roster,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  const text = JSON.stringify(catalog, null, 2);
+                  try { sessionStorage.setItem(sshAuthSchema519EchoRosterStorageKey(firewallId), text); } catch { /* ignore */ }
+                  const blob = new Blob([text + "\n"], { type: "application/json;charset=utf-8" });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `fwbweb-ssh-auth-schema-519-echo-roster-${firewallId || "fw"}.json`;
+                  a.click(); URL.revokeObjectURL(url);
+                  onStatus?.("Downloaded ssh-auth-schema-519-echo roster");
+                }}>Download ssh-auth-schema-519-echo roster</button>
+            ) : null}
+            {hardGapsPayload ? (
+              <button type="button" className="ghost" disabled={busy}
+                title="Copy soft_fertig_ssh_auth_schema_519_echo_roster to clipboard"
+                onClick={() => { void (async () => {
+                  const catalog: Record<string, unknown> = {
+                    soft_fertig_ssh_auth_schema_519_echo_roster: hardGapsPayload.soft_fertig_ssh_auth_schema_519_echo_roster,
+                    soft_complete_phase: hardGapsPayload.soft_complete_phase,
+                    honesty_milestone: hardGapsPayload.honesty_milestone,
+                  };
+                  try { sessionStorage.setItem(sshAuthSchema519EchoRosterStorageKey(firewallId), JSON.stringify(catalog, null, 2)); } catch { /* ignore */ }
+                  const text = JSON.stringify(catalog, null, 2) + "\n";
+                  try { await navigator.clipboard.writeText(text); onStatus?.("Copied ssh-auth-schema-519-echo roster"); }
+                  catch (e) { onError?.(e instanceof Error ? e.message : String(e)); }
+                })(); }}>Copy ssh-auth-schema-519-echo roster</button>
+            ) : null}
+            {hardGapsPayload ? (
+              <button type="button" className="ghost" disabled={busy}
                 title="Download soft_fertig_ssh_auth_soft_45520_echo_roster from /hard-gaps"
                 onClick={() => {
                   const catalog: Record<string, unknown> = {
@@ -54292,6 +54386,7 @@ export function FirewallExtras({
                   sessionStorage.removeItem(sshAuthTriacontaicosadecaCheckpointRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshAuthSoft49120EchoRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshAuthMs94500EchoRosterStorageKey(firewallId));
+                  sessionStorage.removeItem(sshAuthSchema519EchoRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshAuthSoft45520EchoRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshAuthMs89500EchoRosterStorageKey(firewallId));
                   sessionStorage.removeItem(sshAuthSchema479EchoRosterStorageKey(firewallId));
