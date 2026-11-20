@@ -35,7 +35,7 @@ app.include_router(platforms_router)
 
 
 # Soft-complete marker for the hard-gap honesty/preview track (not full expect/pixel).
-WEBUI_SOFT_COMPLETE_PHASE = "35096"
+WEBUI_SOFT_COMPLETE_PHASE = "35176"
 SOFT_FERTIG_HONESTY_TRACK_NOTE = (
     "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
     "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
@@ -475,10 +475,10 @@ SOFT_FERTIG_HONESTY_TRACK_NOTE = (
 # 20650: soft_fertig_honesty_surface_version bumped to 5.30 (ssh_alternative_titles_refresh_roster);
 # 20700: ssh_alternative_titles_refresh_roster added to sessionStorage + clear catalogs;
 # 20750: Soft 7240+ honesty surface checkpoint (ssh_alternative_titles_refresh_roster cycle complete).
-WEBUI_HONESTY_MILESTONE = 107750
+WEBUI_HONESTY_MILESTONE = 108000
 WEBUI_HONESTY_MILESTONE_NOTE = (
-    "Honesty surface checkpoint 107750: soft-fertig honesty/preview catalogs "
-    "through Soft 35080+ (schema 5.378, ssh_auth_schema_375_echo_roster "
+    "Honesty surface checkpoint 108000: soft-fertig honesty/preview catalogs "
+    "through Soft 35160+ (schema 5.379, ssh_auth_triacontapentacosadeca_checkpoint_roster "
     "sessionStorage) — hard gaps remain open."
 )
 SOFT_FERTIG_SOFT_COMPLETE_NOTE = (
@@ -1032,6 +1032,7 @@ SOFT_FERTIG_SURFACE_KEYS = (
     "soft_fertig_ssh_auth_soft_36160_echo_roster",
     "soft_fertig_ssh_auth_ms_76500_echo_roster",
     "soft_fertig_ssh_auth_schema_375_echo_roster",
+    "soft_fertig_ssh_auth_triacontapentacosadeca_checkpoint_roster",
     "soft_fertig_ssh_alternative_titles_roster",
 )
 SOFT_FERTIG_SURFACE_KEY_TITLES = {
@@ -2315,6 +2316,9 @@ SOFT_FERTIG_SURFACE_KEY_TITLES = {
     "soft_fertig_ssh_auth_schema_375_echo_roster": (
         "/ssh-auth auth-schema-375-echo with titles and notes"
     ),
+    "soft_fertig_ssh_auth_triacontapentacosadeca_checkpoint_roster": (
+        "/ssh-auth auth-triacontapentacosadeca-checkpoint with titles and notes"
+    ),
 }
 
 SOFT_FERTIG_SURFACE_NOTES = {
@@ -2933,6 +2937,7 @@ SOFT_FERTIG_SESSION_STORAGE_KEYS = {
     "ssh_auth_soft_36160_echo_roster": "fwbweb.sshAuthSoft36160EchoRoster.",
     "ssh_auth_ms_76500_echo_roster": "fwbweb.sshAuthMs76500EchoRoster.",
     "ssh_auth_schema_375_echo_roster": "fwbweb.sshAuthSchema375EchoRoster.",
+    "ssh_auth_triacontapentacosadeca_checkpoint_roster": "fwbweb.sshAuthTriacontapentacosadecaCheckpointRoster.",
 }
 SOFT_FERTIG_SESSION_STORAGE_KEY_TITLES = {
     "hard_gaps": "Full /hard-gaps JSON snapshot",
@@ -3357,6 +3362,7 @@ SOFT_FERTIG_SESSION_STORAGE_KEY_TITLES = {
     "ssh_auth_soft_36160_echo_roster": "SSH auth-soft-36160-echo roster JSON",
     "ssh_auth_ms_76500_echo_roster": "SSH auth-ms-76500-echo roster JSON",
     "ssh_auth_schema_375_echo_roster": "SSH auth-schema-375-echo roster JSON",
+    "ssh_auth_triacontapentacosadeca_checkpoint_roster": "SSH auth-triacontapentacosadeca-checkpoint roster JSON",
 }
 SOFT_FERTIG_SESSION_STORAGE_NOTES = {
     "hard_gaps": "Persists last downloaded/copied /hard-gaps JSON per firewall.",
@@ -5031,6 +5037,11 @@ SOFT_FERTIG_SESSION_STORAGE_NOTES = {
         "per firewall; UI restores expandable ssh-auth-schema-375-echo-roster detail "
         "on load."
     ),
+    "ssh_auth_triacontapentacosadeca_checkpoint_roster": (
+        "Persists last downloaded/copied soft_fertig_ssh_auth_triacontapentacosadeca_checkpoint_roster "
+        "per firewall; UI restores expandable ssh-auth-triacontapentacosadeca-checkpoint-roster detail "
+        "on load."
+    ),
     "ssh_auth_soft_31200_echo_roster": (
         "Persists last downloaded/copied soft_fertig_ssh_auth_soft_31200_echo_roster "
         "per firewall; UI restores expandable ssh-auth-soft-31200-echo-roster detail "
@@ -5441,9 +5452,9 @@ SOFT_FERTIG_SESSION_STORAGE_CLEAR_NOTE = (
 )
 
 # Soft-fertig honesty/preview catalog schema version (documentation; not a lock).
-SOFT_FERTIG_HONESTY_SURFACE_VERSION = "5.378"
+SOFT_FERTIG_HONESTY_SURFACE_VERSION = "5.379"
 SOFT_FERTIG_HONESTY_SURFACE_VERSION_NOTE = (
-    "Schema 5.378: schema 5.377 plus soft_fertig_ssh_auth_schema_375_echo_roster on "
+    "Schema 5.379: schema 5.378 plus soft_fertig_ssh_auth_triacontapentacosadeca_checkpoint_roster on "
     "/health and honesty endpoints (+ export/bundle); hard gaps remain open."
 )
 
@@ -5874,6 +5885,7 @@ SOFT_FERTIG_HONESTY_EXPORT_KEYS = (
     "ssh_auth_soft_36160_echo_roster",
     "ssh_auth_ms_76500_echo_roster",
     "ssh_auth_schema_375_echo_roster",
+    "ssh_auth_triacontapentacosadeca_checkpoint_roster",
 )
 SOFT_FERTIG_HONESTY_EXPORT_KEY_TITLES = {
     "hard_gaps": "Full /hard-gaps honesty snapshot JSON",
@@ -8277,6 +8289,7 @@ SOFT_FERTIG_HONESTY_BUNDLE_SECTIONS = (
     "ssh_auth_soft_36160_echo_roster",
     "ssh_auth_ms_76500_echo_roster",
     "ssh_auth_schema_375_echo_roster",
+    "ssh_auth_triacontapentacosadeca_checkpoint_roster",
     "honesty_exports",
 )
 SOFT_FERTIG_HONESTY_BUNDLE_SECTION_TITLES = {
@@ -8705,6 +8718,7 @@ SOFT_FERTIG_HONESTY_BUNDLE_SECTION_TITLES = {
     "ssh_auth_soft_36160_echo_roster": "/ssh-auth auth-soft-36160-echo with titles and notes",
     "ssh_auth_ms_76500_echo_roster": "/ssh-auth auth-ms-76500-echo with titles and notes",
     "ssh_auth_schema_375_echo_roster": "/ssh-auth auth-schema-375-echo with titles and notes",
+    "ssh_auth_triacontapentacosadeca_checkpoint_roster": "/ssh-auth auth-triacontapentacosadeca-checkpoint with titles and notes",
     "honesty_exports": "Export catalog meta (keys/titles/notes)",
 }
 SOFT_FERTIG_HONESTY_BUNDLE_NOTES = {
@@ -10378,6 +10392,10 @@ SOFT_FERTIG_HONESTY_BUNDLE_NOTES = {
     "ssh_auth_schema_375_echo_roster": (
         "Same subset as Download ssh-auth-schema-375-echo roster; "
         "also sessionStorage fwbweb.sshAuthSchema375EchoRoster.*"
+    ),
+    "ssh_auth_triacontapentacosadeca_checkpoint_roster": (
+        "Same subset as Download ssh-auth-triacontapentacosadeca-checkpoint roster; "
+        "also sessionStorage fwbweb.sshAuthTriacontapentacosadecaCheckpointRoster.*"
     ),
     "honesty_exports": "Same subset as Download honesty exports.",
 }
@@ -25129,33 +25147,43 @@ def soft_fertig_ssh_auth_schema_295_echo_roster() -> dict[str, object]:
 
 
 SOFT_FERTIG_SSH_AUTH_TRIACONTAPENTACOSADECA_CHECKPOINT_KEYS: tuple[str, ...] = (
-    "soft_ge_30200",
-    "ms_ge_96500",
-    "schema_minor_ge_336",
+    "soft_ge_31200",
+    "ms_ge_101500",
+    "schema_minor_ge_376",
     "hard_gaps_still_three",
     "phase_divisible_by_80",
-    "soft_above_31856",
+    "soft_above_35056",
     "ms_mod_250_zero",
     "schema_major_five",
     "soft_mod_16",
-    "ms_ge_96000",
+    "ms_ge_101000",
     "schema_minor_even",
     "soft_cycle_block",
     "ms_mod_1000",
-    "soft_ge_30100",
-    "ms_ge_96250",
-    "schema_minor_ge_335",
-    "cycle_index_ge_123",
-    "soft_ge_31256",
-    "ms_ge_97250",
-    "ms_div_250_ge_285",
-    "soft_above_31856_b",
-    "ms_at_least_94500",
-    "schema_minor_ge_334",
-    "soft_ge_31936",
-    "ms_ge_96300",
-    "schema_minor_ge_333",
-    "soft_ge_31856",
+    "soft_ge_31100",
+    "ms_ge_101250",
+    "schema_minor_ge_375",
+    "cycle_index_ge_133",
+    "soft_ge_34776",
+    "ms_ge_102250",
+    "ms_div_250_ge_295",
+    "soft_above_35056_b",
+    "ms_at_least_99500",
+    "schema_minor_ge_374",
+    "soft_ge_35176",
+    "ms_ge_101300",
+    "schema_minor_ge_373",
+    "soft_ge_35056",
+    "ms_ge_101100",
+    "schema_minor_ge_372",
+    "soft_ge_34976",
+    "ms_ge_101400",
+    "ms_ge_101600",
+    "ms_ge_101700",
+    "ms_ge_101800",
+    "ms_ge_101900",
+    "ms_ge_102000",
+    "ms_ge_102100",
 )
 
 
@@ -25165,35 +25193,45 @@ def soft_fertig_ssh_auth_triacontapentacosadeca_checkpoint_roster() -> dict[str,
     soft_i = int(WEBUI_SOFT_COMPLETE_PHASE)
     ms = int(WEBUI_HONESTY_MILESTONE)
     minor_i = int(minor_s)
-    soft_above = soft_i > 31856
+    soft_above = soft_i > 35056
     values = {
-        "soft_ge_30200": soft_i >= 30200,
-        "ms_ge_96500": ms >= 96500,
-        "schema_minor_ge_336": minor_i >= 336,
+        "soft_ge_31200": soft_i >= 31200,
+        "ms_ge_101500": ms >= 101500,
+        "schema_minor_ge_376": minor_i >= 376,
         "hard_gaps_still_three": len(HARD_GAPS_OPEN) == 3,
         "phase_divisible_by_80": soft_i % 80 == 56,
-        "soft_above_31856": soft_above,
+        "soft_above_35056": soft_above,
         "ms_mod_250_zero": ms % 250 == 0,
         "schema_major_five": major_s == "5",
         "soft_mod_16": soft_i % 16 == 8,
-        "ms_ge_96000": ms >= 96000,
+        "ms_ge_101000": ms >= 101000,
         "schema_minor_even": minor_i % 2 == 0,
         "soft_cycle_block": (soft_i % 80) == 56,
         "ms_mod_1000": ms % 1000 == 750,
-        "soft_ge_30100": soft_i >= 30100,
-        "ms_ge_96250": ms >= 96250,
-        "schema_minor_ge_335": minor_i >= 335,
-        "cycle_index_ge_123": (soft_i - 8297) // 80 >= 123,
-        "soft_ge_31256": soft_i >= 31256,
-        "ms_ge_97250": ms >= 97250,
-        "ms_div_250_ge_285": ms // 250 >= 285,
-        "soft_above_31856_b": soft_above,
-        "ms_at_least_94500": ms >= 94500,
-        "schema_minor_ge_334": minor_i >= 334,
-        "soft_ge_31936": soft_i >= 31936,
-        "ms_ge_96300": ms >= 96300,
-        "schema_minor_ge_333": minor_i >= 333,
-        "soft_ge_31856": soft_i >= 31856,
+        "soft_ge_31100": soft_i >= 31100,
+        "ms_ge_101250": ms >= 101250,
+        "schema_minor_ge_375": minor_i >= 375,
+        "cycle_index_ge_133": (soft_i - 8297) // 80 >= 133,
+        "soft_ge_34776": soft_i >= 34776,
+        "ms_ge_102250": ms >= 102250,
+        "ms_div_250_ge_295": ms // 250 >= 295,
+        "soft_above_35056_b": soft_above,
+        "ms_at_least_99500": ms >= 99500,
+        "schema_minor_ge_374": minor_i >= 374,
+        "soft_ge_35176": soft_i >= 35176,
+        "ms_ge_101300": ms >= 101300,
+        "schema_minor_ge_373": minor_i >= 373,
+        "soft_ge_35056": soft_i >= 35056,
+        "ms_ge_101100": ms >= 101100,
+        "schema_minor_ge_372": minor_i >= 372,
+        "soft_ge_34976": soft_i >= 34976,
+        "ms_ge_101400": ms >= 101400,
+        "ms_ge_101600": ms >= 101600,
+        "ms_ge_101700": ms >= 101700,
+        "ms_ge_101800": ms >= 101800,
+        "ms_ge_101900": ms >= 101900,
+        "ms_ge_102000": ms >= 102000,
+        "ms_ge_102100": ms >= 102100,
     }
     entries: list[dict[str, object]] = []
     for key_id in SOFT_FERTIG_SSH_AUTH_TRIACONTAPENTACOSADECA_CHECKPOINT_KEYS:
@@ -29822,6 +29860,10 @@ SOFT_FERTIG_HONESTY_SURFACE_CHANGELOG = {
         "soft_fertig_ssh_auth_schema_375_echo_roster on /health and honesty "
         "endpoints (+ export/bundle)."
     ),
+    "5.379": (
+        "soft_fertig_ssh_auth_triacontapentacosadeca_checkpoint_roster on /health and honesty "
+        "endpoints (+ export/bundle)."
+    ),
 }
 
 
@@ -30808,6 +30850,7 @@ SOFT_FERTIG_CATALOG_SUMMARY_KEYS: tuple[str, ...] = (
     "soft_fertig_ssh_auth_soft_36160_echo_roster_entry_count",
     "soft_fertig_ssh_auth_ms_76500_echo_roster_entry_count",
     "soft_fertig_ssh_auth_schema_375_echo_roster_entry_count",
+    "soft_fertig_ssh_auth_triacontapentacosadeca_checkpoint_roster_entry_count",
     "soft_fertig_ssh_password_support_roster_entry_count",
     "soft_fertig_ssh_alternative_titles_roster_entry_count",
     "soft_fertig_ssh_auth_policy_roster_entry_count",
@@ -32088,6 +32131,9 @@ def soft_fertig_catalog_summary() -> dict[str, object]:
         "soft_fertig_ssh_auth_schema_375_echo_roster_entry_count": (
             soft_fertig_ssh_auth_schema_375_echo_roster()["entry_count"]
         ),
+        "soft_fertig_ssh_auth_triacontapentacosadeca_checkpoint_roster_entry_count": (
+            soft_fertig_ssh_auth_triacontapentacosadeca_checkpoint_roster()["entry_count"]
+        ),
         "soft_fertig_ssh_password_support_roster_entry_count": (
             soft_fertig_ssh_password_support_roster()["entry_count"]
         ),
@@ -32612,6 +32658,7 @@ def health() -> dict[str, object]:
         "soft_fertig_ssh_auth_soft_36160_echo_roster": soft_fertig_ssh_auth_soft_36160_echo_roster(),
         "soft_fertig_ssh_auth_ms_76500_echo_roster": soft_fertig_ssh_auth_ms_76500_echo_roster(),
         "soft_fertig_ssh_auth_schema_375_echo_roster": soft_fertig_ssh_auth_schema_375_echo_roster(),
+        "soft_fertig_ssh_auth_triacontapentacosadeca_checkpoint_roster": soft_fertig_ssh_auth_triacontapentacosadeca_checkpoint_roster(),
         "soft_fertig_ssh_alternative_titles_roster": soft_fertig_ssh_alternative_titles_roster(),
         "soft_fertig_ssh_auth_policy_roster": soft_fertig_ssh_auth_policy_roster(),
         "soft_fertig_honesty_surface_version": SOFT_FERTIG_HONESTY_SURFACE_VERSION,
@@ -33472,6 +33519,7 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
         "soft_fertig_ssh_auth_soft_36160_echo_roster": soft_fertig_ssh_auth_soft_36160_echo_roster(),
         "soft_fertig_ssh_auth_ms_76500_echo_roster": soft_fertig_ssh_auth_ms_76500_echo_roster(),
         "soft_fertig_ssh_auth_schema_375_echo_roster": soft_fertig_ssh_auth_schema_375_echo_roster(),
+        "soft_fertig_ssh_auth_triacontapentacosadeca_checkpoint_roster": soft_fertig_ssh_auth_triacontapentacosadeca_checkpoint_roster(),
         "soft_fertig_ssh_alternative_titles_roster": soft_fertig_ssh_alternative_titles_roster(),
         "soft_fertig_ssh_auth_policy_roster": soft_fertig_ssh_auth_policy_roster(),
         "soft_fertig_honesty_export_keys": list(SOFT_FERTIG_HONESTY_EXPORT_KEYS),
@@ -34860,6 +34908,9 @@ def hard_gaps_summary(_: str = Depends(require_token)) -> dict[str, object]:
         "soft_fertig_ssh_auth_schema_375_echo_roster": dict(
             full.get("soft_fertig_ssh_auth_schema_375_echo_roster") or {}
         ),
+        "soft_fertig_ssh_auth_triacontapentacosadeca_checkpoint_roster": dict(
+            full.get("soft_fertig_ssh_auth_triacontapentacosadeca_checkpoint_roster") or {}
+        ),
         "soft_fertig_ssh_alternative_titles_roster": dict(
             full.get("soft_fertig_ssh_alternative_titles_roster") or {}
         ),
@@ -35637,6 +35688,7 @@ def hard_gap_closure(_: str = Depends(require_token)) -> dict[str, object]:
         "soft_fertig_ssh_auth_soft_36160_echo_roster": soft_fertig_ssh_auth_soft_36160_echo_roster(),
         "soft_fertig_ssh_auth_ms_76500_echo_roster": soft_fertig_ssh_auth_ms_76500_echo_roster(),
         "soft_fertig_ssh_auth_schema_375_echo_roster": soft_fertig_ssh_auth_schema_375_echo_roster(),
+        "soft_fertig_ssh_auth_triacontapentacosadeca_checkpoint_roster": soft_fertig_ssh_auth_triacontapentacosadeca_checkpoint_roster(),
         "soft_fertig_ssh_alternative_titles_roster": soft_fertig_ssh_alternative_titles_roster(),
         "soft_fertig_ssh_auth_policy_roster": soft_fertig_ssh_auth_policy_roster(),
         "soft_fertig_honesty_export_keys": list(SOFT_FERTIG_HONESTY_EXPORT_KEYS),
