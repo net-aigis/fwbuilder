@@ -16,49 +16,33 @@ This fork tracks **Qt6** builds and an optional **WebUI** that edits the same
 | Track | State |
 | --- | --- |
 | Desktop GUI (Qt6) | Builds on Linux; Win/Mac smoke via MinGW/local Podman (see `docker/`) |
-| WebUI | First-class track in **6.1.0**: object tree, rules, compile/deploy, option schema from `src/res`, BatchMode + password/KBI SSH (Paramiko), expect/SSHSession runtime for interactive platforms, geometry-oracle pixel parity (±2px / ±4px chrome). See [`webui/STATUS.md`](webui/STATUS.md) |
-| Former WebUI hard gaps | **Closed** in 6.1.0 (`HARD_GAPS_OPEN` empty): password/KBI SSH, expect runtime, Qt pixel-layout oracle |
+| WebUI | **6.1.1**: edit/compile/deploy, multi-user tokens, host-native bridge when libs resolve (openSUSE `libxml2.so.16`) with Fedora Podman fallback. See [`webui/STATUS.md`](webui/STATUS.md) + [`webui/INSTALL.md`](webui/INSTALL.md) |
+| Hard gaps (6.1.0) | Closed: password/KBI SSH, expect runtime, Qt geometry oracle |
+| Still open | Full desktop parity; lab-proven interactive deploy; SSO/OIDC; distro packages |
 
-## WebUI (local, no GitHub Actions required)
-
-openSUSE hosts often lack Fedora’s `libxml2.so.2`; build and run the bridge
-inside Podman, then use the host wrapper `webui/bin/fwbweb`.
+## WebUI (quick start)
 
 ```bash
-# Image + native fwbweb (+ nft/ipt compilers)
-podman build -t fwbuilder-linux-qt6 -f docker/Dockerfile.linux-qt6-fedora docker/
-podman run --rm -v "$PWD":/src:Z -w /src -e JOBS=4 fwbuilder-linux-qt6 \
-  bash docker/build-linux-qt6-fwbweb.sh
+# Preferred on openSUSE: build against libxml2.so.16
+podman build -t fwbuilder-linux-qt6-opensuse \
+  -f docker/Dockerfile.linux-qt6-opensuse docker/
+podman run --rm -v "$PWD":/src:Z -w /src -e JOBS=4 -e NO_GIT_DIRTY=1 \
+  fwbuilder-linux-qt6-opensuse bash docker/build-linux-qt6-fwbweb.sh
 
-# API E2Es
-bash webui/scripts/e2e-local.sh
-bash webui/scripts/e2e-phase2.sh
-bash webui/scripts/e2e-phase3.sh
-bash webui/scripts/e2e-phase4.sh
-bash webui/scripts/e2e-phase5.sh
+# Or Fedora image (wrapper uses Podman when host ldd fails):
+# podman build -t fwbuilder-linux-qt6 -f docker/Dockerfile.linux-qt6-fedora docker/
 
-# Dev servers
-export FWBWEB_BRIDGE="$(pwd)/webui/bin/fwbweb"
-export FWBWEB_API_TOKEN="dev-token"
-export FWBWEB_WORKSPACE="$(pwd)/webui/.workspace"
-export FWBUILDER_RES_DIR="$(pwd)/webui/.res"
-
-cd webui/backend && pip install -e '.[dev]'
-uvicorn fwbweb_api.main:app --reload --port 8088
-
-# other terminal
-cd webui/frontend && npm install && npm run dev
+bash webui/scripts/run-stack.sh
+# API http://127.0.0.1:8088  UI http://127.0.0.1:5173
+# Multi-user: FWBWEB_API_USERS='alice:tok-a,bob:tok-b'
 ```
 
-Details: [`webui/README.md`](webui/README.md), [`webui/ARCHITECTURE.md`](webui/ARCHITECTURE.md).
+Details: [`webui/INSTALL.md`](webui/INSTALL.md), [`webui/README.md`](webui/README.md), [`webui/ARCHITECTURE.md`](webui/ARCHITECTURE.md).
 
 ## Desktop build (Linux Qt6)
 
 ```bash
-# Dependencies vary by distro; Fedora example is encoded in
-# docker/Dockerfile.linux-qt6-fedora. Prefer the Podman image above for a
-# known-good toolchain.
-
+# Dependencies vary by distro; Fedora/openSUSE examples are in docker/.
 ./autogen.sh --with-qmake=qmake6 --without-ucdsnmp
 make -j"$(nproc)"
 ```

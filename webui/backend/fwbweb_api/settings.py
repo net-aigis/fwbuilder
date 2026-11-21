@@ -6,7 +6,13 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_prefix="FWBWEB_", env_file=".env", extra="ignore")
 
+    # Legacy single token (maps to api_user). Prefer api_users / api_users_file for multi-user.
     api_token: str = "dev-token"
+    api_user: str = "admin"
+    # Comma list: "alice:tok-a,bob:tok-b"
+    api_users: str = ""
+    # Path to name:token lines or JSON {"name": "token", ...}
+    api_users_file: str = ""
     bridge: Path = Path("../bin/fwbweb")
     workspace: Path = Path("../.workspace")
     bridge_timeout_sec: float = 120.0

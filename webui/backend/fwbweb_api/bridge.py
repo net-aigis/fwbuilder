@@ -16,6 +16,33 @@ from .settings import settings
 _REPO_ROOT = Path(__file__).resolve().parents[3]
 
 
+def _host_elf_ok(path: Path) -> bool:
+    """True when the native fwbweb ELF resolves shared libs on this host."""
+    if not path.is_file() or not os.access(path, os.X_OK):
+        return False
+    try:
+        out = subprocess.run(
+            ["ldd", str(path)],
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=5,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return False
+    return "not found" not in (out.stdout or "")
+
+
+def bridge_runs_in_podman(wrapper: Path) -> bool:
+    """Match webui/bin/fwbweb: host ELF when ldd is clean, else Podman."""
+    if os.environ.get("FWBWEB_FORCE_PODMAN") == "1":
+        return True
+    host_bin = Path(os.environ.get("FWBWEB_HOST_BIN", str(_REPO_ROOT / "src" / "fwbweb" / "fwbweb")))
+    if _host_elf_ok(host_bin):
+        return False
+    return wrapper.name == "fwbweb" and "webui/bin" in str(wrapper)
+
+
 class BridgeError(RuntimeError):
     def __init__(self, message: str, payload: dict[str, Any] | None = None) -> None:
         super().__init__(message)
@@ -32,8 +59,8 @@ class FwbBridge:
         self.proc: subprocess.Popen[str] | None = None
         self._lock = threading.Lock()
         self.session_id = str(uuid.uuid4())
-        # Host wrapper runs the ELF inside Podman with the repo at /src.
-        self._containerized = self.binary.name == "fwbweb" and "webui/bin" in str(self.binary)
+        # Host wrapper may exec the native ELF (openSUSE) or Podman (Fedora .so.2).
+        self._containerized = bridge_runs_in_podman(self.binary)
 
     def _map_path(self, path: str | None) -> str | None:
         if path is None:

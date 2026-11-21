@@ -1,12 +1,31 @@
 #!/usr/bin/env bash
-# Host wrapper: run the Linux fwbweb binary inside fwbuilder-linux-qt6.
-# openSUSE hosts often ship libxml2.so.16 while the Fedora build needs .so.2.
+# Prefer a host-native fwbweb when its shared libs resolve (e.g. openSUSE libxml2.so.16).
+# Otherwise run the Fedora-built binary inside fwbuilder-linux-qt6 (libxml2.so.2).
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 IMAGE="${FWBWEB_IMAGE:-fwbuilder-linux-qt6}"
-# Always the in-container path; host env may point at a host absolute path.
-RES_DIR="/src/webui/.res"
+HOST_BIN="${FWBWEB_HOST_BIN:-$ROOT/src/fwbweb/fwbweb}"
+RES_DIR_HOST="${FWBUILDER_RES_DIR:-$ROOT/webui/.res}"
 
+host_bin_ok() {
+  local bin="$1"
+  [[ -x "$bin" ]] || return 1
+  # Fail if any NEEDED library is missing on the host.
+  if command -v ldd >/dev/null 2>&1; then
+    if ldd "$bin" 2>/dev/null | grep -q 'not found'; then
+      return 1
+    fi
+  fi
+  return 0
+}
+
+if [[ "${FWBWEB_FORCE_PODMAN:-0}" != "1" ]] && host_bin_ok "$HOST_BIN"; then
+  export FWBUILDER_RES_DIR="$RES_DIR_HOST"
+  exec "$HOST_BIN" "$@"
+fi
+
+# Container path: mount repo, use in-image libxml2.so.2 against Fedora-built binary.
+RES_DIR="/src/webui/.res"
 exec podman run --rm -i \
   -v "$ROOT":/src:Z \
   -w /src \
