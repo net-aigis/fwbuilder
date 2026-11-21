@@ -16,9 +16,9 @@ This fork tracks **Qt6** builds and an optional **WebUI** that edits the same
 | Track | State |
 | --- | --- |
 | Desktop GUI (Qt6) | Builds on Linux; Win/Mac smoke via MinGW/local Podman (see `docker/`) |
-| WebUI | **6.1.1**: edit/compile/deploy, multi-user tokens, host-native bridge when libs resolve (openSUSE `libxml2.so.16`) with Fedora Podman fallback. See [`webui/STATUS.md`](webui/STATUS.md) + [`webui/INSTALL.md`](webui/INSTALL.md) |
+| WebUI | **6.1.2**: edit/compile/deploy, multi-user tokens, host-native bridge, TCP lab SSH proof, relocatable tarball. See [`webui/STATUS.md`](webui/STATUS.md) + [`webui/INSTALL.md`](webui/INSTALL.md) |
 | Hard gaps (6.1.0) | Closed: password/KBI SSH, expect runtime, Qt geometry oracle |
-| Still open | Full desktop parity; lab-proven interactive deploy; SSO/OIDC; distro packages |
+| Still open | Full desktop parity; real vendor-box lab; SSO/OIDC; official rpm/deb |
 
 ## WebUI (quick start)
 

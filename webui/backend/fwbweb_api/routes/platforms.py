@@ -201,6 +201,7 @@ class ExpectRunRequest(BaseModel):
     fwscript: str = "firewall.fw"
     config_text: str = ""
     mock: bool = False
+    port: int = 22
     timeout: float = 30.0
 
 
@@ -247,6 +248,7 @@ def run_expect_install_plan(
             config_text=req.config_text,
             step=step,
             mock=req.mock,
+            port=req.port,
             timeout=req.timeout,
         )
     except ExpectRuntimeError as exc:
