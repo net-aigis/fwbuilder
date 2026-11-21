@@ -16,9 +16,9 @@ This fork tracks **Qt6** builds and an optional **WebUI** that edits the same
 | Track | State |
 | --- | --- |
 | Desktop GUI (Qt6) | Builds on Linux; Win/Mac smoke via MinGW/local Podman (see `docker/`) |
-| WebUI | **6.1.4**: SPA IdP login (PKCE), OIDC JWT, rpm/deb/tarball, lab SSH, native bridge. See [`webui/STATUS.md`](webui/STATUS.md) + [`webui/INSTALL.md`](webui/INSTALL.md) |
+| WebUI | **6.1.5**: undo object edit, static apt/yum repo tooling, IdP login, packages, lab SSH. See [`webui/STATUS.md`](webui/STATUS.md) + [`webui/REPO.md`](webui/REPO.md) |
 | Hard gaps (6.1.0) | Closed: password/KBI SSH, expect runtime, Qt geometry oracle |
-| Still open | Full desktop parity; real vendor-box lab; published package repos |
+| Still open | Full desktop parity; real vendor-box lab; hosted OBS/COPR/PPA accounts |
 
 ## WebUI (quick start)
 

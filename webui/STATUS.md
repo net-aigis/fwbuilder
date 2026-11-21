@@ -1,7 +1,7 @@
 # Firewall Builder WebUI — status (honest)
 
 Last updated: 2026-11-21  
-Release track: **6.1.4**
+Release track: **6.1.5**
 
 ## Goal (done)
 
@@ -23,12 +23,14 @@ Browser UI that edits the **same** `.fwb` projects via **libfwbuilder** (no seco
 | OIDC JWT | optional `FWBWEB_OIDC_ISSUER` (+ audience/JWKS); static tokens still work |
 | SPA IdP login | PKCE + authorize/token endpoints; **IdP login** / Logout in topbar |
 | Object JSON export | Download JSON from object detail (parity slice) |
+| Undo object edit | Ctrl+Z / Undo button (one-level snapshot) |
+| Static apt/yum repo | `publish-static-repo.sh` → `dist/repo/` (host anywhere) |
 
 ## Still open (not claimed)
 
 - Full Qt desktop GUI parity (every dialog / installer path)
 - Proven password/expect against **real** vendor gear (lab SSH is a TCP stand-in)
-- Published OBS/COPR/PPA repos
+- Hosted public OBS/COPR/PPA accounts (static repo tooling is ready)
 
 ## Soft-fertig note
 

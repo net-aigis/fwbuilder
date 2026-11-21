@@ -92,6 +92,12 @@ export function App() {
   const [authConfig, setAuthConfig] = useState<AuthConfig | null>(null);
   const [authUser, setAuthUser] = useState<string | null>(null);
   const [authMethod, setAuthMethod] = useState<string | null>(null);
+  const [objectUndo, setObjectUndo] = useState<{
+    id: string;
+    name: string;
+    comment: string;
+    attrs: Record<string, string | number>;
+  } | null>(null);
   const [path, setPath] = useState(() => {
     try {
       const recent = JSON.parse(localStorage.getItem("fwbweb.recent") || "[]") as string[];
@@ -575,6 +581,7 @@ export function App() {
     const t = await fetchTree(opened.session_id, 2);
     setTree(t.root);
     setSelected(null);
+    setObjectUndo(null);
     setRules([]);
     setRulesFwId(null);
     setRulesFwMeta(null);
@@ -971,6 +978,11 @@ export function App() {
       if (mod && e.key.toLowerCase() === "s") {
         e.preventDefault();
         void onSave(e.shiftKey);
+        return;
+      }
+      if (mod && !e.shiftKey && e.key.toLowerCase() === "z") {
+        e.preventDefault();
+        if (objectUndo) void onUndoObject();
         return;
       }
       if (mod && e.key.toLowerCase() === "f") {
@@ -1478,6 +1490,7 @@ export function App() {
     compileLog,
     recentPaths,
     path,
+    objectUndo,
   ]);
 
   async function onApplyObject(patch: {
@@ -1489,12 +1502,43 @@ export function App() {
     setBusy(true);
     setError(null);
     try {
+      // Snapshot for one-level undo (desktop-style parity slice).
+      setObjectUndo({
+        id: selected.id,
+        name: selected.name,
+        comment: selected.comment || "",
+        attrs: { ...(selected.attrs || {}) },
+      });
       const updated = await updateObject(sessionId, selected.id, patch);
       setSelected(updated);
       setDirty(true);
       const t = await fetchTree(sessionId, 5);
       setTree(t.root);
       setStatus(`Updated ${updated.name}`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function onUndoObject() {
+    if (!sessionId || !objectUndo) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const snap = objectUndo;
+      setObjectUndo(null);
+      const updated = await updateObject(sessionId, snap.id, {
+        name: snap.name,
+        comment: snap.comment,
+        attrs: snap.attrs,
+      });
+      setSelected(updated);
+      setDirty(true);
+      const t = await fetchTree(sessionId, 5);
+      setTree(t.root);
+      setStatus(`Undo: restored ${updated.name}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     } finally {
@@ -3120,6 +3164,15 @@ export function App() {
           </button>
           <button type="button" onClick={() => void onSave(false)} disabled={!canOperate}>
             Save
+          </button>
+          <button
+            type="button"
+            className="ghost"
+            onClick={() => void onUndoObject()}
+            disabled={!canOperate || !objectUndo || busy}
+            title="Undo last object edit (Ctrl+Z)"
+          >
+            Undo
           </button>
           <button type="button" className="ghost" onClick={() => void onSaveAs()} disabled={!canOperate}>
             Save as…
