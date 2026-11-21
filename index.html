@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Firewall Builder WebUI packages</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 42rem; margin: 2rem auto; padding: 0 1rem; line-height: 1.45; }
+    code, pre { background: #f4f4f5; padding: 0.15em 0.35em; border-radius: 4px; }
+    pre { padding: 0.75rem 1rem; overflow-x: auto; }
+  </style>
+</head>
+<body>
+  <h1>Firewall Builder WebUI — package repo</h1>
+  <p>Static apt + rpm repository hosted on GitHub Pages.</p>
+  <h2>RPM (openSUSE / Fedora)</h2>
+  <pre>curl -fsSL https://net-aigis.github.io/fwbuilder/rpm/fwbuilder-webui.repo | sudo tee /etc/zypp/repos.d/fwbuilder-webui.repo
+# Fedora/RHEL: use /etc/yum.repos.d/ instead
+sudo zypper refresh && sudo zypper install fwbuilder-webui
+# or: sudo dnf install fwbuilder-webui</pre>
+  <h2>APT (Debian / Ubuntu)</h2>
+  <pre>curl -fsSL https://net-aigis.github.io/fwbuilder/apt/fwbuilder-webui.list | sudo tee /etc/apt/sources.list.d/fwbuilder-webui.list
+sudo apt update && sudo apt install fwbuilder-webui</pre>
+  <p>Also see <a href="README.md">README.md</a> and
+     <a href="https://github.com/net-aigis/fwbuilder/releases">GitHub Releases</a>
+     (tarballs live on Releases — not on Pages).</p>
+</body>
+</html>

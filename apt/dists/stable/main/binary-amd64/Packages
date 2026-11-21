@@ -1,0 +1,16 @@
+Package: fwbuilder-webui
+Version: 6.1.7
+Architecture: amd64
+Maintainer: NetAigis <noreply@net-aigis>
+Installed-Size: 398788
+Depends: python3 (>= 3.11)
+Filename: pool/fwbuilder-webui_6.1.7.deb
+Size: 89274536
+MD5sum: 8d26711172076ffca941f0237616d0b4
+SHA1: 62e51d1e2d7d8f183d4389917855ffe11fee555d
+SHA256: 6bfeaff0b7bfd85db97669f7d71a7c864747edb37bc25806449ec37f81ddc4cf
+Section: net
+Priority: optional
+Description: Firewall Builder WebUI (libfwbuilder bridge + API)
+ Browser UI for Firewall Builder .fwb projects.
+

@@ -1,0 +1,5 @@
+[fwbuilder-webui]
+name=Firewall Builder WebUI
+baseurl=https://net-aigis.github.io/fwbuilder/rpm
+enabled=1
+gpgcheck=0
