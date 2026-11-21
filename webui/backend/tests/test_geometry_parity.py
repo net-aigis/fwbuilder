@@ -28,6 +28,7 @@ def test_core_parity_harness() -> None:
     assert result["ok"] is True
     assert result["pixel_parity"] is True
     assert result["tolerances"] == PIXEL_PARITY_TOLERANCES
+    assert result.get("dialog_count", 0) >= 20
 
 
 def test_compare_rects_tolerance() -> None:

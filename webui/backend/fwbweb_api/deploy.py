@@ -311,6 +311,7 @@ def plan_and_deploy(
     identity_file: str | None = None,
     password: str | None = None,
     keyboard_interactive_responses: list[str] | None = None,
+    port: int = 22,
     dry_run: bool = True,
     timeout: float = 120.0,
 ) -> dict[str, Any]:
@@ -549,6 +550,7 @@ def plan_and_deploy(
                     password=password,
                     keyboard_interactive_responses=keyboard_interactive_responses,
                     identity_file=identity_expanded,
+                    port=port,
                     timeout=min(20.0, timeout),
                 )
             except SshSessionError as exc:

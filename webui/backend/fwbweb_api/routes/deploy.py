@@ -50,6 +50,7 @@ class DeployRequest(BaseModel):
     allow_password_auth: bool = False
     password: str | None = None
     keyboard_interactive_responses: list[str] | None = None
+    port: int = 22
 
 
 @router.post("/{session_id}/deploy")
@@ -264,6 +265,7 @@ def deploy_firewall(
                 if body.allow_password_auth
                 else None
             ),
+            port=body.port,
             dry_run=body.dry_run,
             timeout=120.0,
         )
