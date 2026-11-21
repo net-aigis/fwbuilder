@@ -1,4 +1,4 @@
-# Firewall Builder WebUI — install / run (6.1.5+)
+# Firewall Builder WebUI — install / run (6.1.6+)
 
 ## What you get
 
@@ -74,13 +74,13 @@ bash webui/scripts/package-webui.sh          # tar.gz
 bash webui/scripts/package-webui-rpm.sh      # .rpm via Podman
 bash webui/scripts/package-webui-deb.sh      # .deb via Podman
 bash webui/scripts/publish-static-repo.sh    # apt + rpm metadata under dist/repo/
+bash webui/scripts/publish-github-pages-repo.sh  # live Pages site
 # → dist/fwbuilder-webui-*  and  dist/repo/
 ```
 
-See [`REPO.md`](REPO.md) for hosting the static repo.
+**Live install repo:** https://net-aigis.github.io/fwbuilder/ — see [`REPO.md`](REPO.md).
 
 ## 6) Still not claimed
 
 - Full Qt desktop GUI parity
 - Password/expect against every real vendor box (TCP lab stand-in is covered)
-- Official OBS/COPR/PPA accounts (static repo tooling exists — see REPO.md)
