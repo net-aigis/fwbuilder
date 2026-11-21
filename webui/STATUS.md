@@ -28,6 +28,18 @@ Browser UI that edits the **same** `.fwb` projects via **libfwbuilder** (no seco
 | Undo object edit | Ctrl+Z / Undo button (one-level snapshot) |
 | Static apt/yum repo | Live on GitHub Pages: https://net-aigis.github.io/fwbuilder/ |
 
+## NetAigis link
+
+Compile with NetAigis Standard hooks so feed/sensor sets are re-applied after
+activation:
+
+```bash
+export FWBUILDER_HOOKS_DIR="$(netaigis fwb hooks-path)"
+```
+
+Or set Preferences → Central hooks directory to that path. See NetAigis
+`share/fwbuilder-hooks/README.md`. Manual: `netaigis fwb ensure`.
+
 ## Still open (not claimed)
 
 - Full Qt desktop GUI parity (every chrome / installer path beyond AdvancedDialog oracle)
