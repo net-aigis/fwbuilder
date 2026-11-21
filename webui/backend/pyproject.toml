@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "fwbweb-api"
-version = "6.1.3"
+version = "6.1.4"
 description = "REST/WebSocket API for Firewall Builder WebUI (libfwbuilder bridge)"
 readme = "README.md"
 requires-python = ">=3.11"

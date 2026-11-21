@@ -201,6 +201,24 @@ export function ObjectDetail({
           >
             Copy JSON
           </button>
+          <button
+            type="button"
+            className="ghost"
+            disabled={busy}
+            onClick={() => {
+              const text = JSON.stringify(object, null, 2);
+              const blob = new Blob([text], { type: "application/json" });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement("a");
+              a.href = url;
+              a.download = `${object.name || object.id || "object"}.json`;
+              a.click();
+              URL.revokeObjectURL(url);
+            }}
+            title="Download object JSON (desktop-style export slice)"
+          >
+            Download JSON
+          </button>
         </div>
       </header>
 

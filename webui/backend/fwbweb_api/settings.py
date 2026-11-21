@@ -17,6 +17,10 @@ class Settings(BaseSettings):
     oidc_issuer: str = ""
     oidc_audience: str = ""
     oidc_jwks_url: str = ""
+    oidc_client_id: str = ""
+    oidc_client_secret: str = ""
+    oidc_redirect_uri: str = "http://127.0.0.1:5173/"
+    oidc_scopes: str = "openid profile email"
     bridge: Path = Path("../bin/fwbweb")
     workspace: Path = Path("../.workspace")
     bridge_timeout_sec: float = 120.0

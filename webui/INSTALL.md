@@ -1,4 +1,4 @@
-# Firewall Builder WebUI — install / run (6.1.3+)
+# Firewall Builder WebUI — install / run (6.1.4+)
 
 ## What you get
 
@@ -42,8 +42,13 @@ podman run --rm -v "$PWD":/src:Z -w /src -e JOBS=4 -e NO_GIT_DIRTY=1 \
 | `FWBWEB_OIDC_ISSUER` | IdP issuer URL (enables JWT bearer via JWKS) |
 | `FWBWEB_OIDC_AUDIENCE` | Expected `aud` (optional; if empty, aud not verified) |
 | `FWBWEB_OIDC_JWKS_URL` | Override JWKS URL (else from discovery) |
+| `FWBWEB_OIDC_CLIENT_ID` | SPA public client (enables **IdP login** button) |
+| `FWBWEB_OIDC_CLIENT_SECRET` | Optional confidential client secret |
+| `FWBWEB_OIDC_REDIRECT_URI` | Default `http://127.0.0.1:5173/` |
+| `FWBWEB_OIDC_SCOPES` | Default `openid profile email` |
 
-`GET /api/v1/auth/config` — public modes.  
+`GET /api/v1/auth/config` — public modes (`login_enabled` when client_id set).  
+SPA: **IdP login** uses auth-code + PKCE (`/auth/oidc/authorize-url`, `/auth/oidc/token`).  
 `GET /api/v1/me` → `{ "auth": "ok", "user": "<name>", "method": "token"|"oidc" }`.
 
 ## 3) Run
@@ -75,5 +80,4 @@ bash webui/scripts/package-webui-deb.sh      # .deb via Podman
 
 - Full Qt desktop GUI parity
 - Password/expect against every real vendor box (TCP lab stand-in is covered)
-- Full IdP login UI (API accepts OIDC JWT; SPA still pastes bearer)
 - Published OBS/COPR/PPA repos (local rpm/deb build scripts exist)

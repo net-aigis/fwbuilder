@@ -64,6 +64,13 @@ import { RuleGrid } from "./components/RuleGrid";
 import { RuleMeta } from "./components/RuleMeta";
 import { RuleOptions } from "./components/RuleOptions";
 import { SHORTCUTS, shortcutsAsText } from "./shortcuts";
+import {
+  completeOidcCallback,
+  fetchAuthConfig,
+  fetchMe,
+  startOidcLogin,
+  type AuthConfig,
+} from "./auth/oidc";
 
 type Theme = "light" | "dark";
 type MainTab = "object" | "rules";
@@ -82,6 +89,9 @@ export function App() {
     return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
   });
   const [token, setTokenState] = useState(getToken());
+  const [authConfig, setAuthConfig] = useState<AuthConfig | null>(null);
+  const [authUser, setAuthUser] = useState<string | null>(null);
+  const [authMethod, setAuthMethod] = useState<string | null>(null);
   const [path, setPath] = useState(() => {
     try {
       const recent = JSON.parse(localStorage.getItem("fwbweb.recent") || "[]") as string[];
@@ -338,6 +348,54 @@ export function App() {
     window.addEventListener("beforeunload", onBeforeUnload);
     return () => window.removeEventListener("beforeunload", onBeforeUnload);
   }, [dirty]);
+
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      try {
+        const cfg = await fetchAuthConfig();
+        if (!cancelled) setAuthConfig(cfg);
+      } catch {
+        /* API may be down at first paint */
+      }
+      try {
+        if (window.location.search.includes("code=")) {
+          const access = await completeOidcCallback();
+          if (access && !cancelled) {
+            setToken(access);
+            setTokenState(access);
+            setStatus("OIDC login OK");
+          }
+        }
+      } catch (err) {
+        if (!cancelled) setError(err instanceof Error ? err.message : String(err));
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      try {
+        const me = await fetchMe(token);
+        if (!cancelled) {
+          setAuthUser(me.user);
+          setAuthMethod(me.method || null);
+        }
+      } catch {
+        if (!cancelled) {
+          setAuthUser(null);
+          setAuthMethod(null);
+        }
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [token]);
 
   useEffect(() => {
     try {
@@ -2946,8 +3004,50 @@ export function App() {
         <div className="top-actions">
           <label className="field">
             Token
-            <input value={token} onChange={(e) => setTokenState(e.target.value)} />
+            <input
+              value={token}
+              onChange={(e) => setTokenState(e.target.value)}
+              title="API bearer (static token or OIDC access token)"
+            />
           </label>
+          {authConfig?.oidc?.login_enabled ? (
+            <>
+              <button
+                type="button"
+                className="ghost"
+                disabled={busy}
+                title="Login via OIDC (PKCE)"
+                onClick={() => {
+                  void startOidcLogin(authConfig.oidc.redirect_uri || undefined).catch((err) =>
+                    setError(err instanceof Error ? err.message : String(err)),
+                  );
+                }}
+              >
+                IdP login
+              </button>
+              <button
+                type="button"
+                className="ghost"
+                disabled={busy}
+                title="Clear stored bearer token"
+                onClick={() => {
+                  setToken("dev-token");
+                  setTokenState("dev-token");
+                  setAuthUser(null);
+                  setAuthMethod(null);
+                  setStatus("Logged out (token reset to dev-token)");
+                }}
+              >
+                Logout
+              </button>
+            </>
+          ) : null}
+          {authUser ? (
+            <span className="muted" title={`Auth method: ${authMethod || "?"}`}>
+              {authUser}
+              {authMethod ? ` · ${authMethod}` : ""}
+            </span>
+          ) : null}
           <label className="field grow">
             Project path
             <input

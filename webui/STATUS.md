@@ -1,7 +1,7 @@
 # Firewall Builder WebUI — status (honest)
 
 Last updated: 2026-11-21  
-Release track: **6.1.3**
+Release track: **6.1.4**
 
 ## Goal (done)
 
@@ -21,12 +21,13 @@ Browser UI that edits the **same** `.fwb` projects via **libfwbuilder** (no seco
 | Relocatable tarball | `webui/scripts/package-webui.sh` → `dist/fwbuilder-webui-*-linux-x86_64.tar.gz` |
 | RPM / DEB | `package-webui-rpm.sh` / `package-webui-deb.sh` (Podman) |
 | OIDC JWT | optional `FWBWEB_OIDC_ISSUER` (+ audience/JWKS); static tokens still work |
+| SPA IdP login | PKCE + authorize/token endpoints; **IdP login** / Logout in topbar |
+| Object JSON export | Download JSON from object detail (parity slice) |
 
 ## Still open (not claimed)
 
 - Full Qt desktop GUI parity (every dialog / installer path)
 - Proven password/expect against **real** vendor gear (lab SSH is a TCP stand-in)
-- SPA IdP login redirect UI (API accepts OIDC JWT bearer)
 - Published OBS/COPR/PPA repos
 
 ## Soft-fertig note
