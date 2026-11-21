@@ -327,24 +327,36 @@ def verify_dialog_self_parity(stem: str) -> dict[str, Any]:
 CORE_PARITY_DIALOGS = (
     "firewall_options",
     "interface_options",
+    # Prefer full AdvancedDialog / RuleOptions coverage when catalog has them.
 )
 
 
-def verify_core_dialogs_parity() -> dict[str, Any]:
-    """Run self-parity harness for Firewall + Interface options dialogs."""
+def verify_core_dialogs_parity(*, all_advanced: bool = True) -> dict[str, Any]:
+    """Run self-parity harness for AdvancedDialog / RuleOptions .ui stems."""
     cat = _dialog_catalog()
     dialogs = cat.get("dialogs") or {}
-    # Resolve stems present in catalog
     stems: list[str] = []
     for candidate in CORE_PARITY_DIALOGS:
         if candidate in dialogs:
             stems.append(candidate)
         else:
-            # fuzzy: any stem containing token
             for s in dialogs:
-                if candidate.split("_")[0] in s and "option" in s:
+                if candidate.split("_")[0] in s and "option" in s.lower():
                     stems.append(s)
                     break
+    if all_advanced:
+        for s, info in dialogs.items():
+            low = s.lower()
+            if s in stems:
+                continue
+            if not (info.get("fields") and info.get("pages")):
+                continue
+            if (
+                "advanced" in low
+                or "options" in low
+                or low.endswith("dialog")
+            ):
+                stems.append(s)
     # Fallback: first two dialogs with fields+pages
     if len(stems) < 2:
         for s, info in dialogs.items():
@@ -353,15 +365,26 @@ def verify_core_dialogs_parity() -> dict[str, Any]:
             if len(stems) >= 2:
                 break
 
+    # Deduplicate while preserving order
+    seen: set[str] = set()
+    uniq: list[str] = []
+    for s in stems:
+        if s not in seen:
+            seen.add(s)
+            uniq.append(s)
+    stems = uniq
+
     results = [verify_dialog_self_parity(s) for s in stems]
     ok = all(r.get("ok") for r in results) and len(results) > 0
     return {
         "ok": ok,
         "pixel_parity": ok,
+        "dialog_count": len(results),
         "dialogs": results,
         "tolerances": dict(PIXEL_PARITY_TOLERANCES),
         "note": (
-            "Core AdvancedDialog geometry oracle self-parity harness. "
+            "AdvancedDialog / RuleOptions geometry oracle self-parity harness "
+            f"({len(results)} dialogs). "
             "WebUI qt-grid uses the same .ui spacing/sizeHint inputs."
         ),
     }

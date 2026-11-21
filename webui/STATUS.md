@@ -1,7 +1,7 @@
 # Firewall Builder WebUI — status (honest)
 
 Last updated: 2026-11-21  
-Release track: **6.1.6**
+Release track: **6.1.7**
 
 ## Goal (done)
 
@@ -14,7 +14,9 @@ Browser UI that edits the **same** `.fwb` projects via **libfwbuilder** (no seco
 | Open / tree / typed editors / rules / save | yes |
 | Compile (`fwb_nft` / `fwb_ipt` / …) | yes |
 | Deploy BatchMode (key/agent) | yes |
-| Deploy password / KBI + expect | unit mock **and** TCP lab SSH (`tests/test_lab_ssh.py`, `e2e-lab-ssh.sh`) |
+| Deploy password / KBI + expect | unit mock **and** TCP multi-vendor lab (`tests/test_lab_ssh.py`, `tests/test_lab_vendor_emulation.py`) |
+| Emulated vendor boxes | IOS / Junos / Procurve expect + SFTP password deploy (self-tested) |
+| AdvancedDialog geometry self-parity | 30 dialogs via `/layout-fidelity/parity-check` |
 | Multi-user API tokens | `FWBWEB_API_USERS` / `FWBWEB_API_USERS_FILE` |
 | Host bridge on openSUSE | native binary when `ldd` clean; else Podman Fedora fallback |
 | One-command local stack | `webui/scripts/run-stack.sh` — see [`INSTALL.md`](INSTALL.md) |
@@ -28,8 +30,8 @@ Browser UI that edits the **same** `.fwb` projects via **libfwbuilder** (no seco
 
 ## Still open (not claimed)
 
-- Full Qt desktop GUI parity (every dialog / installer path)
-- Proven password/expect against **real** vendor gear (lab SSH is a TCP stand-in)
+- Full Qt desktop GUI parity (every chrome / installer path beyond AdvancedDialog oracle)
+- Proven password/expect against **physical** vendor gear (lab is an emulated TCP stand-in)
 
 ## Soft-fertig note
 

@@ -1,4 +1,4 @@
-# Firewall Builder WebUI — install / run (6.1.6+)
+# Firewall Builder WebUI — install / run (6.1.7+)
 
 ## What you get
 
