@@ -1,4 +1,4 @@
-# Firewall Builder WebUI — install / run (6.1+)
+# Firewall Builder WebUI — install / run (6.1.2+)
 
 ## What you get
 
@@ -52,8 +52,22 @@ bash webui/scripts/run-stack.sh
 
 API only: `FWBWEB_WITH_FRONTEND=0 bash webui/scripts/run-stack.sh`
 
-## 4) Still not claimed
+## 4) Lab SSH proof (password + expect over TCP)
+
+```bash
+bash webui/scripts/e2e-lab-ssh.sh
+```
+
+## 5) Relocatable tarball
+
+```bash
+bash webui/scripts/package-webui.sh
+# → dist/fwbuilder-webui-<version>-linux-x86_64.tar.gz
+```
+
+## 6) Still not claimed
 
 - Full Qt desktop GUI parity
-- Lab-proven password/expect deploy against every vendor box
+- Password/expect against every real vendor box (TCP lab stand-in is covered)
 - SSO / OIDC (bring tokens via `FWBWEB_API_USERS*` for now)
+- Official distro rpm/deb repos

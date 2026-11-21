@@ -193,6 +193,7 @@ def run_expect_steps(
     config_text: str = "",
     step: str | None = None,
     mock: bool = False,
+    port: int = 22,
     timeout: float = 30.0,
 ) -> dict[str, Any]:
     """Execute canonical expect plan steps (all or one)."""
@@ -232,6 +233,8 @@ def run_expect_steps(
                 password=password,
                 keyboard_interactive_responses=keyboard_interactive_responses,
                 identity_file=identity_file,
+                port=port,
+                timeout=timeout,
             )
             chan = invoke_shell(client)
             session = _channel_session(chan)

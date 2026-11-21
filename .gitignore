@@ -82,3 +82,4 @@ webui/backend/*.egg-info/
 webui/.workspace/
 webui/.res/
 ci-logs-linux/
+dist/
