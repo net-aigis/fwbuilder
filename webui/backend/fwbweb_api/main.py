@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-from fastapi import Depends, FastAPI, WebSocket, WebSocketDisconnect
+from fastapi import Depends, FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel, Field
 
 from .auth import Principal, require_principal, require_token
 from .routes.compile import router as compile_router
@@ -46251,6 +46252,56 @@ def auth_config() -> dict[str, object]:
     return {
         "token_auth": True,
         "oidc": oidc_config_public(),
+    }
+
+
+@app.get("/api/v1/auth/oidc/authorize-url")
+def oidc_authorize_url(
+    state: str,
+    code_challenge: str,
+    redirect_uri: str | None = None,
+) -> dict[str, str]:
+    """Build IdP authorize URL for SPA PKCE login (no auth required)."""
+    from .oidc import build_authorize_url
+
+    try:
+        url = build_authorize_url(
+            state=state,
+            code_challenge=code_challenge,
+            redirect_uri=redirect_uri,
+        )
+    except RuntimeError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    return {"url": url}
+
+
+class OidcTokenExchangeBody(BaseModel):
+    code: str = Field(..., min_length=1)
+    code_verifier: str = Field(..., min_length=1)
+    redirect_uri: str | None = None
+
+
+@app.post("/api/v1/auth/oidc/token")
+def oidc_token_exchange(body: OidcTokenExchangeBody) -> dict[str, object]:
+    """Exchange authorization code (+ PKCE verifier) for tokens."""
+    from .oidc import exchange_code
+
+    try:
+        tokens = exchange_code(
+            code=body.code,
+            code_verifier=body.code_verifier,
+            redirect_uri=body.redirect_uri,
+        )
+    except RuntimeError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    access = tokens.get("access_token") or tokens.get("id_token")
+    return {
+        "ok": True,
+        "access_token": access,
+        "token_type": tokens.get("token_type", "Bearer"),
+        "expires_in": tokens.get("expires_in"),
+        "id_token": tokens.get("id_token"),
+        "scope": tokens.get("scope"),
     }
 
 
