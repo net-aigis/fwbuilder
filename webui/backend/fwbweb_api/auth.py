@@ -13,10 +13,11 @@ _bearer = HTTPBearer(auto_error=False)
 
 @dataclass(frozen=True, slots=True)
 class Principal:
-    """Authenticated API caller (token → display name)."""
+    """Authenticated API caller."""
 
     token: str
     name: str
+    method: str = "token"  # "token" | "oidc"
 
 
 def _load_users_file(path: Path) -> dict[str, str]:
@@ -25,7 +26,7 @@ def _load_users_file(path: Path) -> dict[str, str]:
     Formats (line-oriented):
       name:token
       token  (name defaults to token prefix)
-    JSON object {"token": "name", ...} also accepted when file starts with '{'.
+    JSON object {"name": "token", ...} also accepted when file starts with '{'.
     """
     text = path.read_text(encoding="utf-8").strip()
     if not text:
@@ -36,7 +37,6 @@ def _load_users_file(path: Path) -> dict[str, str]:
         raw = json.loads(text)
         if not isinstance(raw, dict):
             raise ValueError("users file JSON must be an object")
-        # accept {"name": "token"} or {"token": "name"} — prefer name:token when values look secret
         out: dict[str, str] = {}
         for k, v in raw.items():
             if not isinstance(k, str) or not isinstance(v, str):
@@ -62,10 +62,10 @@ def _load_users_file(path: Path) -> dict[str, str]:
 def token_directory() -> dict[str, str]:
     """Return mapping of bearer token → principal name.
 
-    Sources (merged; later does not override earlier):
+    Sources:
       1. FWBWEB_API_USERS_FILE
       2. FWBWEB_API_USERS  (comma list name:token)
-      3. FWBWEB_API_TOKEN  (legacy single token → name \"admin\" or FWBWEB_API_USER)
+      3. FWBWEB_API_TOKEN  (legacy single token → FWBWEB_API_USER)
     """
     directory: dict[str, str] = {}
 
@@ -99,9 +99,23 @@ def resolve_principal(token: str | None) -> Principal | None:
     if not token:
         return None
     name = token_directory().get(token)
-    if name is None:
-        return None
-    return Principal(token=token, name=name)
+    if name is not None:
+        return Principal(token=token, name=name, method="token")
+
+    # Optional OIDC JWT
+    from .oidc import looks_like_jwt, oidc_enabled, principal_name_from_claims, validate_oidc_token
+
+    if oidc_enabled() and looks_like_jwt(token):
+        try:
+            claims = validate_oidc_token(token)
+        except Exception:
+            return None
+        return Principal(
+            token=token,
+            name=principal_name_from_claims(claims),
+            method="oidc",
+        )
+    return None
 
 
 async def require_token(

@@ -1,4 +1,4 @@
-# Firewall Builder WebUI — install / run (6.1.2+)
+# Firewall Builder WebUI — install / run (6.1.3+)
 
 ## What you get
 
@@ -31,7 +31,7 @@ podman run --rm -v "$PWD":/src:Z -w /src -e JOBS=4 -e NO_GIT_DIRTY=1 \
 
 `webui/bin/fwbweb` uses the host binary when `ldd` is clean; otherwise it runs via Podman.
 
-## 2) Auth (multi-user)
+## 2) Auth (multi-user + optional OIDC)
 
 | Env | Meaning |
 | --- | --- |
@@ -39,8 +39,12 @@ podman run --rm -v "$PWD":/src:Z -w /src -e JOBS=4 -e NO_GIT_DIRTY=1 \
 | `FWBWEB_API_USER` | Display name for that token (default `admin`) |
 | `FWBWEB_API_USERS` | `alice:tok-a,bob:tok-b` |
 | `FWBWEB_API_USERS_FILE` | File with `name:token` lines or JSON `{"alice":"tok-a"}` |
+| `FWBWEB_OIDC_ISSUER` | IdP issuer URL (enables JWT bearer via JWKS) |
+| `FWBWEB_OIDC_AUDIENCE` | Expected `aud` (optional; if empty, aud not verified) |
+| `FWBWEB_OIDC_JWKS_URL` | Override JWKS URL (else from discovery) |
 
-`GET /api/v1/me` returns `{ "auth": "ok", "user": "<name>" }`.
+`GET /api/v1/auth/config` — public modes.  
+`GET /api/v1/me` → `{ "auth": "ok", "user": "<name>", "method": "token"|"oidc" }`.
 
 ## 3) Run
 
@@ -58,16 +62,18 @@ API only: `FWBWEB_WITH_FRONTEND=0 bash webui/scripts/run-stack.sh`
 bash webui/scripts/e2e-lab-ssh.sh
 ```
 
-## 5) Relocatable tarball
+## 5) Packages
 
 ```bash
-bash webui/scripts/package-webui.sh
-# → dist/fwbuilder-webui-<version>-linux-x86_64.tar.gz
+bash webui/scripts/package-webui.sh          # tar.gz
+bash webui/scripts/package-webui-rpm.sh      # .rpm via Podman
+bash webui/scripts/package-webui-deb.sh      # .deb via Podman
+# → dist/fwbuilder-webui-*
 ```
 
 ## 6) Still not claimed
 
 - Full Qt desktop GUI parity
 - Password/expect against every real vendor box (TCP lab stand-in is covered)
-- SSO / OIDC (bring tokens via `FWBWEB_API_USERS*` for now)
-- Official distro rpm/deb repos
+- Full IdP login UI (API accepts OIDC JWT; SPA still pastes bearer)
+- Published OBS/COPR/PPA repos (local rpm/deb build scripts exist)

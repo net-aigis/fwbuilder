@@ -28,6 +28,7 @@ def test_me_with_token() -> None:
     body = r.json()
     assert body["auth"] == "ok"
     assert body["user"] == (settings.api_user or "admin")
+    assert body.get("method") == "token"
 
 
 def test_me_multi_user_from_env(monkeypatch) -> None:

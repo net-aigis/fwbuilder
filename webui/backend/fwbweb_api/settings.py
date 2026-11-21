@@ -13,6 +13,10 @@ class Settings(BaseSettings):
     api_users: str = ""
     # Path to name:token lines or JSON {"name": "token", ...}
     api_users_file: str = ""
+    # Optional OIDC (JWT via JWKS). Empty issuer+jwks_url = disabled.
+    oidc_issuer: str = ""
+    oidc_audience: str = ""
+    oidc_jwks_url: str = ""
     bridge: Path = Path("../bin/fwbweb")
     workspace: Path = Path("../.workspace")
     bridge_timeout_sec: float = 120.0
