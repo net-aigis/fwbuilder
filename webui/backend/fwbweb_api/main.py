@@ -46243,9 +46243,20 @@ def hard_gap_closure(_: str = Depends(require_token)) -> dict[str, object]:
     }
 
 
+@app.get("/api/v1/auth/config")
+def auth_config() -> dict[str, object]:
+    """Public auth modes (no secrets)."""
+    from .oidc import oidc_config_public
+
+    return {
+        "token_auth": True,
+        "oidc": oidc_config_public(),
+    }
+
+
 @app.get("/api/v1/me")
 def me(principal: Principal = Depends(require_principal)) -> dict[str, str]:
-    return {"auth": "ok", "user": principal.name}
+    return {"auth": "ok", "user": principal.name, "method": principal.method}
 
 
 @app.get("/api/v1/sessions")

@@ -1,7 +1,7 @@
 # Firewall Builder WebUI — status (honest)
 
 Last updated: 2026-11-21  
-Release track: **6.1.2**
+Release track: **6.1.3**
 
 ## Goal (done)
 
@@ -19,13 +19,15 @@ Browser UI that edits the **same** `.fwb` projects via **libfwbuilder** (no seco
 | Host bridge on openSUSE | native binary when `ldd` clean; else Podman Fedora fallback |
 | One-command local stack | `webui/scripts/run-stack.sh` — see [`INSTALL.md`](INSTALL.md) |
 | Relocatable tarball | `webui/scripts/package-webui.sh` → `dist/fwbuilder-webui-*-linux-x86_64.tar.gz` |
+| RPM / DEB | `package-webui-rpm.sh` / `package-webui-deb.sh` (Podman) |
+| OIDC JWT | optional `FWBWEB_OIDC_ISSUER` (+ audience/JWKS); static tokens still work |
 
 ## Still open (not claimed)
 
 - Full Qt desktop GUI parity (every dialog / installer path)
 - Proven password/expect against **real** vendor gear (lab SSH is a TCP stand-in)
-- SSO / OIDC (use token map for now)
-- Official distro rpm/deb in OBS/COPRs — tarball packaging is first step
+- SPA IdP login redirect UI (API accepts OIDC JWT bearer)
+- Published OBS/COPR/PPA repos
 
 ## Soft-fertig note
 
