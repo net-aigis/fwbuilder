@@ -1,4 +1,4 @@
-# Firewall Builder WebUI — install / run (6.1.4+)
+# Firewall Builder WebUI — install / run (6.1.5+)
 
 ## What you get
 
@@ -73,11 +73,14 @@ bash webui/scripts/e2e-lab-ssh.sh
 bash webui/scripts/package-webui.sh          # tar.gz
 bash webui/scripts/package-webui-rpm.sh      # .rpm via Podman
 bash webui/scripts/package-webui-deb.sh      # .deb via Podman
-# → dist/fwbuilder-webui-*
+bash webui/scripts/publish-static-repo.sh    # apt + rpm metadata under dist/repo/
+# → dist/fwbuilder-webui-*  and  dist/repo/
 ```
+
+See [`REPO.md`](REPO.md) for hosting the static repo.
 
 ## 6) Still not claimed
 
 - Full Qt desktop GUI parity
 - Password/expect against every real vendor box (TCP lab stand-in is covered)
-- Published OBS/COPR/PPA repos (local rpm/deb build scripts exist)
+- Official OBS/COPR/PPA accounts (static repo tooling exists — see REPO.md)

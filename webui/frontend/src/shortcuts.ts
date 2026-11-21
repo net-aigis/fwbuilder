@@ -5,6 +5,7 @@ export const SHORTCUTS: ShortcutEntry[] = [
   { keys: "?", action: "Show this shortcuts help" },
   { keys: "Esc", action: "Close overlay / clear search / clear rule filters / clear compile log" },
   { keys: "Ctrl+S", action: "Save" },
+  { keys: "Ctrl+Z", action: "Undo last object edit", scope: "object" },
   { keys: "Ctrl+Shift+S", action: "Save as" },
   { keys: "Ctrl+E", action: "Compile current firewall", scope: "rules" },
   { keys: "Ctrl+Shift+E", action: "Compile all firewalls" },
