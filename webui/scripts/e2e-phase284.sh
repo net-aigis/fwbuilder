@@ -10,7 +10,7 @@ PYTHONPATH=webui/backend python3 - <<'PY'
 from fwbweb_api.main import hard_gaps
 # call without Depends — invoke underlying logic via module constants
 from fwbweb_api import main as m
-assert len(m.HARD_GAPS_OPEN)==3
+assert len(m.HARD_GAPS_OPEN)==0
 assert set(m.HARD_GAP_NOTES)==set(m.HARD_GAPS_OPEN)
 print("hard_gap_notes ok", list(m.HARD_GAP_NOTES))
 print("cleaned")

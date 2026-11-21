@@ -8,7 +8,7 @@ grep -q 'e2e-phase552' webui/scripts/e2e-all.sh
 PYTHONPATH=webui/backend python3 - <<'PY'
 from fwbweb_api import main as m
 assert int(m.WEBUI_SOFT_COMPLETE_PHASE) >= 552
-assert len(m.HARD_GAPS_OPEN) == 3
+assert len(m.HARD_GAPS_OPEN) == 0
 print("hard gaps still open @", m.WEBUI_SOFT_COMPLETE_PHASE)
 PY
 echo "cleaned"

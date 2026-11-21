@@ -46,8 +46,10 @@ class DeployRequest(BaseModel):
     copy_fwb: bool = False
     # Live scp/ssh on Cisco/Juniper/… is incomplete; require explicit opt-in.
     force_limited_installer: bool = False
-    # Password/keyboard-interactive is not implemented; requesting it is refused.
+    # Opt into password/keyboard-interactive (Paramiko); requires a secret.
     allow_password_auth: bool = False
+    password: str | None = None
+    keyboard_interactive_responses: list[str] | None = None
 
 
 @router.post("/{session_id}/deploy")
@@ -56,12 +58,25 @@ def deploy_firewall(
     body: DeployRequest,
     _: str = Depends(require_token),
 ) -> dict[str, Any]:
-    if body.allow_password_auth:
+    has_secret = bool(body.password) or body.keyboard_interactive_responses is not None
+    if body.allow_password_auth and not has_secret:
         raise HTTPException(
             status_code=400,
             detail={
-                "error": "password_auth_not_implemented",
+                "error": "password_auth_secret_required",
                 "ssh_auth": ssh_auth_capabilities(),
+                "note": (
+                    "allow_password_auth=true requires password and/or "
+                    "keyboard_interactive_responses."
+                ),
+            },
+        )
+    if has_secret and not body.allow_password_auth:
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "error": "allow_password_auth_required",
+                "note": "Pass allow_password_auth=true together with the SSH secret.",
             },
         )
     try:
@@ -198,13 +213,14 @@ def deploy_firewall(
             from ..configlets import list_installer_configlets
 
             listing = list_installer_configlets(host_os)
-            if listing.get("interactive_installer"):
+            if listing.get("interactive_installer") and not body.allow_password_auth:
                 raise HTTPException(
                     status_code=400,
                     detail=(
-                        f"host_OS={host_os} needs the desktop expect/SSHSession installer. "
-                        "Use dry_run=true, or pass force_limited_installer=true to run "
-                        "simplified WebUI scp/ssh anyway."
+                        f"host_OS={host_os} uses the expect/SSHSession installer. "
+                        "POST /api/v1/expect-install-plan/run for live expect, "
+                        "or pass allow_password_auth with a secret / "
+                        "force_limited_installer=true for simplified scp/ssh."
                     ),
                 )
 
@@ -242,6 +258,12 @@ def deploy_firewall(
             ssh_args=options.get("sshArgs") or "",
             scp_args=options.get("scpArgs") or "",
             identity_file=body.identity_file,
+            password=body.password if body.allow_password_auth else None,
+            keyboard_interactive_responses=(
+                body.keyboard_interactive_responses
+                if body.allow_password_auth
+                else None
+            ),
             dry_run=body.dry_run,
             timeout=120.0,
         )

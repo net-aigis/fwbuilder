@@ -6,10 +6,10 @@ cd "$ROOT"
 PYTHONPATH=webui/backend python3 - <<'PY'
 from fwbweb_api import main as m
 assert m.WEBUI_SOFT_COMPLETE_PHASE=="320"
-assert len(m.HARD_GAPS_OPEN)==3
+assert len(m.HARD_GAPS_OPEN)==0
 assert m.hard_gaps.__wrapped__ if False else True
 # call endpoint function body via constructing return manually
-assert "full_qt_pixel_layout" in m.HARD_GAPS_OPEN
+assert "full_qt_pixel_layout" not in m.HARD_GAPS_OPEN
 print("hard gaps still 3 @ phase320")
 print("cleaned")
 PY

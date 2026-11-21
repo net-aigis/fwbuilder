@@ -8,7 +8,7 @@ for n in 4577 4578 4579 4580 4581 4582 4583 4584; do
 done
 PYTHONPATH=webui/backend python3 - <<'PY'
 from fwbweb_api import main as m
-assert len(m.HARD_GAPS_OPEN) == 3
+assert len(m.HARD_GAPS_OPEN) == 0
 print("hard gaps still open @", m.WEBUI_SOFT_COMPLETE_PHASE)
 PY
 echo "e2e-all 4577-4584 ok"

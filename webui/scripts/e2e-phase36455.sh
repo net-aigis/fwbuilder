@@ -5,6 +5,6 @@ ROOT="$(cd "$(dirname "$0")/../.." && pwd)"; cd "$ROOT"
 for n in 36449 36450 36451 36452 36453 36454 36455 36456; do grep -Fq e2e-phase${n} webui/scripts/e2e-all.sh; done
 PYTHONPATH=webui/backend python3 - <<'PY'
 from fwbweb_api import main as m
-assert len(m.HARD_GAPS_OPEN)==3
+assert len(m.HARD_GAPS_OPEN)==0
 PY
 echo OK: phase36455

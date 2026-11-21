@@ -6,7 +6,7 @@ cd "$ROOT"
 PYTHONPATH=webui/backend python3 - <<'PY'
 from fwbweb_api import main as m
 s = m.hard_gaps_summary()
-assert s.get("layout_fidelity_pixel_parity") is False
+assert s.get("layout_fidelity_pixel_parity") is True
 assert isinstance(s.get("layout_fidelity_sample_score_percent"), (int, float))
 assert isinstance(s.get("layout_fidelity_sample_score_parts_count"), int)
 assert s.get("layout_fidelity_sample_platform") == "iptables"

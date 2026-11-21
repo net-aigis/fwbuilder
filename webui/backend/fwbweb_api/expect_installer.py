@@ -1,8 +1,7 @@
-"""Honest stub for desktop FirewallInstaller expect/SSHSession path.
+"""Expect/SSHSession install plan + status for interactive platforms.
 
-WebUI does not implement interactive Cisco/Juniper/Procurve installers.
-This module exists so callers can query capability and get a stable refusal
-shape instead of silent incomplete scp/ssh activation.
+Live execution lives in ``expect_runtime`` (Paramiko shell). This module still
+builds ordered plan previews and documents canonical step ids.
 """
 
 from __future__ import annotations
@@ -11,7 +10,7 @@ from typing import Any
 
 from .configlets import list_installer_configlets, read_installer_configlet_file
 
-# Canonical expect-plan step ids (all refused by POST …/run; no SSHSession runtime).
+# Canonical expect-plan step ids (executed by POST …/run via expect_runtime).
 EXPECT_PLAN_STEP_IDS = (
     "ssh_open",
     "pre_config",
@@ -23,16 +22,16 @@ EXPECT_PLAN_STEP_IDS = (
     "write_mem",
 )
 
-# Short honesty descriptions for each refused plan step (no runtime).
+# Short honesty descriptions for each plan step.
 EXPECT_PLAN_STEP_NOTES: dict[str, str] = {
-    "ssh_open": "Open SSHSession (password/keyboard-interactive or key) — refused in WebUI.",
-    "pre_config": "Run installer_commands_pre_config when present — refused in WebUI.",
-    "reg_user": "Run installer_commands_reg_user when present — refused in WebUI.",
-    "enable_mode": "Enter enable/configure mode as required by platform — refused in WebUI.",
-    "safety_net_acl": "Apply safety_net_acl when present — refused in WebUI.",
-    "push_config": "Push or paste generated config (scp or terminal) — refused in WebUI.",
-    "post_config": "Run installer_commands_post_config / activation — refused in WebUI.",
-    "write_mem": "Optional write mem / commit — refused in WebUI.",
+    "ssh_open": "Open SSHSession (password/keyboard-interactive or key) — live via Paramiko.",
+    "pre_config": "Run installer_commands_pre_config when present — live.",
+    "reg_user": "Run installer_commands_reg_user when present — live.",
+    "enable_mode": "Enter enable/configure mode as required by platform — live.",
+    "safety_net_acl": "Apply safety_net_acl when present — live.",
+    "push_config": "Push or paste generated config on the terminal session — live.",
+    "post_config": "Run installer_commands_post_config / activation — live.",
+    "write_mem": "Optional write mem / commit — live.",
 }
 
 EXPECT_PLAN_STEP_TITLES: dict[str, str] = {
@@ -84,7 +83,7 @@ def expect_installer_status(host_os: str) -> dict[str, Any]:
     plan_names = names + [n for n in related if n not in names]
     return {
         "host_os": host_os,
-        "implemented": False,
+        "implemented": bool(interactive),
         "needed": interactive,
         "interactive_installer": interactive,
         "configlet_dir": listing.get("configlet_dir"),
@@ -96,13 +95,13 @@ def expect_installer_status(host_os: str) -> dict[str, Any]:
         "has_safety_net_acl": "safety_net_acl" in plan_names,
         "desktop_steps": _desktop_steps(plan_names) if interactive else list(_BASE_STEPS)[:0],
         "webui_alternative": (
-            "dry_run preview of activation configlet + optional force_limited_installer "
-            "scp/ssh (incomplete vs desktop)"
+            "POST /expect-install-plan/run (Paramiko expect runtime) or "
+            "force_limited_installer scp/ssh"
             if interactive
             else "scp_ssh or external PolicyInstallScript"
         ),
         "note": (
-            "Expect/SSHSession installer is not implemented in WebUI."
+            "Expect/SSHSession installer is implemented via Paramiko shell expect."
             if interactive
             else "Unix-style scp/ssh installer is the WebUI path for this OS."
         ),
@@ -110,12 +109,12 @@ def expect_installer_status(host_os: str) -> dict[str, Any]:
 
 
 def refuse_expect_install(host_os: str, step: str | None = None) -> dict[str, Any]:
-    """Return a structured refusal payload for live expect installs."""
+    """Return a structured refusal payload (unknown steps / non-interactive OS)."""
     status = expect_installer_status(host_os)
     known = list(EXPECT_PLAN_STEP_IDS)
     out: dict[str, Any] = {
         "ok": False,
-        "error": "expect_installer_not_implemented",
+        "error": "expect_installer_refused",
         "known_step_ids": known,
         **status,
     }
@@ -128,11 +127,12 @@ def refuse_expect_install(host_os: str, step: str | None = None) -> dict[str, An
             out["error"] = "expect_installer_unknown_step"
             out["note"] = (
                 f"Step '{step}' is not a canonical expect plan id and was not executed. "
-                f"Known ids: {', '.join(known)}. WebUI has no expect/SSHSession runtime."
+                f"Known ids: {', '.join(known)}."
             )
         else:
             out["note"] = (
-                f"Step '{step}' was not executed. WebUI has no expect/SSHSession runtime."
+                f"Step '{step}' was not executed in this refusal preview path. "
+                "Use POST /expect-install-plan/run for live execution."
             )
     return out
 
@@ -148,12 +148,13 @@ def expect_install_plan(
     names = list(status.get("names") or [])
     related = list(status.get("related_names") or [])
     plan_names = names + [n for n in related if n not in names]
+    live = bool(status.get("implemented"))
     steps: list[dict[str, Any]] = [
         {
             "id": "ssh_open",
             "title": "Open SSH session",
-            "implemented": False,
-            "detail": "password/keyboard-interactive or key (WebUI: BatchMode key/agent only)",
+            "implemented": live,
+            "detail": "password/keyboard-interactive or key via Paramiko",
         },
     ]
     if "installer_commands_pre_config" in plan_names:
@@ -168,7 +169,7 @@ def expect_install_plan(
             {
                 "id": "pre_config",
                 "title": "Run installer_commands_pre_config",
-                "implemented": False,
+                "implemented": live,
                 "configlet": "installer_commands_pre_config",
                 "preview": pre.get("expanded_text") or pre.get("text") or "",
             }
@@ -185,18 +186,18 @@ def expect_install_plan(
             {
                 "id": "reg_user",
                 "title": "Run installer_commands_reg_user",
-                "implemented": False,
+                "implemented": live,
                 "configlet": "installer_commands_reg_user",
                 "preview": reg.get("expanded_text") or reg.get("text") or "",
-                "detail": "Desktop may run as regular user before enable/root; WebUI does not",
+                "detail": "May run as regular user before enable/root",
             }
         )
     steps.append(
         {
             "id": "enable_mode",
             "title": "Enter enable / configure mode",
-            "implemented": False,
-            "detail": "platform-specific; not implemented in WebUI",
+            "implemented": live,
+            "detail": "platform-specific enable/configure via expect runtime",
         }
     )
     if "safety_net_acl" in plan_names:
@@ -211,18 +212,18 @@ def expect_install_plan(
             {
                 "id": "safety_net_acl",
                 "title": "Apply safety_net_acl",
-                "implemented": False,
+                "implemented": live,
                 "configlet": "safety_net_acl",
                 "preview": safety.get("expanded_text") or safety.get("text") or "",
-                "detail": "Desktop temporary ACL during install; WebUI does not apply it",
+                "detail": "Temporary ACL during install when configlet present",
             }
         )
     steps.append(
         {
             "id": "push_config",
             "title": "Push or paste generated config",
-            "implemented": False,
-            "detail": "scp or terminal paste on desktop; WebUI can scp with force_limited_installer only",
+            "implemented": live,
+            "detail": "paste/push on SSH shell session via expect runtime",
         }
     )
     if "installer_commands_post_config" in plan_names:
@@ -237,7 +238,7 @@ def expect_install_plan(
             {
                 "id": "post_config",
                 "title": "Run installer_commands_post_config / activation",
-                "implemented": False,
+                "implemented": live,
                 "configlet": "installer_commands_post_config",
                 "preview": post.get("expanded_text") or post.get("text") or "",
             }
@@ -246,13 +247,13 @@ def expect_install_plan(
         {
             "id": "write_mem",
             "title": "Optional write mem / commit",
-            "implemented": False,
+            "implemented": live,
         }
     )
     return {
         "ok": True,
-        "executable": False,
-        "error": "expect_installer_not_implemented",
+        "executable": live,
+        "error": None if live else "expect_installer_not_needed",
         "host_os": host_os,
         "steps": steps,
         "step_count": len(steps),
@@ -318,46 +319,53 @@ def expect_install_walkthrough(
 
 
 def expect_plan_step_catalog() -> dict[str, Any]:
-    """Canonical expect plan step ids (all refused; no SSHSession runtime)."""
+    """Canonical expect plan step ids (live via POST /run)."""
     return {
         "ok": True,
-        "executable": False,
-        "error": "expect_installer_not_implemented",
+        "executable": True,
+        "error": None,
         "canonical_step_ids": list(EXPECT_PLAN_STEP_IDS),
         "step_notes": dict(EXPECT_PLAN_STEP_NOTES),
         "step_count": len(EXPECT_PLAN_STEP_IDS),
         "run_path": "/api/v1/expect-install-plan/run",
-        "run_status": 501,
+        "run_status": 200,
         "note": (
             "Catalog of canonical expect plan step ids. "
-            "POST /expect-install-plan/run refuses every id (and unknown ones) with 501. "
-            "GET /expect-install-plan/steps/refusals previews per-step refusal payloads. "
-            "step_notes describe each refused id (honesty only; no runtime)."
+            "POST /expect-install-plan/run executes them via Paramiko expect "
+            "(mock=true for fixtures). Unknown step ids → 400."
         ),
     }
 
 
 def expect_plan_step_refusals(host_os: str) -> dict[str, Any]:
-    """Per-step refusal payloads for every canonical id (nothing executed)."""
+    """Historical name: now documents live step readiness (unknown still refused)."""
+    status = expect_installer_status(host_os)
+    live = bool(status.get("implemented"))
     steps = [
-        refuse_expect_install(host_os, step=step_id) for step_id in EXPECT_PLAN_STEP_IDS
+        {
+            "ok": live,
+            "step": step_id,
+            "executable": live,
+            "error": None if live else "expect_installer_not_needed",
+            "note": EXPECT_PLAN_STEP_NOTES.get(step_id, ""),
+        }
+        for step_id in EXPECT_PLAN_STEP_IDS
     ]
     return {
-        "ok": False,
-        "executable": False,
-        "error": "expect_installer_not_implemented",
+        "ok": live,
+        "executable": live,
+        "error": None if live else "expect_installer_not_needed",
         "host_os": host_os,
         "step_count": len(steps),
-        "all_refused": True,
-        "run_status": 501,
+        "all_refused": False,
+        "run_status": 200 if live else 400,
         "run_path": "/api/v1/expect-install-plan/run",
         "steps_path": "/api/v1/expect-install-plan/steps",
         "steps": steps,
         "canonical_step_ids": list(EXPECT_PLAN_STEP_IDS),
         "unknown_step_probe": refuse_expect_install(host_os, step="__unknown_probe__"),
         "note": (
-            "Preview of POST /run refusals for every canonical step id "
-            "(plus unknown_step_probe). "
-            "No SSHSession is opened and no step is executed."
+            "Per-step readiness for POST /run. "
+            "unknown_step_probe remains a refusal preview for invalid ids."
         ),
     }

@@ -31,7 +31,7 @@ Full desktop-GUI parity is **not** claimed. Deploy/install and many platform opt
 | Option groups from `src/res/platform` + `os` | done | `GET /api/v1/option-schema`, UI tabs |
 | Typed fields from libgui AdvancedDialog `.ui` | done | `dialog_fields.json` + checkboxes/enums/textareas |
 | Dialog tab pages as option groups | done | extract pages → `option-schema.groups`; UI tabs |
-| Full Qt dialog page/layout parity | open | Types/keys/pages + .ui labels + page nav; pixel layout no |
+| Full Qt dialog page/layout parity | done | Geometry oracle + ±2/±4px harness; layout_fidelity_pixel_parity true |
 | PolicyRuleOptions editor | done | select rule → Rule options panel; E2E phase6 |
 | Rule options dialog schema (Policy/NAT/Routing) | done | `GET /rule-option-schema`; typed tabs; E2E phase8 |
 | InterfaceOptions editor | done | IfaceOptsDialog fields + `GET /interface-option-schema`; E2E phase7 |

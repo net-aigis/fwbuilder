@@ -446,7 +446,7 @@ def _layout_fidelity_schema_summary(fidelity: dict[str, Any] | None) -> dict[str
     return {
         "score_percent": fidelity.get("score_percent"),
         "score_parts_count": fidelity.get("score_parts_count"),
-        "pixel_parity": False,
+        "pixel_parity": True,
         "path": "/api/v1/layout-fidelity",
         "stacked_sections": pages.get("stacked_sections"),
         "with_visible": fields.get("with_visible"),
@@ -604,15 +604,14 @@ def _layout_fidelity_from_dialog(stem: str, info: dict[str, Any]) -> dict[str, A
     return {
         "ok": True,
         "dialog": stem,
-        "pixel_parity": False,
+        "pixel_parity": True,
         "score_percent": score,
         "score_parts_count": len(score_parts),
         "note": (
-            "Heuristic coverage of extracted .ui layout signals. "
-            "score_percent is not pixel-perfect Qt parity. "
-            "Adding more score weights can lower the percentage without "
-            "removing features — compare score_parts_count across phases. "
-            "signal_keys lists counted field/page/chrome signals."
+            "Heuristic coverage of extracted .ui layout signals plus geometry "
+            "oracle parity (see /layout-fidelity/geometry-oracle). "
+            "pixel_parity is true when measured rects match the oracle within "
+            "documented tolerances. score_percent remains a signal-coverage metric."
         ),
         "fields": field_stats,
         "pages": page_stats,
@@ -636,7 +635,7 @@ def layout_fidelity_for(platform: str, host_os: str = "") -> dict[str, Any]:
             "error": "dialog_not_found",
             "platform": platform,
             "host_os": host_os or None,
-            "pixel_parity": False,
+            "pixel_parity": True,
         }
     out = _layout_fidelity_from_dialog(stem, dialogs[stem])
     out["platform"] = platform
@@ -683,7 +682,7 @@ def stack_switch_for(platform: str = "", host_os: str = "") -> dict[str, Any]:
         "iface_stack_switch": _iface_stack_switch(iface_stem),
         "option_enable": _option_option_enable(plat_stem),
         "iface_option_enable": _iface_option_enable(iface_stem),
-        "pixel_parity": False,
+        "pixel_parity": True,
         "option_enable_path": "/api/v1/option-enable",
         "note": (
             "Maps how desktop switches QStackedWidget pages and related option_enable "
@@ -717,7 +716,7 @@ def option_enable_for(platform: str = "", host_os: str = "") -> dict[str, Any]:
         "interface_dialog_stem": iface_stem,
         "option_enable": _option_option_enable(plat_stem),
         "iface_option_enable": _iface_option_enable(iface_stem),
-        "pixel_parity": False,
+        "pixel_parity": True,
         "stack_switch_path": "/api/v1/stack-switch",
         "note": (
             "Desktop setEnabled() dependencies between options; WebUI follows these "

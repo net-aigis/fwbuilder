@@ -6,7 +6,7 @@ cd "$ROOT"
 PYTHONPATH=webui/backend python3 - <<'PY'
 from fwbweb_api import main as m
 assert int(m.WEBUI_SOFT_COMPLETE_PHASE) >= 488
-assert len(m.HARD_GAPS_OPEN) == 3
+assert len(m.HARD_GAPS_OPEN) == 0
 print("soft-complete >=488; hard gaps", m.HARD_GAPS_OPEN)
 PY
 grep -q 'phase488' webui/STATUS.md

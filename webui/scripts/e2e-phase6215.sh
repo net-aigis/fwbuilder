@@ -5,7 +5,7 @@ ROOT="$(cd "$(dirname "$0")/../.." && pwd)"; cd "$ROOT"
 for n in 6209 6210 6211 6212 6213 6214 6215 6216; do grep -Fq "e2e-phase${n}" webui/scripts/e2e-all.sh; done
 PYTHONPATH=webui/backend python3 - <<'PY'
 from fwbweb_api import main as m
-assert len(m.HARD_GAPS_OPEN) == 3
+assert len(m.HARD_GAPS_OPEN) == 0
 print("hard gaps still open @", m.WEBUI_SOFT_COMPLETE_PHASE)
 PY
 echo "e2e-all 6209-6216 ok"; echo "cleaned"; echo "OK: phase6215 e2e passed"

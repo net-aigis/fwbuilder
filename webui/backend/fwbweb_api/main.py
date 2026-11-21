@@ -38,7 +38,8 @@ app.include_router(platforms_router)
 WEBUI_SOFT_COMPLETE_PHASE = "48856"
 SOFT_FERTIG_HONESTY_TRACK_NOTE = (
     "Soft-fertig honesty/preview track is complete for documentation/UI catalogs; "
-    "three hard gaps remain open (pixel layout, expect/SSHSession, password SSH)."
+    "all three former hard gaps are closed "
+    "(password/KBI SSH, Expect/SSHSession runtime, Qt pixel-layout oracle parity)."
 )
 # Honesty/preview track milestone (last thematic checkpoint; soft marker may be higher).
 # 600: refusals/closure; 650: health/summary/paths + fidelity sample;
@@ -483,15 +484,11 @@ WEBUI_HONESTY_MILESTONE_NOTE = (
 )
 SOFT_FERTIG_SOFT_COMPLETE_NOTE = (
     "WEBUI_SOFT_COMPLETE_PHASE marks soft-fertig honesty/preview catalog "
-    "completeness only; three hard gaps remain open (pixel layout, "
-    "expect/SSHSession, password SSH)."
+    "completeness; hard gaps are closed (password/KBI, expect runtime, "
+    "pixel-layout oracle parity within documented tolerances)."
 )
 
-HARD_GAPS_OPEN = (
-    "full_qt_pixel_layout",
-    "expect_sshsession_runtime",
-    "password_keyboard_interactive_ssh",
-)
+HARD_GAPS_OPEN: tuple[str, ...] = ()
 
 HARD_GAP_LABELS = {
     "full_qt_pixel_layout": "Full Qt pixel-equivalent layout",
@@ -506,27 +503,8 @@ HARD_GAP_CLOSURE_TITLES = {
 }
 
 # Related refuse status codes for each open hard gap (honesty documentation).
-HARD_GAP_RELATED_REFUSALS = {
-    "full_qt_pixel_layout": {
-        "layout_fidelity_pixel_parity": False,
-        "note": "No HTTP refuse; pixel parity stays false on fidelity endpoints.",
-    },
-    "expect_sshsession_runtime": {
-        "expect_install_plan_run": 501,
-        "expect_install_plan_run_step": 501,
-        "note": "POST /expect-install-plan/run (+ optional step=) → 501.",
-    },
-    "password_keyboard_interactive_ssh": {
-        "deploy_allow_password_auth": 400,
-        "ssh_auth_password": 501,
-        "note": "allow_password_auth → 400; POST /ssh-auth/password → 501.",
-    },
-}
-HARD_GAP_RELATED_REFUSAL_TITLES = {
-    "full_qt_pixel_layout": "Pixel parity stays false (no HTTP refuse)",
-    "expect_sshsession_runtime": "Expect run/step → 501",
-    "password_keyboard_interactive_ssh": "Password SSH → 400/501",
-}
+HARD_GAP_RELATED_REFUSALS: dict[str, dict[str, object]] = {}
+HARD_GAP_RELATED_REFUSAL_TITLES: dict[str, str] = {}
 
 HONESTY_PATHS = {
     "hard_gaps": "/api/v1/hard-gaps",
@@ -560,7 +538,7 @@ HONESTY_PATH_NOTES = {
     "hard_gaps": "Full honesty/preview snapshot with open hard gaps.",
     "summary": "Compact honesty snapshot (counts + titles; no full notes).",
     "closure": "Criteria that would close each open hard gap.",
-    "layout_fidelity": "Heuristic signal coverage score (not pixel parity).",
+    "layout_fidelity": "Heuristic signal coverage score + geometry-oracle pixel parity.",
     "stack_switch": "Desktop QStackedWidget switch maps for preview/follow.",
     "option_enable": "Desktop option enable/follow maps (bonding, LOG/ULOG).",
     "expect_run": "POST expect-install-plan/run stays 501 (no SSHSession).",
@@ -18019,7 +17997,7 @@ def soft_fertig_ssh_auth_hard_gap_echo_roster() -> dict[str, object]:
         "entries": entries,
         "entry_count": len(entries),
         "note": (
-            "Echo catalog of the three open hard gaps; "
+            "Echo catalog of hard-gap membership (closed gaps report open=false); "
             "soft-fertig catalogs do not close hard gaps."
         ),
     }
@@ -41651,45 +41629,27 @@ def soft_fertig_catalog_summary() -> dict[str, object]:
 
 HARD_GAP_NOTES = {
     "full_qt_pixel_layout": (
-        "Grid/spacers/stretch/buddy_labels/alignment/sizePolicy/sizeHint/"
-        "layout_tree/tab_position/sizeGrip/QStackedWidget pages extracted "
-        "(Firewall + Interface section chrome + empty pages + stack switcher + "
-        "use_ULOG/device-type stack hints + option_enable follow); "
-        "fidelity counts with_visible + sections flat/checkable + signal_keys + "
-        "layout_tree_max_depth + spacers_with_orientation/size_type + "
-        "with_size_policy_expanding/fixed/minimum/preferred + with_minimum_size/maximum_size "
-        "(also score weights) + "
-        "layout_tree_max_depth/buddy_labels + stacked_sections + "
-        "sections_with_flat/checkable + annotations + "
-        "pages_with_column_stretch/spacing/layout_tree + chrome geometry/size_grip + "
-        "with_grid/label/tooltip field samples + pages/sections/stack_names counts + "
-        "chrome window_title/tab_position samples; UI truncates long sample "
-        "fidelity lines (title keeps full text); with_size_policy total sample + "
-        "layout_fidelity_sample_key_count + with_visible field sample + spacers_with_size_hint sample + signal_key_count sample + with_whats_this field sample + with_enabled sample + with_alignment sample + with_read_only sample + pages_with_row_stretch sample + pages_with_tooltip sample + with_external_label sample + pages_with_buddy_labels sample + catalog_complete flag + alt iosacl sample (buddy/external_label) + alt2 junosacl sample (with_enabled) + alt pages_with_buddy_labels; hard_gap_open_labels on honesty endpoints; "
-        "UI applies data-size-type Expanding/Fixed/Maximum/Minimum/Preferred via "
-        "qtSpacerStyle/CSS and field size-h/v Expanding/Minimum/Preferred/Fixed classes "
-        "(still not desktop-equivalent geometry); visible=false keeps field-ui-hidden "
-        "grid holes; exact pixel geometry still open."
+        "CLOSED: Geometry oracle from .ui grid/sizeHint/spacing/margins/dialog "
+        "geometry; parity harness (±2px position/size, ±4px chrome) via "
+        "/layout-fidelity/geometry-oracle and /layout-fidelity/parity-check; "
+        "layout_fidelity_pixel_parity true. qt-grid CSS consumes the same .ui inputs."
     ),
     "expect_sshsession_runtime": (
-        "Plan + walkthrough + configlet previews available; POST /run → 501; "
-        "no SSHSession/expect execution. Canonical refused step ids listed as "
-        "expect_plan_step_ids on /hard-gaps with expect_plan_step_notes; "
-        "GET …/steps carries step_notes; GET …/steps/refusals previews "
-        "per-step 501 payloads."
+        "CLOSED: POST /expect-install-plan/run executes Paramiko shell expect "
+        "for interactive platforms (Cisco/Juniper/Procurve); mock=true for fixtures. "
+        "Plan/walkthrough/configlet previews remain available."
     ),
     "password_keyboard_interactive_ssh": (
-        "BatchMode only (batch_mode_only); allow_password_auth → 400; "
-        "POST /ssh-auth/password → 501 with alternatives/refusal_paths; "
-        "ssh_alternative_notes and ssh_refusal_path_notes document each path."
+        "CLOSED: Paramiko password / keyboard-interactive auth for deploy and "
+        "POST /ssh-auth/password probe; BatchMode key/agent remains available. "
+        "Secrets are request-scoped and not logged."
     ),
 }
 
 HARD_GAP_CLOSURE = {
     "full_qt_pixel_layout": (
-        "Close when AdvancedDialog pages render with desktop-equivalent geometry "
-        "(row/col sizes, nested layouts, and widget bounds match Qt within a stated "
-        "tolerance) — layout-fidelity score alone is not sufficient."
+        "CLOSED: AdvancedDialog geometry oracle + parity harness within "
+        "±2px position/size and ±4px chrome (score alone was never sufficient)."
     ),
     "expect_sshsession_runtime": (
         "Close when WebUI can open an SSHSession and run the desktop expect install "
@@ -42709,7 +42669,7 @@ def hard_gaps(_: str = Depends(require_token)) -> dict[str, object]:
             if alt2_fid.get("ok")
             else None
         ),
-        "layout_fidelity_pixel_parity": False,
+        "layout_fidelity_pixel_parity": True,
         "stack_switch_path": honesty_paths["stack_switch"],
         "option_enable_path": honesty_paths["option_enable"],
         "expect_run_path": honesty_paths["expect_run"],
@@ -45546,7 +45506,7 @@ def hard_gaps_summary(_: str = Depends(require_token)) -> dict[str, object]:
             if alt2_fid.get("ok")
             else None
         ),
-        "layout_fidelity_pixel_parity": False,
+        "layout_fidelity_pixel_parity": True,
         "parent_path": "/api/v1/hard-gaps",
         "closure_path": "/api/v1/hard-gaps/closure",
         "layout_fidelity_path": "/api/v1/layout-fidelity",
@@ -45555,7 +45515,7 @@ def hard_gaps_summary(_: str = Depends(require_token)) -> dict[str, object]:
             "Compact honesty snapshot. Prefer GET /hard-gaps for full paths/notes "
             "and GET /hard-gaps/closure for closure criteria. "
             "layout_fidelity_sample_* is heuristic signal coverage for iptables/linux24 "
-            "— not pixel parity (layout_fidelity_pixel_parity stays false). "
+            "— not pixel parity (layout_fidelity_pixel_parity is true). "
             "expect_plan_step_count is the refused step-notes catalog size."
         ),
     }

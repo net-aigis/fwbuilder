@@ -16,8 +16,8 @@ This fork tracks **Qt6** builds and an optional **WebUI** that edits the same
 | Track | State |
 | --- | --- |
 | Desktop GUI (Qt6) | Builds on Linux; Win/Mac smoke via MinGW/local Podman (see `docker/`) |
-| WebUI (`feature/webui`) | Local-only: object tree, rules, compile/deploy, option schema from `src/res`, compilers including nft/ipt/BSD/Cisco/Juniper/Procurve |
-| Full GUI parity | **Not** claimed — see [`webui/STATUS.md`](webui/STATUS.md) |
+| WebUI | First-class track in **6.1.0**: object tree, rules, compile/deploy, option schema from `src/res`, BatchMode + password/KBI SSH (Paramiko), expect/SSHSession runtime for interactive platforms, geometry-oracle pixel parity (±2px / ±4px chrome). See [`webui/STATUS.md`](webui/STATUS.md) |
+| Former WebUI hard gaps | **Closed** in 6.1.0 (`HARD_GAPS_OPEN` empty): password/KBI SSH, expect runtime, Qt pixel-layout oracle |
 
 ## WebUI (local, no GitHub Actions required)
 

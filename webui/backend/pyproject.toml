@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "fwbweb-api"
-version = "0.1.0"
+version = "6.1.0"
 description = "REST/WebSocket API for Firewall Builder WebUI (libfwbuilder bridge)"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -14,6 +14,7 @@ dependencies = [
   "pydantic>=2.7",
   "pydantic-settings>=2.3",
   "httpx>=0.27",
+  "paramiko>=3.4",
 ]
 
 [project.optional-dependencies]

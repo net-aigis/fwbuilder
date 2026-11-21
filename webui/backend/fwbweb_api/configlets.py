@@ -92,11 +92,12 @@ def list_installer_configlets(host_os: str) -> dict[str, Any]:
             "scp_ssh": bool(has_reg or has_root) and not interactive,
             "scp_ssh_limited": bool(has_reg or has_root) and interactive,
             "external_install_script": True,
-            "expect_sshsession": False,
+            "expect_sshsession": bool(interactive),
         },
         "note": (
             "Desktop FirewallInstaller uses expect/SSHSession with pre/post configlets; "
-            "WebUI scp/ssh deploy only expands the activation configlet."
+            "WebUI runs the same step plan via Paramiko expect runtime "
+            "(POST /expect-install-plan/run)."
             if interactive
             else None
         ),

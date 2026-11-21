@@ -8,7 +8,7 @@ grep -Fq 'layout-fidelity' webui/backend/fwbweb_api/routes/platforms.py
 PYTHONPATH=webui/backend python3 - <<'PY'
 from fwbweb_api.platforms import layout_fidelity_for
 r=layout_fidelity_for("iptables")
-assert r["ok"] and r["pixel_parity"] is False
+assert r["ok"] and r["pixel_parity"] is True
 assert r["score_percent"] > 0
 assert r["fields"]["with_grid"] > 0
 print("fidelity ok", r["dialog"], r["score_percent"])

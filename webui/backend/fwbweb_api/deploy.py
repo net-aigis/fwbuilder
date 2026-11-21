@@ -166,52 +166,61 @@ def _gzip_for_transfer(local_path: Path) -> Path:
 
 
 SSH_AUTH_NOTE = (
-    "WebUI uses OpenSSH BatchMode=yes (key/agent only). "
-    "Password and keyboard-interactive SSH are not implemented."
+    "WebUI supports OpenSSH BatchMode=yes (key/agent) and Paramiko "
+    "password / keyboard-interactive auth for deploy and probe."
 )
 
 
 SSH_ALTERNATIVE_NOTES: dict[str, str] = {
     "identity_file": "Use -i / identity_file with BatchMode=yes (supported).",
     "ssh_agent": "Use ssh-agent forwarded keys with BatchMode=yes (supported).",
+    "password": "Pass password (and optional keyboard_interactive_responses) on deploy /ssh-auth/password.",
 }
 
 SSH_REFUSAL_PATH_NOTES: dict[str, str] = {
     "deploy_allow_password_auth": (
-        "Deploy with allow_password_auth → HTTP 400 (BatchMode only)."
+        "Deploy with allow_password_auth=true requires password or "
+        "keyboard_interactive_responses; otherwise HTTP 400."
     ),
     "ssh_auth_password": (
-        "POST /ssh-auth/password → HTTP 501 (password/keyboard-interactive not implemented)."
+        "POST /ssh-auth/password probes Paramiko password/KBI auth (live)."
     ),
 }
 
 SSH_ALTERNATIVE_TITLES: dict[str, str] = {
     "identity_file": "SSH identity file (BatchMode)",
     "ssh_agent": "SSH agent keys (BatchMode)",
+    "password": "Password / keyboard-interactive (Paramiko)",
 }
 
 SSH_REFUSAL_PATH_TITLES: dict[str, str] = {
-    "deploy_allow_password_auth": "Deploy allow_password_auth → 400",
-    "ssh_auth_password": "POST /ssh-auth/password → 501",
+    "deploy_allow_password_auth": "Deploy allow_password_auth without secret → 400",
+    "ssh_auth_password": "POST /ssh-auth/password (live probe)",
 }
 
 
 def ssh_auth_capabilities() -> dict[str, Any]:
     """Honest SSH auth capability summary for WebUI deploy."""
-    refusal_paths = {
-        "deploy_allow_password_auth": 400,
-        "ssh_auth_password": 501,
+    refusal_paths: dict[str, int] = {
+        # Missing secret still refused; live auth is implemented.
+        "deploy_allow_password_auth_without_secret": 400,
     }
     return {
         "batch_mode": True,
-        "batch_mode_only": True,
-        "password_supported": False,
-        "keyboard_interactive_supported": False,
+        "batch_mode_only": False,
+        "password_supported": True,
+        "keyboard_interactive_supported": True,
         "identity_file_supported": True,
         "ssh_agent_supported": True,
-        "implemented": ["batch_mode", "identity_file", "ssh_agent"],
-        "not_implemented": ["password", "keyboard_interactive"],
-        "alternatives": ["identity_file", "ssh_agent"],
+        "implemented": [
+            "batch_mode",
+            "identity_file",
+            "ssh_agent",
+            "password",
+            "keyboard_interactive",
+        ],
+        "not_implemented": [],
+        "alternatives": ["identity_file", "ssh_agent", "password"],
         "alternative_notes": dict(SSH_ALTERNATIVE_NOTES),
         "alternative_titles": dict(SSH_ALTERNATIVE_TITLES),
         "refusal_paths": refusal_paths,
@@ -300,6 +309,8 @@ def plan_and_deploy(
     ssh_args: str = "",
     scp_args: str = "",
     identity_file: str | None = None,
+    password: str | None = None,
+    keyboard_interactive_responses: list[str] | None = None,
     dry_run: bool = True,
     timeout: float = 120.0,
 ) -> dict[str, Any]:
@@ -323,6 +334,8 @@ def plan_and_deploy(
     fwdir = str(Path(main_remote).parent).replace("\\", "/") or remote_dir.rstrip("/") or "/etc"
     fwscript = Path(main_remote).name
 
+    use_password_auth = bool(password) or keyboard_interactive_responses is not None
+
     ssh_extra = shlex.split(ssh_args) if ssh_args.strip() else []
     scp_extra = shlex.split(scp_args) if scp_args.strip() else []
     identity_expanded: str | None = None
@@ -334,6 +347,7 @@ def plan_and_deploy(
         scp_extra += ["-i", identity_expanded]
 
     # Prefer BatchMode so missing keys fail fast instead of hanging on password.
+    # Password/KBI path uses Paramiko instead (no BatchMode).
     base_ssh = [
         "ssh",
         "-o",
@@ -471,10 +485,25 @@ def plan_and_deploy(
     )
     if interactive_note:
         note = f"{note} {interactive_note}"
+    if use_password_auth:
+        plan_lines[1] = "SSH auth: Paramiko password/keyboard-interactive (secret redacted)"
+        note = (
+            "WebUI installer via Paramiko SFTP/SSH (password/keyboard-interactive). "
+            "Secret is not logged. Not the full desktop expect/SSHSession installer."
+            + (f" {interactive_note}" if interactive_note else "")
+        )
+        # Replace OpenSSH command previews with redacted Paramiko steps.
+        commands = [
+            f"paramiko SFTP put → {rp}" for _lp, rp in transfer_copies
+        ]
+        if decompress_parts:
+            commands.append("paramiko exec: <decompress> (redacted)")
+        if activate and act:
+            commands.append("paramiko exec: <activation> (redacted)")
     result: dict[str, Any] = {
         "ok": True,
         "dry_run": dry_run,
-        "mode": "scp_ssh",
+        "mode": "paramiko_password" if use_password_auth else "scp_ssh",
         "host": host,
         "user": user,
         "remote_path": main_remote,
@@ -488,9 +517,10 @@ def plan_and_deploy(
         "identity_file": identity_expanded,
         "copy_fwb": bool(copy_fwb),
         "ssh_auth": {
-            "batch_mode": True,
-            "password_supported": False,
-            "keyboard_interactive_supported": False,
+            "batch_mode": not use_password_auth,
+            "password_supported": True,
+            "keyboard_interactive_supported": True,
+            "used_password_auth": use_password_auth,
             "note": SSH_AUTH_NOTE,
         },
         "plan": plan_lines,
@@ -508,8 +538,58 @@ def plan_and_deploy(
             )
             return result
 
+        if use_password_auth:
+            from .ssh_session import SshSessionError, connect_ssh, sftp_put, ssh_exec
+
+            log_parts: list[str] = []
+            try:
+                client = connect_ssh(
+                    host=host,
+                    user=user,
+                    password=password,
+                    keyboard_interactive_responses=keyboard_interactive_responses,
+                    identity_file=identity_expanded,
+                    timeout=min(20.0, timeout),
+                )
+            except SshSessionError as exc:
+                raise DeployError(str(exc), log=exc.log, commands=commands) from exc
+            try:
+                for local_path, remote_path in transfer_copies:
+                    try:
+                        sftp_put(client, local_path, remote_path)
+                    except OSError as exc:
+                        raise DeployError(
+                            f"SFTP put failed: {remote_path}: {exc}",
+                            log="\n".join(log_parts),
+                            commands=commands,
+                        ) from exc
+                    log_parts.append(f"$ sftp put <local> → {remote_path}\nok")
+                if decompress_parts:
+                    remote_shell = " && ".join(decompress_parts)
+                    code, out = ssh_exec(client, remote_shell, timeout=timeout)
+                    log_parts.append(f"$ ssh decompress\n{out}")
+                    if code != 0:
+                        raise DeployError(
+                            f"ssh decompress exited {code}",
+                            log="\n".join(log_parts),
+                            commands=commands,
+                        )
+                if activate and act:
+                    code, out = ssh_exec(client, act, timeout=timeout)
+                    log_parts.append(f"$ ssh activate\n{out}")
+                    if code != 0:
+                        raise DeployError(
+                            f"ssh activate exited {code}",
+                            log="\n".join(log_parts),
+                            commands=commands,
+                        )
+            finally:
+                client.close()
+            result["log"] = "\n".join(log_parts)
+            return result
+
         env = {**os.environ}
-        log_parts: list[str] = []
+        log_parts = []
         for scp_cmd in scp_cmds:
             code, out = _run(scp_cmd, timeout=timeout, env=env)
             log_parts.append(f"$ {' '.join(scp_cmd)}\n{out}")

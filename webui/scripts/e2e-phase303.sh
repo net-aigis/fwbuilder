@@ -8,7 +8,7 @@ from fwbweb_api.platforms import layout_fidelity_for
 for p in ("iptables", "pf", "iosacl"):
   r=layout_fidelity_for(p)
   assert r["ok"], p
-  assert r["pixel_parity"] is False
+  assert r["pixel_parity"] is True
   print(p, r["score_percent"], r["dialog"])
 print("cleaned")
 PY

@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, Query
+from pydantic import BaseModel, Field
 
 from ..auth import require_token
 from ..configlets import (
@@ -189,16 +190,76 @@ def get_expect_install_plan_step_refusals(
     return expect_plan_step_refusals(host_os)
 
 
+class ExpectRunRequest(BaseModel):
+    host: str = ""
+    user: str = ""
+    password: str | None = None
+    keyboard_interactive_responses: list[str] | None = None
+    identity_file: str | None = None
+    enable_password: str | None = None
+    fwdir: str = "/etc"
+    fwscript: str = "firewall.fw"
+    config_text: str = ""
+    mock: bool = False
+    timeout: float = 30.0
+
+
 @router.post("/expect-install-plan/run")
 def run_expect_install_plan(
     host_os: str = Query(..., min_length=1),
-    step: str | None = Query(None, description="Optional single step id; still refused"),
+    step: str | None = Query(None, description="Optional single canonical step id"),
+    body: ExpectRunRequest | None = None,
     _: str = Depends(require_token),
 ) -> dict[str, Any]:
-    """Explicit refusal: WebUI never executes the desktop expect installer."""
+    """Execute expect/SSHSession install steps (Paramiko). Use mock=true for fixtures."""
     from ..expect_installer import refuse_expect_install
+    from ..expect_runtime import ExpectRuntimeError, run_expect_steps
+    from ..configlets import list_installer_configlets
 
-    raise HTTPException(status_code=501, detail=refuse_expect_install(host_os, step=step))
+    req = body or ExpectRunRequest()
+    listing = list_installer_configlets(host_os)
+    if not listing.get("interactive_installer") and not req.mock:
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "ok": False,
+                "error": "expect_installer_not_needed",
+                "host_os": host_os,
+                "note": "This host_OS uses scp/ssh or external install script, not expect.",
+            },
+        )
+    if step and step not in EXPECT_PLAN_STEP_IDS:
+        raise HTTPException(
+            status_code=400,
+            detail=refuse_expect_install(host_os, step=step),
+        )
+    try:
+        return run_expect_steps(
+            host_os=host_os,
+            host=req.host,
+            user=req.user,
+            password=req.password,
+            keyboard_interactive_responses=req.keyboard_interactive_responses,
+            identity_file=req.identity_file,
+            enable_password=req.enable_password,
+            fwdir=req.fwdir,
+            fwscript=req.fwscript,
+            config_text=req.config_text,
+            step=step,
+            mock=req.mock,
+            timeout=req.timeout,
+        )
+    except ExpectRuntimeError as exc:
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "ok": False,
+                "error": "expect_runtime_failed",
+                "message": str(exc),
+                "step": exc.step,
+                "log": exc.log,
+            },
+        ) from exc
 
 
 @router.get("/layout-fidelity")
@@ -207,8 +268,68 @@ def get_layout_fidelity(
     host_os: str = Query(""),
     _: str = Depends(require_token),
 ) -> dict[str, Any]:
-    """Heuristic .ui layout-signal coverage (explicitly not pixel parity)."""
+    """Heuristic .ui layout-signal coverage + pixel_parity from geometry oracle."""
     return layout_fidelity_for(platform, host_os)
+
+
+@router.get("/layout-fidelity/geometry-oracle")
+def get_geometry_oracle(
+    dialog: str = Query("", description="Dialog stem; default resolves from platform"),
+    platform: str = Query(""),
+    _: str = Depends(require_token),
+) -> dict[str, Any]:
+    """Absolute widget rect oracle from .ui grid/sizeHint/spacing/geometry."""
+    from ..geometry_oracle import geometry_oracle_for_dialog
+    from ..platforms import _dialog_stem, get_platform, _dialog_catalog
+
+    stem = dialog.strip()
+    if not stem and platform:
+        try:
+            plat = get_platform(platform)
+            stem = _dialog_stem(plat.get("dialog") or platform)
+        except KeyError:
+            stem = _dialog_stem(platform)
+    if not stem:
+        # Prefer first core dialog present
+        cat = _dialog_catalog()
+        dialogs = cat.get("dialogs") or {}
+        for cand in ("firewall_options", "interface_options"):
+            if cand in dialogs:
+                stem = cand
+                break
+        if not stem and dialogs:
+            stem = next(iter(dialogs))
+    return geometry_oracle_for_dialog(stem)
+
+
+class ParityCheckRequest(BaseModel):
+    dialog: str = ""
+    chrome: dict[str, int] | None = None
+    widgets: dict[str, dict[str, int]] | None = None
+    self_check: bool = False
+
+
+@router.post("/layout-fidelity/parity-check")
+def post_parity_check(
+    body: ParityCheckRequest,
+    _: str = Depends(require_token),
+) -> dict[str, Any]:
+    """Compare measured DOM rects to geometry oracle (or run self-harness)."""
+    from ..geometry_oracle import (
+        check_parity,
+        geometry_oracle_for_dialog,
+        verify_core_dialogs_parity,
+        verify_dialog_self_parity,
+    )
+
+    if body.self_check and not body.dialog:
+        return verify_core_dialogs_parity()
+    stem = body.dialog.strip() or "firewall_options"
+    if body.self_check:
+        return verify_dialog_self_parity(stem)
+    oracle = geometry_oracle_for_dialog(stem)
+    measured = {"chrome": body.chrome or {}, "widgets": body.widgets or {}}
+    return check_parity(oracle, measured)
 
 
 @router.get("/stack-switch")
@@ -233,29 +354,59 @@ def get_option_enable(
 
 @router.get("/ssh-auth")
 def get_ssh_auth(_: str = Depends(require_token)) -> dict[str, Any]:
-    """WebUI SSH authentication capabilities (BatchMode only today)."""
+    """WebUI SSH authentication capabilities (BatchMode + password/KBI)."""
     return ssh_auth_capabilities()
 
 
+class PasswordSshRequest(BaseModel):
+    host: str = Field(..., min_length=1)
+    user: str = ""
+    password: str | None = None
+    keyboard_interactive_responses: list[str] | None = None
+    identity_file: str | None = None
+    port: int = 22
+    timeout: float = 20.0
+
+
 @router.post("/ssh-auth/password")
-def refuse_password_ssh(_: str = Depends(require_token)) -> dict[str, Any]:
-    """Explicit refusal endpoint for password/keyboard-interactive SSH."""
-    caps = ssh_auth_capabilities()
-    raise HTTPException(
-        status_code=501,
-        detail={
-            "ok": False,
-            "error": "password_auth_not_implemented",
-            "batch_mode_only": True,
-            "alternatives": caps.get("alternatives"),
-            "refusal_paths": caps.get("refusal_paths"),
-            "ssh_auth": caps,
-            "note": (
-                "Password and keyboard-interactive SSH are not implemented. "
-                "Use BatchMode key/agent auth only."
-            ),
-        },
-    )
+def probe_password_ssh(
+    body: PasswordSshRequest,
+    _: str = Depends(require_token),
+) -> dict[str, Any]:
+    """Probe password / keyboard-interactive SSH (Paramiko); secret not stored."""
+    has_secret = bool(body.password) or body.keyboard_interactive_responses is not None
+    if not has_secret:
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "ok": False,
+                "error": "password_auth_secret_required",
+                "ssh_auth": ssh_auth_capabilities(),
+            },
+        )
+    from ..ssh_session import SshSessionError, probe_password_auth
+
+    try:
+        result = probe_password_auth(
+            host=body.host,
+            user=body.user,
+            password=body.password,
+            keyboard_interactive_responses=body.keyboard_interactive_responses,
+            identity_file=body.identity_file,
+            port=body.port,
+            timeout=body.timeout,
+        )
+    except SshSessionError as exc:
+        raise HTTPException(
+            status_code=401,
+            detail={
+                "ok": False,
+                "error": "ssh_auth_failed",
+                "message": str(exc),
+                "ssh_auth": ssh_auth_capabilities(),
+            },
+        ) from exc
+    return {**result, "ssh_auth": ssh_auth_capabilities()}
 
 
 @router.get("/installer-configlet")
