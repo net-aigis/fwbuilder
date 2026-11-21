@@ -1,53 +1,39 @@
 # Publishing a package repository
 
-Local build scripts produce artifacts under `dist/`. This document turns them into
-a **static apt + rpm repo** you can host on GitHub Pages, nginx, or an object store.
+## Live repo (GitHub Pages)
 
-Official OBS/COPR/PPA accounts are optional next steps; the static repo works today.
+**Base:** https://net-aigis.github.io/fwbuilder/
 
-## 1) Build packages
+### RPM (openSUSE / Fedora)
+
+```bash
+curl -fsSL https://net-aigis.github.io/fwbuilder/rpm/fwbuilder-webui.repo \
+  | sudo tee /etc/zypp/repos.d/fwbuilder-webui.repo
+# Fedora/RHEL: /etc/yum.repos.d/fwbuilder-webui.repo
+sudo zypper refresh && sudo zypper install fwbuilder-webui
+```
+
+### APT (Debian / Ubuntu)
+
+```bash
+curl -fsSL https://net-aigis.github.io/fwbuilder/apt/fwbuilder-webui.list \
+  | sudo tee /etc/apt/sources.list.d/fwbuilder-webui.list
+sudo apt update && sudo apt install fwbuilder-webui
+```
+
+Rebuild & republish after new packages:
 
 ```bash
 bash webui/scripts/package-webui.sh
 bash webui/scripts/package-webui-rpm.sh
 bash webui/scripts/package-webui-deb.sh
-```
-
-## 2) Generate repo metadata
-
-```bash
 bash webui/scripts/publish-static-repo.sh
-# → dist/repo/{rpm,apt,tarball}/ + dist/repo/README.md
+bash webui/scripts/publish-github-pages-repo.sh
 ```
 
-## 3) Host
+## Local static tree
 
-Upload `dist/repo/` to any HTTPS origin, e.g.:
+`publish-static-repo.sh` writes `dist/repo/` (apt + rpm metadata) for any host.
+See also GitHub Release assets for one-off `.rpm` / `.deb` / `.tar.gz` downloads.
 
-- GitHub Pages (`docs/` or `gh-pages` branch)
-- `rsync -a dist/repo/ user@host:/var/www/fwbuilder-webui/`
-
-Then point clients at that URL (see snippets in `dist/repo/README.md`).
-
-### RPM (openSUSE / Fedora)
-
-```ini
-[fwbuilder-webui]
-name=Firewall Builder WebUI
-baseurl=https://YOUR.HOST/repo/rpm
-enabled=1
-gpgcheck=0
-```
-
-### APT (Debian / Ubuntu)
-
-```text
-deb [trusted=yes] https://YOUR.HOST/repo/apt stable main
-```
-
-(`trusted=yes` skips GPG until you add signing; for public mirrors, add a signing key later.)
-
-## 4) Optional: GitHub Release attach
-
-Release tags already attach `.tar.gz` / `.rpm` / `.deb`. The static repo is for
-`zypper`/`apt` consumers who want a refreshable channel.
+Official OBS/COPR/PPA accounts are optional; GitHub Pages is the supported channel.
