@@ -3,7 +3,7 @@ from __future__ import annotations
 from fastapi import Depends, FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 
-from .auth import require_token
+from .auth import Principal, require_principal, require_token
 from .routes.compile import router as compile_router
 from .routes.deploy import router as deploy_router
 from .routes.options import router as options_router
@@ -14,7 +14,7 @@ from .settings import settings
 
 app = FastAPI(
     title="Firewall Builder WebUI API",
-    version="0.1.0",
+    version="6.1.1",
     description="REST/WebSocket front for the libfwbuilder fwbweb bridge",
 )
 
@@ -46244,8 +46244,8 @@ def hard_gap_closure(_: str = Depends(require_token)) -> dict[str, object]:
 
 
 @app.get("/api/v1/me")
-def me(_: str = Depends(require_token)) -> dict[str, str]:
-    return {"auth": "ok"}
+def me(principal: Principal = Depends(require_principal)) -> dict[str, str]:
+    return {"auth": "ok", "user": principal.name}
 
 
 @app.get("/api/v1/sessions")
@@ -46259,8 +46259,10 @@ def list_sessions(_: str = Depends(require_token)) -> dict[str, object]:
 @app.websocket("/api/v1/ws/{session_id}")
 async def session_ws(websocket: WebSocket, session_id: str) -> None:
     """Phase-1 stub: accept connections; mutation fan-out comes later."""
+    from .auth import resolve_principal
+
     token = websocket.query_params.get("token")
-    if token != settings.api_token:
+    if resolve_principal(token) is None:
         await websocket.close(code=4403)
         return
     await websocket.accept()

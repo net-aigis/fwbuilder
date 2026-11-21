@@ -1,0 +1,36 @@
+# Native openSUSE Qt6 build for fwbweb — links against libxml2.so.16 (Slowroll/TW).
+# Use when the host is openSUSE and you want a bridge that runs without Fedora Podman.
+#
+#   podman build -t fwbuilder-linux-qt6-opensuse -f docker/Dockerfile.linux-qt6-opensuse docker/
+#   podman run --rm -v "$PWD":/src:Z -w /src -e JOBS=4 fwbuilder-linux-qt6-opensuse \
+#     bash docker/build-linux-qt6-fwbweb.sh
+#   # then: webui/bin/fwbweb prefers host binary when ldd is clean
+
+FROM registry.opensuse.org/opensuse/tumbleweed:latest
+
+ENV LANG=C.UTF-8
+
+RUN zypper --non-interactive refresh \
+ && zypper --non-interactive install -y --no-recommends \
+      autoconf \
+      automake \
+      bash \
+      findutils \
+      gcc-c++ \
+      git \
+      libtool \
+      libxml2-devel \
+      libxslt-devel \
+      make \
+      pkgconf \
+      pkg-config \
+      which \
+      zlib-devel \
+      qt6-base-devel \
+      qt6-tools-devel \
+ && zypper clean -a
+
+ENV PATH="/usr/lib64/qt6/bin:/usr/bin:${PATH}"
+
+WORKDIR /src
+CMD ["bash"]

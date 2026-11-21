@@ -68,25 +68,32 @@ def _resolve_compiler(name: str) -> tuple[list[str], Path | None]:
         _REPO_ROOT / "src" / stem / name,
         _REPO_ROOT / "src" / stem / "release" / name,
     ]
+    from .bridge import _host_elf_ok
+
     image = os.environ.get("FWBWEB_IMAGE", "fwbuilder-linux-qt6")
+    force_podman = os.environ.get("FWBWEB_FORCE_PODMAN") == "1"
     for elf in candidates:
-        if elf.is_file() and os.access(elf, os.X_OK):
-            # Run inside Podman so Fedora libxml2 matches the build.
-            container_path = f"/src/{elf.relative_to(_REPO_ROOT).as_posix()}"
-            return [
-                "podman",
-                "run",
-                "--rm",
-                "-i",
-                "-v",
-                f"{_REPO_ROOT}:/src:Z",
-                "-w",
-                "/src",
-                "-e",
-                "FWBUILDER_RES_DIR=/src/webui/.res",
-                image,
-                container_path,
-            ], elf
+        if not (elf.is_file() and os.access(elf, os.X_OK)):
+            continue
+        # Prefer host-native compilers when libs resolve (openSUSE .so.16 builds).
+        if not force_podman and _host_elf_ok(elf):
+            return [str(elf)], elf
+        # Else run inside Podman so Fedora libxml2 matches the .so.2 build.
+        container_path = f"/src/{elf.relative_to(_REPO_ROOT).as_posix()}"
+        return [
+            "podman",
+            "run",
+            "--rm",
+            "-i",
+            "-v",
+            f"{_REPO_ROOT}:/src:Z",
+            "-w",
+            "/src",
+            "-e",
+            "FWBUILDER_RES_DIR=/src/webui/.res",
+            image,
+            container_path,
+        ], elf
 
     raise CompileError(
         f"compiler binary not found for {name}; build with "

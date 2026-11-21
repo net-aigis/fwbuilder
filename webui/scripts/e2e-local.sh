@@ -32,12 +32,19 @@ API_PID=$!
 cleanup() { kill "$API_PID" 2>/dev/null || true; rm -rf "$TMP"; }
 trap cleanup EXIT
 
-for _ in $(seq 1 50); do
+ready=0
+for _ in $(seq 1 300); do
   if curl -sf "http://127.0.0.1:$PORT/api/v1/health" >/dev/null; then
+    ready=1
     break
   fi
   sleep 0.2
 done
+if [[ "$ready" != "1" ]]; then
+  echo "ERROR: API failed to become healthy on :$PORT" >&2
+  tail -50 "$TMP/api.log" >&2 || true
+  exit 1
+fi
 
 auth=(-H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json")
 
