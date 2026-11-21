@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fwbweb-api"
+version = "6.1.0"
+description = "REST/WebSocket API for Firewall Builder WebUI (libfwbuilder bridge)"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "fastapi>=0.115",
+  "uvicorn[standard]>=0.30",
+  "pydantic>=2.7",
+  "pydantic-settings>=2.3",
+  "httpx>=0.27",
+  "paramiko>=3.4",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.2",
+  "pytest-asyncio>=0.23",
+]
+
+[project.scripts]
+fwbweb-api = "fwbweb_api.main:run"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["fwbweb_api*"]
+
+[tool.setuptools.package-data]
+fwbweb_api = ["data/*.json"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]

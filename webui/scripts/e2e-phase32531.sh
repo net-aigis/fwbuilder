@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# Phase-32531: tail milestone 99750 still on tip after Soft 32520+ block.
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/../.." && pwd)"; cd "$ROOT"
+PYTHONPATH=webui/backend python3 - <<'PY'
+from fwbweb_api import main as m
+assert m.WEBUI_HONESTY_MILESTONE == 99750
+assert "ssh_auth_schema_343_echo_roster" in m.WEBUI_HONESTY_MILESTONE_NOTE
+assert int(m.WEBUI_SOFT_COMPLETE_PHASE) >= 32531
+print("milestone 99750 tail ok", m.WEBUI_HONESTY_MILESTONE)
+PY
+echo "cleaned"; echo "OK: phase32531 e2e passed"

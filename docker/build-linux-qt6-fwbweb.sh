@@ -1,0 +1,112 @@
+#!/usr/bin/env bash
+# Native Linux configure + build of libfwbuilder, common, fwbweb for WebUI.
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$ROOT"
+
+mkdir -p ci-logs-linux webui/.workspace
+
+export PATH="/usr/lib64/qt6/bin:/usr/bin:${PATH}"
+
+QMAKE6="$(command -v qmake6 || command -v qmake-qt6 || true)"
+if [[ -z "$QMAKE6" ]]; then
+  echo "ERROR: qmake6 not found" >&2
+  exit 1
+fi
+
+{
+  echo "QMAKE6=$QMAKE6"
+  "$QMAKE6" -v
+  g++ -v 2>&1 | tail -3
+} | tee ci-logs-linux/toolchain.log
+
+# Wipe prior MinGW/autotools leftovers so native configure is clean.
+if [[ -f Makefile ]]; then
+  make distclean >/dev/null 2>&1 || true
+fi
+rm -f config.status config.h VERSION.h .qmake.stash
+find . -name Makefile -not -path './test/*' -not -path './.git/*' -delete 2>/dev/null || true
+
+bash ./autogen.sh \
+  --with-qmake="$(basename "$QMAKE6")" \
+  --without-ucdsnmp \
+  2>&1 | tee ci-logs-linux/configure.log
+
+JOBS="${JOBS:-$(nproc 2>/dev/null || echo 2)}"
+# Minimal set for the WebUI bridge (no GUI / compilers required).
+make -j"$JOBS" -C src/libfwbuilder 2>&1 | tee ci-logs-linux/libfwbuilder.log
+make -j"$JOBS" -C src/common 2>&1 | tee ci-logs-linux/common.log
+# Ensure fwbweb Makefile exists after top-level qmake
+if [[ ! -f src/fwbweb/Makefile ]]; then
+  ( cd src && "$QMAKE6" -o Makefile src.pro )
+fi
+make -j"$JOBS" -C src/fwbweb 2>&1 | tee ci-logs-linux/fwbweb.log
+
+BIN=""
+for c in src/fwbweb/fwbweb src/fwbweb/release/fwbweb; do
+  if [[ -x "$c" ]]; then
+    BIN="$c"
+    break
+  fi
+done
+if [[ -z "$BIN" ]]; then
+  echo "ERROR: fwbweb binary missing" >&2
+  exit 1
+fi
+
+# Optional compilers for WebUI (nft/ipt + BSD family).
+# Set SKIP_COMPILERS=1 to keep the bridge-only build.
+# Set EXTRA_COMPILERS=0 to skip pf/ipf/ipfw after nft/ipt.
+if [[ "${SKIP_COMPILERS:-0}" != "1" ]]; then
+  make -j"$JOBS" -C src/compiler_lib 2>&1 | tee ci-logs-linux/compiler_lib.log
+  # Ensure qmake-generated Makefiles exist for compiler frontends + libs.
+  need_qmake=0
+  for d in nft ipt nftlib iptlib pflib pf ipf ipfw; do
+    [[ -f "src/$d/Makefile" ]] || need_qmake=1
+  done
+  if [[ "$need_qmake" == "1" ]]; then
+    ( cd src && "$QMAKE6" -o Makefile src.pro )
+  fi
+  make -j"$JOBS" -C src/iptlib 2>&1 | tee ci-logs-linux/iptlib.log
+  make -j"$JOBS" -C src/nftlib 2>&1 | tee ci-logs-linux/nftlib.log
+  make -j"$JOBS" -C src/nft 2>&1 | tee ci-logs-linux/nft.log
+  make -j"$JOBS" -C src/ipt 2>&1 | tee ci-logs-linux/ipt.log
+  if [[ "${EXTRA_COMPILERS:-1}" != "0" ]]; then
+    make -j"$JOBS" -C src/pflib 2>&1 | tee ci-logs-linux/pflib.log
+    make -j"$JOBS" -C src/pf 2>&1 | tee ci-logs-linux/pf.log
+    make -j"$JOBS" -C src/ipf 2>&1 | tee ci-logs-linux/ipf.log
+    make -j"$JOBS" -C src/ipfw 2>&1 | tee ci-logs-linux/ipfw.log
+  fi
+  if [[ "${CISCO_COMPILERS:-1}" != "0" ]]; then
+    make -j"$JOBS" -C src/cisco_lib 2>&1 | tee ci-logs-linux/cisco_lib.log
+    make -j"$JOBS" -C src/pix 2>&1 | tee ci-logs-linux/pix.log
+    make -j"$JOBS" -C src/iosacl 2>&1 | tee ci-logs-linux/iosacl.log
+    make -j"$JOBS" -C src/nxosacl 2>&1 | tee ci-logs-linux/nxosacl.log
+    make -j"$JOBS" -C src/juniper_lib 2>&1 | tee ci-logs-linux/juniper_lib.log
+    make -j"$JOBS" -C src/junosacl 2>&1 | tee ci-logs-linux/junosacl.log
+    make -j"$JOBS" -C src/procurve_acl 2>&1 | tee ci-logs-linux/procurve_acl.log
+  fi
+fi
+
+# Local resource tree for unpackaged runs (host wrapper / API).
+mkdir -p webui/.res
+cp -a src/res/resources.xml src/res/objects_init.xml src/res/templates.xml webui/.res/
+cp -a src/res/os src/res/platform src/res/configlets webui/.res/
+cp -a src/libfwbuilder/etc/fwbuilder.dtd webui/.res/
+cp -a src/libfwbuilder/migration webui/.res/
+
+{
+  echo "OK: $BIN"
+  for c in \
+    src/nft/fwb_nft src/ipt/fwb_ipt src/pf/fwb_pf src/ipf/fwb_ipf src/ipfw/fwb_ipfw \
+    src/pix/fwb_pix src/iosacl/fwb_iosacl src/nxosacl/fwb_nxosacl \
+    src/junosacl/fwb_junosacl src/procurve_acl/fwb_procurve_acl
+  do
+    [[ -x "$c" ]] && echo "OK: $c"
+  done
+} | tee ci-logs-linux/binaries.log
+env FWBUILDER_RES_DIR=/src/webui/.res "$BIN" <<'EOF' | tee ci-logs-linux/bridge-smoke.log
+{"cmd":"ping"}
+{"cmd":"quit"}
+EOF

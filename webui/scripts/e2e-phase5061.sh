@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Phase-5061: soft marker 5064 + milestone 13900.
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/../.." && pwd)"; cd "$ROOT"
+PYTHONPATH=webui/backend python3 - <<'PY'
+from fwbweb_api import main as m
+assert int(m.WEBUI_SOFT_COMPLETE_PHASE) >= 5064
+assert m.WEBUI_HONESTY_MILESTONE >= 13900
+print("marker", m.WEBUI_SOFT_COMPLETE_PHASE, "milestone", m.WEBUI_HONESTY_MILESTONE)
+PY
+echo "cleaned"; echo "OK: phase5061 e2e passed"

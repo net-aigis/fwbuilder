@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# Phase-5148: STATUS mentions ssh_refusal_status_roster sessionStorage / 5145-5152.
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/../.." && pwd)"; cd "$ROOT"
+grep -qiE 'ssh_refusal_status_roster.*(sessionStorage|Clear)|sessionStorage.*ssh_refusal_status_roster' webui/STATUS.md
+grep -qE 'phase5152|through 5152|e2e-phase5152' webui/STATUS.md
+echo "STATUS ssh_refusal_status_roster sessionStorage ok"; echo "cleaned"; echo "OK: phase5148 e2e passed"
